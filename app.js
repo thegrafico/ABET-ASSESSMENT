@@ -10,12 +10,30 @@ var indexRouter = require('./routes/index');
 var evaluationRouter = require('./routes/evaluations/evaluation');
 var createEvaluation = require('./routes/evaluations/createEvaluation');
 var deleteEvaluation = require('./routes/evaluations/deleteEvaluation');
-var editEvaluation = require('./routes/evaluations/editEvaluation');
+var editEvaluation   = require('./routes/evaluations/editEvaluation');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerms/schoolTerm');
-var editSchoolTerm = require('./routes/schoolTerms/editSchoolTerm');
+var editSchoolTerm   = require('./routes/schoolTerms/editSchoolTerm');
 var deleteSchoolTerm = require('./routes/schoolTerms/deleteSchoolTerm');
 var createSchoolTerm = require('./routes/schoolTerms/createSchoolTerm');
+// ===== Departments Section =====
+
+
+// ===== Study Programs Section =====
+
+
+// ===== Users Section =====
+
+
+// ===== Outcomes Section =====
+
+
+// ===== Courses Section =====
+var coursesRouter  = require('./routes/courses/courses');
+var createCourses  = require('./routes/courses/createCourses');
+var deleteCourses  = require('./routes/courses/deleteCourses');
+var detailsCourses = require('./routes/courses/detailsCourses');
+var editCourses    = require('./routes/courses/editCourses');
 
 var app = express();
 
@@ -44,6 +62,24 @@ app.use('/schoolTerm', schoolTermRouter);
 app.use('/editSchoolTerm', editSchoolTerm);
 app.use('/deleteSchoolTerm', deleteSchoolTerm);
 app.use('/createSchoolTerm', createSchoolTerm);
+// ===== Departments Section =====
+
+
+// ===== Study Programs Section =====
+
+
+// ===== Users Section =====
+
+
+// ===== Outcomes Section =====
+
+
+// ===== Courses Section =====
+app.use('/courses', coursesRouter);
+app.use('/createCourses',createCourses);
+app.use('/deleteCourses', deleteCourses);
+app.use('/detailsCourses', detailsCourses);
+app.use('/editCourses', editCourses);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
