@@ -1,0 +1,34 @@
+<div class="wrapper">
+  <div class="container">
+    <div class="row">
+      <h1>Evaluation Rubric</h1>
+      <div class="col-sm-12">
+        <!-- Create New Button -->
+        <!-- Trigger/Open The Modal -->
+        <button class="btn btn-success" type="button" name="button"><a id="myCreateBtn" href="createSchoolTerm">Create New</a></button>
+        <!-- Table -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Term Name</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date</th>
+              <th scope="col"> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{termName}}</td>
+              <td>{{startName}}</td>
+              <td>{{endName}}</td>
+              <td>
+                <button class="btn btn-danger" type="button" name="button"><a id="editBtn" href="editSchoolTerm">Edit</a></button>
+                <button class="btn btn-warning" type="button" name="button"><a id="deleteBtn" href="deleteSchoolTerm">Delete</a></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

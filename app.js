@@ -6,7 +6,16 @@ var logger = require('morgan');
 var hbs = require("hbs");
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// ===== Evaluation Section =====
+var evaluationRouter = require('./routes/evaluations/evaluation');
+var createEvaluation = require('./routes/evaluations/createEvaluation');
+var deleteEvaluation = require('./routes/evaluations/deleteEvaluation');
+var editEvaluation = require('./routes/evaluations/editEvaluation');
+// ===== School Term Section =====
+var schoolTermRouter = require('./routes/schoolTerms/schoolTerm');
+var editSchoolTerm = require('./routes/schoolTerms/editSchoolTerm');
+var deleteSchoolTerm = require('./routes/schoolTerms/deleteSchoolTerm');
+var createSchoolTerm = require('./routes/schoolTerms/createSchoolTerm');
 
 var app = express();
 
@@ -25,7 +34,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// ===== Evaluation Section =====
+app.use('/evaluation', evaluationRouter);
+app.use('/createEvaluation', createEvaluation);
+app.use('/deleteEvaluation', deleteEvaluation);
+app.use('/editEvaluation', editEvaluation);
+// ===== School Term Section =====
+app.use('/schoolTerm', schoolTermRouter);
+app.use('/editSchoolTerm', editSchoolTerm);
+app.use('/deleteSchoolTerm', deleteSchoolTerm);
+app.use('/createSchoolTerm', createSchoolTerm);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
