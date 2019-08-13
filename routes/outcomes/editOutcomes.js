@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'ABET Assessment' });
+  res.render('outcomes/editOutcomes', { title: 'ABET Assessment' });
 });
 
 module.exports = router;
