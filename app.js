@@ -54,11 +54,11 @@ var detailsCourses = require('./routes/courses/detailsCourses');
 var editCourses    = require('./routes/courses/editCourses');
 
 // ===== Performance Criteria Section =====
-// var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
-// var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
-// var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
-// var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
-// var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
+var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
+var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
+var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
+var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
+var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
 
 var app = express();
 
@@ -125,11 +125,11 @@ app.use('/detailsCourses', detailsCourses);
 app.use('/editCourses', editCourses);
 
 // ===== Performance Criteria Section =====
-// app.use('/performanceCriteria', perfCritRouter);
-// app.use('/createPerfCrit', createPerfCrit);
-// app.use('/deletePerfCrit', deletePerfCrit);
-// app.use('/detailPerfCrit', detailPerfCrit);
-// app.use('/editPerfCrit', editPerfCrit);
+app.use('/performanceCriteria', perfCritRouter);
+app.use('/createPerfCrit', createPerfCrit);
+app.use('/deletePerfCrit', deletePerfCrit);
+app.use('/detailPerfCrit', detailPerfCrit);
+app.use('/editPerfCrit', editPerfCrit);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
