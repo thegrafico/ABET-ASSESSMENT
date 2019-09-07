@@ -2,10 +2,10 @@ CREATE TABLE DEPARTMENT (
   dep_ID int PRIMARY KEY,
   dep_name varchar(255) NOT NULL,
   dep_description varchar(255),
-  date_created datetime default CURRENT_TIMESTAMP --add the default date
+  date_created datetime default CURRENT_TIMESTAMP -- add the default date
 );
 
---DONE
+-- DONE
 CREATE TABLE COURSE(
   course_ID int PRIMARY KEY,
   course_name varchar(25) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE COURSE(
   date_created datetime default CURRENT_TIMESTAMP
 );
 
---DONE
+-- DONE
 CREATE TABLE ACADEMIC_TERM(
   term_ID int PRIMARY KEY,
   term_name varchar(255) NOT NULL
@@ -36,8 +36,8 @@ CREATE TABLE STUDY_PROGRAM(
   prog_ID int PRIMARY KEY,
   prog_name varchar(255) NOT NULL,
   date_created datetime default CURRENT_TIMESTAMP,
-  dep_ID int, --foreign
-  FOREIGN KEY dep_ID REFERENCES DEPARTMENT(dep_ID)
+  dep_ID int, -- foreign
+  FOREIGN KEY (dep_ID) REFERENCES DEPARTMENT(dep_ID)
 );
 
 -- DONE
@@ -46,17 +46,17 @@ CREATE TABLE STUDENT_OUTCOME(
   outc_name varchar(255) NOT NULL,
   outc_description varchar(255),
   date_created datetime default CURRENT_TIMESTAMP,
-  prog_ID int, --foreign
+  prog_ID int, -- foreign
   FOREIGN KEY (prog_ID) REFERENCES STUDY_PROGRAM(prog_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- DONE
-CREATE TABLE EVALUATION RUBRIC (
+CREATE TABLE EVALUATION_RUBRIC(
   rubric_ID int PRIMARY KEY,
   rubric_name varchar(255) NOT NULL,
   rubric_description varchar(255),
-  outc_ID int, --foreign key
-  FOREIGN KEY outc_ID REFERENCES STUDENT_OUTCOME(outc_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  outc_ID int, -- foreign key
+  FOREIGN KEY (outc_ID) REFERENCES STUDENT_OUTCOME(outc_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- DONE
@@ -64,30 +64,30 @@ CREATE TABLE PERF_CRITERIA (
   perC_ID int PRIMARY KEY,
   perC_Desk varchar(255), -- Need to confirm data type
   perC_order int,         -- Need to confirm data type
-  outc_ID int, --foreign
-  FOREIGN KEY outc_ID REFERENCES STUDENT_OUTCOME(outc_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  outc_ID int, -- foreign
+  FOREIGN KEY (outc_ID) REFERENCES STUDENT_OUTCOME(outc_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
---DONE
+-- DONE
 CREATE TABLE PERFORMANCE_RUBRIC(
   rubric_ID int PRIMARY KEY,
-  perC_ID int, --foreign
-  FOREIGN KEY perC_ID REFERENCES PERF_CRITERIA(perC_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  perC_ID int, -- foreign
+  FOREIGN KEY (perC_ID) REFERENCES PERF_CRITERIA(perC_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- DONE
 CREATE TABLE ASSESSMENT(
   assessment_ID int PRIMARY KEY,
-  course_ID int, --foreing
-  term_ID int NOT NULL, --Dont know so well
-  user_ID int, --Foreign
-  rubric_ID int, --Foreign
-  FOREIGN KEY user_ID REFERENCES USER(user_ID) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY course_ID REFERENCES COURSE(course_ID) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY rubric_ID REFERENCES PERFORMANCE_RUBRIC(rubric_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  course_ID int, -- foreing
+  term_ID int NOT NULL, -- Dont know so well
+  user_ID int, -- Foreign
+  rubric_ID int, -- Foreign
+  FOREIGN KEY (user_ID) REFERENCES USER(user_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (course_ID) REFERENCES COURSE(course_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (rubric_ID) REFERENCES PERFORMANCE_RUBRIC(rubric_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
---DONE
+-- DONE
 CREATE TABLE REPORTS(
   report_ID int PRIMARY KEY,
   grade_A int,
@@ -99,8 +99,8 @@ CREATE TABLE REPORTS(
   evaluation_comments varchar(255),
   reflexion_comments varchar(255),
   actions_comments varchar(255),
-  assessment_ID int, --foreign
-  FOREIGN KEY assessment_ID REFERENCES ASSESSMENT(assessment_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  assessment_ID int, -- foreign
+  FOREIGN KEY (assessment_ID) REFERENCES ASSESSMENT(assessment_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- DONE
@@ -111,27 +111,27 @@ CREATE TABLE STUDENT_PERFORMANCE(
   pc_3 varchar(255),  -- Need to confirm data type
   pc_4 varchar(255),  -- Need to confirm data type
   pc_5 varchar(255),  -- Need to confirm data type
-  assessment_ID int, --foreign
-  FOREIGN KEY assessment_ID REFERENCES ASSESSMENT(assessment_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  assessment_ID int, -- foreign
+  FOREIGN KEY (assessment_ID) REFERENCES ASSESSMENT(assessment_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- DONE
 CREATE TABLE USER_DEP (
-  user_ID int, --Foreign
-  dep_ID int, --Foreign
-  FOREIGN KEY user_ID REFERENCES USER(user_ID) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY dep_ID REFERENCES DEPARTMENT(dep_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  user_ID int, -- Foreign
+  dep_ID int, -- Foreign
+  FOREIGN KEY (user_ID) REFERENCES USER(user_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (dep_ID) REFERENCES DEPARTMENT(dep_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
---DONE
+-- DONE
 CREATE TABLE PROG_COURSE(
   course_ID int,
   prog_ID int,
-  FOREIGN KEY course_ID REFERENCES COURSE(course_ID) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY prog_ID REFERENCES STUDY_PROGRAM(prog_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (course_ID) REFERENCES COURSE(course_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (prog_ID) REFERENCES STUDY_PROGRAM(prog_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
---DONE
+-- DONE
 CREATE TABLE OUTCOME_COURSE(
   course_ID int,
   outc_ID int,
@@ -141,12 +141,12 @@ CREATE TABLE OUTCOME_COURSE(
 
 CREATE TABLE PROFILE(
   profile_ID int PRIMARY KEY,
-  profile_Name varchar(255),
+  profile_Name varchar(255)
 );
 
 CREATE TABLE USER_PROFILES(
-  user_ID varchar(255),
-  profile_ID varchar(255),
+  user_ID int,			-- changed from var(255) to int, reason: because the variables have to be the same format if you want them to be a foreing key
+  profile_ID int,		-- changed from var(255) to int, reason: because the variables have to be the same format if you want them to be a foreing key
   FOREIGN KEY (user_ID) REFERENCES USER(user_ID) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (profile_ID) REFERENCES PROFILE(profile_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
