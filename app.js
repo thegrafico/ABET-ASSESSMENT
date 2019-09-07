@@ -7,6 +7,7 @@ var hbs = require("hbs");
 
 var indexRouter = require('./routes/index');
 
+//==================================ROUTES====================================
 // ===== Evaluation Section =====
 var evaluationRouter = require('./routes/evaluations/evaluation');
 var createEvaluation = require('./routes/evaluations/createEvaluation');
@@ -16,7 +17,7 @@ var editEvaluation   = require('./routes/evaluations/editEvaluation');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerms/schoolTerm');
 var editSchoolTerm   = require('./routes/schoolTerms/editSchoolTerm');
-var deleteSchoolTerm = require('./routes/schoolTerms/deleteSchoolTerm');
+var deleteSchoolTerm = require('./routes/schoolTerms/deleteSchoolterm');
 var createSchoolTerm = require('./routes/schoolTerms/createSchoolTerm');
 
 // ===== Departments Section =====
@@ -59,6 +60,7 @@ var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
 var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
 var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
 var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
+//==================================ROUTES====================================
 
 var app = express();
 
