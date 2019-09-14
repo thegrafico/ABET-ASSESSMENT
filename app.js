@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs = require("hbs");
 var indexRouter = require('./routes/index');
+var db          = require("./helpers/mysqlConnection").mysql_pool; //pool connection
 
 // ===== Evaluation Section =====
 var evaluationRouter = require('./routes/evaluations/evaluation');
