@@ -6,6 +6,19 @@
       <div class="col-2 align-self-center text-right"><strong>Inter ID</strong></div>
       <div class="col-8"><input class="form-control" type="text" placeholder="User Inter ID"></div>
   </div>
+    <div class="row my-4">
+      <div class="col-2 align-self-center text-right"><strong>Profile</strong></div>
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Select
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      {{#each profile}}
+      <a class="dropdown-item" href="#">{{profile_Name}}</a>
+      {{/each}}
+    </div>
+  </div>
+</div>
   <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
       <div class="col-8"><input class="form-control" type="text" placeholder="User Name"></div>
