@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
   db.getConnection (function (err, connection){
 
     let userList = `Select *
-                    From USER`
+                    From USER natural join USER_PROFILES natural join PROFILE`
 
     connection.query (userList,function (err,results,fields){
 
