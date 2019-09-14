@@ -23,4 +23,24 @@ router.get('/', function(req, res, next) {
 
 });
 
+router.post ('/', function (req, res){
+  var parms = { title: 'ABET Assessment' };
+
+  console.log(req.body);
+
+  db.getConnection (function (err, connection){
+
+    let userList = `Select *
+                    From PROFILE`
+
+    connection.query (userList,function (err,results,fields){
+
+      parms.profile = results;
+
+      res.render('users/createUsers', parms);
+    })
+    connection.release();
+  })
+
+});
 module.exports = router;
