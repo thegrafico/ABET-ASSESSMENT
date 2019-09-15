@@ -1,6 +1,7 @@
 <div class="container-fluid">
   <h2>Users</h2>
   <hr class="my-4">
+  <form action="/users" method="POST">
   <a href="createUsers" class="btn btn-success" role="button">Create New</a>
   <hr class="my-1">
   <div class="row">
@@ -25,7 +26,7 @@
       <div class="col">{{this.email}}</div>
       <div class="col">{{this.phone_number}}</div>
       <div class="col">{{this.date_created}}</div>
-      <div class="col"><a href="user_edit.html" type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</a> <a href="user_delete.html" type="button" class="btn btn-danger">Delete</a></div>
+      <div class="col"><a href="editUsers" type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</a> <button href="deleteUsers" type="submit" class="btn btn-danger" name="deleteButton" value={{this.user_ID}}>Delete</button></div>
   </div>
   {{/each}}
   <hr class="my-1">
