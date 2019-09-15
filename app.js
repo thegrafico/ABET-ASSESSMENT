@@ -59,6 +59,13 @@ var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
 var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
 var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
 
+// ===== Profiles Section =====
+var profilesRouter = require('./routes/profiles/profiles');
+var createProfile  = require('./routes/profiles/createProfiles');
+var deleteProfile  = require('./routes/profiles/deleteProfiles');
+var editProfile    = require('./routes/profiles/editProfiles');
+
+
 var app = express();
 
 var port = 3000;
@@ -129,6 +136,12 @@ app.use('/createPerfCrit', createPerfCrit);
 app.use('/deletePerfCrit', deletePerfCrit);
 app.use('/detailPerfCrit', detailPerfCrit);
 app.use('/editPerfCrit', editPerfCrit);
+
+// ===== Profile Section =====
+app.use('/profiles', profilesRouter);
+app.use('/createProfile', createProfile);
+app.use('/deleteProfile', deleteProfile);
+app.use('/editProfile', editProfile);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
