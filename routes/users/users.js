@@ -26,7 +26,42 @@ router.get('/', function(req, res, next) {
   router.post ('/', function (req, res){
     var parms = { title: 'ABET Assessment' };
 
-    if (req.body.deleteButton != undefined){
+    if (req.body.editButton != undefined){
+      db.getConnection (function (err, connection){
+
+        let getUser = `Select *
+                      FROM USER
+                      where user_ID= ${req.body.editButton}`
+
+          connection.query (getUser,function (err,results,fields){
+
+            console.log(results);
+
+            parms.interID = results[0].inter_ID;
+            parms.fName = results[0].first_name;
+            parms.lName = results[0].last_name;
+            parms.email = results[0].email;
+            parms.pNumber = results[0].phone_number;
+
+            res.render('users/editUsers', parms);
+
+          })
+
+
+
+        // let editUser = `update
+        //                 set inter_ID= ${interID}, first_name= ${fName},
+        //                 last_name= ${last_name}, email= ${email}, phone_number= ${pNumber}
+        //                 where user_ID= ${userID}`
+
+          // connection.query (editUser,function (err,results,fields){
+          // })
+
+
+        connection.release();
+      })
+    }
+    else if (req.body.deleteButton != undefined){
 
       db.getConnection (function (err, connection){
 
