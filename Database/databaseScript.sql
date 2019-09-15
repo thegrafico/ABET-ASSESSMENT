@@ -1,5 +1,5 @@
 CREATE TABLE DEPARTMENT (
-  dep_ID int PRIMARY KEY,
+  dep_ID int PRIMARY KEY auto_increment,
   dep_name varchar(255) NOT NULL,
   dep_description varchar(255),
   date_created datetime default CURRENT_TIMESTAMP -- add the default date
@@ -7,7 +7,7 @@ CREATE TABLE DEPARTMENT (
 
 -- DONE
 CREATE TABLE COURSE(
-  course_ID int PRIMARY KEY,
+  course_ID int PRIMARY KEY auto_increment,
   course_name varchar(25) NOT NULL,
   course_number varchar(255) NOT NULL, -- Need to confirm data type
   course_description varchar(255),
@@ -16,14 +16,14 @@ CREATE TABLE COURSE(
 
 -- DONE
 CREATE TABLE ACADEMIC_TERM(
-  term_ID int PRIMARY KEY,
+  term_ID int PRIMARY KEY auto_increment,
   term_name varchar(255) NOT NULL
 );
 
 -- dont know Inter_ID (DONE)
 CREATE TABLE USER (
-  user_ID int PRIMARY KEY,
-  inter_ID int,
+  user_ID int PRIMARY KEY auto_increment,
+  inter_ID varchar(255),
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NOT NULL,
   email varchar(255),
@@ -33,7 +33,7 @@ CREATE TABLE USER (
 
 -- DONE
 CREATE TABLE STUDY_PROGRAM(
-  prog_ID int PRIMARY KEY,
+  prog_ID int PRIMARY KEY auto_increment,
   prog_name varchar(255) NOT NULL,
   date_created datetime default CURRENT_TIMESTAMP,
   dep_ID int, -- foreign
@@ -42,7 +42,7 @@ CREATE TABLE STUDY_PROGRAM(
 
 -- DONE
 CREATE TABLE STUDENT_OUTCOME(
-  outc_ID int PRIMARY KEY,
+  outc_ID int PRIMARY KEY auto_increment,
   outc_name varchar(255) NOT NULL,
   outc_description varchar(255),
   date_created datetime default CURRENT_TIMESTAMP,
@@ -52,7 +52,7 @@ CREATE TABLE STUDENT_OUTCOME(
 
 -- DONE
 CREATE TABLE EVALUATION_RUBRIC(
-  rubric_ID int PRIMARY KEY,
+  rubric_ID int PRIMARY KEY auto_increment,
   rubric_name varchar(255) NOT NULL,
   rubric_description varchar(255),
   outc_ID int, -- foreign key
@@ -61,7 +61,7 @@ CREATE TABLE EVALUATION_RUBRIC(
 
 -- DONE
 CREATE TABLE PERF_CRITERIA (
-  perC_ID int PRIMARY KEY,
+  perC_ID int PRIMARY KEY auto_increment, 
   perC_Desk varchar(255), -- Need to confirm data type
   perC_order int,         -- Need to confirm data type
   outc_ID int, -- foreign
@@ -70,14 +70,14 @@ CREATE TABLE PERF_CRITERIA (
 
 -- DONE
 CREATE TABLE PERFORMANCE_RUBRIC(
-  rubric_ID int PRIMARY KEY,
+  rubric_ID int PRIMARY KEY auto_increment,
   perC_ID int, -- foreign
   FOREIGN KEY (perC_ID) REFERENCES PERF_CRITERIA(perC_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- DONE
 CREATE TABLE ASSESSMENT(
-  assessment_ID int PRIMARY KEY,
+  assessment_ID int PRIMARY KEY auto_increment,
   course_ID int, -- foreing
   term_ID int NOT NULL, -- Dont know so well
   user_ID int, -- Foreign
@@ -89,7 +89,7 @@ CREATE TABLE ASSESSMENT(
 
 -- DONE
 CREATE TABLE REPORTS(
-  report_ID int PRIMARY KEY,
+  report_ID int PRIMARY KEY auto_increment,
   grade_A int,
   grade_B int,
   grade_C int,
@@ -105,7 +105,7 @@ CREATE TABLE REPORTS(
 
 -- DONE
 CREATE TABLE STUDENT_PERFORMANCE(
-  student_ID int PRIMARY KEY,
+  student_ID int PRIMARY KEY auto_increment,
   pc_1 varchar(255),  -- Need to confirm data type
   pc_2 varchar(255),  -- Need to confirm data type
   pc_3 varchar(255),  -- Need to confirm data type
@@ -140,7 +140,7 @@ CREATE TABLE OUTCOME_COURSE(
 );
 
 CREATE TABLE PROFILE(
-  profile_ID int PRIMARY KEY,
+  profile_ID int PRIMARY KEY auto_increment,
   profile_Name varchar(255)
 );
 
