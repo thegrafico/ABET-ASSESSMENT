@@ -20,8 +20,6 @@ router.get('/', async function(req, res, next) {
       res.render('error', { title: 'Error', message: 'Authorization error', error: { status: 'Missing code parameter' } });
     }
   });
-
-
 /* GET /authorize/signout */
 router.get('/signout', function(req, res, next) {
     authHelper.clearCookies(res);

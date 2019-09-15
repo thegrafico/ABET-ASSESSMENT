@@ -9,6 +9,12 @@ var hbs = require("hbs");
 var indexRouter = require('./routes/index');
 var db = require("./helpers/mysqlConnection").mysql_pool; //pool connection
 
+// Verify connection to db
+db.query('SELECT 1', function (error, results, fields) {
+  if (error) throw error;
+  console.log('Connected to the database');
+});
+
 //==================================ROUTES====================================
 // ===== Evaluation Section =====
 var evaluationRouter = require('./routes/evaluations/evaluation');
@@ -67,7 +73,6 @@ var editPerfCrit = require('./routes/performanceCriteria/editPerfCrit');
 var authorize = require('./routes/authorize');
 
 //==================================ROUTES====================================
-
 var app = express();
 
 const port = process.env.PORT || 3000;

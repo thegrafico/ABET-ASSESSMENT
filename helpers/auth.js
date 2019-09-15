@@ -45,6 +45,10 @@ function saveValuesToCookie(token, res) {
   res.cookie('graph_access_token', token.token.access_token, {maxAge: 3600000, httpOnly: true});
   // Save the user's name in a cookie
   res.cookie('graph_user_name', user.name, {maxAge: 3600000, httpOnly: true});
+
+  // Save the user's email in the cookie
+  res.cookie('graph_user_email', user.preferred_username, {maxAge: 3600000, httpOnly: true});
+
   // Save the refresh token in a cookie
   res.cookie('graph_refresh_token', token.token.refresh_token, {maxAge: 7200000, httpOnly: true});
   // Save the token expiration time in a cookie
@@ -57,6 +61,7 @@ function clearCookies(res) {
   res.clearCookie('graph_user_name', {maxAge: 3600000, httpOnly: true});
   res.clearCookie('graph_refresh_token', {maxAge: 7200000, httpOnly: true});
   res.clearCookie('graph_token_expires', {maxAge: 3600000, httpOnly: true});
+  res.clearCookie('graph_user_email', {maxAge: 3600000, httpOnly: true})
 }
 
 async function getAccessToken(cookies, res) {
