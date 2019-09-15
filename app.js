@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 
 var createError = require('http-errors');
@@ -8,19 +7,19 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs = require("hbs");
 var indexRouter = require('./routes/index');
-var db          = require("./helpers/mysqlConnection").mysql_pool; //pool connection
+var db = require("./helpers/mysqlConnection").mysql_pool; //pool connection
 
 //==================================ROUTES====================================
 // ===== Evaluation Section =====
 var evaluationRouter = require('./routes/evaluations/evaluation');
 var createEvaluation = require('./routes/evaluations/createEvaluation');
 var deleteEvaluation = require('./routes/evaluations/deleteEvaluation');
-var editEvaluation   = require('./routes/evaluations/editEvaluation');
+var editEvaluation = require('./routes/evaluations/editEvaluation');
 
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerms/schoolTerm');
-var editSchoolTerm   = require('./routes/schoolTerms/editSchoolTerm');
-var deleteSchoolTerm = require('./routes/schoolTerms/deleteSchoolterm');
+var editSchoolTerm = require('./routes/schoolTerms/editSchoolTerm');
+var deleteSchoolTerm = require('./routes/schoolTerms/deleteSchoolTerm');
 var createSchoolTerm = require('./routes/schoolTerms/createSchoolTerm');
 
 // ===== Departments Section =====
@@ -28,41 +27,41 @@ var departmentRouter = require('./routes/departments/department');
 var createDepartment = require('./routes/departments/createDepartment');
 var deleteDepartment = require('./routes/departments/deleteDepartment');
 var detailDepartment = require('./routes/departments/detailDepartment');
-var editDepartment   = require('./routes/departments/editDepartment');
+var editDepartment = require('./routes/departments/editDepartment');
 
 // ===== Study Programs Section =====
 var studyProgramsRouter = require('./routes/studyPrograms/studyPrograms');
 var createStudyPrograms = require('./routes/studyPrograms/createStudyPrograms');
 var deleteStudyPrograms = require('./routes/studyPrograms/deleteStudyPrograms');
 var detailStudyPrograms = require('./routes/studyPrograms/detailStudyPrograms');
-var editStudyPrograms   = require('./routes/studyPrograms/editStudyPrograms');
+var editStudyPrograms = require('./routes/studyPrograms/editStudyPrograms');
 
 // ===== Users Section =====
 var usersRouter = require('./routes/users/users');
 var createUsers = require('./routes/users/createUsers');
 var deleteUsers = require('./routes/users/deleteUsers');
-var editUsers   = require('./routes/users/editUsers');
+var editUsers = require('./routes/users/editUsers');
 
 // ===== Outcomes Section =====
 var outcomesRouter = require('./routes/outcomes/outcomes');
 var createOutcomes = require('./routes/outcomes/createOutcomes');
 var deleteOutcomes = require('./routes/outcomes/deleteOutcomes');
 var detailOutcomes = require('./routes/outcomes/detailOutcomes');
-var editOutcomes   = require('./routes/outcomes/editOutcomes');
+var editOutcomes = require('./routes/outcomes/editOutcomes');
 
 // ===== Courses Section =====
-var coursesRouter  = require('./routes/courses/courses');
-var createCourses  = require('./routes/courses/createCourses');
-var deleteCourses  = require('./routes/courses/deleteCourses');
+var coursesRouter = require('./routes/courses/courses');
+var createCourses = require('./routes/courses/createCourses');
+var deleteCourses = require('./routes/courses/deleteCourses');
 var detailsCourses = require('./routes/courses/detailsCourses');
-var editCourses    = require('./routes/courses/editCourses');
+var editCourses = require('./routes/courses/editCourses');
 
 // ===== Performance Criteria Section =====
 var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
 var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
 var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
 var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
-var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
+var editPerfCrit = require('./routes/performanceCriteria/editPerfCrit');
 
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
@@ -81,7 +80,9 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -131,7 +132,7 @@ app.use('/editOutcomes', editOutcomes);
 
 // ===== Courses Section =====
 app.use('/courses', coursesRouter);
-app.use('/createCourses',createCourses);
+app.use('/createCourses', createCourses);
 app.use('/deleteCourses', deleteCourses);
 app.use('/detailsCourses', detailsCourses);
 app.use('/editCourses', editCourses);
@@ -144,12 +145,12 @@ app.use('/detailPerfCrit', detailPerfCrit);
 app.use('/editPerfCrit', editPerfCrit);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -159,6 +160,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(port, function(){
+app.listen(port, function () {
   console.log(`Server ${port} is online!`);
 });

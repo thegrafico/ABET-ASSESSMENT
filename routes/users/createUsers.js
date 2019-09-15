@@ -51,7 +51,7 @@ router.post ('/', function (req, res){
 
           let findProfile = `Select profile_ID
                             From PROFILE
-                            WHERE profile_Name = '${profile_Name}'`
+                            WHERE profile_Name = '${profile_Name}'`;
 
           connection.query (findProfile,function (err,results,fields){
 
@@ -70,13 +70,13 @@ router.post ('/', function (req, res){
                 parms.profile = results;
 
                 res.render('users/createUsers', parms);
-              })
-            })
-          })
-        })
-      })
+              });
+            });
+          });
+        });
+      });
     connection.release();
-  })
+  });
 
 });
 module.exports = router;
