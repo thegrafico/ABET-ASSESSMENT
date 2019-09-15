@@ -1,3 +1,6 @@
+
+require('dotenv').config();
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -60,6 +63,10 @@ var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
 var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
 var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
 var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
+
+// ====== AUTHORIZE ROUTE ====
+var authorize = require('./routes/authorize');
+
 //==================================ROUTES====================================
 
 var app = express();
@@ -78,7 +85,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Index route & authorize
 app.use('/', indexRouter);
+app.use('/authorize', authorize);
+
 
 // ===== Evaluation Section =====
 app.use('/evaluation', evaluationRouter);
