@@ -42,22 +42,34 @@ router.get('/', function(req, res, next) {
             parms.lName = results[0].last_name;
             parms.email = results[0].email;
             parms.pNumber = results[0].phone_number;
+            parms.userID = req.body.editButton;
+            console.log(req.body.editButton);
 
             res.render('users/editUsers', parms);
 
           })
+        connection.release();
+      })
+    }
+    else if (req.body.finalEditButton != undefined){
 
+      db.getConnection (function (err, connection){
 
+        var interID = req.body.interID;
+        var fName   = req.body.fName;
+        var lName   = req.body.lName;
+        var email   = req.body.email;
+        var pNumber = req.body.pNumber;
+        console.log(req.body.finalEditButton);
 
-        // let editUser = `update
-        //                 set inter_ID= ${interID}, first_name= ${fName},
-        //                 last_name= ${last_name}, email= ${email}, phone_number= ${pNumber}
-        //                 where user_ID= ${userID}`
+        let updateUser = `update USER
+                         set inter_ID= '${interID}', first_name= '${fName}',
+                         last_name= '${lName}', email= '${email}', phone_number= '${pNumber}'
+                         where user_ID= ${req.body.finalEditButton}`
 
-          // connection.query (editUser,function (err,results,fields){
-          // })
-
-
+        connection.query (updateUser,function (err,results,fields){
+        })
+        res.redirect('/users');
         connection.release();
       })
     }
