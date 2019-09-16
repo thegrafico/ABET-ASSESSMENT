@@ -5,7 +5,7 @@
       <div class="col-sm-12">
         <!-- Create New Button -->
         <!-- Trigger/Open The Modal -->
-        <button class="btn btn-success" type="button" name="button"><a id="myCreateBtn" href="createSchoolTerm">Create New</a></button>
+        <button class="btn btn-success" type="button" name="button"><a id="myCreateBtn" href="{{create}}">Create New</a></button>
         <!-- Table -->
         <table class="table">
           <thead>
@@ -22,8 +22,8 @@
               <td>{{startName}}</td>
               <td>{{endName}}</td>
               <td>
-                <button class="btn btn-danger" type="button" name="button"><a id="editBtn" href="editSchoolTerm">Edit</a></button>
-                <button class="btn btn-warning" type="button" name="button"><a id="deleteBtn" href="deleteSchoolTerm">Delete</a></button>
+                <button class="btn btn-danger" type="button" name="button"><a id="editBtn" href="{{edit}}">Edit</a></button>
+                <button class="btn btn-warning" type="button" name="button"><a id="deleteBtn" href="{{delete}}">Delete</a></button>
               </td>
             </tr>
           </tbody>

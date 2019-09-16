@@ -3,16 +3,18 @@ var router = express.Router();
 var db = require("../../helpers/mysqlConnection").mysql_pool;
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
 
-  var parms = { title: 'ABET Assessment' };
+  var parms = {
+    title: 'ABET Assessment'
+  };
 
-  db.getConnection (function (err, connection){
+  db.getConnection(function (err, connection) {
 
     let userList = `Select *
                     From USER natural join USER_PROFILES natural join PROFILE`
 
-    connection.query (userList,function (err,results,fields){
+    connection.query(userList, function (err, results, fields) {
 
       // console.log(results);
       parms.results = results;
@@ -23,18 +25,20 @@ router.get('/', function(req, res, next) {
     connection.release();
   })
 
-  router.post ('/', function (req, res){
-    var parms = { title: 'ABET Assessment' };
+  router.post('/', function (req, res) {
+    var parms = {
+      title: 'ABET Assessment'
+    };
 
-    if (req.body.deleteButton != undefined){
+    if (req.body.deleteButton != undefined) {
 
-      db.getConnection (function (err, connection){
+      db.getConnection(function (err, connection) {
 
         let findUser = `Select *
                         From USER
-                        where user_ID = ${req.body.deleteButton}`
+                        where user_ID = ${req.body.deleteButton}`;
 
-        connection.query (findUser,function (err,results,fields){
+        connection.query(findUser, function (err, results, fields) {
 
           console.log(results);
 
@@ -50,22 +54,20 @@ router.get('/', function(req, res, next) {
         })
         connection.release();
       })
-    }
-    else if(req.body.finalDeletebutton != undefined){
+    } else if (req.body.finalDeletebutton != undefined) {
 
-      db.getConnection (function (err, connection){
+      db.getConnection(function (err, connection) {
 
         let deleteUser = `DELETE
                           FROM USER
-                          WHERE user_ID = ${req.body.finalDeletebutton};`
+                          WHERE user_ID = ${req.body.finalDeletebutton};`;
 
-          connection.query (deleteUser,function (err,results,fields){
-          })
+        connection.query(deleteUser, function (err, results, fields) {})
+
         connection.release();
         res.redirect('/users');
       })
-    }
-    else {
+    } else {
       res.redirect('/users');
     }
   })

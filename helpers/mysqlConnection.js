@@ -41,3 +41,6 @@ config = {
 //parte de node js que deja que esta funcion
 //se pueda utilizar en otro codigo
 module.exports = config;
+
+
+// GRANT ALL ON Assesment.* TO raul@'192.168.42.226' IDENTIFIED BY 'Lana022107RN';
