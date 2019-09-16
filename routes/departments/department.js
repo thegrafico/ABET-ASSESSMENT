@@ -60,7 +60,7 @@ router.post('/' + routes_names[0], function(req, res, next) {
 });
 
 /* DELETE home page. */
-router.get('/' + routes_names[1], function(req, res, next) {
+router.get('/:id/' + routes_names[1], function(req, res, next) {
   res.render('departments/deleteDepartment', parms);
 });
 
@@ -73,11 +73,26 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
 
   db.getConnection (function (err, connection){
     connection.query (findDep,function (err,results,fields){
+      parms.dep_ID = results[0].dep_ID;
       parms.depName = results[0].dep_name;
       parms.depDesc = results[0].dep_description;
 
       res.render('departments/editDepartment', parms);
     });
+    connection.release();
+  });
+});
+
+router.post('/:id/' + routes_names[2], function(req, res, next) {
+
+  let updateDep = `update DEPARTMENT
+                   set dep_name= '${req.body.depName}', dep_description= '${req.body.depDesc}'
+                   where dep_ID= ${req.params.id}`
+
+  db.getConnection (function (err, connection){
+    connection.query (updateDep,function (err,results,fields){
+    });
+    res.redirect('/department');
     connection.release();
   });
 });
