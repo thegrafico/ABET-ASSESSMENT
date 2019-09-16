@@ -50,7 +50,7 @@ router.post('/' + routes_names[0], function(req, res, next) {
   db.getConnection (function (err, connection){
 
     let addDep = `insert into DEPARTMENT (dep_name, dep_description)
-    values( '${depName}', '${depDesc}');`
+                  values( '${depName}', '${depDesc}');`
 
     connection.query (addDep,function (err,results,fields){
     res.render('departments/createDepartment', parms);
@@ -65,8 +65,21 @@ router.get('/' + routes_names[1], function(req, res, next) {
 });
 
 /* EDIT home page. */
-router.get('/:id' + routes_names[2], function(req, res, next) {
-  res.render('departments/editDepartment', parms);
+router.get('/:id/' + routes_names[2], function(req, res, next) {
+
+  let findDep = `Select *
+                From DEPARTMENT
+                where dep_ID = ${req.params.id};`
+
+  db.getConnection (function (err, connection){
+    connection.query (findDep,function (err,results,fields){
+      parms.depName = results[0].dep_name;
+      parms.depDesc = results[0].dep_description;
+
+      res.render('departments/editDepartment', parms);
+    });
+    connection.release();
+  });
 });
 
 /* DETAILS home page. */
