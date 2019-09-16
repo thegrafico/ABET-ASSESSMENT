@@ -21,10 +21,10 @@ var createSchoolTerm = require('./routes/schoolTerms/createSchoolTerm');
 
 // ===== Departments Section =====
 var departmentRouter = require('./routes/departments/department');
-var createDepartment = require('./routes/departments/createDepartment');
-var deleteDepartment = require('./routes/departments/deleteDepartment');
-var detailDepartment = require('./routes/departments/detailDepartment');
-var editDepartment   = require('./routes/departments/editDepartment');
+// var createDepartment = require('./routes/departments/createDepartment');
+// var deleteDepartment = require('./routes/departments/deleteDepartment');
+// var detailDepartment = require('./routes/departments/detailDepartment');
+// var editDepartment   = require('./routes/departments/editDepartment');
 
 // ===== Study Programs Section =====
 var studyProgramsRouter = require('./routes/studyPrograms/studyPrograms');
@@ -36,8 +36,8 @@ var editStudyPrograms   = require('./routes/studyPrograms/editStudyPrograms');
 // ===== Users Section =====
 var usersRouter = require('./routes/users/users');
 var createUsers = require('./routes/users/createUsers');
-var deleteUsers = require('./routes/users/deleteUsers');
-var editUsers   = require('./routes/users/editUsers');
+// var deleteUsers = require('./routes/users/deleteUsers');
+// var editUsers   = require('./routes/users/editUsers');
 
 // ===== Outcomes Section =====
 var outcomesRouter = require('./routes/outcomes/outcomes');
@@ -92,10 +92,10 @@ app.use('/createSchoolTerm', createSchoolTerm);
 
 // ===== Departments Section =====
 app.use('/department', departmentRouter);
-app.use('/createDepartment', createDepartment);
-app.use('/deleteDepartment', deleteDepartment);
-app.use('/detailDepartment', detailDepartment);
-app.use('/editDepartment', editDepartment);
+// app.use('/createDepartment', createDepartment);
+// app.use('/deleteDepartment', deleteDepartment);
+// app.use('/detailDepartment', detailDepartment);
+// app.use('/editDepartment', editDepartment);
 
 // ===== Study Programs Section =====
 app.use('/studyPrograms', studyProgramsRouter);
@@ -106,9 +106,9 @@ app.use('/editStudyPrograms', editStudyPrograms);
 
 // ===== Users Section =====
 app.use('/users', usersRouter);
-app.use('/createUsers', createUsers);
-app.use('/deleteUsers', deleteUsers);
-app.use('/editUsers', editUsers);
+// app.use('/createUsers', createUsers);
+// app.use('/deleteUsers', deleteUsers);
+// app.use('/editUsers', editUsers);
 
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
