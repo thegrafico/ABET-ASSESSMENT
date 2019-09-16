@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+// var queries = require('../helpers/queries');
 
 let base_url = '/evaluation/' 
 let routes_names = ['create', 'delete', 'edit']
@@ -24,6 +25,7 @@ router.get('/', function(req, res, next) {
 
 /* Create home page. */
 router.get('/' + routes_names[0], function(req, res, next) {
+  
   res.render('evaluations/createEvaluation', parms);
 });
 
