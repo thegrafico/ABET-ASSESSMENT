@@ -18,7 +18,9 @@
       <div class="col">{{this.dep_ID}}</div>
       <div class="col">{{this.dep_description}}</div>
       <div class="col">{{this.date_created}}</div>
-      <div class="col"><button type="submit" class="btn btn-warning" style="color:#FFFFFF" href="{{edit}}">Edit</button> <button type="submit" class="btn btn-danger" href="{{delete}}">Delete</button></div>
+      <div class="col">
+      <a role= "button" class="btn btn-warning" style="color:#FFFFFF" href="/department/{{this.dep_ID}}/edit">Edit</a>
+      <button type="submit" class="btn btn-danger" href="/department/{{this.dep_ID}}/delete">Delete</button></div>
   </div>
   {{/each}}
   <hr class="mt-5 mb-1">
