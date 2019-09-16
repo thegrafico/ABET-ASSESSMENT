@@ -79,6 +79,20 @@ router.get('/:id/' + routes_names[1], function(req, res, next) {
   });
 });
 
+router.post('/:id/' + routes_names[2], function(req, res, next) {
+
+  let deleteDep = `DELETE
+                  FROM DEPARTMENT
+                  WHERE dep_ID = ${req.params.id};`
+
+  db.getConnection (function (err, connection){
+    connection.query (deleteDep,function (err,results,fields){
+    });
+    res.redirect('/department');
+    connection.release();
+  });
+});
+
 /* EDIT home page. */
 router.get('/:id/' + routes_names[2], function(req, res, next) {
 
@@ -106,20 +120,6 @@ router.post('/:id/' + routes_names[2], function(req, res, next) {
 
   db.getConnection (function (err, connection){
     connection.query (updateDep,function (err,results,fields){
-    });
-    res.redirect('/department');
-    connection.release();
-  });
-});
-
-router.post('/:id/' + routes_names[2], function(req, res, next) {
-
-  let deleteDep = `DELETE
-                  FROM USER
-                  WHERE user_ID = ${req.params.id};`
-
-  db.getConnection (function (err, connection){
-    connection.query (deleteDep,function (err,results,fields){
     });
     res.redirect('/department');
     connection.release();
