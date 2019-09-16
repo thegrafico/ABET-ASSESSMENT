@@ -96,6 +96,7 @@ app.use('/editStudyPrograms', editStudyPrograms);
 
 // ===== Users Section =====
 app.use('/users', usersRouter);
+app.use('/createUsers', createUsers);
 
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
