@@ -65,7 +65,7 @@ router.get('/' + routes_names[1], function(req, res, next) {
 });
 
 /* EDIT home page. */
-router.get('/' + routes_names[2], function(req, res, next) {
+router.get('/:id' + routes_names[2], function(req, res, next) {
   res.render('departments/editDepartment', parms);
 });
 

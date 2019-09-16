@@ -86,6 +86,7 @@ app.use('/createSchoolTerm', createSchoolTerm);
 
 // ===== Departments Section =====
 app.use('/department', departmentRouter);
+app.use('/department/:id', departmentRouter);
 
 // ===== Study Programs Section =====
 app.use('/studyPrograms', studyProgramsRouter);
