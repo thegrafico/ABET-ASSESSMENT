@@ -3,32 +3,32 @@
   <h4>Course</h4>
   <!-- Middle line -->
   <hr>
-  <form>
+    <form action="/createCourses" method="post">
       <div class="form-group">
           <div class = "row">
               <div class = "col-lg-2"><strong>Number</strong></div>
-              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Number" name="courseNumber" required></div>
+              <div class = "col-lg-10"><input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Number" name="courseNumber" required></div>
           </div>
 
           <div class = "row">
               <div class = "col-lg-2"><strong>Name</strong></div>
-              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Name" name="courseName" required></div>
+              <div class = "col-lg-10"><input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Name" name="courseName" required></div>
           </div>
           <div class = "row">
               <div class = "col-lg-2"><strong>Description</strong></div>
-              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Description" name="courseDesc"required></div>
+              <div class = "col-lg-10"><input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Description" name="courseDesc"required></div>
           </div>
           <div class = "row">
                   <div class = "col-lg-2"><strong>Study Program</strong></div>
-                  <select  type="text" name="studyprog" required>
+                  <select  type="text" name="prog_name" required>
                   {{#each studyprog}}
-                  <option class="dropdown-item" href="#">{{study_program}}</option>
+                  <option class="dropdown-item" href="#">{{prog_name}}</option>
                   {{/each}}
                 </select>
               </div>
           <div class = "row">
                   <div class = "col-lg-2"></div>
-                  <div class = "col-lg-10"><button type="button" class="btn btn-light">Save</button></div>
+                  <div class = "col-lg-10"><button type="submit" class="btn btn-light">Save</button></div>
           </div>
           <div class = "row">
                   <div class = "col-lg-2 link"><a href="courses">Back to List</a>
