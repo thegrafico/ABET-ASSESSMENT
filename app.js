@@ -56,41 +56,32 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ========================== USING ROUTES ==========================
 // Index route & authorize
 app.use('/', indexRouter);
 app.use('/authorize', authorize);
-
-
 // ===== Evaluation Section =====
 app.use('/evaluation', evaluationRouter);
-
 // ===== School Term Section =====
 app.use('/schoolTerm', schoolTermRouter);
-
-
 // ===== Departments Section =====
 app.use('/department', departmentRouter);
-
 // ===== Study Programs Section =====
 app.use('/studyPrograms', studyProgramsRouter);
-
-
 // ===== Users Section =====
 app.use('/users', usersRouter);
 app.use('/createUsers', createUsers);
 app.use('/deleteUsers', deleteUsers);
 app.use('/editUsers', editUsers);
-
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
-
-
 // ===== Courses Section =====
 app.use('/courses', coursesRouter);
-
-
 // ===== Performance Criteria Section =====
 app.use('/performanceCriteria', perfCritRouter);
+// ====================================================
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

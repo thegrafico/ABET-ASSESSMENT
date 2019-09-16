@@ -29,13 +29,13 @@ router.get('/create', function(req, res, next) {
 });
 
 
-/* GET delete page. */
+/* DELETE page. */
 router.get('/deleteCourses', function(req, res, next) {
   res.render('courses/deleteCourses', parms);
 });
 
 
-/* GET DetailsCourse page. */
+/* DetailsCourse page. */
 router.get('/detailsCourses', function(req, res, next) {
   res.render('courses/detailsCourses',parms);
 });
