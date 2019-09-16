@@ -2,7 +2,7 @@
   <h2>Departments</h2>
   <hr class="my-4">
   <form action="/department" method="POST">
-  <a href="createDepartment" class="btn btn-success" role="button">Create New</a>
+  <a href="{{create}}" class="btn btn-success" role="button">Create New</a>
   <hr class="my-2">
   <div class="row">
       <div class="col"><strong>Name</strong></div>
@@ -18,7 +18,7 @@
       <div class="col">{{this.dep_ID}}</div>
       <div class="col">{{this.dep_description}}</div>
       <div class="col">{{this.date_created}}</div>
-      <div class="col"><button type="submit" class="btn btn-warning" style="color:#FFFFFF" href="editDepartment">Edit</button> <button type="submit" class="btn btn-danger" href="deleteDepartment">Delete</button></div>
+      <div class="col"><button type="submit" class="btn btn-warning" style="color:#FFFFFF" href="{{edit}}">Edit</button> <button type="submit" class="btn btn-danger" href="{{delete}}">Delete</button></div>
   </div>
   {{/each}}
   <hr class="mt-5 mb-1">
