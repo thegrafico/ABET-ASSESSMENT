@@ -7,20 +7,24 @@
       <div class="form-group">
           <div class = "row">
               <div class = "col-lg-2"><strong>Number</strong></div>
-              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Number"></div>
+              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Number" name="courseNumber" required></div>
           </div>
 
           <div class = "row">
               <div class = "col-lg-2"><strong>Name</strong></div>
-              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Name"></div>
+              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Name" name="courseName" required></div>
           </div>
           <div class = "row">
               <div class = "col-lg-2"><strong>Description</strong></div>
-              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Description"></div>
+              <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Description" name="courseDesc"required></div>
           </div>
           <div class = "row">
                   <div class = "col-lg-2"><strong>Study Program</strong></div>
-                  <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Study Program"></div>
+                  <select  type="text" name="studyprog" required>
+                  {{#each studyprog}}
+                  <option class="dropdown-item" href="#">{{study_program}}</option>
+                  {{/each}}
+                </select>
               </div>
           <div class = "row">
                   <div class = "col-lg-2"></div>
