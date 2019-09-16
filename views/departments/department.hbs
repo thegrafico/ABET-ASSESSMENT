@@ -1,6 +1,7 @@
 <div class="container-fluid">
   <h2>Departments</h2>
   <hr class="my-4">
+  <form action="/department" method="POST">
   <a href="createDepartment" class="btn btn-success" role="button">Create New</a>
   <hr class="my-2">
   <div class="row">
@@ -11,13 +12,15 @@
       <div class="col"></div>
   </div>
   <hr class="my-1">
+  {{#each results}}
   <div class="row">
-      <div class="col">Engineering</div>
-      <div class="col">1</div>
-      <div class="col">Department of Engineering</div>
-      <div class="col">3/3/2019</div>
-      <div class="col"><button type="button" class="btn btn-warning" style="color:#FFFFFF"><a href="editDepartment">Edit</a></button> <button type="button" class="btn btn-danger"><a href="deleteDepartment">Delete</a></button></div>
+      <div class="col">{{this.dep_name}}</div>
+      <div class="col">{{this.dep_ID}}</div>
+      <div class="col">{{this.dep_description}}</div>
+      <div class="col">{{this.date_created}}</div>
+      <div class="col"><button type="submit" class="btn btn-warning" style="color:#FFFFFF" href="editDepartment">Edit</button> <button type="submit" class="btn btn-danger" href="deleteDepartment">Delete</button></div>
   </div>
+  {{/each}}
   <hr class="mt-5 mb-1">
   <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>
