@@ -16,22 +16,6 @@ routes_names.forEach(e=>{
 parms["title"] = 'ABET Assessment';
 
 
-
-
-let base_url = '/department/' 
-let routes_names = ['create', 'delete', 'edit', 'details']
-
-//Paramns to routes links
-let parms = {};
-
-//Populate parms
-routes_names.forEach(e=>{
-  parms[e] = base_url + e;
-});
-
-parms["title"] = 'ABET Assessment'; 
-
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
