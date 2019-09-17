@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var conn = require("../../helpers/mysqlConnection").mysql_pool;
-
 var queries = require('../../helpers/queries');
 
 var parms = {
@@ -35,6 +34,48 @@ router.get('/', function (req, res) {
     res.redirect('/');
   }
 });
+
+/*
+CREATE USER GET
+*/
+router.get('/createUsers', function(req, res, next) {
+
+    let userList = `Select * From PROFILE`;
+    
+    //Database query
+    conn.query (userList,function (err,results,fields){
+      parms.profile = results;
+
+      res.render('users/createUsers', parms);
+    })
+});
+
+/*
+CREATE USER ROUTE
+*/
+router.post('/createUsers', function (req, res) {
+  try {
+    //Get all user from the database (callback)
+    queries.insert_user(req.body, function(err, results){
+      
+      //TODO: redirect user to another page
+      if (err){
+        //HERE HAVE TO REDIRECT the user or send a error message 
+        throw err;
+      } 
+
+      console.log(results);
+      console.log("USER CREATED");
+      res.redirect('/users');
+    });
+  } catch (error) {
+    //TODO: send a error message to the user. 
+    console.log(error);
+    res.redirect('/');
+  }
+});
+
+
 /*
 EDIT USER ROUTE
 */
@@ -55,6 +96,7 @@ router.get('/:id/edit', function(req, res){
     res.render('users/editUsers', parms);
   });
 });
+
 /*
 UPDATE USER ROUTE
 */
@@ -75,11 +117,9 @@ router.put('/:id', function(req, res){
   console.log("================UPDATE ROUTE==================");
 });
 
-
 /*
 REMOVE USER ROUTE
 */
-
 router.get('/:id/remove', function(req, res){
   console.log("REMOVE ROUTE");
   

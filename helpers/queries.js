@@ -77,8 +77,44 @@ function delete_user_by_id(id, callback){
     });
 }
 
+function insert_user(data, callback){
+    `INSERT USER`
+    
+    console.log("CREATING USER");
+    
+    
+    let add_user = `insert into USER (inter_ID, first_name, last_name, email, phone_number)  
+        values( ?, ?, ?, ?, ?);`;
+
+    let setProfile = `insert into USER_PROFILES values(?, ?)`;
+
+    let user_data = [data.interID, data.name, data.lName, data.email,data.pNumber];
+    
+    //Exe query
+    conn.query(add_user, user_data, function (err, results) {
+        
+        //Getting user id
+        let userID = results.insertId;
+        
+        if (err){
+           return callback(err, null)
+        };
+        
+        //Insert user into the profile
+        conn.query(setProfile, [userID, data.profile_id], function (error, results) {
+            if (error){
+                return callback(error, null);
+            }
+            // console.log(results)
+            return callback(null, results);
+        });
+    });
+}
+
 module.exports.get_user_list = get_user_list;
 module.exports.get_user_by_id = get_user_by_id;
 module.exports.update_user = update_user;
 module.exports.delete_user_by_id = delete_user_by_id;
+module.exports.insert_user = insert_user;
+
 

@@ -1,9 +1,6 @@
 var mysql = require('mysql');
-try {
-  const credentials = require('./raul_credentials');  
-} catch (error) {
-  print("Dont exits raul file");
-}
+const credentials = require('./raul_credentials');  
+
 // const database = require('./database');
 var config;
 
@@ -30,7 +27,6 @@ var config;
 // // FOR LOCAL CONNECTION
 config = {
   mysql_pool : mysql.createPool({
-
     //establece limite de personas conectadas a la base de datos
     connectionLimit : 15,
 
