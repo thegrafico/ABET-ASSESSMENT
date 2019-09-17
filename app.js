@@ -27,8 +27,6 @@ var studyProgramsRouter = require('./routes/studyPrograms/studyPrograms');
 // ===== Users Section =====
 var usersRouter = require('./routes/users/users');
 var createUsers = require('./routes/users/createUsers');
-var deleteUsers = require('./routes/users/deleteUsers');
-var editUsers = require('./routes/users/editUsers');
 // ===== Outcomes Section =====
 var outcomesRouter = require('./routes/outcomes/outcomes');
 // ===== Courses Section =====
@@ -71,8 +69,6 @@ app.use('/studyPrograms', studyProgramsRouter);
 // ===== Users Section =====
 app.use('/users', usersRouter);
 app.use('/createUsers', createUsers);
-app.use('/deleteUsers', deleteUsers);
-app.use('/editUsers', editUsers);
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
 // ===== Courses Section =====

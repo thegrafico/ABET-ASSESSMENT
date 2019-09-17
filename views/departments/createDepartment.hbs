@@ -2,19 +2,20 @@
   <h2>Create</h2>
   <h4>Department</h4>
   <hr class="my-4">
+  <form action="/department/create" method="POST">
   <div class="row">
       <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
-      <div class="col-8"><input class="form-control" type="text"></div>
+      <div class="col-8"><input class="form-control" type="text" name="depName"></div>
   </div>
   <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
-      <div class="col-8"><input class="form-control" type="text"></div>
+      <div class="col-8"><input class="form-control" type="text" name="depDesc"></div>
   </div>
   <div class="row my-4">
       <div class="col-2"></div>
-      <div class="col-10"><button type="button" class="btn btn-outline-secondary">Create</button></div>
+      <div class="col-10"><button type="submit" class="btn btn-outline-secondary">Create</button></div>
   </div>
-  <p><a href="department">Back to List</a></p>
+  <p><a href="/department">Back to List</a></p>
   <hr class="my-3">
   <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayamon Campus</p>
 </div>
