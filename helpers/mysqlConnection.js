@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 try {
-  const credentials = require('./raul_credentials');  
+  const credentials = require('./raul_credentials');
 } catch (error) {
-  print("Dont exits raul file");
+  // print("Dont exits raul file");
 }
 // const database = require('./database');
 var config;
@@ -35,10 +35,10 @@ config = {
     connectionLimit : 15,
 
     //establece el route basico donde se ouede accessar
-    host     : 'localhost',          //THIS IS THE SAME FOR YOUR
+    host     : '192.168.1.200',          //THIS IS THE SAME FOR YOUR
     user     : 'root',               //THIS IS THE SAME FOR YOUR
-    password : credentials.password,         //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
-    database : credentials.db_name   //HERE GO THE DATABASE THAT WE ARE GONNA USED
+    password : 'robolab',         //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
+    database : 'ABET'   //HERE GO THE DATABASE THAT WE ARE GONNA USED
   })
 };
 
