@@ -2,6 +2,7 @@ var conn = require("./mysqlConnection").mysql_pool; //pool connection
 
 
 function get_user_list(callback){
+    `Getting the user's information from the database`
 
     console.log("Getting user data")
 
