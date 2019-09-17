@@ -6,6 +6,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs = require("hbs");
+var methodOverride = require("method-override");
+var bodyParser = require('body-parser'); //recuperar datos a traves de URL
 var indexRouter = require('./routes/index');
 var db = require("./helpers/mysqlConnection").mysql_pool; //pool connection
 
@@ -46,10 +48,12 @@ hbs.registerPartials(__dirname + '/views/partials/')
 
 app.set('view engine', 'hbs');
 
+app.use(methodOverride("_method"));
+
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({
-  extended: false
+app.use(bodyParser.urlencoded({
+  extended: true
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
