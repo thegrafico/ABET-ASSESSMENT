@@ -1,5 +1,9 @@
 var mysql = require('mysql');
-const credentials = require('./raul_credentials');
+try {
+  const credentials = require('./raul_credentials');  
+} catch (error) {
+  print("Dont exits raul file");
+}
 // const database = require('./database');
 var config;
 

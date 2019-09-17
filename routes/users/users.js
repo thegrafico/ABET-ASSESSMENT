@@ -4,7 +4,6 @@ var conn = require("../../helpers/mysqlConnection").mysql_pool;
 
 var queries = require('../../helpers/queries');
 
-
 var parms = {
   title: 'ABET Assessment'
 };
@@ -41,8 +40,6 @@ EDIT USER ROUTE
 */
 router.get('/:id/edit', function(req, res){
   console.log("EDIT ROUTE");
-
-  var parms = { title: 'ABET Assessment' };
   
   //TODO: catch error in case there is not id
   let user_id = req.params.id;
@@ -85,8 +82,6 @@ REMOVE USER ROUTE
 
 router.get('/:id/remove', function(req, res){
   console.log("REMOVE ROUTE");
-
-  var parms = { title: 'ABET Assessment' };
   
   //TODO: catch error in case there is not id
   let user_id = req.params.id;
