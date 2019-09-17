@@ -1,32 +1,39 @@
 <div class="container-fluid">
-  <h1>Edit</h1>
-  <h4>User</h4>
-  <hr class="my-4">
-  <form action="/users" method="POST">
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Inter ID</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="User Inter ID" name= "interID" value="{{interID}}" required></div>
-  </div>
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="User Name" name= "fName" value="{{fName}}" required></div>
-  </div>
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Last Name</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="User Last Name" name= "lName" value="{{lName}}" required></div>
-  </div>
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Email</strong></div>
-      <div class="col-10"><input class="form-control" type="email" placeholder="User Email" name= "email" value="{{email}}" required></div>
-  </div>
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Phone Number</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="User Phone Number" name= "pNumber" value="{{pNumber}}" required></div>
-  </div>
-  <div class="row my-4">
-      <div class="col-2"></div>
-      <div class="col"><button type="submit" class="btn btn-outline-secondary" name="finalEditButton" value="{{userID}}">Save</button></div>
-  </div>
-  <hr class="my-3">
-  <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+	<h1>Edit</h1>
+	<h4>User</h4>
+	<hr class="my-4">
+		<form action="/users/{{userID}}?_method=PUT" method="POST">
+			<input type="hidden" name="data[userID]" value="{{userID}}">
+			<div class="row">
+				<div class="col-2 align-self-center text-right"><strong>Inter ID</strong></div>
+				<div class="col-10"><input class="form-control" type="text" placeholder="User Inter ID" name="data[interID]"
+						value="{{interID}}" required></div>
+			</div>
+			<div class="row">
+				<div class="col-2 align-self-center text-right"><strong>Name</strong></div>
+				<div class="col-10"><input class="form-control" type="text" placeholder="User Name" name="data[fName]"
+						value="{{fName}}" required></div>
+			</div>
+			<div class="row">
+				<div class="col-2 align-self-center text-right"><strong>Last Name</strong></div>
+				<div class="col-10"><input class="form-control" type="text" placeholder="User Last Name" name="data[lName]"
+						value="{{lName}}" required></div>
+			</div>
+			<div class="row">
+				<div class="col-2 align-self-center text-right"><strong>Email</strong></div>
+				<div class="col-10"><input class="form-control" type="email" placeholder="User Email" name="data[email]"
+						value="{{email}}" required></div>
+			</div>
+			<div class="row">
+				<div class="col-2 align-self-center text-right"><strong>Phone Number</strong></div>
+				<div class="col-10"><input class="form-control" type="text" placeholder="User Phone Number" name="data[pNumber]"
+						value="{{pNumber}}" required></div>
+			</div>
+			<div class="row my-4">
+				<div class="col-2"></div>
+				<div class="col"><button type="submit" class="btn btn-outline-secondary">Save</button></div>
+			</div>
+		</form>		
+	<hr class="my-3">
+	<p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>
