@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var conn = require("../../helpers/mysqlConnection").mysql_pool;
-var queries = require('../../helpers/queries');
+var queries = require('../../helpers/queries/user_queries');
 
 var parms = {
   title: 'ABET Assessment'
@@ -47,11 +47,11 @@ router.get('/createUsers', function(req, res, next) {
       parms.profile = results;
 
       res.render('users/createUsers', parms);
-    })
+    });
 });
 
 /*
-CREATE USER ROUTE
+CREATE USER POST
 */
 router.post('/createUsers', function (req, res) {
   try {
@@ -64,7 +64,7 @@ router.post('/createUsers', function (req, res) {
         throw err;
       } 
 
-      console.log(results);
+      // console.log(results);
       console.log("USER CREATED");
       res.redirect('/users');
     });
@@ -103,6 +103,7 @@ UPDATE USER ROUTE
 router.put('/:id', function(req, res){
   console.log("================UPDATE ROUTE==================");
 
+  //TODO: Validate data before sending to the database
   let user_data_to_update = req.body.data;
 
   queries.update_user(user_data_to_update, function(err, results){
