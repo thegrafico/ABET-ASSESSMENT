@@ -1,9 +1,5 @@
 var mysql = require('mysql');
 // const credentials = require('./raul_credentials');
-<<<<<<< HEAD
-=======
-
->>>>>>> ed5e428681685db88f3612a93d0df4e2fb963c21
 // const database = require('./database');
 var config;
 
@@ -18,19 +14,11 @@ config = {
       //establece limite de personas conectadas a la base de datos
       connectionLimit : 15,
 
-<<<<<<< HEAD
-    //establece el route basico donde se ouede accessar
-    host     : '192.168.42.226',          //THIS IS THE SAME FOR YOUR
-    user     : 'root',               //THIS IS THE SAME FOR YOUR
-    password : 'Lana02210712RN',         //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
-    database : 'Assessment'   //HERE GO THE DATABASE THAT WE ARE GONNA USED
-=======
       //establece el route basico donde se ouede accessar
       host     : '70.45.220.247',  //THIS IS THE SAME FOR YOUR
       user     : 'root',      //THIS IS THE SAME FOR YOUR
       password : 'abetserver',        //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
       database : 'ABET'   //HERE GO THE DATABASE THAT WE ARE GONNA USED
->>>>>>> ed5e428681685db88f3612a93d0df4e2fb963c21
   })
 };
 

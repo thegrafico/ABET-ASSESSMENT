@@ -34,25 +34,10 @@ var outcomesRouter = require('./routes/outcomes/outcomes');
 var coursesRouter = require('./routes/courses/courses');
 // ===== Performance Criteria Section =====
 var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
-<<<<<<< HEAD
-var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
-var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
-var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
-var editPerfCrit = require('./routes/performanceCriteria/editPerfCrit');
-
-// ===== Profiles Section =====
-// var profilesRouter = require('./routes/profiles/profiles');
-// var createProfile  = require('./routes/profiles/createProfiles');
-// var deleteProfile  = require('./routes/profiles/deleteProfiles');
-// var editProfile  = require('./routes/profiles/editProfiles');
-
-var authorize = require('./routes/authorize');
-
-=======
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
 //==================================ROUTES====================================
->>>>>>> ed5e428681685db88f3612a93d0df4e2fb963c21
+
 var app = express();
 
 const port = process.env.PORT || 3000;
