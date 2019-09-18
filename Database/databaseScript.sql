@@ -37,7 +37,7 @@ CREATE TABLE STUDY_PROGRAM(
   prog_name varchar(255) NOT NULL,
   date_created datetime default CURRENT_TIMESTAMP,
   dep_ID int, -- foreign
-  FOREIGN KEY (dep_ID) REFERENCES DEPARTMENT(dep_ID)
+  FOREIGN KEY (dep_ID) REFERENCES DEPARTMENT(dep_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- DONE

@@ -2,9 +2,9 @@
   <h2>Users</h2>
   <hr class="my-4">
   <form action="/users" method="POST">
-  <a href="createUsers" class="btn btn-success" role="button">Create New</a>
-  <hr class="my-1">
-  <div class="row">
+    <a href="/users/createUsers" class="btn btn-success" role="button">Create New</a>
+    <hr class="my-1">
+    <div class="row">
       <div class="col"><strong>User ID</strong></div>
       <div class="col"><strong>Inter ID</strong></div>
       <div class="col"><strong>Profile</strong></div>
@@ -14,10 +14,10 @@
       <div class="col"><strong>Phone Number</strong></div>
       <div class="col"><strong>Date Created</strong></div>
       <div class="col"></div>
-  </div>
-  <hr class="my-1">
-  {{#each results}}
-  <div class="row">
+    </div>
+    <hr class="my-1">
+    {{#each results}}
+    <div class="row">
       <div class="col">{{this.user_ID}}</div>
       <div class="col">{{this.inter_ID}}</div>
       <div class="col">{{this.profile_Name}}</div>
@@ -26,12 +26,16 @@
       <div class="col">{{this.email}}</div>
       <div class="col">{{this.phone_number}}</div>
       <div class="col">{{this.date_created}}</div>
-      <div class="col"><a href="editUsers" type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</a> <button href="deleteUsers" type="submit" class="btn btn-danger" name="deleteButton" value={{this.user_ID}}>Delete</button></div>
-  </div>
-  {{/each}}
-  <hr class="my-1">
-  <hr class="my-1">
+      <div class="col">
+        <a href="users/{{this.user_ID}}/edit" type="submit" class="btn btn-warning" style="color:#FFFFFF"
+          name="editButton">Edit</a>
+        <a href="users/{{this.user_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+    {{/each}}
+    <hr class="my-1">
+    <hr class="my-1">
 
-  <hr class="mt-5 mb-3">
-  <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+    <hr class="mt-5 mb-3">
+    <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>

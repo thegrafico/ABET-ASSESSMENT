@@ -1,8 +1,9 @@
 <div class = "container">
   <h1>Courses</h1>
   <hr>
+  <form action="/indexCourses" method="POST">
   <!-- Green Create New Button -->
-  <button type="button" class="btn btn-success"><a href="createCourses">Create New</a></button>
+  <a role="button" class="btn btn-success" href="createCourses">Create New</a>
   <!-- Middle line -->
   <hr>
   <!-- First row that will contain the table header -->
@@ -12,25 +13,18 @@
           <div class = "col-lg-2"><strong>Study Program ID</strong></div>
           <div class = "col-lg-2"><strong>Date Created</strong></div>
   </div>
-  <hr>
   <!-- First row of info -->
-  <div class = "row">
-          <div class = "col-lg-4">Computer Engineering Introduction</div>
-          <div class = "col-lg-2">1234</div>
-          <div class = "col-lg-2">1</div>
-          <div class = "col-lg-2">3/3/2019</div>
-          <div class = "col-lg-1"><button type="button" class="btn btn-warning">Edit</button></div>
-          <div class = "col-lg-1"><button type="button" class="btn btn-danger">Delete</button></div>
-  </div>
   <hr>
+  {{#each results}}
   <div class = "row">
-          <div class = "col-lg-4">Electrical Engineering Introduction</div>
-          <div class = "col-lg-2">2222</div>
-          <div class = "col-lg-2">2</div>
-          <div class = "col-lg-2">3/3/2019</div>
-          <div class = "col-lg-1"><button type="button" class="btn btn-warning"><a href="editCourses">Edit</a></button></div>
-          <div class = "col-lg-1"><button type="button" class="btn btn-danger"><a href="deleteCourses">Delete</a></button></div>
+          <div class = "col-lg-4">{{this.course_name}}</div>
+          <div class = "col-lg-2">{{this.course_number}}</div>
+          <div class = "col-lg-2">{{this.prog_ID}}</div>
+          <div class = "col-lg-2">{{this.date_created}}</div>
+          <div class = "col-lg-1"><button type="submit" class="btn btn-warning" href="editCourses">Edit</button></div>
+          <div class = "col-lg-1"><button type="submit" class="btn btn-danger" href="deleteCourses">Delete</button></div>
   </div>
+  {{/each}}
   <hr>
 
   <p>© 2019 - Universidad Interamericana Puerto Rico Bayamon Campus</p>

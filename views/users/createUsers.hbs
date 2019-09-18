@@ -2,47 +2,50 @@
   <h2>Create</h2>
   <h4>User</h4>
   <hr class="my-4">
-  <form action="/createUsers" method="post">
-  <div class="row">
+  <form action="/users/createUsers" method="post">
+    <div class="row">
       <div class="col-2 align-self-center text-right"><strong>Inter ID</strong></div>
-      <div class="col-8"><input class="form-control" type="text" placeholder="User Inter ID" name="interID" required></div>
-  </div>
+      <div class="col-8"><input class="form-control" type="text" placeholder="User Inter ID" name="interID" required>
+      </div>
+    </div>
     <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Profile</strong></div>
-  <!-- <div class="dropdown"> -->
-    <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <!-- <div class="dropdown"> -->
+      <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Select
     </button> -->
-    <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
-      <select  type="text" name="profile_Name" required>
-      {{#each profile}}
-      <option class="dropdown-item" href="#">{{profile_Name}}</option>
-      {{/each}}
-    </select>
-    <!-- </div> -->
-  <!-- </div> -->
-</div>
-  <div class="row my-4">
+      <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
+      <select type="text" name="profile_id" required>
+        {{#each profile}}
+        <option class="dropdown-item" value="{{profile_ID}}">{{profile_Name}}</option>
+        {{/each}}
+      </select>
+      <!-- </div> -->
+      <!-- </div> -->
+    </div>
+    <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
       <div class="col-8"><input class="form-control" type="text" placeholder="User Name" name="name" required></div>
-  </div>
-  <div class="row my-4">
+    </div>
+    <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Last Name</strong></div>
-      <div class="col-8"><input class="form-control" type="text" placeholder="User Last Name" name="lName" required></div>
-  </div>
-  <div class="row my-4">
+      <div class="col-8"><input class="form-control" type="text" placeholder="User Last Name" name="lName" required>
+      </div>
+    </div>
+    <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Email</strong></div>
-      <div class="col-8"><input class="form-control" type="text" placeholder="User Email" name="email" required></div>
-  </div>
-  <div class="row my-4">
+      <div class="col-8"><input class="form-control" type="email" placeholder="User Email" name="email" required></div>
+    </div>
+    <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Phone Number</strong></div>
-      <div class="col-8"><input class="form-control" type="text" placeholder="User Phone Number" name="pNumber" required></div>
-  </div>
-  <div class="row my-4">
+      <div class="col-8"><input class="form-control" type="text" placeholder="User Phone Number" name="pNumber"
+          required></div>
+    </div>
+    <div class="row my-4">
       <div class="col-2"></div>
       <div class="col"><button type"submit" class="btn btn-outline-secondary">Create</button></div>
-  </div>
-  <p><a href="users">Back to List</a></p>
-  <hr class="my-3">
-  <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+    </div>
+    <p><a href="users">Back to List</a></p>
+    <hr class="my-3">
+    <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>
