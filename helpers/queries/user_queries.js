@@ -93,10 +93,10 @@ function insert_user(data, callback) {
 
     //Exe query
     conn.query(add_user, user_data, function (err, results) {
-
+    
         //Getting user id
         let userID = results.insertId;
-
+        // console.log("=========================USERID: ", userID);
         if (err) {
             return callback(err, null)
         };

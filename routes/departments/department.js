@@ -1,3 +1,6 @@
+/*
+Raul Pichardo ROUTE
+*/ 
 //Variables and queries to use
 var express = require('express');
 var router = express.Router();
@@ -42,7 +45,7 @@ router.get('/', function (req, res, next) {
 
 // GET
 router.get('/' + routes_names[0], function (req, res) {	
-		res.render('departments/createDepartment', parms);
+	res.render('departments/createDepartment', parms);
 });
 
 // POST
