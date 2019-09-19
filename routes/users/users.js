@@ -6,7 +6,7 @@ var queries = require('../../helpers/queries/user_queries');
 var parms = {
   title: 'ABET Assessment'
 };
-
+//==================================== USER HOME PAGE=================================
 /* USER HOME*/
 router.get('/', function (req, res) {
   try {
@@ -22,7 +22,7 @@ router.get('/', function (req, res) {
 
       //IF found results from the database
       if (results){
-        console.log(results)
+        // console.log(results)
         parms.results = results;
       }
 
@@ -34,10 +34,8 @@ router.get('/', function (req, res) {
     res.redirect('/');
   }
 });
-
-/*
-CREATE USER GET
-*/
+//==================================== CREATE USER ROUTE=================================
+/* GET */
 router.get('/createUsers', function(req, res, next) {
 
     let userList = `Select * From PROFILE`;
@@ -50,13 +48,12 @@ router.get('/createUsers', function(req, res, next) {
     });
 });
 
-/*
-CREATE USER POST
-*/
+/* POST */
 router.post('/createUsers', function (req, res) {
   try {
     //Get all user from the database (callback)
     queries.insert_user(req.body, function(err, results){
+      console.log("=============================USER INSERTED===============================", results);
       
       //TODO: redirect user to another page
       if (err){
@@ -75,10 +72,8 @@ router.post('/createUsers', function (req, res) {
   }
 });
 
-
-/*
-EDIT USER ROUTE
-*/
+//==================================== EDIT USER ROUTE=================================
+/* GET */
 router.get('/:id/edit', function(req, res){
   console.log("EDIT ROUTE");
   
@@ -97,9 +92,7 @@ router.get('/:id/edit', function(req, res){
   });
 });
 
-/*
-UPDATE USER ROUTE
-*/
+/* PUT */
 router.put('/:id', function(req, res){
   console.log("================UPDATE ROUTE==================");
 
@@ -117,10 +110,8 @@ router.put('/:id', function(req, res){
 
   console.log("================UPDATE ROUTE==================");
 });
-
-/*
-REMOVE USER ROUTE
-*/
+//==================================== REMOVE USER ROUTE =================================
+/* REMOVE USER ROUTE */
 router.get('/:id/remove', function(req, res){
   console.log("REMOVE ROUTE");
   
@@ -137,10 +128,7 @@ router.get('/:id/remove', function(req, res){
     res.render('users/deleteUsers', parms);
   });
 });
-
-/*
-DELETE ROUTE
-*/ 
+/* DELETE ROUTE */ 
 router.delete('/:id', function(req, res){
   console.log("===================DELETED ROUTE=====================");
   
@@ -158,5 +146,6 @@ router.delete('/:id', function(req, res){
     res.redirect("/users");
   });
 });
+//===============================================================================
 
 module.exports = router;
