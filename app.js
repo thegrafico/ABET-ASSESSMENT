@@ -13,6 +13,7 @@ var db = require("./helpers/mysqlConnection").mysql_pool; //pool connection
 
 // Verify connection to db
 db.query('SELECT 1', function (error, results, fields) {
+  //TODO: Catch error if can't connect to the database
   if (error) throw error;
   console.log('Connected to the database');
 });
@@ -81,7 +82,7 @@ app.use('/performanceCriteria', perfCritRouter);
 // ====================================================
 
 
-
+//TODO: catch error page, or create one
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
