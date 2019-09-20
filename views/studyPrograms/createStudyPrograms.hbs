@@ -1,24 +1,34 @@
 <div class="container-fluid">
-  <h2>Create</h2>
-  <h4>Study Program</h4>
-  <hr class="my-4">
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
-      <div class="col-8"><input class="form-control" type="text" placeholder="Course Name"></div>
-  </div>
-  <div class="row my-4">
-      <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
-      <div class="col-8"><input class="form-control" type="text" placeholder="Course Description"></div>
-  </div>
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Department</strong></div>
-      <div class="col-8"><input class="form-control" type="text" placeholder="Course Department"></div>
-  </div>
-  <div class="row my-4">
-      <div class="col-2"></div>
-      <div class="col"><button type="button" class="btn btn-outline-secondary">Create</button></div>
-  </div>
-  <p><a href="study_programs_index.html">Back to List</a></p>
-  <hr class="my-3">
-  <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+    <h2>Create</h2>
+    <h4>Study Program</h4>
+    <hr class="my-4">
+    <form action="{{create}}" method="post">
+
+        <div class="row">
+            <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
+            <div class="col-8"><input class="form-control" name="data[cname]" type="text" placeholder="Course Name">
+            </div>
+        </div>
+        <div class="row my-4">
+            {{!-- <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+            <div class="col-8"><input class="form-control" name="data[desc]" type="text"
+                    placeholder="Course Description"></div> --}}
+        </div>
+
+        <div class="row">
+            <div class="col-2 align-self-center text-right"><strong>Department</strong></div>
+            <select type="text" name="data[dept_id]" required>
+                {{#each results}}
+                <option class="dropdown-item" value="{{dep_ID}}">{{dep_name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="row my-4">
+            <div class="col-2"></div>
+            <div class="col"><button type="submit" class="btn btn-outline-secondary">Create</button></div>
+        </div>
+        <p><a href="{{base_url}}">Back to List</a></p>
+    </form>
+    <hr class="my-3">
+    <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>
