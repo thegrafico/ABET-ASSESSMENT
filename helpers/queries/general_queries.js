@@ -25,14 +25,21 @@ function get_table_info_by_id(table_info, callback){
                 where ?? = ?;`;
 
     let data = [table_info.table_name, table_info.atribute, table_info.id];
-    conn.query(findDep, data, function (err, results, fields) {
-        if (err) {
-            return callback(err, null)
-        };
-        // console.log(results)
-        return callback(null, results);
-    });
 
+    console.log("GETTING THE INFO OF THE TABLE: ", data);
+    try {
+        conn.query(findDep, data, function (err, results, fields) {
+        
+            if (err) {
+                return callback(err, null)
+            };
+            return callback(null, results);
+        });        
+    } catch (error) {
+        // console.log("ERROR IN get_table_info_id");
+        return callback(error, null);
+    }
+    
 }
 
 function delete_record_by_id(table_info, callback){
@@ -40,7 +47,7 @@ function delete_record_by_id(table_info, callback){
 
 	let delete_query = `DELETE
                   FROM ??
-                  WHERE ?? = ?;`
+                  WHERE ?? = ?;`;
 
     let data = [table_info.table_name, table_info.atribute, table_info.id];
     
