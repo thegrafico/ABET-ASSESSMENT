@@ -28,7 +28,7 @@ router.get('/', function(req, res, next) {
     //TODO: handle error
     if (err) throw err;
 
-    console.log("HOME STUDY PROGRAM: ", results);
+    // console.log("HOME STUDY PROGRAM: ", results);
 
     parms.results = results;
     res.render('studyPrograms/studyPrograms', parms);
@@ -36,8 +36,6 @@ router.get('/', function(req, res, next) {
 });
 
 //================================ CREATE STUDY PROGRAM  =================================
-
-
 /* CREATE home page. */
 router.get('/' + routes_names[0], function(req, res, next) {
   let deparment_table = "DEPARTMENT";
@@ -65,7 +63,7 @@ router.post('/' + routes_names[0], function(req, res, next) {
 		//TODO: catch error properly
 		if (err) throw err;
 
-		console.log("STUDY PROGRAMN INSERTED WITH THE ID: ", results.insertId);
+		// console.log("STUDY PROGRAMN INSERTED WITH THE ID: ", results.insertId);
 
 		res.redirect(base_url);
 	});
@@ -81,18 +79,19 @@ router.get('/:id/remove', function (req, res) {
   let stud_table = "STUDY_PROGRAM";
   let where_attr = "prog_ID";
   let data = {"table_name": stud_table,"atribute":where_attr, "id":stud_id};
-  
   general_queries.get_table_info_by_id(data, function(err, results){
-    
+
     //TODO: catch erro
     if (err) throw err;
-    parms.prog_ID = results[0].prog_ID;
-    parms.prog_name = results[0].prog_name;
-    parms.date_created = results[0].date_created;
-
-    console.log(parms);
-    res.render('studyPrograms/deleteStudyPrograms', parms);
-  });
+    try {
+      parms.prog_ID = results[0].prog_ID;
+      parms.prog_name = results[0].prog_name;
+      parms.date_created = results[0].date_created;
+      res.render('studyPrograms/deleteStudyPrograms', parms);
+    } catch (error) {
+      res.redirect(base_url);
+    }
+  });      
 });
 /* DELETE ROUTE */
 router.delete('/:id', function (req, res) {
@@ -113,6 +112,7 @@ router.delete('/:id', function (req, res) {
     }
     console.log("STUDY PROGRAM DELETED")
     console.log("===================DELETED ROUTE=====================");
+    
     res.redirect(base_url);
   });
 });
