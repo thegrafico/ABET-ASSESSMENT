@@ -4,8 +4,8 @@ Raul Pichardo ROUTE
 //Variables and queries to use
 var express = require('express');
 var router = express.Router();
-var query = require("../../helpers/queries/department_queries");
-var general_queries = require("../../helpers/queries/general_queries");
+var query = require("../helpers/queries/department_queries");
+var general_queries = require("../helpers/queries/general_queries");
 
 //Routing for CRUD
 let base_url = '/department/'

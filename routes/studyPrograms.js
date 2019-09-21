@@ -1,6 +1,6 @@
 var express = require('express');
-var query = require("../../helpers/queries/studyProgramQueries");
-var general_queries = require("../../helpers/queries/general_queries");
+var query = require("../helpers/queries/studyProgramQueries");
+var general_queries = require("../helpers/queries/general_queries");
 
 var router = express.Router();
 

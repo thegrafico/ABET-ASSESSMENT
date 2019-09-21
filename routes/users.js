@@ -4,8 +4,8 @@ Raul Pichardo ROUTE
 */ 
 var express = require('express');
 var router = express.Router();
-var conn = require("../../helpers/mysqlConnection").mysql_pool;
-var queries = require('../../helpers/queries/user_queries');
+var conn = require("../helpers/mysqlConnection").mysql_pool;
+var queries = require('../helpers/queries/user_queries');
 
 var parms = {
   title: 'ABET Assessment'

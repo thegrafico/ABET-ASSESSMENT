@@ -24,11 +24,11 @@ var evaluationRouter = require('./routes/evaluations/evaluation');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerms/schoolTerm');
 // ===== Departments Section =====
-var departmentRouter = require('./routes/departments/department');
+var departmentRouter = require('./routes/department');
 // ===== Study Programs Section =====
-var studyProgramsRouter = require('./routes/studyPrograms/studyPrograms');
+var studyProgramsRouter = require('./routes/studyPrograms');
 // ===== Users Section =====
-var usersRouter = require('./routes/users/users');
+var usersRouter = require('./routes/users');
 // ===== Outcomes Section =====
 var outcomesRouter = require('./routes/outcomes/outcomes');
 // ===== Courses Section =====
