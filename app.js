@@ -13,6 +13,7 @@ var db = require("./helpers/mysqlConnection").mysql_pool; //pool connection
 
 // Verify connection to db
 db.query('SELECT 1', function (error, results, fields) {
+  //TODO: Catch error if can't connect to the database
   if (error) throw error;
   console.log('Connected to the database');
 });
@@ -23,14 +24,13 @@ var evaluationRouter = require('./routes/evaluations/evaluation');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerms/schoolTerm');
 // ===== Departments Section =====
-var departmentRouter = require('./routes/departments/department');
+var departmentRouter = require('./routes/department');
 // ===== Study Programs Section =====
-var studyProgramsRouter = require('./routes/studyPrograms/studyPrograms');
+var studyProgramsRouter = require('./routes/studyPrograms');
 // ===== Users Section =====
-var usersRouter = require('./routes/users/users');
-var createUsers = require('./routes/users/createUsers');
+var usersRouter = require('./routes/users');
 // ===== Outcomes Section =====
-var outcomesRouter = require('./routes/outcomes/outcomes');
+var outcomesRouter = require('./routes/outcomes');
 // ===== Courses Section =====
 var coursesRouter = require('./routes/courses/courses');
 // ===== Performance Criteria Section =====
@@ -72,7 +72,7 @@ app.use('/department', departmentRouter);
 app.use('/studyPrograms', studyProgramsRouter);
 // ===== Users Section =====
 app.use('/users', usersRouter);
-app.use('/createUsers', createUsers);
+// app.use('/createUsers', createUsers);
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
 // ===== Courses Section =====
@@ -82,7 +82,7 @@ app.use('/performanceCriteria', perfCritRouter);
 // ====================================================
 
 
-
+//TODO: catch error page, or create one
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
