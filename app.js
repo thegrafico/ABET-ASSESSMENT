@@ -30,7 +30,7 @@ var studyProgramsRouter = require('./routes/studyPrograms');
 // ===== Users Section =====
 var usersRouter = require('./routes/users');
 // ===== Outcomes Section =====
-var outcomesRouter = require('./routes/outcomes/outcomes');
+var outcomesRouter = require('./routes/outcomes');
 // ===== Courses Section =====
 var coursesRouter = require('./routes/courses/courses');
 // ===== Performance Criteria Section =====
