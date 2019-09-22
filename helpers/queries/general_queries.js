@@ -24,7 +24,7 @@ function get_table_info_by_id(table_info, callback){
                 From ??
                 where ?? = ?;`;
 
-    let data = [table_info.table_name, table_info.atribute, table_info.id];
+    let data = [table_info.from, table_info.where, table_info.id];
 
     console.log("GETTING THE INFO OF THE TABLE: ", data);
     try {
@@ -49,7 +49,7 @@ function delete_record_by_id(table_info, callback){
                   FROM ??
                   WHERE ?? = ?;`;
 
-    let data = [table_info.table_name, table_info.atribute, table_info.id];
+    let data = [table_info.from, table_info.where, table_info.id];
     
     conn.query(delete_query, data, function (err, results, fields) {
         if (err) {
