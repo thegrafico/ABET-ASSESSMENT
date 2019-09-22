@@ -1,22 +1,11 @@
 var express = require('express');
 var query = require("../helpers/queries/studyProgramQueries");
 var general_queries = require("../helpers/queries/general_queries");
-
 var router = express.Router();
 
 
-let base_url = '/studyPrograms/' 
-let routes_names = ['create', 'delete', 'edit', 'details']
-
-//Paramns to routes links
-let parms = {};
-
-//Populate parms
-routes_names.forEach(e=>{
-  parms[e] = base_url + e;
-});
-parms["title"] = 'ABET Assessment'; 
-parms.base_url = base_url;
+const base_url = '/studyPrograms/' 
+let parms = {"title":'ABET Assessment', "base_url":base_url  };
 
 //================================ HOME PAGE =================================
 /* GET home page. */
@@ -37,7 +26,7 @@ router.get('/', function(req, res, next) {
 
 //================================ CREATE STUDY PROGRAM  =================================
 /* CREATE home page. */
-router.get('/' + routes_names[0], function(req, res, next) {
+router.get('/create', function(req, res, next) {
   let deparment_table = "DEPARTMENT";
   general_queries.get_table_info(deparment_table, function(err, resutls){
     
@@ -49,7 +38,7 @@ router.get('/' + routes_names[0], function(req, res, next) {
   });
 });
 
-router.post('/' + routes_names[0], function(req, res, next) {
+router.post('/create', function(req, res, next) {
 
   // dep_ID, dep_name, dep_description
 
@@ -78,7 +67,7 @@ router.get('/:id/remove', function (req, res) {
   let stud_id = req.params.id;
   let stud_table = "STUDY_PROGRAM";
   let where_attr = "prog_ID";
-  let data = {"table_name": stud_table,"atribute":where_attr, "id":stud_id};
+  let data = {"from": stud_table,"where":where_attr, "id":stud_id};
   general_queries.get_table_info_by_id(data, function(err, results){
 
     //TODO: catch erro
@@ -102,7 +91,7 @@ router.delete('/:id', function (req, res) {
   let table_name = "STUDY_PROGRAM";
   let where_attr = "prog_ID";
 
-  let data = {"id":std_id, "table_name":table_name,"atribute":where_attr };
+  let data = {"id":std_id, "from":table_name,"where":where_attr };
 
   general_queries.delete_record_by_id(data, function (err, results) {
 
@@ -112,23 +101,64 @@ router.delete('/:id', function (req, res) {
     }
     console.log("STUDY PROGRAM DELETED")
     console.log("===================DELETED ROUTE=====================");
-    
-    res.redirect(base_url);
+    res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+    res.redirect("back");
   });
 });
-//===============================================================================
+//========================================== EDIT ROUTE =====================================
+/* EDIT home page. */
+router.get('/:id/edit', function(req, res, next) {
+  let table_name = "STUDY_PROGRAM";
+  let id_stp = req.params.id;
+  let where_atr = "prog_ID";
 
-/* DELETE home page. */
-router.get('/' + routes_names[1], function(req, res, next) {
+  let data = {"from":table_name, "where":where_atr, "id": id_stp};
+  general_queries.get_table_info_by_id(data, function(err, user_results){
+    
+    //TODO: handle this err;
+    if(err)throw err;
+    
+    let deparment_table = "DEPARTMENT";
+    
+    general_queries.get_table_info(deparment_table, function(error, resutls){
+      
+      //TODO: handle this err;
+      if(error)throw error;
+
+      parms.prog_ID = id_stp;
+      parms.dpt_results = resutls;
+      parms.user_results = user_results[0];
+
+      // console.log("EDIT RESULTS: ", parms);
+      res.render('studyPrograms/editStudyPrograms', parms);  
+    });
+  });
 });
 
 /* EDIT home page. */
-router.get('/' + routes_names[2], function(req, res, next) {
-  res.render('studyPrograms/editStudyPrograms', parms);
+router.put('/:id', function(req, res, next) {
+  
+  //TODO: verify values befero enter to DB
+  let name = req.body.data.cname;
+  let std_id = req.params.id;
+  let dept_id =  req.body.data.dept_id;
+
+  //TIENE QUE IR EN ESTE ORDEN. 
+  let data = [name, dept_id, std_id];
+
+  query.update_study_program(data, function(err, results){
+
+    //TODO: cath this error
+    if (err) throw err;
+
+    console.log("EDITED STUDY PROGRAM");
+    res.redirect(base_url);  
+  });
 });
 
+//========================================== DETAIS ROUTE =====================================
 /* DEtAILS home page. */
-router.get('/' + routes_names[3], function(req, res, next) {
+router.get('/details', function(req, res, next) {
   res.render('studyPrograms/detailStudyPrograms', parms);
 });
 

@@ -1,7 +1,21 @@
+<script>
+
+    //RELOAD PAGE WHEN USER CLICK BACK BUTTON
+window.addEventListener("pageshow", function (event) {
+    var historyTraversal = event.persisted ||
+        (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+    if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+    }
+});
+</script>
+
 <div class="container-fluid">
     <h2>Study Programs</h2>
     <hr class="my-4">
-    <a href="{{create}}" class="btn btn-success" role="button">Create New</a>
+    <a href="/studyPrograms/create" class="btn btn-success" role="button">Create New</a>
     <hr class="my-1">
     <form action="{{create}}" method="post">
 

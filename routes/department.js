@@ -72,7 +72,7 @@ router.post('/' + routes_names[0], function (req, res, next) {
 router.get('/:id/' + routes_names[1], function (req, res, next) {
 
 
-	let tabla_data = {"table_name": "DEPARTMENT", "atribute": "dep_ID", "id": req.params.id };
+	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.get_table_info_by_id(tabla_data, function (err, results) {
 		
@@ -92,7 +92,7 @@ router.get('/:id/' + routes_names[1], function (req, res, next) {
 // DELETE
 router.delete('/:id' , function (req, res, next) {
 
-	let tabla_data = {"table_name": "DEPARTMENT", "atribute": "dep_ID", "id": req.params.id };
+	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.delete_record_by_id(tabla_data, function(err, results){
 		//TODO: catch error
@@ -107,7 +107,7 @@ router.delete('/:id' , function (req, res, next) {
 /* GET */
 router.get('/:id/' + routes_names[2], function (req, res, next) {
 
-	let tabla_data = {"table_name": "DEPARTMENT", "atribute": "dep_ID", "id": req.params.id };
+	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.get_table_info_by_id(tabla_data, function (err, results) {
 		

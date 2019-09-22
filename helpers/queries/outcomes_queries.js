@@ -1,13 +1,11 @@
 var conn = require("../mysqlConnection").mysql_pool; //pool connection
 
-function insert_into_study_program(data, callback){
-    `Insert values into the table department`
-    // prog_ID int PRIMARY KEY auto_increment,
-    // prog_name varchar(255) NOT NULL,
-    // date_created datetime default CURRENT_TIMESTAMP,
-    // dep_ID int, --
 
-    let insert_query = `insert into STUDY_PROGRAM (prog_name, dep_ID) values(?, ?);`;
+function insert_outcome(data, callback) {
+    `Insert values into the table department`
+    // outc_ID, outc_name, outc_description, date_created, prog_ID
+
+    let insert_query = `insert into STUDENT_OUTCOME (outc_name, outc_description, prog_ID) values(?, ?, ?);`;
 
     conn.query(insert_query, data, function (err, results, fields) {
         if (err) {
@@ -18,10 +16,13 @@ function insert_into_study_program(data, callback){
     });
 }
 
-function update_study_program(data, callback){
+function update_outcome(data, callback) {
     `Insert values into the table department`
 
-    let update_query = `update STUDY_PROGRAM set prog_name= ?, dep_ID= ? where prog_ID= ?`;
+    // outc_ID, outc_name, outc_description, date_created, prog_ID
+
+    let update_query = `update STUDENT_OUTCOME set outc_name = ?, outc_description = ?, prog_ID = ? where outc_ID = ?; `;
+
     //Exe query
     conn.query(update_query, data, function (err, results, fields) {
         if (err) {
@@ -31,6 +32,5 @@ function update_study_program(data, callback){
         return callback(null, results);
     });
 }
-
-module.exports.insert_into_study_program = insert_into_study_program;
-module.exports.update_study_program = update_study_program;
+module.exports.insert_outcome = insert_outcome;
+module.exports.update_outcome = update_outcome;
