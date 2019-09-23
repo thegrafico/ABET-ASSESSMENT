@@ -9,7 +9,7 @@ var config;
 
 //FOR REMOTE CONNECTION
 config = {
-    mysql_pool : mysql.createPool({
+      mysql_pool : mysql.createPool({
 
       //establece limite de personas conectadas a la base de datos
       connectionLimit : 15,
