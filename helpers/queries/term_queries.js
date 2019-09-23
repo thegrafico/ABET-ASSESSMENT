@@ -13,5 +13,21 @@ function insert_into_term(data, callback){
     });
 }
 
+function update_term(data, callback){
+    // `Insert values into the table department`
+
+    let update_query = `update ACADEMIC_TERM set term_name= ?`;
+    //Exe query
+    conn.query(update_query, data, function (err, results, fields) {
+        if (err) {
+            return callback(err, null)
+        };
+        // console.log(results)
+        return callback(null, results);
+    });
+}
+
+
+
 module.exports.insert_into_term = insert_into_term;
-// module.exports.update_term = update_term;
+module.exports.update_term = update_term;
