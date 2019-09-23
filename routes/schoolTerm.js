@@ -88,6 +88,56 @@ router.delete('/:id', function (req, res) {
   });
 });
 
+//========================================== EDIT TERM =====================================
+
+router.get('/:id/edit', function(req, res, next) {
+  let table_name = "ACADEMIC_TERM";
+  let id_term = req.params.id;
+  let where_atr = "term_ID";
+
+  let data = {"from":table_name, "where":where_atr, "id": id_term};
+  general_queries.get_table_info_by_id(data, function(err, user_results){
+
+    //TODO: handle this err;
+    // if(err)throw err;
+
+    // let deparment_table = "DEPARTMENT";
+    //
+    // general_queries.get_table_info(deparment_table, function(error, resutls){
+
+      //TODO: handle this err;
+      // if(error)throw error;
+
+      parms.term_ID = id_term;
+      // parms.dpt_results = resutls;
+      parms.user_results = user_results[0];
+
+      // console.log("EDIT RESULTS: ", parms);
+      res.render('schoolTerms/editSchoolTerm', parms);
+    // });
+  });
+});
+
+/* EDIT home page. */
+router.put('/:id', function(req, res, next) {
+
+  //TODO: verify values befero enter to DB
+  let name = req.body.data.tname;
+  let term_id = req.params.id;
+  // let dept_id =  req.body.data.dept_id;
+
+  //TIENE QUE IR EN ESTE ORDEN.
+  let data = [name, term_id];
+
+  query.update_term(data, function(err, results){
+
+    //TODO: cath this error
+    if (err) throw err;
+
+    res.redirect(base_url);
+  });
+});
+
 
 
 
