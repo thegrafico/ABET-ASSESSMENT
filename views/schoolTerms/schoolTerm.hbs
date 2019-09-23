@@ -38,7 +38,8 @@ window.addEventListener("pageshow", function (event) {
               <td> </td>
               <td> </td>
               <td>
-                <a class="btn btn-danger" type="button" name="button" id="editBtn" href="{{edit}}">Edit</a>
+                <a href="/schoolTerm/{{this.term_ID}}/edit" type="submit" class="btn btn-warning" style="color:#FFFFFF"
+                    name="editButton">Edit</a>
                 <a href="/schoolTerm/{{this.term_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
               </td>
             </tr>
