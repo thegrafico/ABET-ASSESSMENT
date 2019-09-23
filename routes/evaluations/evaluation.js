@@ -58,13 +58,25 @@ router.get('/', function(req, res, next) {
 /* Create home page. */
 router.get('/' + routes_names[0], function(req, res, next) {
   try{
+    let evaluation_table = 'STUDENT_OUTCOME';
 
+    //Get all perfCrit from the database (callback)
+    general_queries.get_table_info(evaluation_table, function (err, results) {
 
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAS TO REDIRECT the user or send a error message
+        throw err;
+      }
 
+      //IF found results from the database
+      if (results) {
+        // console.log(results)
+        parms.results = results;
+      }
 
-
-
-    res.render('evaluations/createEvaluation', parms);
+      res.render('evaluations/createEvaluation', parms);
+    });
   }
   catch (error) {
     //TODO: send a error message to the user.
@@ -73,7 +85,32 @@ router.get('/' + routes_names[0], function(req, res, next) {
   }
 });
 
+router.post('/' + routes_names[0], function(req, res, next) {
+  try {
 
+    console.log(req.body);
+    let data = [req.body.outc_name, req.body.outc_decription, req.body.outc_ID];
+
+    //Insert all data to the database (callback)
+    queries.insert_evalRub(data, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      // console.log(results);
+      console.log("Rubric Created");
+      res.redirect('evaluations/evaluation');
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.redirect('evaluations/evaluation');
+  }
+});
 
 
 /* DELETE home page. */
