@@ -3,7 +3,7 @@
     <div class="row">
       <h1>Term</h1>
         <div class="col-sm-12">
-          <form action="/schoolTerm/{{term_ID}}?_method=PUT" method="POST">
+          <form action="/schoolTerm/{{user_results.term_ID}}?_method=PUT" method="POST">
             <div class="row">
               <div class="col-sm-2">
                 <label>Term Name</label>
@@ -36,9 +36,9 @@
                 <input class="form-control" type="text" placeholder="Date Created">
               </div>
             </div> -->
+            <button type="submit" class="btn btn-outline-secondary">Save</button>
           </form>
         </div>
-        <button type="submit" class="btn btn-outline-secondary">Save</button>
       </div>
     </div>
   </div>
