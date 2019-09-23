@@ -1,8 +1,11 @@
+/*
+Raul Pichardo ROUTE
+*/ 
 //Variables and queries to use
 var express = require('express');
 var router = express.Router();
-var query = require("../../helpers/queries/department_queries");
-var general_queries = require("../../helpers/queries/general_queries");
+var query = require("../helpers/queries/department_queries");
+var general_queries = require("../helpers/queries/general_queries");
 
 //Routing for CRUD
 let base_url = '/department/'
@@ -42,7 +45,7 @@ router.get('/', function (req, res, next) {
 
 // GET
 router.get('/' + routes_names[0], function (req, res) {	
-		res.render('departments/createDepartment', parms);
+	res.render('departments/createDepartment', parms);
 });
 
 // POST
@@ -69,7 +72,7 @@ router.post('/' + routes_names[0], function (req, res, next) {
 router.get('/:id/' + routes_names[1], function (req, res, next) {
 
 
-	let tabla_data = {"table_name": "DEPARTMENT", "atribute": "dep_ID", "id": req.params.id };
+	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.get_table_info_by_id(tabla_data, function (err, results) {
 		
@@ -89,7 +92,7 @@ router.get('/:id/' + routes_names[1], function (req, res, next) {
 // DELETE
 router.delete('/:id' , function (req, res, next) {
 
-	let tabla_data = {"table_name": "DEPARTMENT", "atribute": "dep_ID", "id": req.params.id };
+	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.delete_record_by_id(tabla_data, function(err, results){
 		//TODO: catch error
@@ -104,7 +107,7 @@ router.delete('/:id' , function (req, res, next) {
 /* GET */
 router.get('/:id/' + routes_names[2], function (req, res, next) {
 
-	let tabla_data = {"table_name": "DEPARTMENT", "atribute": "dep_ID", "id": req.params.id };
+	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.get_table_info_by_id(tabla_data, function (err, results) {
 		

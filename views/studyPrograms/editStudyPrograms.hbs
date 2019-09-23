@@ -1,20 +1,33 @@
 <div class="container-fluid">
-  <h1>Edit</h1>
-  <h4>Study Program</h4>
-  <hr class="my-4">
+    <h1>Edit</h1>
+    <h4>Study Program</h4>
+    <hr class="my-4">
+    <form action="/studyPrograms/{{prog_ID}}?_method=PUT" method="POST">
+        
+        <div class="row">
+            <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
+            <div class="col-8"><input class="form-control" name="data[cname]" type="text" value="{{user_results.prog_name}}" placeholder="Course Name">
+            </div>
+        </div>
+        <div class="row my-4">
+            {{!-- <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+            <div class="col-8"><input class="form-control" name="data[desc]" type="text"
+                    placeholder="Course Description"></div> --}}
+        </div>
 
-  <div class="row my-4">
-      <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="Computer Engineering"></div>
-  </div>
-  <div class="row">
-      <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="Computer Engineering Study Program"></div>
-  </div>
-  <div class="row my-4">
-      <div class="col-2"></div>
-      <div class="col"><button type="button" class="btn btn-outline-secondary">Save</button></div>
-  </div>
-  <hr class="my-3">
-  <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+        <div class="row">
+            <div class="col-2 align-self-center text-right"><strong>Department</strong></div>
+            <select type="text" name="data[dept_id]" required>
+                {{#each dpt_results}}
+                <option class="dropdown-item" value="{{dep_ID}}">{{dep_name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="row my-4">
+            <div class="col-2"></div>
+            <div class="col"><button type="submit" class="btn btn-outline-secondary">Save</button></div>
+        </div>
+    </form>
+    <hr class="my-3">
+    <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>
