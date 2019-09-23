@@ -4,7 +4,7 @@ var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
 
 
-const base_url = '/studyPrograms/' 
+const base_url = '/studyPrograms/'
 let parms = {"title":'ABET Assessment', "base_url":base_url  };
 
 //================================ HOME PAGE =================================
@@ -29,11 +29,11 @@ router.get('/', function(req, res, next) {
 router.get('/create', function(req, res, next) {
   let deparment_table = "DEPARTMENT";
   general_queries.get_table_info(deparment_table, function(err, resutls){
-    
+
     //TODO: handle this err;
     if(err)throw err;
-    
-    parms.results = resutls;
+
+    parms.results = results;
     res.render('studyPrograms/createStudyPrograms', parms);
   });
 });
@@ -80,7 +80,7 @@ router.get('/:id/remove', function (req, res) {
     } catch (error) {
       res.redirect(base_url);
     }
-  });      
+  });
 });
 /* DELETE ROUTE */
 router.delete('/:id', function (req, res) {
@@ -114,14 +114,14 @@ router.get('/:id/edit', function(req, res, next) {
 
   let data = {"from":table_name, "where":where_atr, "id": id_stp};
   general_queries.get_table_info_by_id(data, function(err, user_results){
-    
+
     //TODO: handle this err;
     if(err)throw err;
-    
+
     let deparment_table = "DEPARTMENT";
-    
+
     general_queries.get_table_info(deparment_table, function(error, resutls){
-      
+
       //TODO: handle this err;
       if(error)throw error;
 
@@ -130,20 +130,20 @@ router.get('/:id/edit', function(req, res, next) {
       parms.user_results = user_results[0];
 
       // console.log("EDIT RESULTS: ", parms);
-      res.render('studyPrograms/editStudyPrograms', parms);  
+      res.render('studyPrograms/editStudyPrograms', parms);
     });
   });
 });
 
 /* EDIT home page. */
 router.put('/:id', function(req, res, next) {
-  
+
   //TODO: verify values befero enter to DB
   let name = req.body.data.cname;
   let std_id = req.params.id;
   let dept_id =  req.body.data.dept_id;
 
-  //TIENE QUE IR EN ESTE ORDEN. 
+  //TIENE QUE IR EN ESTE ORDEN.
   let data = [name, dept_id, std_id];
 
   query.update_study_program(data, function(err, results){
@@ -152,11 +152,11 @@ router.put('/:id', function(req, res, next) {
     if (err) throw err;
 
     console.log("EDITED STUDY PROGRAM");
-    res.redirect(base_url);  
+    res.redirect(base_url);
   });
 });
 
-//========================================== DETAIS ROUTE =====================================
+//========================================== DETAILS ROUTE =====================================
 /* DEtAILS home page. */
 router.get('/details', function(req, res, next) {
   res.render('studyPrograms/detailStudyPrograms', parms);
