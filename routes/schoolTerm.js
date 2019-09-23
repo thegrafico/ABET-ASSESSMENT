@@ -99,20 +99,9 @@ router.get('/:id/edit', function(req, res, next) {
   general_queries.get_table_info_by_id(data, function(err, user_results){
 
     //TODO: handle this err;
-    // if(err)throw err;
-
-    // let deparment_table = "DEPARTMENT";
-    //
-    // general_queries.get_table_info(deparment_table, function(error, resutls){
-
-      //TODO: handle this err;
-      // if(error)throw error;
-
       parms.term_ID = id_term;
-      // parms.dpt_results = resutls;
       parms.user_results = user_results[0];
 
-      // console.log("EDIT RESULTS: ", parms);
       res.render('schoolTerms/editSchoolTerm', parms);
     // });
   });
