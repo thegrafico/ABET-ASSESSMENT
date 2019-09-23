@@ -1,3 +1,17 @@
+<script>
+
+    //RELOAD PAGE WHEN USER CLICK BACK BUTTON
+window.addEventListener("pageshow", function (event) {
+    var historyTraversal = event.persisted ||
+        (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+    if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+    }
+});
+</script>
+
 <div class="wrapper">
   <div class="container">
     <div class="row">
@@ -5,27 +19,30 @@
       <div class="col-sm-12">
         <!-- Create New Button -->
         <!-- Trigger/Open The Modal -->
-        <button class="btn btn-success" type="button" name="button"><a id="myCreateBtn" href="{{create}}">Create New</a></button>
+        <a href="/schoolTerm/create" class="btn btn-success" role="button">Create New</a>
         <!-- Table -->
         <table class="table">
           <thead>
+            <form action="{{create}}" method="post">
             <tr>
               <th scope="col">Term Name</th>
-              <th scope="col">Start Date</th>
-              <th scope="col">End Date</th>
+              <th scope="col"> </th>
+              <th scope="col"> </th>
               <th scope="col"> </th>
             </tr>
           </thead>
           <tbody>
+            {{#each results}}
             <tr>
-              <td>{{termName}}</td>
-              <td>{{startName}}</td>
-              <td>{{endName}}</td>
+              <td>{{this.term_name}}</td>
+              <td> </td>
+              <td> </td>
               <td>
-                <button class="btn btn-danger" type="button" name="button"><a id="editBtn" href="{{edit}}">Edit</a></button>
-                <button class="btn btn-warning" type="button" name="button"><a id="deleteBtn" href="{{delete}}">Delete</a></button>
+                <a class="btn btn-danger" type="button" name="button" id="editBtn" href="{{edit}}">Edit</a>
+                <a href="/schoolTerm/{{this.term_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
               </td>
             </tr>
+            {{/each}}
           </tbody>
         </table>
       </div>
