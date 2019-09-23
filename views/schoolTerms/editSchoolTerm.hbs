@@ -3,16 +3,16 @@
     <div class="row">
       <h1>Term</h1>
         <div class="col-sm-12">
-          <form>
+          <form action="/schoolTerm/{{term_ID}}?_method=PUT" method="POST">
             <div class="row">
               <div class="col-sm-2">
-                <label>TermName</label>
+                <label>Term Name</label>
               </div>
               <div class="col-sm-10">
-                <input class="form-control" type="text" placeholder="Rubric Name">
+                <input class="form-control" name="data[tname]" type="text" value="{{user_results.term_name}}" placeholder="Term Name">
               </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-sm-2">
                 <label>Start Date</label>
               </div>
@@ -35,10 +35,10 @@
               <div class="col-sm-10">
                 <input class="form-control" type="text" placeholder="Date Created">
               </div>
-            </div>
+            </div> -->
           </form>
         </div>
-        <button id="createModalbtn" type="button" class="btn">Save</button>
+        <button type="submit" class="btn btn-outline-secondary">Save</button>
       </div>
     </div>
   </div>
