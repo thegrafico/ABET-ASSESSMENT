@@ -36,6 +36,9 @@ var coursesRouter = require('./routes/courses/courses');
 var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
+// ====== Table Test Route ======
+var tableTest = require('./routes/tableTest');
+
 //==================================ROUTES====================================
 
 var app = express();
@@ -79,6 +82,8 @@ app.use('/outcomes', outcomesRouter);
 app.use('/courses', coursesRouter);
 // ===== Performance Criteria Section =====
 app.use('/performanceCriteria', perfCritRouter);
+// ===== Table Test =====
+app.use('/tableTest', tableTest);
 // ====================================================
 
 
