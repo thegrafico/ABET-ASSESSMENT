@@ -102,25 +102,85 @@ router.post('/' + routes_names[0], function(req, res, next) {
 
       // console.log(results);
       console.log("Rubric Created");
-      res.redirect('evaluations/evaluation');
+      res.redirect('/evaluation');
     });
   }
   catch (error) {
     //TODO: send a error message to the user.
     console.log(error);
-    res.redirect('evaluations/evaluation');
+    res.redirect('/evaluation');
   }
 });
 
 
 /* DELETE home page. */
-router.get('/' + routes_names[1], function(req, res, next) {
-  res.render('evaluations/deleteEvaluation', parms);
+router.get('/:id/' + routes_names[1], function(req, res, next) {
+  try {
+
+    let data = {
+      "from": "EVALUATION_RUBRIC",
+      "where": "rubric_ID",
+      "id": req.params.id
+    };
+
+    //Insert all data to the database (callback)
+    general_queries.get_table_info_by_id(data, function (err, results) {
+
+      parms.Name = results[0].rubric_name;
+      parms.Description = results[0].rubric_description;
+      parms.StudentOutcome = results[0].outc_ID;
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      // console.log(results);
+      console.log("Rubric Created");
+      res.render('evaluations/deleteEvaluation', parms);
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.render('evaluations/deleteEvaluation', parms);
+  }
+});
+
+router.post('/:id/' + routes_names[1], function(req, res, next) {
+  try {
+
+    let data = {
+      "from": "EVALUATION_RUBRIC",
+      "where": "rubric_ID",
+      "id": req.params.id
+    };
+
+    //Insert all data to the database (callback)
+    general_queries.delete_record_by_id(data, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      // console.log(results);
+      console.log("Rubric Created");
+      res.redirect('/evaluation');
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.redirect('/evaluation');
+  }
 });
 
 
 /* EDIT home page. */
-router.get('/' + routes_names[2], function(req, res, next) {
+router.get('/:id/' + routes_names[2], function(req, res, next) {
   res.render('evaluations/editEvaluation', parms);
 });
 
