@@ -1,5 +1,6 @@
 <div class="wrapper">
   <div class="container">
+    <form action="delete" method="POST">
     <div class="row">
       <h1>Evaluation Rubric</h1>
       <div class="col-sm-12">
@@ -31,17 +32,9 @@
                       <p>{{StudentOutcome}}</p>
                     </div>
                   </div>
-                  <div class="row ">
-                    <div class="col-sm-2">
-                      <label>Date Created</label>
-                    </div>
-                    <div class="col-sm-10">
-                      <p>{{DateCreated}}</p>
-                    </div>
-                  </div>
               </div>
-              <button id="createModalbtn" type="button" class="btn">Delete</button>
-              <button id="cancelModalbtn" type="button" class="btn"><a href="evaluation">Back to list</a></button>
+              <button id="createModalbtn" role="button" class="btn">Delete</button>
+              <button id="cancelModalbtn" role="button" class="btn"><a href="/evaluation">Back to list</a></button>
             </div>
         </div>
         <!-- ======= Ends ======= -->
