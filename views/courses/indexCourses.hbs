@@ -1,9 +1,23 @@
+<script>
+
+    //RELOAD PAGE WHEN USER CLICK BACK BUTTON
+window.addEventListener("pageshow", function (event) {
+    var historyTraversal = event.persisted ||
+        (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+    if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+    }
+});
+</script>
+
 <div class = "container">
   <h1>Courses</h1>
   <hr>
   <form action="/indexCourses" method="POST">
   <!-- Green Create New Button -->
-  <a role="button" class="btn btn-success" href="createCourses">Create New</a>
+  <a href="/indexCourses/create" class="btn btn-success" role="button">Create New</a>
   <!-- Middle line -->
   <hr>
   <!-- First row that will contain the table header -->
@@ -25,6 +39,7 @@
           <div class = "col-lg-1"><button type="submit" class="btn btn-danger" href="deleteCourses">Delete</button></div>
   </div>
   {{/each}}
+  </form>
   <hr>
 
   <p>© 2019 - Universidad Interamericana Puerto Rico Bayamon Campus</p>
