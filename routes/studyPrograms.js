@@ -33,7 +33,7 @@ router.get('/create', function(req, res, next) {
     //TODO: handle this err;
     if(err)throw err;
 
-    parms.results = results;
+    parms.results = resutls;
     res.render('studyPrograms/createStudyPrograms', parms);
   });
 });
