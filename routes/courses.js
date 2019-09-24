@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 
   let course_table = 'COURSE';
 
-  course_queries.get_course_info(course_table, function(err, results){
+  query.get_course_info(course_table, function(err, results){
     //TODO: handle error
     if (err) throw err;
 
@@ -22,6 +22,39 @@ router.get('/', function(req, res, next) {
   });
 });
 
+//================================ CREATE STUDY PROGRAM  =================================
+/* CREATE home page. */
+router.get('/create', function(req, res, next) {
+  let deparment_table = "STUDY_PROGRAM";
+  general_queries.get_table_info(deparment_table, function(err, resutls){
+
+    //TODO: handle this err;
+    if(err)throw err;
+
+    parms.results = resutls;
+    res.render('courses/createCourses', parms);
+  });
+});
+
+router.post('/create', function(req, res, next) {
+
+  // dep_ID, dep_name, dep_description
+
+
+  //TODO: verify values, null, undefined
+  let data = req.body.data;
+
+	//Insert into the DB the data from user
+	query.insert_into_course([data.crnumber,data.crname, dta.crdesc, data.prog_id], function(err, results){
+
+		//TODO: catch error properly
+		if (err) throw err;
+
+		// console.log("STUDY PROGRAMN INSERTED WITH THE ID: ", results.insertId);
+
+		res.redirect(base_url);
+	});
+});
 
 
 
