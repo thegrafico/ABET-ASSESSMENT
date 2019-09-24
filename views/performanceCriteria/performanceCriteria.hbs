@@ -4,22 +4,24 @@
   <a href="{{create}}" class="btn btn-success" role="button">Create New</a>
   <hr class="my-1">
   <div class="row">
-      <div class="col"><strong>Name</strong></div>
+      <!-- <div class="col"><strong>Name</strong></div> -->
       <div class="col"><strong>Performance Criteria ID</strong></div>
       <div class="col"><strong>Description</strong></div>
+      <div class="col"><strong>Order</strong></div>
       <div class="col"><strong>Student Outcome ID</strong></div>
-      <div class="col"><strong>Date Created</strong></div>
       <div class="col"></div>
   </div>
   <hr class="my-1">
+  {{#each results}}
   <div class="row">
-      <div class="col">Performance Criteria Name</div>
-      <div class="col">1</div>
-      <div class="col">Performance Criteria Description</div>
-      <div class="col">1</div>
-      <div class="col">10/8/2019</div>
+      <!-- <div class="col">Performance Criteria Name</div> -->
+      <div class="col">{{this.perC_ID}}</div>
+      <div class="col">{{this.perC_Desk}}</div>
+      <div class="col">{{this.perC_order}}</div>
+      <div class="col">{{this.outc_ID}}</div>
       <div class="col"><a href="{{edit}}" type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</a> <a href="{{delete}}" type="button" class="btn btn-danger">Delete</a></div>
   </div>
+  {{/each}}
   <hr class="my-1">
   <hr class="my-1">
 
