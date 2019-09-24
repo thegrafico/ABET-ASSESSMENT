@@ -181,7 +181,75 @@ router.post('/:id/' + routes_names[1], function(req, res, next) {
 
 /* EDIT home page. */
 router.get('/:id/' + routes_names[2], function(req, res, next) {
-  res.render('evaluations/editEvaluation', parms);
+  try {
+
+    let data = {
+      "from": "EVALUATION_RUBRIC",
+      "where": "rubric_ID",
+      "id": req.params.id
+    };
+
+    //Insert all data to the database (callback)
+    general_queries.get_table_info_by_id(data, function (err, results) {
+
+      parms.rubric_name = results[0].rubric_name;
+      parms.rubric_description = results[0].rubric_description;
+
+      let data = "STUDENT_OUTCOME";
+
+      general_queries.get_table_info(data, function (err, results) {
+
+        parms.outc_ID = results;
+
+        if (err) {
+          //HERE HAVE TO REDIRECT the user or send a error message
+          throw err;
+        }
+        res.render('evaluations/editEvaluation', parms);
+      });
+
+      //TODO: redirect user to another page
+      // if (err) {
+      //   //HERE HAVE TO REDIRECT the user or send a error message
+      //   throw err;
+      // }
+
+      // console.log(results);
+      // res.render('evaluations/editEvaluation', parms);
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.render('evaluations/editEvaluation', parms);
+  }
+});
+
+router.post('/:id/' + routes_names[2], function(req, res, next) {
+  try {
+
+    let newInfo = [req.body.rubric_name, req.body.rubric_description,
+                  req.body.outc_ID, req.params.id];
+
+    //Insert all data to the database (callback)
+    queries.update_evalRub(newInfo, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      // console.log(results);
+      console.log("Rubric Updated");
+      res.redirect('/evaluation');
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.redirect('/evaluation');
+  }
 });
 
 module.exports = router;
