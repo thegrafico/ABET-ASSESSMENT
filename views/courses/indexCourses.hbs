@@ -35,8 +35,10 @@ window.addEventListener("pageshow", function (event) {
           <div class = "col-lg-2">{{this.course_number}}</div>
           <div class = "col-lg-2">{{this.prog_ID}}</div>
           <div class = "col-lg-2">{{this.date_created}}</div>
-          <div class = "col-lg-1"><button type="submit" class="btn btn-warning" href="editCourses">Edit</button></div>
-          <div class = "col-lg-1"><button type="submit" class="btn btn-danger" href="deleteCourses">Delete</button></div>
+          <div class = "col-lg-1"><a href="/courses/{{this.course_ID}}/edit" type="submit" class="btn btn-warning" style="color:#FFFFFF"
+              name="editButton">Edit</a></div>
+          <div class = "col-lg-1"><a href="/courses/{{this.course_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
+</div>
   </div>
   {{/each}}
   </form>
