@@ -147,9 +147,9 @@ router.put('/:id', function(req, res, next) {
 
   //TIENE QUE IR EN ESTE ORDEN.
   let data = [name, prog_id, course_desc, course_number, course_id];
-
+  let data2 = [prog_id, course_id];
   query.update_course(data, function(err, results){
-
+    console.log("HERE", data[1], data[4]);
     //TODO: cath this error
     if (err) throw err;
 
