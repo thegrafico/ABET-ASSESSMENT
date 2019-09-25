@@ -35,5 +35,21 @@ function insert_into_course(data, callback){
 }
 
 
+function update_course(data, callback){
+    `Insert values into the table department`
+
+    let update_query = `update COURSE set course_name= ?, prog_ID= ?, course_description = ?, course_number = ? where course_ID= ?`;
+    //Exe query
+    conn.query(update_query, data, function (err, results, fields) {
+        if (err) {
+            return callback(err, null)
+        };
+        // console.log(results)
+        return callback(null, results);
+    });
+}
+
+
 module.exports.get_course_info = get_course_info;
 module.exports.insert_into_course = insert_into_course;
+module.exports.update_course = update_course;
