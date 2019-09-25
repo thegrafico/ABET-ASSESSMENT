@@ -56,7 +56,7 @@ router.post('/create', function(req, res, next) {
 	});
 });
 
-//==================================== REMOVE STUDY PROGRAM ROUTE =================================
+//==================================== REMOVE COURSE =================================
 /* REMOVE STUDY PROGRAM ROUTE */
 router.get('/:id/remove', function (req, res) {
   console.log("REMOVE ROUTE");
