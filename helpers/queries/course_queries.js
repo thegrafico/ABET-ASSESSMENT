@@ -15,7 +15,7 @@ function get_course_info(data, callback){
 
 function insert_into_course(data, callback){
 
-    let insert_query = `insert into COURSE (course_name, course_number, course_description) values(?, ?, ?);`;
+    let insert_query = `insert into COURSE (course_number, course_name, course_description) values(?, ?, ?);`;
     let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values(?, ?);`;
     let prog_id_index = 3;
     conn.query(insert_query, data, function (err, results) {
