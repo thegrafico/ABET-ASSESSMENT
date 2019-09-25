@@ -1,22 +1,30 @@
 <div class = "container">
-  <h1>1234 - Computer Engineering Introduction Details</h1>
+  <h1>Edit</h1>
   <p>Course</p>
   <!-- Middle line -->
   <hr>
-  <form>
+  <form action="/courses/{{course_ID}}?_method=PUT" method="POST">
     <div class="form-group">
       <div class = "row">
           <div class = "col-lg-2"><strong>Number</strong></div>
-          <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Number"></div>
+          <div class = "col-lg-10"><input class="form-control" name="data[crnumber]" type="text" placeholder="Course Number" value="{{user_results.course_number}}"></div>
       </div>
 
       <div class = "row">
           <div class = "col-lg-2"><strong>Name</strong></div>
-          <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Name"></div>
+          <div class = "col-lg-10"><input class="form-control" name="data[crname]" type="text" placeholder="Course Name" value="{{user_results.course_name}}"></div>
       </div>
       <div class = "row">
           <div class = "col-lg-2"><strong>Description</strong></div>
-          <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Description"></div>
+          <div class = "col-lg-10"><input class="form-control" name="data[crdec]" type="text" placeholder="Course Description" value="{{user_results.course_desc}}"></div>
+      </div>
+      <div class="row">
+          <div class="col-lg-2"><strong>Study Program</strong></div>
+          <select type="text" name="data[prog_id]" required>
+              {{#each std_results}}
+              <option class="dropdown-item" value="{{prog_ID}}">{{prog_name}}</option>
+              {{/each}}
+          </select>
       </div>
       <div class = "row">
               <div class = "col-lg-2"></div>
@@ -25,6 +33,7 @@
       <div class = "row">
               <div class = "col-lg-2 link"><a href="courses">Back to List</a></div>
       </div>
+    </form>
       <hr>
   <p>© 2019 - Universidad Interamericana Puerto Rico Bayamon Campus</p>
 </div>
