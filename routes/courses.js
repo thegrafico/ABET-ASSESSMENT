@@ -128,7 +128,8 @@ router.get('/:id/edit', function(req, res, next) {
       parms.std_results = resutls;
       parms.user_results = user_results[0];
 
-      // console.log("EDIT RESULTS: ", parms);
+
+      console.log("EDIT RESULTS: ", parms);
       res.render('courses/editCourses', parms);
     });
   });
