@@ -38,12 +38,20 @@ function insert_into_course(data, callback){
 function update_course(data, callback){
     `Insert values into the table department`
 
-    let update_query = `update COURSE set course_name= ?, prog_ID= ?, course_description = ?, course_number = ? where course_ID= ?`;
+    let update_query = `update COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID= ?`;
+    let update_pc = `update PROG_COURSE set prog_ID= ? where course_ID= ?`;
     //Exe query
-    conn.query(update_query, data, function (err, results, fields) {
+    conn.query(update_query, data, function (err, results) {
         if (err) {
             return callback(err, null)
         };
+        conn.query(update_pc, data, function (err, results) {
+            if (err) {
+                return callback(err, null)
+            };
+            // console.log(results)
+            return callback(null, results);
+        });
         // console.log(results)
         return callback(null, results);
     });
