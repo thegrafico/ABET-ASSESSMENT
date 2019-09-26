@@ -3,7 +3,7 @@
 var express = require('express');
 var router = express.Router();
 var general_queries = require('../../helpers/queries/general_queries');
-// var queries = require('../../helpers/queries/performanceCriteria_queries');
+var queries = require('../../helpers/queries/performanceCriteria_queries');
 
 let base_url = '/performanceCriteria/'
 let routes_names = ['create', 'delete', 'edit', 'details']
@@ -81,32 +81,31 @@ router.get('/' + routes_names[0], function(req, res, next) {
 });
 
 /* CREATE POST. */
-// router.post('/' + routes_names[0], function(req, res, next) {
-//   try {
-//
-//     console.log(req.body);
-//     let data = [req.body.perC_Desk, req.body.outc_ID];
-//
-//     //Insert all data to the database (callback)
-//     queries.insert_perC(data, function (err, results) {
-//
-//       //TODO: redirect user to another page
-//       if (err) {
-//         //HERE HAVE TO REDIRECT the user or send a error message
-//         throw err;
-//       }
-//
-//       // console.log(results);
-//       console.log("Rubric Created");
-//       res.redirect('performanceCriteria');
-//     });
-//   }
-//   catch (error) {
-//     //TODO: send a error message to the user.
-//     console.log(error);
-//     res.redirect('performanceCriteria');
-//   }
-// });
+router.post('/' + routes_names[0], function(req, res, next) {
+  try {
+
+    console.log(req.body);
+    let data = [req.body.perC_Desk, req.body.outc_ID];
+
+    //Insert all data to the database (callback)
+    queries.create_perC(data, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      // console.log(results);
+      res.redirect('/performanceCriteria');
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.redirect('/performanceCriteria');
+  }
+});
 
 
 /* DELETE home page. */
