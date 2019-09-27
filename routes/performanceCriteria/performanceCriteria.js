@@ -175,8 +175,40 @@ router.post('/:id/' + routes_names[1], function(req, res, next) {
 });
 
 /* EDIT home page. */
-router.get('/' + routes_names[2], function(req, res, next) {
-  res.render('performanceCriteria/editPerfCrit', parms);
+router.get('/:id/' + routes_names[2], function(req, res, next) {
+  try {
+
+    let data = {
+      "from": "PERF_CRITERIA",
+      "where": "perC_ID",
+      "id": req.params.id
+    };
+
+    //Insert all data to the database (callback)
+    general_queries.get_table_info_by_id(data, function (err, results) {
+
+      parms.perC_Desk = results[0].perC_Desk;
+      parms.outc_ID = results[0].outc_ID;
+
+      let data = "STUDENT_OUTCOME";
+
+      general_queries.get_table_info(data, function (err, results) {
+
+        parms.outc_name = results;
+
+        if (err) {
+          //HERE HAVE TO REDIRECT the user or send a error message
+          throw err;
+        }
+        res.render('performanceCriteria/editPerfCrit', parms);
+      });
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.render('performanceCriteria/editPerfCrit', parms);
+  }
 });
 
 /* DETAILS home page. */
