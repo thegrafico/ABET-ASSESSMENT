@@ -66,6 +66,24 @@ function findOrder(data, callback) {
   });
 }
 
+function update_perfCriteria(data, callback) {
+    // `Insert values into the table department`
+    // outc_ID, outc_name, outc_description, date_created, prog_ID
+    console.log(data);
+    let update_query = `update PERF_CRITERIA
+                        set perC_Desk = ?, outc_ID = ?
+                        where perC_ID = ?`;
+
+    conn.query(update_query, data, function (err, results, fields) {
+        if (err) {
+            return callback(err, null)
+        };
+        // console.log(results)
+        return callback(null, results);
+    });
+}
+
 // module.exports.insert_perC = insert_perC;
 // module.exports.findOrder = findOrder;
 module.exports.create_perC = create_perC;
+module.exports.update_perfCriteria = update_perfCriteria;
