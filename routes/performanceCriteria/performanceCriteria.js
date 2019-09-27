@@ -229,6 +229,33 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
   }
 });
 
+router.post('/:id/' + routes_names[2], function(req, res, next) {
+  try {
+
+    let newInfo = [req.body.perC_Desk, req.body.outc_ID,
+                  req.params.id];
+
+    //Insert all data to the database (callback)
+    queries.update_perfCriteria(newInfo, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      // console.log(results);
+      console.log("PC Updated");
+      res.redirect('/performanceCriteria');
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.redirect('/performanceCriteria');
+  }
+});
+
 /* DETAILS home page. */
 router.get('/' + routes_names[3], function(req, res, next) {
   res.render('performanceCriteria/detailPerfCrit', parms);
