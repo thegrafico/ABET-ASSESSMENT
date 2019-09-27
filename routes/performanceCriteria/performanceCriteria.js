@@ -189,6 +189,7 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
 
       parms.perC_Desk = results[0].perC_Desk;
       parms.outc_ID = results[0].outc_ID;
+      parms.current_outcID = results[0].outc_ID;
 
       let data = "STUDENT_OUTCOME";
 
@@ -200,6 +201,23 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
           //HERE HAVE TO REDIRECT the user or send a error message
           throw err;
         }
+
+        let data = {
+          "from": "STUDENT_OUTCOME",
+          "where": "outc_ID",
+          "id": parms.current_outcID
+        };
+
+        general_queries.get_table_info_by_id(data, function (err, results) {
+
+          console.log(results);
+          parms.current_outName = results[0].outc_name;
+          if (err) {
+            //HERE HAVE TO REDIRECT the user or send a error message
+            throw err;
+          }
+        });
+
         res.render('performanceCriteria/editPerfCrit', parms);
       });
     });
