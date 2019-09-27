@@ -2,6 +2,7 @@
   <h1>Edit</h1>
   <h4>Performance Criteria</h4>
   <hr class="my-4">
+  <form action="edit" method="POST">
 
   <!-- <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
@@ -9,7 +10,7 @@
   </div> -->
   <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="Performance Criteria Description" value="{{perC_Desk}}" requiered></div>
+      <div class="col-10"><input class="form-control" type="text" placeholder="Performance Criteria Description" value="{{perC_Desk}}" name="perC_Desk" requiered></div>
   </div>
   <div class="row">
       <div class="col-2 align-self-center text-right"><strong>Student Outcome</strong></div>
@@ -17,14 +18,16 @@
       <select class="form-control" name="outc_ID" required>
         <option value="{{current_outcID}}" selected="selected">{{current_outName}}</option>
         {{#each outc_name}}
-        <option>{{this.outc_name}}</option>
+        <option value="{{this.outc_ID}}">{{this.outc_name}}</option>
         {{/each}}
+      </select>
+      </div>
   </div>
   <div class="row my-4">
       <div class="col-2"></div>
-      <div class="col"><button type="button" class="btn btn-outline-secondary">Save</button></div>
+      <div class="col"><button role="button" class="btn btn-outline-secondary">Save</button></div>
   </div>
-  <a href="performanceCriteria">Back to List</a>
+  <a href="/performanceCriteria">Back to List</a>
   <hr class="my-3">
   <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>
