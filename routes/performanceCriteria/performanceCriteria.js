@@ -133,7 +133,7 @@ router.get('/:id/' + routes_names[1], function(req, res, next) {
       }
 
       // console.log(results);
-      console.log("Delete");
+      // console.log("Delete");
       res.render('performanceCriteria/deletePerfCrit', parms);
     });
   }
@@ -144,7 +144,35 @@ router.get('/:id/' + routes_names[1], function(req, res, next) {
   }
 });
 
+router.post('/:id/' + routes_names[1], function(req, res, next) {
+  try {
 
+    let data = {
+      "from": "PERF_CRITERIA",
+      "where": "perC_ID",
+      "id": req.params.id
+    };
+
+    //Insert all data to the database (callback)
+    general_queries.delete_record_by_id(data, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      // console.log(results);
+      console.log("Deleted");
+      res.redirect('/performanceCriteria');
+    });
+  }
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.redirect('/performanceCriteria');
+  }
+});
 
 /* EDIT home page. */
 router.get('/' + routes_names[2], function(req, res, next) {
