@@ -121,9 +121,10 @@ router.get('/:id/' + routes_names[1], function(req, res, next) {
     //Insert all data to the database (callback)
     general_queries.get_table_info_by_id(data, function (err, results) {
 
-      parms.Name = results[0].rubric_name;
-      parms.Description = results[0].rubric_description;
-      parms.StudentOutcome = results[0].perC_ID;
+      parms.perC_ID = results[0].perC_ID;
+      parms.perC_Desk = results[0].perC_Desk;
+      parms.perC_order = results[0].perC_order;
+      parms.outc_ID = results[0].outc_ID;
 
       //TODO: redirect user to another page
       if (err) {
