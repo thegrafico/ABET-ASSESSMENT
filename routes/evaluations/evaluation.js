@@ -225,7 +225,7 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
   }
 });
 
-router.post('/:id/' + routes_names[2], function(req, res, next) {
+router.put('/:id/' + routes_names[2], function(req, res, next) {
   try {
 
     let newInfo = [req.body.rubric_name, req.body.rubric_description,
