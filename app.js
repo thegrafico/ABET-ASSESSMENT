@@ -22,7 +22,7 @@ db.query('SELECT 1', function (error, results, fields) {
 // ===== Evaluation Section =====
 var evaluationRouter = require('./routes/evaluations/evaluation');
 // ===== School Term Section =====
-var schoolTermRouter = require('./routes/schoolTerms/schoolTerm');
+var schoolTermRouter = require('./routes/schoolTerm');
 // ===== Departments Section =====
 var departmentRouter = require('./routes/department');
 // ===== Study Programs Section =====
@@ -32,7 +32,7 @@ var usersRouter = require('./routes/users');
 // ===== Outcomes Section =====
 var outcomesRouter = require('./routes/outcomes');
 // ===== Courses Section =====
-var coursesRouter = require('./routes/courses/courses');
+var coursesRouter = require('./routes/courses');
 // ===== Performance Criteria Section =====
 var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
 // ====== AUTHORIZE ROUTE ====
