@@ -148,7 +148,7 @@ router.get('/:id/' + routes_names[1], function(req, res, next) {
   }
 });
 
-router.post('/:id/' + routes_names[1], function(req, res, next) {
+router.delete('/:id/' + routes_names[1], function(req, res, next) {
   try {
 
     let data = {
