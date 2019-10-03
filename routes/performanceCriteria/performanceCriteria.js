@@ -190,6 +190,7 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
       parms.perC_Desk = results[0].perC_Desk;
       parms.outc_ID = results[0].outc_ID;
       parms.current_outcID = results[0].outc_ID;
+      current_outcID = results[0].outc_ID;
 
       let data = "STUDENT_OUTCOME";
 
@@ -205,7 +206,7 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
         let data = {
           "from": "STUDENT_OUTCOME",
           "where": "outc_ID",
-          "id": parms.current_outcID
+          "id": current_outcID
         };
 
         general_queries.get_table_info_by_id(data, function (err, results) {
@@ -229,7 +230,7 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
   }
 });
 
-router.post('/:id/' + routes_names[2], function(req, res, next) {
+router.put('/:id/' + routes_names[2], function(req, res, next) {
   try {
 
     let newInfo = [req.body.perC_Desk, req.body.outc_ID,
