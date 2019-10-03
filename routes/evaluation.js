@@ -1,12 +1,14 @@
-//Carlos
+
+//CARLOS
 
 var express = require('express');
 var router = express.Router();
-var general_queries = require('../../helpers/queries/general_queries');
-var queries = require('../../helpers/queries/performanceCriteria_queries');
+var queries = require('../helpers/queries/evaluation_queries');
+var general_queries = require('../helpers/queries/general_queries');
+// var queries = require('../helpers/queries');
 
-let base_url = '/performanceCriteria/'
-let routes_names = ['create', 'delete', 'edit', 'details']
+let base_url = '/evaluation/'
+let routes_names = ['create', 'delete', 'edit']
 
 //Paramns to routes links
 let parms = {};
@@ -16,16 +18,19 @@ routes_names.forEach(e=>{
   parms[e] = base_url + e;
 });
 
+// console.log("ROUTES", parms, "FINISH")
+
 parms["title"] = 'ABET Assessment';
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   try{
 
-    let performance_table = 'PERF_CRITERIA';
+    let evaluation_table = 'EVALUATION_RUBRIC';
 
     //Get all perfCrit from the database (callback)
-    general_queries.get_table_info(performance_table, function (err, results) {
+    general_queries.get_table_info(evaluation_table, function (err, results) {
 
       //TODO: redirect user to another page
       if (err) {
@@ -39,24 +44,24 @@ router.get('/', function(req, res, next) {
         parms.results = results;
       }
 
-      res.render('performanceCriteria/performanceCriteria', parms);
+      res.render('evaluations/evaluation', parms);
     });
   }
   catch (error) {
 
     //TODO: send a error message to the user.
     console.log(error);
-    res.render('performanceCriteria/performanceCriteria', parms);
+    res.render('evaluations/evaluation', parms);
   }
 });
 
-/* CREATE home page. */
+/* Create home page. */
 router.get('/' + routes_names[0], function(req, res, next) {
   try{
-    let studentOut_table = 'STUDENT_OUTCOME';
+    let evaluation_table = 'STUDENT_OUTCOME';
 
     //Get all perfCrit from the database (callback)
-    general_queries.get_table_info(studentOut_table, function (err, results) {
+    general_queries.get_table_info(evaluation_table, function (err, results) {
 
       //TODO: redirect user to another page
       if (err) {
@@ -70,25 +75,24 @@ router.get('/' + routes_names[0], function(req, res, next) {
         parms.results = results;
       }
 
-      res.render('performanceCriteria/createPerfCrit', parms);
+      res.render('evaluations/createEvaluation', parms);
     });
   }
   catch (error) {
     //TODO: send a error message to the user.
     console.log(error);
-    res.render('performanceCriteria/createPerfCrit', parms);
+    res.render('evaluations/createEvaluation', parms);
   }
 });
 
-/* CREATE POST. */
 router.post('/' + routes_names[0], function(req, res, next) {
   try {
 
     console.log(req.body);
-    let data = [req.body.perC_Desk, req.body.outc_ID];
+    let data = [req.body.outc_name, req.body.outc_decription, req.body.outc_ID];
 
     //Insert all data to the database (callback)
-    queries.create_perC(data, function (err, results) {
+    queries.insert_evalRub(data, function (err, results) {
 
       //TODO: redirect user to another page
       if (err) {
@@ -97,13 +101,14 @@ router.post('/' + routes_names[0], function(req, res, next) {
       }
 
       // console.log(results);
-      res.redirect('/performanceCriteria');
+      console.log("Rubric Created");
+      res.redirect('/evaluation');
     });
   }
   catch (error) {
     //TODO: send a error message to the user.
     console.log(error);
-    res.redirect('/performanceCriteria');
+    res.redirect('/evaluation');
   }
 });
 
@@ -113,18 +118,17 @@ router.get('/:id/' + routes_names[1], function(req, res, next) {
   try {
 
     let data = {
-      "from": "PERF_CRITERIA",
-      "where": "perC_ID",
+      "from": "EVALUATION_RUBRIC",
+      "where": "rubric_ID",
       "id": req.params.id
     };
 
     //Insert all data to the database (callback)
     general_queries.get_table_info_by_id(data, function (err, results) {
 
-      parms.perC_ID = results[0].perC_ID;
-      parms.perC_Desk = results[0].perC_Desk;
-      parms.perC_order = results[0].perC_order;
-      parms.outc_ID = results[0].outc_ID;
+      parms.Name = results[0].rubric_name;
+      parms.Description = results[0].rubric_description;
+      parms.StudentOutcome = results[0].outc_ID;
 
       //TODO: redirect user to another page
       if (err) {
@@ -133,14 +137,14 @@ router.get('/:id/' + routes_names[1], function(req, res, next) {
       }
 
       // console.log(results);
-      // console.log("Delete");
-      res.render('performanceCriteria/deletePerfCrit', parms);
+      console.log("Rubric Created");
+      res.render('evaluations/deleteEvaluation', parms);
     });
   }
   catch (error) {
     //TODO: send a error message to the user.
     console.log(error);
-    res.render('performanceCriteria/deletePerfCrit', parms);
+    res.render('evaluations/deleteEvaluation', parms);
   }
 });
 
@@ -148,8 +152,8 @@ router.delete('/:id/' + routes_names[1], function(req, res, next) {
   try {
 
     let data = {
-      "from": "PERF_CRITERIA",
-      "where": "perC_ID",
+      "from": "EVALUATION_RUBRIC",
+      "where": "rubric_ID",
       "id": req.params.id
     };
 
@@ -163,81 +167,72 @@ router.delete('/:id/' + routes_names[1], function(req, res, next) {
       }
 
       // console.log(results);
-      console.log("Deleted");
-      res.redirect('/performanceCriteria');
+      console.log("Rubric Created");
+      res.redirect('/evaluation');
     });
   }
   catch (error) {
     //TODO: send a error message to the user.
     console.log(error);
-    res.redirect('/performanceCriteria');
+    res.redirect('/evaluation');
   }
 });
+
 
 /* EDIT home page. */
 router.get('/:id/' + routes_names[2], function(req, res, next) {
   try {
 
     let data = {
-      "from": "PERF_CRITERIA",
-      "where": "perC_ID",
+      "from": "EVALUATION_RUBRIC",
+      "where": "rubric_ID",
       "id": req.params.id
     };
 
     //Insert all data to the database (callback)
     general_queries.get_table_info_by_id(data, function (err, results) {
 
-      parms.perC_Desk = results[0].perC_Desk;
-      parms.outc_ID = results[0].outc_ID;
-      parms.current_outcID = results[0].outc_ID;
-      current_outcID = results[0].outc_ID;
+      parms.rubric_name = results[0].rubric_name;
+      parms.rubric_description = results[0].rubric_description;
 
       let data = "STUDENT_OUTCOME";
 
       general_queries.get_table_info(data, function (err, results) {
 
-        parms.outc_name = results;
+        parms.outc_ID = results;
 
         if (err) {
           //HERE HAVE TO REDIRECT the user or send a error message
           throw err;
         }
-
-        let data = {
-          "from": "STUDENT_OUTCOME",
-          "where": "outc_ID",
-          "id": current_outcID
-        };
-
-        general_queries.get_table_info_by_id(data, function (err, results) {
-
-          console.log(results);
-          parms.current_outName = results[0].outc_name;
-          if (err) {
-            //HERE HAVE TO REDIRECT the user or send a error message
-            throw err;
-          }
-        });
-
-        res.render('performanceCriteria/editPerfCrit', parms);
+        res.render('evaluations/editEvaluation', parms);
       });
+
+      //TODO: redirect user to another page
+      // if (err) {
+      //   //HERE HAVE TO REDIRECT the user or send a error message
+      //   throw err;
+      // }
+
+      // console.log(results);
+      // res.render('evaluations/editEvaluation', parms);
     });
   }
   catch (error) {
     //TODO: send a error message to the user.
     console.log(error);
-    res.render('performanceCriteria/editPerfCrit', parms);
+    res.render('evaluations/editEvaluation', parms);
   }
 });
 
 router.put('/:id/' + routes_names[2], function(req, res, next) {
   try {
 
-    let newInfo = [req.body.perC_Desk, req.body.outc_ID,
-                  req.params.id];
+    let newInfo = [req.body.rubric_name, req.body.rubric_description,
+                  req.body.outc_ID, req.params.id];
 
     //Insert all data to the database (callback)
-    queries.update_perfCriteria(newInfo, function (err, results) {
+    queries.update_evalRub(newInfo, function (err, results) {
 
       //TODO: redirect user to another page
       if (err) {
@@ -246,20 +241,15 @@ router.put('/:id/' + routes_names[2], function(req, res, next) {
       }
 
       // console.log(results);
-      console.log("PC Updated");
-      res.redirect('/performanceCriteria');
+      console.log("Rubric Updated");
+      res.redirect('/evaluation');
     });
   }
   catch (error) {
     //TODO: send a error message to the user.
     console.log(error);
-    res.redirect('/performanceCriteria');
+    res.redirect('/evaluation');
   }
-});
-
-/* DETAILS home page. */
-router.get('/' + routes_names[3], function(req, res, next) {
-  res.render('performanceCriteria/detailPerfCrit', parms);
 });
 
 module.exports = router;
