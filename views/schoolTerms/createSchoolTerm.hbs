@@ -4,30 +4,32 @@
 
   <!-- Middle line -->
   <hr>
-  <form>
+  <form action="{{base_url}}create" method="post">
     <div class="form-group">
       <div class = "row">
-          <div class = "col-lg-2"><strong>TermName</strong></div>
-          <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Term Name"></div>
+          <div class = "col-lg-2"><strong>Term Name</strong></div>
+          <div class = "col-lg-10"><input class="form-control" name="data[tname]" type="text" placeholder="Term Name"></div>
       </div>
 
       <div class = "row">
-          <div class = "col-lg-2"><strong>Start Date</strong></div>
-          <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="mm/dd/yyyy"></div>
+          <!-- <div class = "col-lg-2"><strong>Start Date</strong></div>
+          <div class = "col-lg-10"><input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="mm/dd/yyyy"></div> -->
       </div>
       <div class = "row">
-          <div class = "col-lg-2"><strong>End Date</strong></div>
-          <div class = "col-lg-10"><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="mm/dd/yyyy"></div>
+          <!-- <div class = "col-lg-2"><strong>End Date</strong></div>
+          <div class = "col-lg-10"><input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="mm/dd/yyyy"></div> -->
       </div>
 
       <div class = "row">
               <div class = "col-lg-2"></div>
-              <div class = "col-lg-10"><button type="button" class="btn btn-light">Create</button></div>
+              <div class = "col-lg-10"><button type="submit" class="btn btn-light">Create</button></div>
       </div>
       <div class = "row">
-              <div class = "col-lg-2 link"><a href="schoolTerm">Back to List</a>
+              <!-- <div class = "col-lg-2 link"><a href="schoolTerm">Back to List</a> -->
       </div>
     </div>
+    <p><a href="{{base_url}}">Back to List</a></p>
+  </form>
       <hr>
   <p>© 2019 - Universidad Interamericana Puerto Rico Bayamon Campus</p>
 </div>
