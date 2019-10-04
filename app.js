@@ -34,11 +34,11 @@ var outcomesRouter = require('./routes/outcomes');
 // ===== Courses Section =====
 var coursesRouter = require('./routes/courses');
 // ===== Performance Criteria Section =====
-var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
-var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
-var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
-var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
-var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
+var perfCritRouter = require('./routes/performanceCriteria');
+//var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
+//var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
+//var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
+//var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
 
 //===== Professor Report Section =====
 var chooseCourseTermRouter = require('./routes/professorReport/chooseCourseTerm');
