@@ -3,7 +3,7 @@
   <p>Course</p>
   <!-- Middle line -->
   <hr>
-  <form action="/courses/{{course_ID}}?_method=PUT" method="POST">
+  <form action="edit?_method=PUT" method="post">
     <div class="form-group">
       <div class = "row">
           <div class = "col-lg-2"><strong>Number</strong></div>
@@ -21,6 +21,7 @@
       <div class="row">
           <div class="col-lg-2"><strong>Study Program</strong></div>
           <select type="text" name="data[prog_id]" required>
+              <option class="dropdown-item" selected="selected" value="{{current_progID}}">{{current_progName}}</option>
               {{#each std_results}}
               <option class="dropdown-item" value="{{prog_ID}}">{{prog_name}}</option>
               {{/each}}
@@ -31,7 +32,7 @@
               <div class = "col-lg-10"><button type="submit" class="btn btn-outline-secondary">Save</button></div>
       </div>
       <div class = "row">
-              <div class = "col-lg-2 link"><a href="courses">Back to List</a></div>
+              <div class = "col-lg-2 link"><a href="{{base_url}}">Back to List</a></div>
       </div>
     </form>
       <hr>
