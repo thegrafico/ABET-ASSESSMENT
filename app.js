@@ -59,6 +59,11 @@ var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
 var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
 var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
 
+//===== Professor Report Section =====
+var chooseCourseTermRouter = require('./routes/professorReport/chooseCourseTerm');
+var professorInput = require('./routes/professorReport/professorInput');
+var chooseOutcomes = require('./routes/professorReport/chooseOutcomes');
+
 var app = express();
 
 var port = 3000;
@@ -129,6 +134,11 @@ app.use('/createPerfCrit', createPerfCrit);
 app.use('/deletePerfCrit', deletePerfCrit);
 app.use('/detailPerfCrit', detailPerfCrit);
 app.use('/editPerfCrit', editPerfCrit);
+
+//===== Professor Report Section =====
+app.use('/chooseCourseTerm', chooseCourseTermRouter);
+app.use('/professorInput', professorInput);
+app.use('/chooseOutcomes', chooseOutcomes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
