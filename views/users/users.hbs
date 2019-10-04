@@ -1,32 +1,41 @@
 <div class="container-fluid">
   <h2>Users</h2>
   <hr class="my-4">
-  <a href="createUsers" class="btn btn-success" role="button">Create New</a>
-  <hr class="my-1">
-  <div class="row">
+  <form action="/users" method="POST">
+    <a href="/users/createUsers" class="btn btn-success" role="button">Create New</a>
+    <hr class="my-1">
+    <div class="row">
       <div class="col"><strong>User ID</strong></div>
       <div class="col"><strong>Inter ID</strong></div>
+      <div class="col"><strong>Profile</strong></div>
       <div class="col"><strong>Name</strong></div>
       <div class="col"><strong>Last Name</strong></div>
       <div class="col"><strong>Email</strong></div>
       <div class="col"><strong>Phone Number</strong></div>
       <div class="col"><strong>Date Created</strong></div>
       <div class="col"></div>
-  </div>
-  <hr class="my-1">
-  <div class="row">
-      <div class="col">21</div>
-      <div class="col">Y00...</div>
-      <div class="col">Juan</div>
-      <div class="col">Del Pueblo</div>
-      <div class="col">...@gmail.com</div>
-      <div class="col">123-456-7890</div>
-      <div class="col">10/8/2019</div>
-      <div class="col"><a href="user_edit.html" type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</a> <a href="user_delete.html" type="button" class="btn btn-danger">Delete</a></div>
-  </div>
-  <hr class="my-1">
-  <hr class="my-1">
+    </div>
+    <hr class="my-1">
+    {{#each results}}
+    <div class="row">
+      <div class="col">{{this.user_ID}}</div>
+      <div class="col">{{this.inter_ID}}</div>
+      <div class="col">{{this.profile_Name}}</div>
+      <div class="col">{{this.first_name}}</div>
+      <div class="col">{{this.last_name}}</div>
+      <div class="col">{{this.email}}</div>
+      <div class="col">{{this.phone_number}}</div>
+      <div class="col">{{this.date_created}}</div>
+      <div class="col">
+        <a href="users/{{this.user_ID}}/edit" type="submit" class="btn btn-warning" style="color:#FFFFFF"
+          name="editButton">Edit</a>
+        <a href="users/{{this.user_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+    {{/each}}
+    <hr class="my-1">
+    <hr class="my-1">
 
-  <hr class="mt-5 mb-3">
-  <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+    <hr class="mt-5 mb-3">
+    <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
 </div>

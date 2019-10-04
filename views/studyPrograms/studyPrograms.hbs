@@ -1,43 +1,50 @@
+<script>
+
+    //RELOAD PAGE WHEN USER CLICK BACK BUTTON
+window.addEventListener("pageshow", function (event) {
+    var historyTraversal = event.persisted ||
+        (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+    if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+    }
+});
+</script>
+
 <div class="container-fluid">
-  <h2>Study Programs</h2>
-  <hr class="my-4">
-  <a href="createStudyPrograms" class="btn btn-success" role="button">Create New</a>
-  <hr class="my-1">
-  <div class="row">
-      <div class="col"><strong>Name</strong></div>
-      <div class="col"><strong>Study Program ID</strong></div>
-      <div class="col"><strong>Description</strong></div>
-      <div class="col"><strong>Department ID</strong></div>
-      <div class="col"><strong>Date Created</strong></div>
-      <div class="col"></div>
-  </div>
-  <hr class="my-1">
-  <div class="row">
-      <div class="col">Computer Engineering</div>
-      <div class="col">1</div>
-      <div class="col">Computer Engineering Study Program</div>
-      <div class="col">1</div>
-      <div class="col">3/3/2019</div>
-      <div class="col"><button type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</button> <button type="button" class="btn btn-danger">Delete</button></div>
-  </div>
-  <hr class="my-1">
-  <div class="row">
-      <div class="col">Electrical Engineering</div>
-      <div class="col">2</div>
-      <div class="col">Electrical Engineering Study Program</div>
-      <div class="col">1</div>
-      <div class="col">3/3/2019</div>
-      <div class="col"><button type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</button> <button type="button" class="btn btn-danger">Delete</button></div>
-  </div>
-  <hr class="my-1">
-  <div class="row">
-      <div class="col">Science Study Program</div>
-      <div class="col">3</div>
-      <div class="col">Science Study Program Description</div>
-      <div class="col">2</div>
-      <div class="col">3/3/2019</div>
-      <div class="col"><button type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</button> <button type="button" class="btn btn-danger">Delete</button></div>
-  </div>
-  <hr class="mt-5 mb-3">
-  <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+    <h2>Study Programs</h2>
+    <hr class="my-4">
+    <a href="/studyPrograms/create" class="btn btn-success" role="button">Create New</a>
+    <hr class="my-1">
+    <form action="{{create}}" method="post">
+
+        <div class="row">
+            <div class="col"><strong>Name</strong></div>
+            <div class="col"><strong>Study Program ID</strong></div>
+            <div class="col"><strong>Description</strong></div>
+            <div class="col"><strong>Department ID</strong></div>
+            <div class="col"><strong>Date Created</strong></div>
+            <div class="col"></div>
+        </div>
+        <hr class="my-1">
+        {{#each results}}
+        <div class="row">
+            <div class="col">{{this.prog_name}}</div>
+            <div class="col">{{this.prog_ID}}</div>
+            <div class="col">Science Study Program Description</div>
+            <div class="col">{{this.dep_ID}}</div>
+            <div class="col">{{this.date_created}}</div>
+            <div class="col">
+                <a href="/studyPrograms/{{this.prog_ID}}/edit" type="submit" class="btn btn-warning" style="color:#FFFFFF"
+                    name="editButton">Edit</a>
+                <a href="/studyPrograms/{{this.prog_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+        {{/each}}
+    </form>
+    <hr class="mt-5 mb-3">
+    <p>&copy; 2019 - Universidad Interamericana Puerto Rico Bayam&oacute;n Campus</p>
+
+    
 </div>

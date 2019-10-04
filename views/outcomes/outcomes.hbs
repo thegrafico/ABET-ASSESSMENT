@@ -1,25 +1,31 @@
 <div class="container-fluid">
   <h2>Outcomes</h2>
   <hr class="my-4">
-  <a href="createOutcomes" class="btn btn-success" role="button">Create New</a>
+  <a href="{{base_url}}create" class="btn btn-success" role="button">Create New</a>
   <hr class="my-1">
   <div class="row">
-      <div class="col"><strong>Name</strong></div>
-      <div class="col"><strong>Study Program ID</strong></div>
-      <div class="col"><strong>Description</strong></div>
-      <!-- <div class="col"><strong>Department ID</strong></div> -->
-      <div class="col"><strong>Date Created</strong></div>
-      <div class="col"></div>
+    <div class="col"><strong>Name</strong></div>
+    <div class="col"><strong>Study Program ID</strong></div>
+    <div class="col"><strong>Description</strong></div>
+    <!-- <div class="col"><strong>Department ID</strong></div> -->
+    <div class="col"><strong>Date Created</strong></div>
+    <div class="col"></div>
   </div>
   <hr class="my-1">
-  <div class="row">
-      <div class="col">Outcome Name</div>
-      <div class="col">1</div>
-      <div class="col">Outcome Description</div>
+  {{#each results}}
+    <div class="row">
+      <div class="col">{{outc_name}}</div>
+      <div class="col">{{prog_ID}}</div>
+      <div class="col">{{outc_description}}</div>
       <!-- <div class="col">1</div> -->
-      <div class="col">10/8/2019</div>
-      <div class="col"><a href="editOutcomes" type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</a> <a href="deleteOutcomes" type="button" class="btn btn-danger">Delete</a></div>
-  </div>
+      <div class="col">{{date_created}}</div>
+      <div class="col">
+        <a href="/outcomes/{{outc_ID}}/edit" type="button" class="btn btn-warning" style="color:#FFFFFF">Edit</a>
+        <a href="/outcomes/{{outc_ID}}/delete" type="button" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  {{/each}}
+
   <hr class="my-1">
   <hr class="my-1">
 
