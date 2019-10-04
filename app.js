@@ -89,13 +89,11 @@ app.use('/performanceCriteria', perfCritRouter);
 // ====================================================
 
 
-<<<<<<< HEAD
 //===== Professor Report Section =====
 app.use('/chooseCourseTerm', chooseCourseTermRouter);
 app.use('/professorInput', professorInput);
 app.use('/chooseOutcomes', chooseOutcomes);
 
-=======
 //TODO: catch error page, or create one
 //>>>>>>> origin/kemuelbranch
 // catch 404 and forward to error handler
