@@ -20,7 +20,7 @@ db.query('SELECT 1', function (error, results, fields) {
 
 //==================================ROUTES====================================
 // ===== Evaluation Section =====
-var evaluationRouter = require('./routes/evaluations/evaluation');
+var evaluationRouter = require('./routes/evaluation');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerm');
 // ===== Departments Section =====
@@ -35,16 +35,13 @@ var outcomesRouter = require('./routes/outcomes');
 var coursesRouter = require('./routes/courses');
 // ===== Performance Criteria Section =====
 var perfCritRouter = require('./routes/performanceCriteria');
-//var createPerfCrit = require('./routes/performanceCriteria/createPerfCrit');
-//var deletePerfCrit = require('./routes/performanceCriteria/deletePerfCrit');
-//var detailPerfCrit = require('./routes/performanceCriteria/detailPerfCrit');
-//var editPerfCrit   = require('./routes/performanceCriteria/editPerfCrit');
-
-//===== Professor Report Section =====
+// ====== AUTHORIZE ROUTE ====
+var authorize = require('./routes/authorize');
+// ===== Program/Course/Term Selection =====
 var chooseCourseTermRouter = require('./routes/professorReport/chooseCourseTerm');
-var professorInput = require('./routes/professorReport/professorInput');
-var chooseOutcomes = require('./routes/professorReport/chooseOutcomes');
-
+// ===== Professor Input Section =====
+var profInputRouter = require('./routes/professorReport/professorInput');
+//==================================ROUTES====================================
 var app = express();
 
 const port = process.env.PORT || 3000;
@@ -86,16 +83,17 @@ app.use('/outcomes', outcomesRouter);
 app.use('/courses', coursesRouter);
 // ===== Performance Criteria Section =====
 app.use('/performanceCriteria', perfCritRouter);
+//===== Program/Course/Term Selection =====
+app.use('/chooseCourseTerm', chooseCourseTermRouter);
+//===== Professor Input Section =====
+app.use('/professorInput', profInputRouter);
 // ====================================================
 
 
-//===== Professor Report Section =====
-app.use('/chooseCourseTerm', chooseCourseTermRouter);
-app.use('/professorInput', professorInput);
-app.use('/chooseOutcomes', chooseOutcomes);
+
+//app.use('/chooseOutcomes', chooseOutcomes);
 
 //TODO: catch error page, or create one
-//>>>>>>> origin/kemuelbranch
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
