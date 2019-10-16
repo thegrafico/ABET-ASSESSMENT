@@ -47,11 +47,7 @@ router.post('/create', function(req, res, next) {
 		//TODO: catch error properly
     // console.log("HERE", prog_id);
 		if (err) throw err;
-
-
 		res.redirect(base_url);
-
-
 
 	});
 });
