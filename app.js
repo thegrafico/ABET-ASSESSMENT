@@ -9,14 +9,15 @@ var hbs = require("hbs");
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser'); //recuperar datos a traves de URL
 var indexRouter = require('./routes/index');
-var db = require("./helpers/mysqlConnection").mysql_pool; //pool connection
+ //pool connection
+// var db = require("./helpers/mysqlConnection").mysql_pool;
 
 // Verify connection to db
-db.query('SELECT 1', function (error, results, fields) {
-  //TODO: Catch error if can't connect to the database
-  if (error) throw error;
-  console.log('Connected to the database');
-});
+// db.query('SELECT 1', function (error, results, fields) {
+//   //TODO: Catch error if can't connect to the database
+//   if (error) throw error;
+//   console.log('Connected to the database');
+// });
 
 //==================================ROUTES====================================
 // ===== Evaluation Section =====

@@ -1,16 +1,3 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/profTable.css">
-
-    <title>Student Table</title>
-  </head>
   <body>
 
     <form action="tableTest" method="post">
@@ -24,32 +11,99 @@
               <th scope="col">{Criteria 3}</th>
               <th scope="col">{Criteria 4}</th>
               <th scope="col">Criteria Row AVG</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">1</th>
-              <td><input type="number" name="rowValue"></td>
-              <td><input type="number" name="rowValue"></td>
-              <td><input type="number" name="rowValue"></td>
-              <td><input type="number" name="rowValue"></td>
-              <td name="rowOneAvg">{{rowOneAvg}}</td>
+              <td><input type="text" name="rowValue[one]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[one]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[one]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[one]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgOne}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
             </tr>
             <tr>
               <th scope="row">2</th>
-              <td><input type="number"></td>
-              <td><input type="number"></td>
-              <td><input type="number"></td>
-              <td><input type="number"></td>
-              <td>{Row AVG}</td>
+              <td><input type="text" name="rowValue[two]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[two]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[two]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[two]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgTwo}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
             </tr>
             <tr>
               <th scope="row">3</th>
-              <td><input type="number"></td>
-              <td><input type="number"></td>
-              <td><input type="number"></td>
-              <td><input type="number"></td>
-              <td>{Row AVG}</td>
+              <td><input type="text" name="rowValue[three]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[three]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[three]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[three]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgThree}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td><input type="text" name="rowValue[four]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[four]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[four]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[four]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgFour}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <th scope="row">5</th>
+              <td><input type="text" name="rowValue[five]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[five]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[five]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[five]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgFive}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <th scope="row">6</th>
+              <td><input type="text" name="rowValue[six]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[six]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[six]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[six]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgSix}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <th scope="row">7</th>
+              <td><input type="text" name="rowValue[seven]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[seven]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[seven]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[seven]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgSeven}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <th scope="row">8</th>
+              <td><input type="text" name="rowValue[eight]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[eight]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[eight]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[eight]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgEight}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <th scope="row">9</th>
+              <td><input type="text" name="rowValue[nine]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[nine]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[nine]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[nine]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgNine}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            <tr>
+              <th scope="row">10</th>
+              <td><input type="text" name="rowValue[ten]" placeholder="{{studentScoresOne}}"></td>
+              <td><input type="text" name="rowValue[ten]" placeholder="{{studentScoresTwo}}"></td>
+              <td><input type="text" name="rowValue[ten]" placeholder="{{studentScoresThree}}"></td>
+              <td><input type="text" name="rowValue[ten]" placeholder="{{studentScoresFour}}"></td>
+              <td name="rowOneAvg">{{rowOneAvgTen}}</td>
+              <td><button type="button" name="button"><i class="fas fa-trash"></i></button></td>
             </tr>
             <tr>
               <th>% of stud. with 3 or more</th>
@@ -57,7 +111,8 @@
               <td>{AVG of Criteria 2}</td>
               <td>{AVG of Criteria 3}</td>
               <td>{AVG of Criteria 4}</td>
-              <td>{AVG of the AVG row Criteria}</td>
+              <td>{{colAverage}}</td>
+              <td></td>
             </tr>
             <tr>
               <th></th>
@@ -66,16 +121,15 @@
               <td></td>
               <td></td>
               <td><button type="submit" class="btn btn-outline-secondary">Submit</button></td>
+              <td>
+                <button type="button" class="btn btn-default" id="addNew">Add New Row</button>
+                <!-- <i class="fas fa-plus"></i> -->
+              </td>
             </tr>
           </tbody>
         </div>
       </div>
     </form>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
-</html>
+    <!-- jQuery script -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="public/javascripts/tableTest.js"></script>

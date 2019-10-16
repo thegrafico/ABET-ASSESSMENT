@@ -71,7 +71,7 @@ router.get('/:id/delete', function (req, res, next) {
 
     //TODO: VERIFY IS EMPTY
     parms.results = results[0];
-    
+
     res.render('outcomes/deleteOutcomes', parms);
   });
 });
@@ -128,7 +128,7 @@ router.get('/:id/edit', function (req, res, next) {
 /* PUT */
 router.put('/:id', function (req, res, next) {
 
-  //TODO: validate variables  
+  //TODO: validate variables
   let out_id = req.params.id;
   let data = [req.body.data.name, req.body.data.desc, req.body.data.std_prg, out_id];
 
