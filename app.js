@@ -41,6 +41,8 @@ var authorize = require('./routes/authorize');
 var chooseCourseTermRouter = require('./routes/professorReport/chooseCourseTerm');
 // ===== Professor Input Section =====
 var profInputRouter = require('./routes/professorReport/professorInput');
+//=====Outcome Selection=====
+var chooseOutcomes = require('./routes/professorReport/chooseOutcomes');
 //==================================ROUTES====================================
 var app = express();
 
@@ -87,11 +89,10 @@ app.use('/performanceCriteria', perfCritRouter);
 app.use('/chooseCourseTerm', chooseCourseTermRouter);
 //===== Professor Input Section =====
 app.use('/professorInput', profInputRouter);
+//=====Outcome Selection=====
+app.use('/chooseOutcomes', chooseOutcomes);
 // ====================================================
 
-
-
-//app.use('/chooseOutcomes', chooseOutcomes);
 
 //TODO: catch error page, or create one
 // catch 404 and forward to error handler
