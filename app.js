@@ -20,7 +20,7 @@ db.query('SELECT 1', function (error, results, fields) {
 
 //==================================ROUTES====================================
 // ===== Evaluation Section =====
-var evaluationRouter = require('./routes/evaluations/evaluation');
+var evaluationRouter = require('./routes/evaluation');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerm');
 // ===== Departments Section =====
@@ -34,7 +34,7 @@ var outcomesRouter = require('./routes/outcomes');
 // ===== Courses Section =====
 var coursesRouter = require('./routes/courses');
 // ===== Performance Criteria Section =====
-var perfCritRouter = require('./routes/performanceCriteria/performanceCriteria');
+var perfCritRouter = require('./routes/performanceCriteria');
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
 //==================================ROUTES====================================

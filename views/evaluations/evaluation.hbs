@@ -4,7 +4,7 @@
         <h1>Evaluation Rubric</h1>
         <div class="col-sm-12">
           <!-- Create New Button -->
-          <button class="btn btn-success" type="button" name="button"><a id="myCreateBtn" href="{{create}}">Create New</a></button>
+          <a class="btn btn-success" role="button" name="button" href="{{create}}">Create New</a>
           <!-- Table -->
           <table class="table">
             <thead>
@@ -13,22 +13,24 @@
                 <th scope="col">Evaluation Rubric ID</th>
                 <th scope="col">Description</th>
                 <th scope="col">Student Outcome ID</th>
-                <th scope="col">Date Created</th>
+                <!-- <th scope="col">Date Created</th> -->
                 <th scope="col"> </th>
               </tr>
             </thead>
             <tbody>
+              {{#each results}}
               <tr>
-                <td>{{name}}</td>
-                <td>{{rubricID}}</td>
-                <td>{{description}}</td>
-                <td>{{studOutID}}</td>
-                <td>{{dateCreated}}</td>
+                <td>{{this.rubric_name}}</td>
+                <td>{{this.rubric_ID}}</td>
+                <td>{{this.rubric_description}}</td>
+                <td>{{this.outc_ID}}</td>
+                <!-- <td>{{dateCreated}}</td> -->
                 <td>
-                  <button class="btn btn-danger" type="button" name="button"><a id="editBtn" href="{{edit}}">Edit</a></button>
-                  <button class="btn btn-warning" type="button" name="button"><a id="deleteBtn" href="{{delete}}">Delete</a></button>
+                  <a class="btn btn-danger" role="button" name="button" href="evaluation/{{this.rubric_ID}}/edit">Edit</a>
+                  <a class="btn btn-warning" role="button" name="button" href="evaluation/{{this.rubric_ID}}/delete">Delete</a>
                 </td>
               </tr>
+              {{/each}}
             </tbody>
           </table>
         </div>

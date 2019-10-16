@@ -106,6 +106,7 @@ router.get('/:id/edit', function(req, res, next) {
   let table_name = "COURSE";
   let id_course = req.params.id;
   let where_atr = "course_ID";
+  console.log ("I am in edit");
 
   let data = {"from":table_name, "where":where_atr, "id": id_course};
   general_queries.get_table_info_by_id(data, function(err, user_results){
@@ -124,28 +125,33 @@ router.get('/:id/edit', function(req, res, next) {
       parms.std_results = resutls;
       parms.user_results = user_results[0];
 
+      // course_queries.find_select_prog()
 
       console.log("EDIT RESULTS: ", parms);
       res.render('courses/editCourses', parms);
     });
   });
+
 });
 
 /* EDIT home page. */
-router.put('/:id', function(req, res, next) {
+router.put('/:id/edit', function(req, res, next) {
 
   //TODO: verify values befero enter to DB
   let name = req.body.data.crname;
-  let course_id = req.params.course_id;
+  let course_id = req.params.id;
   let prog_id =  req.body.data.prog_id;
-  let course_desc = req.body.data.crdesc;
+  let course_desc = req.body.data.crdec;
   let course_number = req.body.data.crnumber;
 
   //TIENE QUE IR EN ESTE ORDEN.
-  let data = [name, prog_id, course_desc, course_number, course_id];
+  let data = {"name":name, "prog_id":prog_id,
+  "course_desc":course_desc, "course_number":course_number,
+  "course_id":course_id};
 
+  let data2 = [prog_id, course_id];
   query.update_course(data, function(err, results){
-
+    console.log("HERE", data);
     //TODO: cath this error
     if (err) throw err;
 
