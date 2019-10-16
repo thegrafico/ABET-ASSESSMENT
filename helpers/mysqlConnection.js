@@ -1,5 +1,14 @@
 var mysql = require('mysql');
+// <<<<<<< HEAD
+try {
+  const credentials = require('./raul_credentials');
+} catch (error) {
+  // print("Dont exits raul file");
+}
+// =======
 // const credentials = require('./raul_credentials');
+
+// >>>>>>> 02e32c1e4d1f0c9d3f7cfeff1a9278bb7ba39927
 // const database = require('./database');
 var config;
 
@@ -14,11 +23,19 @@ config = {
       //establece limite de personas conectadas a la base de datos
       connectionLimit : 15,
 
+// <<<<<<< HEAD
+//     //establece el route basico donde se ouede accessar
+//     host     : '192.168.1.200',          //THIS IS THE SAME FOR YOUR
+//     user     : 'root',               //THIS IS THE SAME FOR YOUR
+//     password : 'robolab',         //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
+//     database : 'ABET'   //HERE GO THE DATABASE THAT WE ARE GONNA USED
+// =======
       //establece el route basico donde se ouede accessar
       host     : '70.45.220.247',  //THIS IS THE SAME FOR YOUR
       user     : 'root',      //THIS IS THE SAME FOR YOUR
       password : 'abetserver',        //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
       database : 'ABET'   //HERE GO THE DATABASE THAT WE ARE GONNA USED
+// >>>>>>> 02e32c1e4d1f0c9d3f7cfeff1a9278bb7ba39927
   })
 };
 
