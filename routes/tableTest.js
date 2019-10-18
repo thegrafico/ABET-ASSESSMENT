@@ -7,19 +7,27 @@
 //       - Connect to DataBase
 //         - Depending the amount of Perf. Crit. is the amount of columns
 //         - Submit data to database
-//       -
+//        -The numbers should be from 0 to 4 (done)
+//       - Take away code to turn test to float
 
 var express = require('express');
 var router = express.Router();
 
 let parms = {}
 
+parms.row = [1,2,3,4,5,6,7,8,9,10];
 
 router.post('/', function(req, res, next) {
 
-  var studentScores = [req.body.rowValue.one, req.body.rowValue.two, req.body.rowValue.three, req.body.rowValue.four, req.body.rowValue.five, req.body.rowValue.six, req.body.rowValue.seven, req.body.rowValue.eight, req.body.rowValue.nine, req.body.rowValue.ten];
+  // var studentScores = [req.body.rowValue.one, req.body.rowValue.two, req.body.rowValue.three, req.body.rowValue.four, req.body.rowValue.five, req.body.rowValue.six, req.body.rowValue.seven, req.body.rowValue.eight, req.body.rowValue.nine, req.body.rowValue.ten];
+  var studentScores = [req.body.rowValue.one];
 
+  var that = 'one';
   console.log(studentScores);
+  for (var i = 0; i < 4; i++){
+    console.log("The object is: " + req["body"]["rowValue"][1][i]);
+  }
+
 
   var firstRow = studentScores[0];
   var size = 0;
@@ -36,7 +44,7 @@ router.post('/', function(req, res, next) {
 
   for(var i = 0; i < studentScores.length; i++) {
     for(var j = 0; j < size; j++) {
-      console.log(studentScores[0].length);
+      console.log(typeof(studentScores[i][j]));
       console.log("Student Score is: ", studentScores[i][j]);
       sum += parseFloat(studentScores[i][j]);
       console.log("Sum is: ", sum);
@@ -52,15 +60,15 @@ router.post('/', function(req, res, next) {
   // console.log("Test: ", studentScores[0][0]);
 
   parms.rowOneAvgOne = avgRow[0];
-  parms.rowOneAvgTwo = avgRow[1];
-  parms.rowOneAvgThree = avgRow[2];
-  parms.rowOneAvgFour = avgRow[3]
-  parms.rowOneAvgFive = avgRow[4]
-  parms.rowOneAvgSix = avgRow[5]
-  parms.rowOneAvgSeven = avgRow[6]
-  parms.rowOneAvgEight = avgRow[7]
-  parms.rowOneAvgNine = avgRow[8]
-  parms.rowOneAvgTen = avgRow[9]
+  // parms.rowOneAvgTwo = avgRow[1];
+  // parms.rowOneAvgThree = avgRow[2];
+  // parms.rowOneAvgFour = avgRow[3]
+  // parms.rowOneAvgFive = avgRow[4]
+  // parms.rowOneAvgSix = avgRow[5]
+  // parms.rowOneAvgSeven = avgRow[6]
+  // parms.rowOneAvgEight = avgRow[7]
+  // parms.rowOneAvgNine = avgRow[8]
+  // parms.rowOneAvgTen = avgRow[9]
   parms.colAverage = colAvg;
   // parms.studentScoresOne = studentScores[0];
   // parms.studentScoresTwo = studentScores[1];
