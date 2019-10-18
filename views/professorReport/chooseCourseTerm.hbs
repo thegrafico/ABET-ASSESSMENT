@@ -1,0 +1,35 @@
+<div class ="container">
+    <h1 class = "my-4"> Choose Course and Term</h1>
+    <hr class = "my-2 mx-4">
+    <!-- Course Selection -->
+    <div class="form-group">
+        <label for="chooseCourse">Choose a course</label>
+        <select class="form-control" id="chooseCourse">
+            <option>{{course1}}</option>
+            <option>{{course2}}</option>
+            <option>{{course3}}</option>
+        </select>
+    </div>
+    <!--Term Selection-->
+    <div class = "form-group">
+        <label for ="chooseTerm">Choose a term</label>
+        <select class="form-control" id="chooseTerm">
+            <option>{{term1}}</option>
+            <option>{{term2}}</option>
+            <option>{{term3}}</option>
+        </select>
+    </div>
+<!--Nav Buttons-->
+</div>
+<div class="container text-right pt-2">
+    <hr class= "my-2">
+    <div class="row">
+        <div class="col">
+            <div class="btn-group" role="group" aria-label="Next-Save-Cont">
+                <button type="button" class="btn btn-secondary" href="professorInput.hbs">Next</button>
+                <button type="button" class="btn btn-secondary">Save Evaluation</button>
+                <button type="button" class="btn btn-secondary" disabled>Finish</button>
+            </div>
+        </div>
+    </div>
+</div>

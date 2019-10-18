@@ -1,8 +1,0 @@
-{
-    "appService.zipIgnorePattern": [
-        ".vscode{,/**}"
-    ],
-    "appService.defaultWebAppToDeploy": "/subscriptions/38a6fdaa-9eca-4b65-9948-e9fbc9639cf0/resourceGroups/bayamoninterhub-rg/providers/Microsoft.Web/sites/interassesment",
-    "appService.deploySubpath": "",
-    "git.ignoreLimitWarning": true
-}
