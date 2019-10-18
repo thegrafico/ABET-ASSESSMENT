@@ -2,7 +2,7 @@
 
     <form action="tableTest" method="post">
       <div class="container">
-        <table class="table">
+        <table id="table" class="table">
           <thead>
             <tr>
               <th scope="col">Student</th>
@@ -122,7 +122,7 @@
               <td></td>
               <td><button type="submit" class="btn btn-outline-secondary">Submit</button></td>
               <td>
-                <button type="button" class="btn btn-default" id="addNew">Add New Row</button>
+                <button type="button" class="btn btn-default" id="addRow" onclick="addRow()">Add New Row</button>
                 <!-- <i class="fas fa-plus"></i> -->
               </td>
             </tr>

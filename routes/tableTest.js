@@ -1,8 +1,13 @@
-// TODO: - Calculate row avg
-//       - Calculate column avg only to those who exceeds 3 or more
+// TODO: - Calculate row avg (DONE)
+//       - Calculate column % only to those who exceeds 3 or more
+//       - Calculate AVG of all AVG (DONE)
 //       - Create add and remove row function
-//       - By default generate 10 rows
+//       - By default generate 10 rows (DONE)
 //       - Avg result must be one decimal point
+//       - Connect to DataBase
+//         - Depending the amount of Perf. Crit. is the amount of columns
+//         - Submit data to database
+//       -
 
 var express = require('express');
 var router = express.Router();
