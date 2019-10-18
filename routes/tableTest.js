@@ -19,14 +19,15 @@ parms.row = [1,2,3,4,5,6,7,8,9,10];
 
 router.post('/', function(req, res, next) {
 
-  // var studentScores = [req.body.rowValue.one, req.body.rowValue.two, req.body.rowValue.three, req.body.rowValue.four, req.body.rowValue.five, req.body.rowValue.six, req.body.rowValue.seven, req.body.rowValue.eight, req.body.rowValue.nine, req.body.rowValue.ten];
-  var studentScores = [req.body.rowValue.one];
+  // studentScores contains an array of objects which are the inputs of the user
+  var studentScores = req["body"]["rowValue"];
 
-  var that = 'one';
+  // console.log which displays studentScores
   console.log(studentScores);
-  for (var i = 0; i < 4; i++){
-    console.log("The object is: " + req["body"]["rowValue"][1][i]);
-  }
+
+  // for (var i = 0; i < 4; i++){
+  //   console.log("The object is: " + req["body"]["rowValue"][1][i]);
+  // }
 
 
   var firstRow = studentScores[0];
@@ -34,42 +35,35 @@ router.post('/', function(req, res, next) {
   for (let s in firstRow) {
     size++;
   }
-  console.log(size);
   var sum = 0;
   var avgSum = 0;
   var avgRow = [];
 
-// use let in
-
-
+  // for loops which calculates average per rows
   for(var i = 0; i < studentScores.length; i++) {
     for(var j = 0; j < size; j++) {
-      console.log(typeof(studentScores[i][j]));
       console.log("Student Score is: ", studentScores[i][j]);
       sum += parseFloat(studentScores[i][j]);
       console.log("Sum is: ", sum);
     }
+    // avgRow is an array which contains all the average rolls
     avgRow[i] = sum/parseFloat(size);
     sum = 0;
     avgSum += avgRow[i];
     console.log("Avg of row", i, " : ", avgRow[i]);
   }
 
-  var colAvg = avgSum/parseFloat(avgRow.length);
+  // var colAvg = avgSum/parseFloat(avgRow.length);
 
   // console.log("Test: ", studentScores[0][0]);
+  console.log("Avg Row Array here: ", avgRow);
+  parms.rowAvg = avgRow;
 
-  parms.rowOneAvgOne = avgRow[0];
-  // parms.rowOneAvgTwo = avgRow[1];
-  // parms.rowOneAvgThree = avgRow[2];
-  // parms.rowOneAvgFour = avgRow[3]
-  // parms.rowOneAvgFive = avgRow[4]
-  // parms.rowOneAvgSix = avgRow[5]
-  // parms.rowOneAvgSeven = avgRow[6]
-  // parms.rowOneAvgEight = avgRow[7]
-  // parms.rowOneAvgNine = avgRow[8]
-  // parms.rowOneAvgTen = avgRow[9]
-  parms.colAverage = colAvg;
+  // This console log display array of all row averages
+  // If you were to log parms.rowAvg[0] it display first element
+  console.log(parms.rowAvg)
+
+  // parms.colAverage = colAvg;
   // parms.studentScoresOne = studentScores[0];
   // parms.studentScoresTwo = studentScores[1];
   // parms.studentScoresThree = studentScores[2];
