@@ -37,6 +37,12 @@ var coursesRouter = require('./routes/courses');
 var perfCritRouter = require('./routes/performanceCriteria');
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
+// ===== Program/Course/Term Selection =====
+var chooseCourseTermRouter = require('./routes/professorReport/chooseCourseTerm');
+// ===== Professor Input Section =====
+var profInputRouter = require('./routes/professorReport/professorInput');
+//=====Outcome Selection=====
+var chooseOutcomes = require('./routes/professorReport/chooseOutcomes');
 //==================================ROUTES====================================
 var app = express();
 
@@ -79,6 +85,12 @@ app.use('/outcomes', outcomesRouter);
 app.use('/courses', coursesRouter);
 // ===== Performance Criteria Section =====
 app.use('/performanceCriteria', perfCritRouter);
+//===== Program/Course/Term Selection =====
+app.use('/chooseCourseTerm', chooseCourseTermRouter);
+//===== Professor Input Section =====
+app.use('/professorInput', profInputRouter);
+//=====Outcome Selection=====
+app.use('/chooseOutcomes', chooseOutcomes);
 // ====================================================
 
 
