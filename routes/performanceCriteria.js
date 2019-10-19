@@ -217,9 +217,8 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
             //HERE HAVE TO REDIRECT the user or send a error message
             throw err;
           }
+          res.render('performanceCriteria/editPerfCrit', parms);
         });
-
-        res.render('performanceCriteria/editPerfCrit', parms);
       });
     });
   }

@@ -16,7 +16,7 @@
       <div class="col-2 align-self-center text-right"><strong>Student Outcome</strong></div>
       <div class="col-2 align-self-center text-right">
       <select class="form-control" name="outc_ID" required>
-        <option value="{{current_outcID}}" selected="selected">{{current_outName}}</option>
+        <option value="{{current_outcID}}">{{current_outName}}</option>
         {{#each outc_name}}
         <option value="{{this.outc_ID}}">{{this.outc_name}}</option>
         {{/each}}
