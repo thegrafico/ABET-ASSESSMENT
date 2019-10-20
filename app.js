@@ -9,11 +9,12 @@ var hbs = require("hbs");
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser'); //recuperar datos a traves de URL
 var indexRouter = require('./routes/index');
-var db = require("./helpers/mysqlConnection").mysql_pool; //pool connection
+ //pool connection
+var db = require("./helpers/mysqlConnection").mysql_pool;
 
 // Verify connection to db
 db.query('SELECT 1', function (error, results, fields) {
-  //TODO: Catch error if can't connect to the database
+//   //TODO: Catch error if can't connect to the database
   if (error) throw error;
   console.log('Connected to the database');
 });
@@ -37,6 +38,8 @@ var coursesRouter = require('./routes/courses');
 var perfCritRouter = require('./routes/performanceCriteria');
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
+// ====== Table Test Route ======
+var tableTest = require('./routes/tableTest');
 // ===== Program/Course/Term Selection =====
 var chooseCourseTermRouter = require('./routes/professorReport/chooseCourseTerm');
 // ===== Professor Input Section =====
@@ -44,6 +47,7 @@ var profInputRouter = require('./routes/professorReport/professorInput');
 //=====Outcome Selection=====
 var chooseOutcomes = require('./routes/professorReport/chooseOutcomes');
 //==================================ROUTES====================================
+
 var app = express();
 
 const port = process.env.PORT || 3000;
@@ -85,6 +89,8 @@ app.use('/outcomes', outcomesRouter);
 app.use('/courses', coursesRouter);
 // ===== Performance Criteria Section =====
 app.use('/performanceCriteria', perfCritRouter);
+// ===== Table Test =====
+app.use('/tableTest', tableTest);
 //===== Program/Course/Term Selection =====
 app.use('/chooseCourseTerm', chooseCourseTermRouter);
 //===== Professor Input Section =====
