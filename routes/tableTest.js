@@ -16,6 +16,8 @@ var router = express.Router();
 let parms = {}
 
 parms.row = [1,2,3,4,5,6,7,8,9,10];
+console.log("Amount of rows before: ", parms.rows);
+let amountOfRow = 10;
 
 router.post('/', function(req, res, next) {
 
@@ -26,7 +28,7 @@ router.post('/', function(req, res, next) {
   console.log(studentScores);
 
   // for (var i = 0; i < 4; i++){
-  //   console.log("The object is: " + req["body"]["rowValue"][1][i]);
+    // console.log("The object is: " + req["body"]["rowValue"][1][i]);
   // }
 
 
@@ -62,7 +64,8 @@ router.post('/', function(req, res, next) {
   // This console log display array of all row averages
   // If you were to log parms.rowAvg[0] it display first element
   console.log(parms.rowAvg)
-
+  addRow();
+  console.log("Amount of rows after: ", parms.rows);
   // parms.colAverage = colAvg;
   // parms.studentScoresOne = studentScores[0];
   // parms.studentScoresTwo = studentScores[1];
@@ -76,5 +79,18 @@ router.post('/', function(req, res, next) {
 router.get('/', function(req, res, next) {
   res.render('tableTest', parms);
 });
+
+function addRow() {
+  amountOfRow++;
+  parms.rows.push(amountOfRow);
+  console.log(parms.rows);
+  
+}
+
+
+function delRow(){
+
+
+}
 
 module.exports = router;
