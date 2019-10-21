@@ -26,7 +26,7 @@ router.post('/', function(req, res, next) {
   console.log(studentScores);
 
   // for (var i = 0; i < 4; i++){
-  //   console.log("The object is: " + req["body"]["rowValue"][1][i]);
+    // console.log("The object is: " + req["body"]["rowValue"][1][i]);
   // }
 
 
