@@ -10,14 +10,14 @@ var methodOverride = require("method-override");
 var bodyParser = require('body-parser'); //recuperar datos a traves de URL
 var indexRouter = require('./routes/index');
  //pool connection
-var db = require("./helpers/mysqlConnection").mysql_pool;
-
-// Verify connection to db
-db.query('SELECT 1', function (error, results, fields) {
-//   //TODO: Catch error if can't connect to the database
-  if (error) throw error;
-  console.log('Connected to the database');
-});
+// var db = require("./helpers/mysqlConnection").mysql_pool;
+//
+// // Verify connection to db
+// db.query('SELECT 1', function (error, results, fields) {
+// //   //TODO: Catch error if can't connect to the database
+//   if (error) throw error;
+//   console.log('Connected to the database');
+// });
 
 //==================================ROUTES====================================
 // ===== Evaluation Section =====
