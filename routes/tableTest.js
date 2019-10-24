@@ -17,6 +17,7 @@ let parms = {}
 
 parms.row = [1,2,3,4,5,6,7,8,9,10];
 
+
 router.post('/', function(req, res, next) {
 
   // studentScores contains an array of objects which are the inputs of the user
@@ -70,6 +71,19 @@ router.post('/', function(req, res, next) {
   // parms.studentScoresFour = studentScores[3];
 
   res.render('tableTest', parms);
+
+console.log("Este es el numero de rows" + params.row[0]);
+
+function addRow(){
+
+
+}
+
+function delRow(){
+
+
+}
+
 });
 
 /* GET home page. */
