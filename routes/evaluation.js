@@ -194,6 +194,7 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
 
       parms.rubric_name = results[0].rubric_name;
       parms.rubric_description = results[0].rubric_description;
+      parms.current_outID = results[0].outc_ID;
 
       let data = "STUDENT_OUTCOME";
 
@@ -205,17 +206,21 @@ router.get('/:id/' + routes_names[2], function(req, res, next) {
           //HERE HAVE TO REDIRECT the user or send a error message
           throw err;
         }
-        res.render('evaluations/editEvaluation', parms);
+
+        // let data = {
+        //   "from": "STUDENT_OUTCOME",
+        //   "where": "outc_ID",
+        //   "id": parms.current_outID
+        // };
+        //
+        // general_queries.get_table_info_by_id(data, function (err, results) {
+        //
+        //     console.log("HERE", data, results);
+        //     parms.current_outName = results[0].outc_name;
+
+          res.render('evaluations/editEvaluation', parms);
+        // });
       });
-
-      //TODO: redirect user to another page
-      // if (err) {
-      //   //HERE HAVE TO REDIRECT the user or send a error message
-      //   throw err;
-      // }
-
-      // console.log(results);
-      // res.render('evaluations/editEvaluation', parms);
     });
   }
   catch (error) {
