@@ -3,7 +3,7 @@
     <h4>Study Program</h4>
     <hr class="my-4">
     <form action="/studyPrograms/{{prog_ID}}?_method=PUT" method="POST">
-        
+
         <div class="row">
             <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
             <div class="col-8"><input class="form-control" name="data[cname]" type="text" value="{{user_results.prog_name}}" placeholder="Course Name">
@@ -18,6 +18,7 @@
         <div class="row">
             <div class="col-2 align-self-center text-right"><strong>Department</strong></div>
             <select type="text" name="data[dept_id]" required>
+                <option value="{{current_deptID}}">{{current_deptName}}</option>
                 {{#each dpt_results}}
                 <option class="dropdown-item" value="{{dep_ID}}">{{dep_name}}</option>
                 {{/each}}
