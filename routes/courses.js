@@ -46,7 +46,7 @@ router.post('/create', function(req, res, next) {
 	query.insert_into_course([data.crnumber,data.crname, data.crdesc, data.prog_id], function(err, results){
 		//TODO: catch error properly
     // console.log("HERE", prog_id);
-		if (err) throw err;
+		if (err) throw err; 
 		res.redirect(base_url);
 
 	});
