@@ -112,6 +112,7 @@ router.get('/:id/edit', function (req, res, next) {
     let table = "STUDY_PROGRAM";
 
     parms.results = outcome_results[0];
+    parms.current_progID = outcome_results[0].prog_ID;
 
     general_queries.get_table_info(table, function (err, results) {
       //TODO: catch error
@@ -120,8 +121,20 @@ router.get('/:id/edit', function (req, res, next) {
       //outcome data
       parms.std_prog = results;
 
-      console.log(parms);
-      res.render('outcomes/editOutcomes', parms);
+      let data = {
+        "from": "STUDY_PROGRAM",
+        "where": "prog_ID",
+        "id": parms.current_progID
+      };
+
+      general_queries.get_table_info_by_id(data, function (err, results) {
+
+        console.log("HERE", data, results);
+        parms.current_progName = results[0].prog_name;
+
+        console.log(parms);
+        res.render('outcomes/editOutcomes', parms);
+      });
     });
   });
 });
