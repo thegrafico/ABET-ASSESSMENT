@@ -7,17 +7,18 @@
         <div class="row">
             <div class="col-2 align-self-center text-right"><strong>Name</strong></div>
             <div class="col-8"><input class="form-control" value="{{results.outc_name}}" name="data[name]" type="text"
-                    placeholder="Outcome Name"></div>
+                    placeholder="Outcome Name" required></div>
         </div>
         <div class="row my-4">
             <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
             <div class="col-8"><input class="form-control" value="{{results.outc_description}}" name="data[desc]"
-                    type="text" placeholder="Outcome Description">
+                    type="text" placeholder="Outcome Description" required>
             </div>
         </div>
         <div class="row">
             <div class="col-2 align-self-center text-right"><strong>Study Program</strong></div>
             <select type="text" name="data[std_prg]" required>
+                <option value="{{current_progID}}">{{current_progName}}</option>
                 {{#each std_prog}}
                 <option class="dropdown-item" value="{{prog_ID}}">{{prog_name}}</option>
                 {{/each}}

@@ -1,0 +1,37 @@
+<div class="wrapper">
+    <div class="container">
+      <div class="row">
+        <h1>Profiles</h1>
+        <div class="col-sm-12">
+          <!-- Create New Button -->
+          <button class="btn btn-success" type="button" name="button"><a id="myCreateBtn" href="createEvaluation">Create New</a></button>
+          <!-- Table -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">User ID</th>
+                <th scope="col">Email</th>
+                <th scope="col">Permissions</th>
+                <th scope="col">Date Created</th>
+                <th scope="col"> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{name}}</td>
+                <td>{{userID}}</td>
+                <td>{{email}}</td>
+                <td>{{permissions}}</td>
+                <td>{{dateCreated}}</td>
+                <td>
+                  <button class="btn btn-danger" type="button" name="button"><a id="editBtn" href="editEvaluation">Edit</a></button>
+                  <button class="btn btn-warning" type="button" name="button"><a id="deleteBtn" href="deleteEvaluation">Delete</a></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>

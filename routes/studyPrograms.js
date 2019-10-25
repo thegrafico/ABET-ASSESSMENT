@@ -128,9 +128,22 @@ router.get('/:id/edit', function(req, res, next) {
       parms.prog_ID = id_stp;
       parms.dpt_results = resutls;
       parms.user_results = user_results[0];
+      parms.current_deptID = user_results[0].dep_ID;
 
       // console.log("EDIT RESULTS: ", parms);
-      res.render('studyPrograms/editStudyPrograms', parms);
+
+      let data = {
+        "from": "DEPARTMENT",
+        "where": "dep_ID",
+        "id": parms.current_deptID
+      };
+
+      general_queries.get_table_info_by_id(data, function(err, results){
+
+        parms.current_deptName = results[0].dep_name;
+
+        res.render('studyPrograms/editStudyPrograms', parms);
+      });
     });
   });
 });

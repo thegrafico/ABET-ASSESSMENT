@@ -10,13 +10,13 @@
   </div> -->
   <div class="row my-4">
       <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
-      <div class="col-10"><input class="form-control" type="text" placeholder="Performance Criteria Description" value="{{perC_Desk}}" name="perC_Desk" requiered></div>
+      <div class="col-10"><input class="form-control" type="text" placeholder="Performance Criteria Description" value="{{perC_Desk}}" name="perC_Desk" required></div>
   </div>
   <div class="row">
       <div class="col-2 align-self-center text-right"><strong>Student Outcome</strong></div>
       <div class="col-2 align-self-center text-right">
-      <select class="form-control" name="outc_ID" required>
-        <option value="{{current_outcID}}" selected="selected">{{current_outName}}</option>
+      <select class="form-control" name = "outc_ID" required>
+        <option value="{{current_outcID}}">{{current_outName}}</option>
         {{#each outc_name}}
           <option value="{{this.outc_ID}}">{{this.outc_name}}</option>
         {{/each}}

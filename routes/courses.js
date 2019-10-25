@@ -127,8 +127,27 @@ router.get('/:id/edit', function(req, res, next) {
 
       // course_queries.find_select_prog()
 
-      console.log("EDIT RESULTS: ", parms);
-      res.render('courses/editCourses', parms);
+      let data = {
+        "from": "PROG_COURSE",
+        "from2": "STUDY_PROGRAM",
+        "where": "course_ID",
+        "id": id_course
+      };
+
+        general_queries.get_table_info_by_id_naturalJoin(data, function (err, results) {
+
+          console.log(results);
+          parms.current_progName = results[0].prog_name;
+          parms.current_progID   = results[0].prog_ID;
+          if (err) {
+            //HERE HAVE TO REDIRECT the user or send a error message
+            throw err;
+          }
+          res.render('courses/editCourses', parms);
+        });
+
+      // console.log("EDIT RESULTS: ", parms);
+      // res.render('courses/editCourses', parms);
     });
   });
 
