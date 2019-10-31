@@ -8,8 +8,8 @@ var logger = require('morgan');
 var hbs = require("hbs");
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser'); //recuperar datos a traves de URL
-var indexRouter = require('./routes/index');
- //pool connection
+
+// pool connection
 var db = require("./helpers/mysqlConnection").mysql_pool;
 
 // Verify connection to db
@@ -20,6 +20,8 @@ db.query('SELECT 1', function (error, results, fields) {
 });
 
 //==================================ROUTES====================================
+// ===== Index Route =====
+var indexRouter = require('./routes/index');
 // ===== Evaluation Section =====
 var evaluationRouter = require('./routes/evaluation');
 // ===== School Term Section =====
@@ -51,6 +53,7 @@ var chooseOutcomes = require('./routes/professorReport/chooseOutcomes');
 var app = express();
 
 const port = process.env.PORT || 3000;
+app.use(express.static(__dirname + "public"));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -91,11 +94,13 @@ app.use('/courses', coursesRouter);
 app.use('/performanceCriteria', perfCritRouter);
 // ===== Table Test =====
 app.use('/tableTest', tableTest);
-//===== Program/Course/Term Selection =====
+// ===== Result Table =====
+app.use('/resultTable', tableTest);
+// ===== Program/Course/Term Selection =====
 app.use('/chooseCourseTerm', chooseCourseTermRouter);
-//===== Professor Input Section =====
+// ===== Professor Input Section =====
 app.use('/professorInput', profInputRouter);
-//=====Outcome Selection=====
+// =====Outcome Selection=====
 app.use('/chooseOutcomes', chooseOutcomes);
 // ====================================================
 
