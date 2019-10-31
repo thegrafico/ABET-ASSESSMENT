@@ -1,11 +1,16 @@
 var express = require('express');
 var router = express.Router();
+let base_url = '/courses/';
+var query = require("../../helpers/queries/pInput_queries");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
   res.render('professorReport/professorInput', { title: 'ABET Assessment' });
 });
+
+//Creando un Id para seguir mandando los datos
+//a la proxima ruta.
 
 // router.get('/professorInput/:id',function(req,res,next){
 //   res.render('test',{output: req.params.id});
@@ -16,20 +21,29 @@ router.get('/', function(req, res, next) {
 //   res.redirect('/professorInput/' + id);
 // });
 
-//
+
+//Post de Prueba...
+
 // router.post('/', function(req,res,next){
-//
-//   res.redirect('/chooseOutcomes');
+//   res.redirect('/chooseCourseTerm');
 // });
 
 
- //router.use(express.urlencoded({extended: false }));
- //router.use(express.static(path.join(__dirname, 'public')));
- // 
- // router.post('/', function (req, res) {
- //     console.log(req.body);
- //     res.send(req.body);
- //     res.redirect('/chooseOutcomes');
- // });
+//Post guardando lo que se escribe en la pagina en la base de datos.
+ router.post('/', function (req, res,next) {
+
+     // res.send(req.body);
+     let data = [req.body.A, req.body.B, req.body.C, req.body.D, req.body.F,
+        req.body.UW, req.body.rCourse, req.body.cReflection, req.body.cImprovement, null];
+
+        console.log(data);
+
+     query.insert_into_report(data, function(err, results){
+   		//TODO: catch error properly
+   		if (err) throw err;
+   		res.redirect(base_url);
+	   });
+     res.redirect('/chooseCourseTerm');
+ });
 
 module.exports = router;
