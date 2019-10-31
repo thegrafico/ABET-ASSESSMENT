@@ -35,7 +35,7 @@ router.get('/', function(req, res, next) {
      // res.send(req.body);
      let data = [req.body.A, req.body.B, req.body.C, req.body.D, req.body.F,
         req.body.UW, req.body.rCourse, req.body.cReflection, req.body.cImprovement, null];
-
+      //Esto es para ver si esta "receiving" la data
         console.log(data);
 
      query.insert_into_report(data, function(err, results){
@@ -43,7 +43,7 @@ router.get('/', function(req, res, next) {
    		if (err) throw err;
    		res.redirect(base_url);
 	   });
-     res.redirect('/chooseCourseTerm');
+     res.redirect('/tableTest');
  });
 
 module.exports = router;
