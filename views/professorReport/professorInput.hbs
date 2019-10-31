@@ -1,4 +1,4 @@
-<form class="" action="professorInput" method="post">
+<form class="professorInput" action="professorInput" method="post">
 <div class="container-fluid my-3 mx-3">
     <h1>Course Evaluation</h1>
     <hr class="my-4">
@@ -10,12 +10,12 @@
         <!--Grade Scale-->
         <thead class = "thead-light">
             <tr>
-                <th scope="col-auto" required>A</th>
-                <th scope="col-auto">B</th>
-                <th scope="col-auto">C</th>
-                <th scope="col-auto">D</th>
-                <th scope="col-auto">F</th>
-                <th scope="col-auto">W</th>
+                <th scope="col-auto" name= "A" id = "A" required>A</th>
+                <th scope="col-auto" name ="B" id ="B">B</th>
+                <th scope="col-auto" name = "C" id ="C">C</th>
+                <th scope="col-auto"name ="D" id ="D" >D</th>
+                <th scope="col-auto"name ="F" id ="F" >F</th>
+                <th scope="col-auto" name ="UW" id ="UW">UW</th>
                 <th scope="col-auto">Total</th>
             </tr>
         <!--Inputs-->
@@ -67,24 +67,24 @@
    <hr>
    <div class="form-group">
         <label for="exampleFormControlTextarea1">Example textarea</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <textarea class="form-control" name = "rCourse" id="rCourse" rows="3"></textarea>
     </div>
 
 </div>
-<div class="container my-4 mx-5">
+<!-- <div class="container my-4 mx-5">
     <h3 class = "mb-4">Modifications Made to Course</h3>
     <hr>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Example textarea</label>
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
     </div>
-</div>
+</div> -->
 <div class="container my-4 mx-5">
     <h3 class = "mb-4">Course Reflection</h3>
     <hr>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Example textarea</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <textarea class="form-control" name= "cReflection" id="cReflection" rows="3"></textarea>
     </div>
 </div>
 <div class="container my-4 mx-5">
@@ -92,7 +92,7 @@
     <hr>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Example textarea</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <textarea class="form-control" name="cImprovement" id="cImprovement" rows="3"></textarea>
     </div>
 </div>
 
@@ -109,11 +109,11 @@
 
 <!-- Prueba para ver si esta funcionando el node como quiero
 es para el post. -->
-                <form method="post" action="/handler">
+                <!-- <form method="post" action="/handler">
                   <input type="text" name="username" /><br />
                   <input type="password" name="password" /><br />
                   <input type="submit" />
-                </form>
+                </form> -->
 
             </div>
         </div>
