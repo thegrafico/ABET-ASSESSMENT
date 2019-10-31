@@ -1,3 +1,4 @@
+<form class="professorInput" action="professorInput" method="post">
 <div class="container-fluid my-3 mx-3">
     <h1>Course Evaluation</h1>
     <hr class="my-4">
@@ -9,12 +10,12 @@
         <!--Grade Scale-->
         <thead class = "thead-light">
             <tr>
-                <th scope="col-auto">A</th>
-                <th scope="col-auto">B</th>
-                <th scope="col-auto">C</th>
-                <th scope="col-auto">D</th>
-                <th scope="col-auto">F</th>
-                <th scope="col-auto">W</th>
+                <th scope="col-auto" required>A</th>
+                <th scope="col-auto" required>B</th>
+                <th scope="col-auto" required>C</th>
+                <th scope="col-auto" required>D</th>
+                <th scope="col-auto" required>F</th>
+                <th scope="col-auto" required>UW</th>
                 <th scope="col-auto">Total</th>
             </tr>
         <!--Inputs-->
@@ -23,32 +24,32 @@
             <tr>
                 <td scope = "col-auto">
                     <div class="form-group">
-                        <input type="text">
+                        <input type="text" name= "A" id = "A">
                     </div>
                 </td>
                 <td scope = "col-auto">
                     <div class="form-group">
-                    <input type="text">
+                    <input type="text" name ="B" id ="B">
                     </div>
                 </td>
                 <td scope = "col-auto">
                     <div class="form-group">
-                    <input type="text">
+                    <input type="text" name = "C" id ="C">
                     </div>
                 </td>
                 <td scope = "col-auto">
                     <div class="form-group">
-                    <input type="text">
+                    <input type="text" name ="D" id ="D">
                     </div>
                 </td>
                 <td scope = "col-auto">
                     <div class="form-group">
-                        <input type="text">
+                        <input type="text" name ="F" id ="F">
                     </div>
                 </td>
                 <td scope = "col-auto">
                     <div class="form-group">
-                    <input type="text">
+                    <input type="text" name ="UW" id ="UW">
                     </div>
                 </td>
                 <td scope = "col-auto">
@@ -63,46 +64,59 @@
 </div>
 <div class="container my-4 mx-5">
     <h3 class = "mb-4">Result of the Course</h3>
-   <hr> 
+   <hr>
    <div class="form-group">
-        <label for="exampleFormControlTextarea1">Example textarea</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
+        <textarea class="form-control" name = "rCourse" id="rCourse" rows="3"></textarea>
     </div>
- 
+
 </div>
-<div class="container my-4 mx-5">
+<!-- <div class="container my-4 mx-5">
     <h3 class = "mb-4">Modifications Made to Course</h3>
     <hr>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Example textarea</label>
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
     </div>
-</div>
+</div> -->
 <div class="container my-4 mx-5">
     <h3 class = "mb-4">Course Reflection</h3>
     <hr>
     <div class="form-group">
-        <label for="exampleFormControlTextarea1">Example textarea</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
+        <textarea class="form-control" name= "cReflection" id="cReflection" rows="3"></textarea>
     </div>
 </div>
 <div class="container my-4 mx-5">
     <h3 class = "mb-4">Proposed Action for Course Improvement</h3>
     <hr>
     <div class="form-group">
-        <label for="exampleFormControlTextarea1">Example textarea</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
+        <textarea class="form-control" name="cImprovement" id="cImprovement" rows="3"></textarea>
     </div>
 </div>
+
+
 <div class="container text-right pt-2">
     <hr class= "my-2">
     <div class="row">
         <div class="col">
             <div class="btn-group" role="group" aria-label="Next-Save-Cont">
-                <button type="button" class="btn btn-secondary" href="professorInput.hbs">Next</button>
-                <button type="button" class="btn btn-secondary">Save Evaluation</button>
-                <button type="button" class="btn btn-secondary" disabled>Finish</button>
+              <!-- <input type="text" name="id"> -->
+                <button type="Submit" class="btn btn-secondary" href="professorInput.hbs">Next</button>
+                <button type="Submit" name="id" class="btn btn-secondary">Save Evaluation</button>
+                <button type="Submit" class="btn btn-secondary" disabled>Finish</button>
+
+<!-- Prueba para ver si esta funcionando el node como quiero
+es para el post. -->
+                <!-- <form method="post" action="/handler">
+                  <input type="text" name="username" /><br />
+                  <input type="password" name="password" /><br />
+                  <input type="submit" />
+                </form> -->
+
             </div>
         </div>
     </div>
 </div>
+</form>

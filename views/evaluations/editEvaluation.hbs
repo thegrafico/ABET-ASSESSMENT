@@ -27,6 +27,7 @@
             </div>
             <div class="col-sm-10">
               <select class="form-control" name="outc_ID" required>
+                <option value="{{current_outID}}">{{current_outID}}</option>
                 {{#each outc_ID}}
                 <option>{{this.outc_ID}}</option>
                 {{/each}}

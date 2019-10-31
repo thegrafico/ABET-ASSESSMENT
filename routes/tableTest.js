@@ -97,9 +97,10 @@ router.post('/', function(req, res, next) {
 
   parms.row = listOfObjects;
   parms.avgCol = colAvg
-  parms.colPerc = threeMorePerc;
-
+  parms.colPerc = threeMorePerc
+  
   res.render('resultTable', parms);
+
 });
 
 /* GET home page. */
