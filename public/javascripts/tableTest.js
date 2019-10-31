@@ -15,6 +15,3 @@ $(document).ready(function () {
       });
   });
 });
-
-
-// <td name='rowOneAvg'>{{rowAvg}}</td>

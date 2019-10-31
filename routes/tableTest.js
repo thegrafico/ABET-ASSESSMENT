@@ -4,7 +4,7 @@
 //       - Create add and remove row function (DONE)
 //       - By default generate 10 rows (DONE)
 //       - Avg result must be one decimal point
-//       - Connect to DataBase
+//       - Connect to DataBase (NEXT_1)
 //         - Depending the amount of Perf. Crit. is the amount of columns (NEXT)
 //         - Submit data to database
 //       - The numbers should be from 0 to 4 (DONE)
