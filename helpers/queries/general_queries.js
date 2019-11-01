@@ -28,7 +28,7 @@ function get_table_info_by_id(table_info, callback){
 
     console.log("GETTING THE INFO OF THE TABLE: ", data);
     try {
-        conn.query(findDep, data, function (err, results, fields) {
+        conn.query(findDep, data, function (err, results) {
 
             if (err) {
                 return callback(err, null)

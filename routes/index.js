@@ -24,22 +24,22 @@ router.get('/', async function (req, res, next) {
   const accessToken = await authHelper.getAccessToken(req.cookies, res);
   const userName = req.cookies.graph_user_name;
   const userEmail = req.cookies.graph_user_email;
-  // console.log("DEBUG:", accessToken,userName, userEmail )
+  console.log(userEmail )
 
   //Verify is there is user info
   if (accessToken && userName && userEmail) {
     parms.user = userName;
     parms.debug = `User: ${userName}\nEmail: ${userEmail}`;
-
+    console.log(parms.debug)
     //TODO: user_data_profile have all the information that you need to keep working. 
     //Next step is to display the values. 
 
     //Compare user email in the DB, then get the data if there is any user. 
-    user_data_profile = get_user_profile(userEmail)
-
+    user_data_profile = get_user_profile(userEmail).then("ERROR");
+    console.log("DEBUG",user_data_profile)
     //Verify is not empty
     if (user_data_profile)
-      console.log(user_data_profile)
+      set_profile_route_with_role(user_data_profile)
     else
       console.log("This user don't have a profile")
 
@@ -49,12 +49,17 @@ router.get('/', async function (req, res, next) {
   res.render('index', parms);
 });
 
+// ================== Generate Route for using role ======================
+async function set_profile_route_with_role(userData){
+  // profile_Name
+  console.log("setting up => ", userData)
 
+}
 // ================== VALIDATING USER ======================
-function get_user_profile(userEmail) {
+async function get_user_profile(userEmail) {
   `This function return all user information if the user belong to a profile`
-
   if (userEmail) {
+   console.log("IN FUNCTION get_user_profile", userEmail)
 
     //Look for the email in the DB,if there is one, get the profile data 
     let query = `SELECT * FROM
@@ -67,14 +72,16 @@ function get_user_profile(userEmail) {
       //TODO: Catch this error properly
       if (error) throw error;
 
+      console.log("USER PROFILE DATA => ", results)
       //Return user data
       return results;
     });
+    return null;
+  }else{
+    console.log("Email is empty")
   }
-  console.log("Email is empty")
   return null;
 }
-
 //================================ GENERATE DUMMY DAYA ====================
 //FUNCTION TO GENERATE DUMMYS USERS
 function insert_dummy_users() {
@@ -93,8 +100,7 @@ function insert_dummy_users() {
     data.push([null, interid, firstname, lastname, email, number, null]);
   }
 
-  let query = `INSERT INTO USER
-               VALUES (?, ?, ? , ?, ?, ?, ?);`;
+  let query = `INSERT INTO USER VALUES (?, ?, ? , ?, ?, ?, ?);`;
   data.forEach(element => {
     conn.query(query, element, function (error, results, fields) {
 

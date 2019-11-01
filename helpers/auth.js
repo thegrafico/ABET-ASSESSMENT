@@ -18,7 +18,7 @@ function getAuthUrl() {
     redirect_uri: process.env.REDIRECT_URI,
     scope: process.env.APP_SCOPES
   });
-  console.log(`Generated auth url: ${returnVal}`);
+  // console.log(`Generated auth url: ${returnVal}`);
   return returnVal;
 }
 
@@ -30,7 +30,7 @@ async function getTokenFromCode(auth_code, res) {
   });
 
   const token = oauth2.accessToken.create(result);
-  console.log('Token created: ', token.token);
+  // console.log('Token created: ', token.token);
 
   saveValuesToCookie(token, res);
 
