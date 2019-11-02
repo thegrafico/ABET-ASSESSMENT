@@ -22,7 +22,7 @@ function get_user_list(callback) {
 function get_user_by_id(id, callback) {
     `Get user data using the id`
 
-    console.log("Getting user data")
+    console.log("Getting user data");
 
     let getUser = `Select *
               FROM USER
@@ -33,6 +33,23 @@ function get_user_by_id(id, callback) {
             return callback(err, null)
         };
         // console.log(results)
+        return callback(null, results);
+    });
+}
+
+//GET user ID by email
+function get_user_ID_by_email(email, callback){
+    'Get user ID using the email'
+    console.log("Getting user ID");
+
+    let slq_getID = `SELECT user_ID
+                    FROM USER
+                    WHERE email = ?
+                    LIMIT 1`;
+    conn.query(slq_getID, [email], function(err, results){
+
+        if (err) return callback(err, null);
+
         return callback(null, results);
     });
 }
@@ -117,3 +134,4 @@ module.exports.get_user_by_id = get_user_by_id;
 module.exports.update_user = update_user;
 module.exports.delete_user_by_id = delete_user_by_id;
 module.exports.insert_user = insert_user;
+module.exports.get_user_ID_by_email = get_user_ID_by_email;
