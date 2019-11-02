@@ -1,6 +1,7 @@
 
 var conn = require("./mysqlConnection").mysql_pool; //pool connection
 var USER_QUERIES = require("./queries/user_queries");
+var faker = require('faker');
 
 // ================== VALIDATING USER ======================
 async function get_user_profile(userEmail, callback) {
