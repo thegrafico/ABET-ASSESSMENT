@@ -1,1 +1,3 @@
 16NOV19 - 12PM - changed layout and index pages code
+23NOV19 - 3PM - fixed front-end for users, courses and departments.
+              - changed schoolTerm front end from tables to divs
