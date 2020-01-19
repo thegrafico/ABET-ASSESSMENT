@@ -19,13 +19,13 @@ let parms = {
 // =========================================== HOME OUTCOME =====================================
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  let outcomes_table = "STUDENT_OUTCOME";
-  //Getting the table
+  let outcomes_table = "STUDY_PROGRAM";
+  //Getting all the entries for the dropdown
   general_queries.get_table_info(outcomes_table, function (err, results) {
 
     //TODO: catch this error;
     if (err) throw err;
-    parms.results = results;
+    parms.resultsDD = results;
     // console.log("OUTCOMES RESULTS: ", results);
     res.render('outcomes/outcomes', parms);
   });
