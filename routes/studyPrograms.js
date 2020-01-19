@@ -23,7 +23,8 @@ router.get('/', function(req, res, next) {
     res.render('studyPrograms/studyPrograms', parms);
   });
 });
-
+parms["title"] = 'ABET Assessment';
+parms["subtitle"] = 'Study Programs';
 //================================ CREATE STUDY PROGRAM  =================================
 /* CREATE home page. */
 router.get('/create', function(req, res, next) {

@@ -24,7 +24,8 @@ general_queries.get_table_info(term_table, function(err, results){
   res.render('schoolTerms/schoolTerm', parms);
   });
 });
-
+parms["title"] = 'ABET Assessment';
+parms["subtitle"] = 'School Terms';
 //================================ CREATE TERM  =================================
 
 

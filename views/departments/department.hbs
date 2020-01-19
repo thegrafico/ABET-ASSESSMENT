@@ -2,7 +2,9 @@
   <h2>{{subtitle}}</h2>
   <hr class="my-4">
   <form action="/department" method="POST">
-  <a href="{{create}}" class="btn btn-success" role="button">Create New</a>
+  <a href="{{create}}" class="btn btn-success inter-green" role="button">Create New</a>
+</div>
+<div class="container-fluid my-2">
   <!--Table Header-->
   <div class="row bg-secondary text-light p-2">
       <div class="col"><strong>Name</strong></div>
@@ -13,17 +15,20 @@
   </div>
   {{!-- Table contents --}}
   {{#each results}}
-  <div class="row py-4 btn-light accordion" type="button" id = "collapsible" data-toggle="collapse" data-target="#coll">
+  <div class="row py-2 btn-light accordion">
       <div class="col">{{this.dep_name}}</div>
       <div class="col">{{this.dep_ID}}</div>
       <div class="col">{{this.dep_description}}</div>
       <div class="col">{{this.date_created}}</div>
-      <div class="col-1 btn-group-vertical">
-      <a role= "button" class="btn btn-warning" href="/department/{{this.dep_ID}}/edit">Edit</a>
-      <a role="button" class="btn btn-danger" style="background-color: #e05b1e" href="/department/{{this.dep_ID}}/delete">Delete</a></div>
-  </div>
-  <div class="collapse" data-parent="#collapsible" id = "coll">
-    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquam neque veritatis cum laudantium, rem necessitatibus sunt facere nesciunt assumenda odio ex at ut alias? Nihil fugiat error modi recusandae exercitationem.
-  </div>
+      <div class="col-2 dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+          Actions
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="/department/{{this.dep_ID}}/edit">Edit</a>
+            <a class="dropdown-item" href="/department/{{this.dep_ID}}/delete">Delete</a></div>
+        </div>
+      </div>
   {{/each}}
 </div>
+
