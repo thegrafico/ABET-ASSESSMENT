@@ -27,10 +27,13 @@ parms["title"] = 'ABET Assessment';
 router.get('/', function(req, res, next) {
   try{
 
-    let evaluation_table = 'EVALUATION_RUBRIC';
+    parms.results = null;
+    parms.current_outName = null;
+
+    let performance_table = 'STUDENT_OUTCOME';
 
     //Get all perfCrit from the database (callback)
-    general_queries.get_table_info(evaluation_table, function (err, results) {
+    general_queries.get_table_info(performance_table, function (err, results) {
 
       //TODO: redirect user to another page
       if (err) {
@@ -41,10 +44,70 @@ router.get('/', function(req, res, next) {
       //IF found results from the database
       if (results) {
         // console.log(results)
-        parms.results = results;
+        parms.resultsF = results;
       }
 
       res.render('evaluations/evaluation', parms);
+    });
+  }
+  catch (error) {
+
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.render('evaluations/evaluation', parms);
+  }
+});
+
+/* POST home page. */
+router.post('/', function(req, res, next) {
+  try{
+
+    let performance_table = 'STUDENT_OUTCOME';
+
+    //Get all perfCrit from the database (callback)
+    general_queries.get_table_info(performance_table, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAS TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      //IF found results from the database
+      if (results) {
+        // console.log(results)
+        parms.resultsF = results;
+
+        let data = {
+          "from": "EVALUATION_RUBRIC",
+          "where": "outc_ID",
+          "id": req.body.outc_ID
+        };
+
+        general_queries.get_table_info_by_id(data, function (err, results) {
+
+          console.log(data);
+          console.log(results);
+          parms.results = results;
+
+          parms.current_outcID = req.body.outc_ID;
+
+          let data2 = {
+            "from" : "STUDENT_OUTCOME",
+            "where": "outc_ID",
+            "id"   : parms.current_outcID
+          };
+
+          console.log(data);
+
+          general_queries.get_table_info_by_id(data2, function (err, results) {
+
+            parms.current_outName = results[0].outc_name;
+
+            res.render('evaluations/evaluation', parms);
+          });
+        });
+      }
     });
   }
   catch (error) {
