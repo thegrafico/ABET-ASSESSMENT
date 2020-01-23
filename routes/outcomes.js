@@ -19,6 +19,10 @@ let parms = {
 // =========================================== HOME OUTCOME =====================================
 /* GET home page. */
 router.get('/', function (req, res, next) {
+
+  parms.results = null;
+  parms.current_progName;
+  
   let outcomes_table = "STUDY_PROGRAM";
   //Getting all the entries for the dropdown
   general_queries.get_table_info(outcomes_table, function (err, results) {
@@ -34,8 +38,53 @@ router.get('/', function (req, res, next) {
 /* POST HOME page */
 router.post('/', function(req, res, next) {
   try{
+    let studyProgram_table = 'STUDY_PROGRAM';
+    //Get all perfCrit from the database (callback)
+    general_queries.get_table_info(studyProgram_table, function (err, results) {
 
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAS TO REDIRECT the user or send a error message
+        throw err;
+      }
 
+      //IF found results from the database
+      if (results) {
+        // console.log(results)
+        parms.resultsDD = results;
+
+        let data = {
+          "from": "STUDENT_OUTCOME",
+          "where": "prog_ID",
+          "id": req.body.prog_ID
+        };
+
+        general_queries.get_table_info_by_id(data, function (err, results) {
+
+          console.log(data);
+          console.log("RESULTS",results);
+          parms.results = results;
+
+          parms.current_progID = req.body.prog_ID;
+
+          let data2 = {
+            "from" : "STUDY_PROGRAM",
+            "where": "prog_ID",
+            "id"   : parms.current_progID
+          };
+
+          console.log(data);
+
+          general_queries.get_table_info_by_id(data2, function (err, results) {
+
+            parms.current_progName = results[0].prog_name;
+            console.log(parms.current_progName);
+
+            res.render('outcomes/outcomes', parms);
+          });
+        });
+      }
+    });
   }
   catch (error) {
 
