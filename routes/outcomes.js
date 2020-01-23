@@ -31,6 +31,20 @@ router.get('/', function (req, res, next) {
   });
 });
 
+/* POST HOME page */
+router.post('/', function(req, res, next) {
+  try{
+
+
+  }
+  catch (error) {
+
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.render('outcomes/outcomes', parms);
+  }
+});
+
 // =========================================== CREATE OUTCOME =====================================
 /* GET */
 router.get('/create', function (req, res, next) {
