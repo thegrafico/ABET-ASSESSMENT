@@ -13,6 +13,7 @@ a {
   color: #FFF;
 }
 
-.inter-green:hover {
+.inter-green-btn:hover {
   background-color: #00593a !important;
+  color: #FFF;
 }

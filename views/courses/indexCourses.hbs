@@ -12,35 +12,36 @@ window.addEventListener("pageshow", function (event) {
 });
 </script>
 
-<div class = "container">
+<div class = "container-fluid mt-2">
   <h1>Courses</h1>
-  <hr>
+  <hr class = "my-4">
   <form action="/indexCourses" method="POST">
-  <!-- Green Create New Button -->
-  <a href="/courses/create" class="btn btn-success" role="button">Create New</a>
+  <a href="/courses/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
   <!-- Middle line -->
-  <hr>
-  <!-- First row that will contain the table header -->
-  <div class = "row">
-          <div class = "col-lg-4"><strong>Course Name</strong></div>
-          <div class = "col-lg-2"><strong>Course Number</strong></div>
-          <div class = "col-lg-2"><strong>Study Program ID</strong></div>
-          <div class = "col-lg-2"><strong>Date Created</strong></div>
-  </div>
-  <!-- First row of info -->
-  <hr>
-  {{#each results}}
-  <div class = "row">
-          <div class = "col-lg-4">{{this.course_name}}</div>
-          <div class = "col-lg-2">{{this.course_number}}</div>
-          <div class = "col-lg-2">{{this.prog_ID}}</div>
-          <div class = "col-lg-2">{{this.date_created}}</div>
-          <div class = "col-lg-1"><a href="/courses/{{this.course_ID}}/edit" type="submit" class="btn btn-warning" style="color:#FFFFFF"
-              name="editButton">Edit</a></div>
-          <div class = "col-lg-1"><a href="/courses/{{this.course_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
 </div>
+<div class="container-fluid my-2">
+  <!-- Table Header -->
+  <div class ="row bg-secondary text-light p-2">
+          <div class = "col-4"><strong>Course Name</strong></div>
+          <div class = "col-2"><strong>Course Number</strong></div>
+          <div class = "col-2"><strong>Study Program ID</strong></div>
+          <div class = "col-2"><strong>Date Created</strong></div>
+  </div>
+  <!-- Table Contents -->
+  {{#each results}}
+  <div class = "row py-2 btn-light">
+    <div class = "col-4">{{this.course_name}}</div>
+    <div class = "col-2">{{this.course_number}}</div>
+    <div class = "col-2">{{this.prog_ID}}</div>
+    <div class = "col-2">{{this.date_created}}</div>
+    <div class = "col dropdown">
+      <button class="btn inter-green inter-green-btn dropdown-toggle">Actions</button>
+      <div class= "dropdown-menu">
+        <a class="dropdown-item" href="/courses/{{this.course_ID}}/edit" type="submit" >Edit</a>
+        <a class="dropdown-item" href="/courses/{{this.course_ID}}/remove" type="submit" >Delete</a>
+      </div>
+    </div>
   </div>
   {{/each}}
   </form>
-  <hr>
 </div>
