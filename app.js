@@ -92,11 +92,11 @@ app.use('/performanceCriteria', perfCritRouter);
 // ===== Table Test =====
 app.use('/tableTest', tableTest);
 //===== Program/Course/Term Selection =====
-app.use('/chooseCourseTerm', chooseCourseTermRouter);
+app.use('/professorReport/chooseCourseTerm', chooseCourseTermRouter);
 //===== Professor Input Section =====
-app.use('/professorInput', profInputRouter);
+app.use('/professorReport/professorInput', profInputRouter);
 //=====Outcome Selection=====
-app.use('/chooseOutcomes', chooseOutcomes);
+app.use('/professorReport/chooseOutcomes', chooseOutcomes);
 // ====================================================
 
 
