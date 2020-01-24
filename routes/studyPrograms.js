@@ -5,7 +5,17 @@ var router = express.Router();
 
 
 const base_url = '/studyPrograms/'
-let parms = {"title":'ABET Assessment', "base_url":base_url  };
+let routes_names = ['create', 'delete', 'edit', 'details']
+
+//Paramns to routes links
+let parms = {};
+
+//Populate parms
+routes_names.forEach(e=>{
+  parms[e] = base_url + e;
+});
+
+parms["title"] = 'ABET Assessment';
 
 //================================ HOME PAGE =================================
 /* GET home page. */
