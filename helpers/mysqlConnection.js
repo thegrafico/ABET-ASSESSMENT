@@ -31,9 +31,9 @@ config = {
 //     database : 'ABET'   //HERE GO THE DATABASE THAT WE ARE GONNA USED
 // =======
       //establece basico el route donde se ouede accessar
-      host     : '192.168.1.200',  //THIS IS THE SAME FOR YOUR
+      host     : '70.45.219.43',  //THIS IS THE SAME FOR YOUR
       user     : 'root',      //THIS IS THE SAME FOR YOUR
-      password : 'robolab',        //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
+      password : 'abetserver',        //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
       database : 'ABET'   //HERE GO THE DATABASE THAT WE ARE GONNA USED
 // >>>>>>> 02e32c1e4d1f0c9d3f7cfeff1a9278bb7ba39927
   })
