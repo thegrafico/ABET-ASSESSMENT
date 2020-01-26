@@ -15,7 +15,7 @@
   </div>
   {{!-- Table contents --}}
   {{#each results}}
-  <div class="row py-2 btn-light accordion">
+  <div class="row py-2 btn-light">
       <div class="col">{{this.dep_name}}</div>
       <div class="col">{{this.dep_ID}}</div>
       <div class="col">{{this.dep_description}}</div>
@@ -26,9 +26,10 @@
         </button>
         <div class="dropdown-menu">
             <a class="dropdown-item" href="/department/{{this.dep_ID}}/edit">Edit</a>
-            <a class="dropdown-item" href="/department/{{this.dep_ID}}/delete">Delete</a></div>
+            <a class="dropdown-item" href="/department/{{this.dep_ID}}/delete">Delete</a>
         </div>
       </div>
+  </div>
   {{/each}}
 </div>
 

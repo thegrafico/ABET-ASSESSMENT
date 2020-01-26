@@ -26,7 +26,9 @@ window.addEventListener("pageshow", function (event) {
   <div class="row btn-light py-2">
     <div class="col-10">{{this.term_name}}</div>
     <div class="col dropdown">
-      <button class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown"></button>
+      <button class="btn inter-green inter-green-btn dropdown-toggle" data-toggle="dropdown">
+        Actions
+      </button>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="/schoolTerm/{{this.term_ID}}/edit" type="submit" class="btn btn-dark" name="editButton">Edit</a>
         <a class="dropdown-item" href="/schoolTerm/{{this.term_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>

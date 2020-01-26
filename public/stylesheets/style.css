@@ -17,3 +17,16 @@ a {
   background-color: #00593a !important;
   color: #FFF;
 }
+
+.collapser-control {
+  cursor: pointer;
+}
+
+.accordion {
+  margin: 0;
+  padding: 0;
+}
+
+.accordion-panel {
+  display: none;
+}
