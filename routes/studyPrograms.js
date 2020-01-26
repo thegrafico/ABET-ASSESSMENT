@@ -5,26 +5,100 @@ var router = express.Router();
 
 
 const base_url = '/studyPrograms/'
-let parms = {"title":'ABET Assessment', "base_url":base_url  };
+let routes_names = ['create', 'delete', 'edit', 'details']
+
+//Paramns to routes links
+let parms = {};
+
+//Populate parms
+routes_names.forEach(e=>{
+  parms[e] = base_url + e;
+});
+
+parms["title"] = 'ABET Assessment';
 
 //================================ HOME PAGE =================================
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-  let stu_prog_table = 'STUDY_PROGRAM';
+  parms.results = null;
+  parms.current_depID = null;
 
-  general_queries.get_table_info(stu_prog_table, function(err, results){
+  let dep_table = 'DEPARTMENT';
+
+  general_queries.get_table_info(dep_table, function(err, results){
     //TODO: handle error
     if (err) throw err;
 
     // console.log("HOME STUDY PROGRAM: ", results);
 
-    parms.results = results;
+    parms.resultsDD = results;
     res.render('studyPrograms/studyPrograms', parms);
   });
 });
 parms["title"] = 'ABET Assessment';
 parms["subtitle"] = 'Study Programs';
+
+/* POST home page. */
+router.post('/', function(req, res, next) {
+  try{
+
+    let dep_table = 'DEPARTMENT';
+
+    //Get all perfCrit from the database (callback)
+    general_queries.get_table_info(dep_table, function (err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAS TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      //IF found results from the database
+      if (results) {
+        // console.log(results)
+        parms.resultsDD = results;
+
+        let data = {
+          "from": "STUDY_PROGRAM",
+          "where": "dep_ID",
+          "id": req.body.dep_ID
+        };
+
+        general_queries.get_table_info_by_id(data, function (err, results) {
+
+          console.log(data);
+          console.log(results);
+          parms.results = results;
+
+          parms.current_depID = req.body.dep_ID;
+
+          let data2 = {
+            "from" : "DEPARTMENT",
+            "where": "dep_ID",
+            "id"   : parms.current_depID
+          };
+
+          console.log(data);
+
+          general_queries.get_table_info_by_id(data2, function (err, results) {
+
+            parms.current_depName = results[0].dep_name;
+
+            res.render('studyPrograms/studyPrograms', parms);
+          });
+        });
+      }
+    });
+  }
+  catch (error) {
+
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.render('studyPrograms/studyPrograms', parms);
+  }
+});
+
 //================================ CREATE STUDY PROGRAM  =================================
 /* CREATE home page. */
 router.get('/create', function(req, res, next) {
