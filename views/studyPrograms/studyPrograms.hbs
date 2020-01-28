@@ -18,19 +18,22 @@ window.addEventListener("pageshow", function (event) {
     <hr class="my-4">
     <form action="{{create}}" method="post">
     <div class="row py-2">
-    <div class="col-1">
-        <a href="/studyPrograms/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
-    </div>
-    <div class = "col-lg-4"><select class="form-control" name = "dep_ID">
-
-    </div>
-      <option value="{{current_depID}}">{{current_depName}}</option>
-      {{#each resultsDD}}
-      <option value="{{this.dep_ID}}">{{this.dep_name}}</option>
-      {{/each}}
-    </select>
-    </div>
-    <button class="btn inter-green inter-green-btn" role="button">Filter</button>
+        <div class="col-sm-3">
+            <a href="/studyPrograms/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
+        </div>
+        <div class = "col-sm-9">
+            <div class="input-group">
+                <select class="form-control" name = "dep_ID">
+                    <option value="{{current_depID}}">{{current_depName}}</option>
+                    {{#each resultsDD}}
+                    <option value="{{this.dep_ID}}">{{this.dep_name}}</option>
+                    {{/each}}
+                </select>
+                <div class="input-group-append">
+                    <button class="btn inter-green inter-green-btn" role="button">Filter</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="container-fluid my-2">
@@ -54,8 +57,7 @@ window.addEventListener("pageshow", function (event) {
                     Actions
                 </button>                
                 <div class="dropdown-menu">
-                    <a href="/studyPrograms/{{this.prog_ID}}/edit" type="submit" class="dropdown-item" style="color:#FFFFFF"
-                        name="editButton">Edit</a>
+                    <a href="/studyPrograms/{{this.prog_ID}}/edit" type="submit" class="dropdown-item" >Edit</a>
                     <a href="/studyPrograms/{{this.prog_ID}}/remove" type="submit" class="dropdown-item">Delete</a>
                 </div>
             </div>
