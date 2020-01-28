@@ -148,14 +148,28 @@ router.get('/' + routes_names[0], function(req, res, next) {
   }
 });
 
-router.post('/' + routes_names[0], function(req, res, next) {
+router.get('/' + routes_names[0] + '/:id', function(req, res, next) {
   try {
 
-    console.log(req.body);
-    let data = [req.body.outc_name, req.body.outc_decription, req.body.outc_ID];
+    // sending the outc id to the post method
+    parms.id = req.params.id;
+
+    let data = {
+      "from": "PERF_CRITERIA",
+      "where": "outc_ID",
+      "id": req.params.id
+    };
+
+    let data2 = {
+      "from": "STUDENT_OUTCOME",
+      "where": "outc_ID",
+      "id": req.params.id
+    };
 
     //Insert all data to the database (callback)
-    queries.insert_evalRub(data, function (err, results) {
+    general_queries.get_table_info_by_id(data, function (err, results) {
+
+      parms.resultsPC = results;
 
       //TODO: redirect user to another page
       if (err) {
@@ -163,9 +177,59 @@ router.post('/' + routes_names[0], function(req, res, next) {
         throw err;
       }
 
-      // console.log(results);
-      console.log("Rubric Created");
-      res.redirect('/evaluation');
+      general_queries.get_table_info_by_id(data2, function (err, results) {
+
+        parms.current_outName = results[0].outc_name;
+
+        res.render('evaluations/createEvaluation', parms);
+        });
+    });
+  }
+
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.reder('evaluations/createEvaluation', parms);
+  }
+});
+
+
+router.post('/' + routes_names[0] + "/:id", function(req, res, next) {
+  try {
+
+    console.log("Performance Criteria Selected", req.body.perfIDs);
+    console.log("req.body", req.params.id);
+
+    let data = [req.body.eval_name, req.body.eval_decription, req.params.id];
+
+    //Insert all data to the database (callback)
+    queries.insert_evalRub(data, function (err, results) {
+
+      // TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      let perfIDs = req.body.perfIDs;
+
+      for (var i = 0; i < perfIDs.length; i++){
+
+        let data2 = [results.insertId, perfIDs[i]];
+
+        queries.insert_evalRubPerfCrit(data2, function (err, results) {
+
+          // TODO: redirect user to another page
+          if (err) {
+            //HERE HAVE TO REDIRECT the user or send a error message
+            throw err;
+          }
+          // console.log(results);
+          console.log("Rubric Created");
+
+          });
+        }
+        res.redirect('/evaluation');
     });
   }
   catch (error) {

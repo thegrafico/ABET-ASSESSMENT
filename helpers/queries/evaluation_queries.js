@@ -33,5 +33,19 @@ function update_evalRub(data, callback) {
     });
 }
 
+function insert_evalRubPerfCrit(data, callback) {
+    // `Insert values into the Evaluation Rubric relation with Performance Criteria`
+    let insert_query = `insert into PERFORMANCE_RUBRIC (rubric_ID, perC_ID) values(?, ?);`;
+
+    conn.query(insert_query, data, function (err, results, fields) {
+        if (err) {
+            return callback(err, null)
+        };
+        // console.log(results)
+        return callback(null, results);
+    });
+}
+
 module.exports.insert_evalRub = insert_evalRub;
+module.exports.insert_evalRubPerfCrit = insert_evalRubPerfCrit;
 module.exports.update_evalRub = update_evalRub;
