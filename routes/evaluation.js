@@ -148,6 +148,20 @@ router.get('/' + routes_names[0], function(req, res, next) {
   }
 });
 
+router.get('/' + routes_names[0] + '/:id', function(req, res, next) {
+  try {
+
+    res.render('evaluations/createEvaluation', parms);
+  }
+
+  catch (error) {
+    //TODO: send a error message to the user.
+    console.log(error);
+    res.reder('evaluations/createEvaluation', parms);
+  }
+});
+
+
 router.post('/' + routes_names[0], function(req, res, next) {
   try {
 
