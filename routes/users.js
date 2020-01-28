@@ -38,6 +38,8 @@ router.get('/', function (req, res) {
     res.redirect('/');
   }
 });
+parms["title"] = 'ABET Assessment';
+parms["subtitle"] = 'Users';
 //==================================== CREATE USER ROUTE=================================
 /* GET */
 router.get('/createUsers', function (req, res, next) {

@@ -1,6 +1,6 @@
 <div class="wrapper">
   <div class="container">
-    <form action="create" method="POST">
+    <form action="/evaluation/create/{{id}}" method="POST">
     <div class="row">
       <h1>Evaluation Rubric</h1>
       <div class="col-sm-12">
@@ -8,13 +8,30 @@
         <!-- Trigger/Open The Modal -->
         <div id="" class="">
               <div class="">
-                <form>
+
+                <div class="row">
+                  <div class="col-sm-2">
+                    <label>Student Outcome</label>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <select class="form-control" name="outc_ID" onChange = "window.location.href= '/evaluation/create/' + this.value">
+                      <option value= "{{current_outID}}">{{current_outName}}</option>
+                      {{#each results}}
+                      <option value= "{{this.outc_ID}}">{{this.outc_name}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+
+                  <!-- <div class = "col-lg-4"><button class="btn btn-primary" role="button">Filter</button></div> -->
+                </div>
+
                   <div class="row">
                     <div class="col-sm-2 need">
                       <label>Name</label>
                     </div>
                     <div class="col-sm-10">
-                      <input class="form-control" type="text" placeholder="Enter Name" name="outc_name" required>
+                      <input class="form-control" type="text" placeholder="Enter Name" name="eval_name" required>
                     </div>
                   </div>
                   <div class="row">
@@ -22,27 +39,32 @@
                       <label>Description</label>
                     </div>
                     <div class="col-sm-10">
-                      <input class="form-control" type="text" placeholder="Enter Description" name="outc_decription" required>
+                      <input class="form-control" type="text" placeholder="Enter Description" name="eval_decription" required>
                     </div>
                   </div>
+
+
                   <div class="row">
                     <div class="col-sm-2">
-                      <label>Student Outcome</label>
+                      <label>Performance Criterias</label>
                     </div>
                     <div class="col-sm-10">
-                      <select class="form-control" name="outc_ID" required>
-                        {{#each results}}
-                        <option>{{this.outc_ID}}</option>
+                      <!-- <select class="form-control" name="outc_ID" required> -->
+                        {{#each resultsPC}}
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="perfIDs" value= "{{this.perC_ID}}">
+                            <label class="form-check-label">{{this.perC_Desk}}</label>
+                          </div>
                         {{/each}}
-                      </select>
+                      <!-- </select> -->
                     </div>
                   </div>
-                </form>
               </div
             <div class="">
               <button role="button" class="btn btn-success">Create New</button>
-              <a role="button" class="btn btn-danger" href="/evaluation">Cancel</a>
-            </div>
+              <div class = "col-lg-2 link"><a href="/evaluation">Back to List</a>
+              </div>
+        </div>
         </div>
         <!-- ======= Ends ======= -->
       </div>

@@ -1,7 +1,20 @@
 <div class="container-fluid">
+  <form action="performanceCriteria" method="POST">
   <h2>Performance Criteria</h2>
   <hr class="my-4">
-  <a href="{{create}}" class="btn btn-success" role="button">Create New</a>
+  <div class = "row">
+  <div class = "col-lg-2"><a href="{{create}}" class="btn btn-success" role="button">Create New</a></div>
+  <div class = "col-lg-4"><select class="form-control" name = "outc_ID">
+    <option value="{{current_outcID}}">{{current_outName}}</option>
+    {{#each resultsF}}
+    <option value="{{this.outc_ID}}">{{this.outc_name}}</option>
+    {{/each}}
+  </select>
+  </div>
+  <button class="btn btn-primary" role="button">Filter</button>
+  </div>
+<!-- </div> -->
+  <div>
   <hr class="my-1">
   <div class="row">
       <!-- <div class="col"><strong>Name</strong></div> -->

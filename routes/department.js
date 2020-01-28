@@ -20,6 +20,7 @@ routes_names.forEach(e => {
 });
 //Same title for every department route??
 parms["title"] = 'ABET Assessment';
+parms["subtitle"] = 'Departments';
 //============================================ DEPARMENT MAIN ROUTE =============================
 
 /* DEPARTMENT home page. */
