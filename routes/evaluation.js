@@ -151,7 +151,36 @@ router.get('/' + routes_names[0], function(req, res, next) {
 router.get('/' + routes_names[0] + '/:id', function(req, res, next) {
   try {
 
-    res.render('evaluations/createEvaluation', parms);
+    let data = {
+      "from": "PERF_CRITERIA",
+      "where": "outc_ID",
+      "id": req.params.id
+    };
+
+    let data2 = {
+      "from": "STUDENT_OUTCOME",
+      "where": "outc_ID",
+      "id": req.params.id
+    };
+
+    //Insert all data to the database (callback)
+    general_queries.get_table_info_by_id(data, function (err, results) {
+
+      parms.resultsPC = results;
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAVE TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      general_queries.get_table_info_by_id(data2, function (err, results) {
+
+        parms.current_outName = results[0].outc_name;
+
+        res.render('evaluations/createEvaluation', parms);
+        });
+    });
   }
 
   catch (error) {
