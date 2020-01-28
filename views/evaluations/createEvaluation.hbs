@@ -29,12 +29,28 @@
                     <div class="col-sm-2">
                       <label>Student Outcome</label>
                     </div>
-                    <div class="col-sm-10">
-                      <select class="form-control" name="outc_ID" required>
+                    <div class="col-sm-4">
+                      <select class="form-control" name="outc_ID" onChange = "window.location.href= '/evaluation/create/' + this.value">
                         {{#each results}}
-                        <option>{{this.outc_ID}}</option>
+                        <option value= "{{this.outc_ID}}">{{this.outc_name}}</option>
                         {{/each}}
                       </select>
+                    </div>
+                    <!-- <div class = "col-lg-4"><button class="btn btn-primary" role="button">Filter</button></div> -->
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-2">
+                      <label>performance Criteria</label>
+                    </div>
+                    <div class="col-sm-10">
+                      <!-- <select class="form-control" name="outc_ID" required> -->
+                        {{#each resultsPC}}
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input">
+                            <label class="form-check-label"  value= "{{this.perC_ID}}">{{this.perC_Desk}}</label>
+                          </div>
+                        {{/each}}
+                      <!-- </select> -->
                     </div>
                   </div>
                 </form>
