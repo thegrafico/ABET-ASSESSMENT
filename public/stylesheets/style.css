@@ -1,8 +1,32 @@
-body {
+/* body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+} */
+
+/* Beginning of custom classes: */
+.inter-green {
+  background-color: #00833e !important; 
+  color: #FFF;
+}
+
+.inter-green-btn:hover {
+  background-color: #00593a !important;
+  color: #FFF;
+}
+
+.collapser-control {
+  cursor: pointer;
+}
+
+.accordion {
+  margin: 0;
+  padding: 0;
+}
+
+.accordion-panel {
+  display: none;
 }
