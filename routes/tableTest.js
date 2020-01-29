@@ -16,45 +16,78 @@
 //      -
 //      -
 
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const queries = require('../helpers/queries/perfTable_queries');
+const docx = require("docx");
+const fs = require('fs');
 
 let parms = {}
+let amountCol;
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  try {
+    queries.get_perf_criterias(1 ,function(err, results) {
+
+      //TODO: redirect user to another page
+      if (err) {
+        //HERE HAS TO REDIRECT the user or send a error message
+        throw err;
+      }
+
+      //IF found results from the database
+      if (results) {
+        // console.log(results)
+        let queryResult = results;
+        amountCol = queryResult.length; // This is a test variable
+        amountCol = 4;
+        parms.colNums = amountCol;
+        console.log("Query Results are: ", queryResult);
+      }
+
+      res.render('tableTest', parms);
+    });
+  }
+  catch(error) {
+    console.log(error);
+    res.render('tableTest', parms);
+  }
+});
 
 router.post('/', function(req, res, next) {
-
-  var input = req["body"]["rowValue"]; // input contains an array of objects which are the inputs of the user
-  var studentScores= [];
-  var inputCount = 0;
-
+  let input = req["body"]["rowValue"]; // input contains an array of objects which are the inputs of the user
+  let studentScores= [];
+  let inputCount = 0;
+  
   // console.log(input); // console.log which displays input
 
   // for loop creating a multidimession array
-  for ( var i = 0; i < (input.length/4); i++ ) {
+  for (let i = 0; i < (input.length/4); i++ ) {
     studentScores[i] = [];
   }
 
-  for (var i = 0; i < (input.length/4); i++) {
-    for (var j = 0; j < 4; j++) {
+  for (let i = 0; i < (input.length/4); i++) {
+    for (let j = 0; j < amountCol; j++) {
       studentScores[i][j] = input[inputCount];
       inputCount++;
     }
   }
-  console.log("Here is inArr: ", studentScores);  // console.log which display the input in a arrays of arrays
-  var firstRow = studentScores[0];
-  var size = 0;
+  // console.log("Here is inArr: ", studentScores);  // console.log which display the input in a arrays of arrays
+  let firstRow = studentScores[0];
+  let size = 0;
   // For loop to count the size of a rows since the input is receive as Objects
   for (let s in firstRow) {
     size++;
   }
 
-  var sum = 0;
-  var avgSum = 0;
-  var avgRow = [];
+  let sum = 0;
+  let avgSum = 0;
+  let avgRow = [];
 
   // for loops which calculates average per rows
-  for(var i = 0; i < studentScores.length; i++) {
-    for(var j = 0; j < size; j++) {
+  for(let i = 0; i < studentScores.length; i++) {
+    for(let j = 0; j < size; j++) {
       // console.log("Student Score is: ", studentScores[i][j]);
       sum += parseFloat(studentScores[i][j]);
       // console.log("Sum is: ", sum);
@@ -65,47 +98,514 @@ router.post('/', function(req, res, next) {
     avgSum += avgRow[i];
     // console.log("Avg of row", i, " : ", avgRow[i]);
   }
-  var colAvg = avgSum/(avgRow.length);
+  let colAvg = avgSum/(avgRow.length);
   // console.log("Avg Row Array here: ", avgRow);
 
-  var count = 1;
-  var listOfObjects = [];
-  // forEach creates a list of dictonary
+  let count = 1;
+  let listOfObjects = [];
+  // forEach creates a list of dictionaries
   avgRow.forEach(function(entry) {
-    var singleObj = {};
+    let singleObj = {};
     singleObj['rowID'] = count;
     singleObj['rowIn'] = studentScores[count-1];
     singleObj['rowAvg'] = entry;
     listOfObjects.push(singleObj);
     count++;
   });
-  console.log(listOfObjects); // This log displays the array of objects created. It contains all of the outputs for the tha table
+  // console.log(listOfObjects); // This log displays the array of objects created. It contains all of the outputs for the tha table
 
-  var threeMorePerc = [];
-  var threeMoreCount = 0;
+  let threeMorePerc = [];
+  let threeMoreCount = 0;
 
   for(let i = 0; i < size; i++) {
-    for (var j = 0; j < studentScores.length; j++) {
+    for (let j = 0; j < studentScores.length; j++) {
       if(studentScores[j][i] >= 3) {
         threeMoreCount++;
       }
     }
     threeMorePerc[i] = (threeMoreCount/studentScores.length)*100;
     threeMoreCount = 0;
-    console.log("Here: ", threeMorePerc[i]);
+    // console.log("Here: ", threeMorePerc[i]);
   }
-
+  parms.colNums = amountCol;
   parms.row = listOfObjects;
   parms.avgCol = colAvg
   parms.colPerc = threeMorePerc
-  
+
+  let document = createReport(parms);
+
+  docx.Packer.toBuffer(document).then((buffer) => {
+    console.log("Created a doc");
+    fs.writeFileSync("Document.docx", buffer);
+  });
+
   res.render('resultTable', parms);
-
 });
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('tableTest', parms);
-});
+
+// router.post('/doc', async (req, res) => {
+
+//   docx.Packer.toBuffer(doc).then((buffer) => {
+//     console.log("Created a doc");
+//     fs.writeFileSync("Document.docx", buffer);
+//   });
+//   res.render('resultTable', parms);
+// });
 
 module.exports = router;
+
+
+function createReport(data) {
+  // =================================================================== Document Generator ===================================================================================
+  const doc = new docx.Document({
+    creator: "Inter American Assessment Team",
+    description: "This is a Test",
+    title: "Test Document"
+  });
+
+  const inter_logo = docx.Media.addImage(doc, fs.readFileSync("./public/images/logo_inter.jpg"), 75, 75, {
+    floating: {
+      horizontalPosition: {
+        relative: docx.HorizontalPositionRelativeFrom.LEFT_MARGIN,
+        offset: 914400
+      },
+      verticalPosition: {
+        relative: docx.VerticalPositionRelativeFrom.TOP_MARGIN,
+        offset: 450000
+      }
+    }
+  });
+
+  // ======== Header is here ===========
+  const header = new docx.Header({ // The first header
+    children: [
+      new docx.Paragraph({
+        children: [inter_logo]
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Inter American University of Puerto Rico",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Bayamon Campus",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "{ ==== Aqui va el departmento ==== }", // <=== Department goes here
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+        spacing: {
+          after: 500,
+        },
+      })
+    ],
+  });
+
+  // ======== Header Ends here ===========
+
+  // ======== Table Starts Here ========
+  let colNum = data.colNums;           // Amount of column in table
+  let rowData = data.row;
+  let colPercent = data.colPerc;
+  let listOfCell = [];     
+  let listOfRow = [];
+
+  console.log("This is dataRow: ", rowData);
+
+  for(let j = 0; j < rowData.length; j++) {      // This loops the amount of rows
+    let indexCol = new docx.TableCell({
+      children: [
+        new docx.Paragraph({
+          children: [
+            new docx.TextRun({
+              text: rowData[j].rowID,
+              bold: true
+            }),
+          ],
+          alignment: docx.AlignmentType.CENTER,
+          spacing: {
+            after: 500,
+          },
+        })],
+      verticalAlign: docx.VerticalAlign.CENTER,
+    });
+    listOfCell.push(indexCol);
+
+    for (let index = 0; index < colNum; index++) {      // This loops the amount of columns
+      let tableCol = new docx.TableCell({
+        children: [
+          new docx.Paragraph({
+            children: [
+              new docx.TextRun({
+                text: rowData[j].rowIn[index],
+                bold: true
+              }),
+            ],
+            alignment: docx.AlignmentType.CENTER,
+            spacing: {
+              after: 500,
+            },
+          })],
+        verticalAlign: docx.VerticalAlign.CENTER,
+      });
+    listOfCell.push(tableCol);
+    }
+    let avgCol = new docx.TableCell({
+      children: [
+        new docx.Paragraph({
+          children: [
+            new docx.TextRun({
+              text: rowData[j].rowAvg,
+              bold: true
+            }),
+          ],
+          alignment: docx.AlignmentType.CENTER,
+          spacing: {
+            after: 500,
+          },
+        })],
+      verticalAlign: docx.VerticalAlign.CENTER,
+    });
+    listOfCell.push(avgCol);
+    let row = new docx.TableRow({
+      children: listOfCell
+    });
+    listOfCell = [];
+    listOfRow.push(row);
+  }
+
+  // for (let i = 0; i < 5; i++) { 
+  //   let row = new docx.TableRow({
+  //     children: listOfCell
+  //   });
+  //   listOfRow.push(row);
+  // }
+
+  // for (let index = 0; index < colNum; index++) {
+  //   let tableCol = new docx.TableCell({
+  //     children: [
+  //       new docx.Paragraph({
+  //         children: [
+  //           new docx.TextRun({
+  //             text: "User Input",
+  //             bold: true
+  //           }),
+  //         ],
+  //         alignment: docx.AlignmentType.CENTER,
+  //         spacing: {
+  //           after: 500,
+  //         },
+  //       })],
+  //     verticalAlign: docx.VerticalAlign.CENTER,
+  //   });
+  // listOfCell.push(tableCol)
+  // }
+
+  const table = new docx.Table({
+    rows: listOfRow
+  });
+  // ======== ^^ Table Ends Here ^^ ========
+
+  doc.addSection({
+    headers: {
+      default: header
+    },
+    children: [
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Faculty Course Assessment Report",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "{ ===== Here goes the course name ===== }",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "{ ==== Here goes the section and credit per hours ==== }",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "{ ==== Here goes term  ==== }",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "{==== Here goes the professor name ====}",
+          }),
+        ],
+        alignment: docx.AlignmentType.RIGHT,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Catalog Description:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 0
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "{==== Here goes the class description ====}",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Course Development",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 0
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Target:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "75% of the students must get equal or more than C as final grade in this course",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Grade Distribution:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "======= A table goes here =======",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Result of the Course:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "===== The result goes in here ======",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Modifications Made to Course:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "====== Sets of Bullet point goes here ======",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Course Reflection:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "===== Professor's input goes here =====",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Proposed Action for Course Improvement:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "===== Set of bullet points goes here =====",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Course Outcome b Assessment:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 0
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Outcome B:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "===== Outcomes Description =====",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Target:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "======= Target Information =======",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Outcome Distribution:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "===== The distribution of the outcome results goes here ======",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Results of outcome b:",
+            bold: true,
+          })
+        ],
+        bullet: {
+          level: 1
+        }
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "====== Outcome Results ======",
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+    ]
+  });
+
+  doc.addSection({
+    children : [table],
+  });
+
+  return doc;
+} 

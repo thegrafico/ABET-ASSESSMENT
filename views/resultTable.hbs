@@ -1,38 +1,38 @@
 <body>
-
+  <input type="hidden" id="amountOfCol" name="amountOfCol" value="{{row}}">
   <form action="tableTest" method="post">
     <div class="container">
       <table id="table" class="table">
         <thead>
-          <tr>
-            <th scope="col">Student</th>
+          <tr id="one">
+            <!-- <th scope="col">Student</th>
             <th scope="col">{Criteria 1}</th>
             <th scope="col">{Criteria 2}</th>
             <th scope="col">{Criteria 3}</th>
             <th scope="col">{Criteria 4}</th>
             <th scope="col">Criteria Row AVG</th>
-            <th scope="col"></th>
+            <th scope="col"></th> -->
           </tr>
         </thead>
         <tbody id="table">
           {{#each row}}
-              <tr>
-                <th scope="row">{{rowID}}</th>
+              <tr id="two">
+                <!-- <th scope="row">{{rowID}}</th>
                 <td>{{rowIn.[0]}}</td>
                 <td>{{rowIn.[1]}}</td>
                 <td>{{rowIn.[2]}}</td>
                 <td>{{rowIn.[3]}}</td>
-                <td name="rowOneAvg">{{rowAvg}}</td>
+                <td name="rowOneAvg">{{rowAvg}}</td> -->
               </tr>
           {{/each}}
         </tbody>
-        <tr>
-          <th>% of stud. with 3 or more</th>
+        <tr id="third">
+          <!-- <th>% of stud. with 3 or more</th>
           <td>{{colPerc.[0]}}%</td>
           <td>{{colPerc.[1]}}%</td>
           <td>{{colPerc.[2]}}%</td>
           <td>{{colPerc.[3]}}%</td>
-          <td>{{avgCol}}</td>
+          <td>{{avgCol}}</td> -->
           <td></td>
         </tr>
       </div>
@@ -40,4 +40,4 @@
   </form>
   <!-- jQuery script -->
   <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="/javascripts/tableTest.js"></script>
+  <script type="text/javascript" src="/javascripts/resultTable.js"></script>

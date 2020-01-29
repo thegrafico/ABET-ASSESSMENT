@@ -1,120 +1,28 @@
   <body>
-
-    <form action="tableTest" method="post">
+    <input type="hidden" id="amountOfCol" name="amountOfCol" value="{{colNums}}">
+    <form action="/tableTest" method="post">
       <div class="container">
         <table id="table" class="table">
           <thead>
-            <tr>
+            <tr id="header">
               <th scope="col">Student</th>
-              <th scope="col">{Criteria 1}</th>
+         <!-- <th scope="col">{Criteria 1}</th>
               <th scope="col">{Criteria 2}</th>
               <th scope="col">{Criteria 3}</th>
-              <th scope="col">{Criteria 4}</th>
-              <!-- <th scope="col">Criteria Row AVG</th> -->
-              <th scope="col"></th>
+              <th scope="col">{Criteria 4}</th> -->
+              <!-- <th scope="col"></th> -->
             </tr>
           </thead>
-          <tbody id="table">
-              <tr>
+          <tbody id="tableBody">
+              <!-- <tr>
                 <th scope="row">1</th>
                 <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
                 <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
                 <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
                 <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
+
                 <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">4</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">5</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">6</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25"required ></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">7</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25"required ></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">8</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">9</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25"required ></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
-              <tr>
-                <th scope="row">10</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25"required ></td>
-                <!-- Couldn't display row averages -->
-                <!-- <td name="rowOneAvg">{{rowAvg}}</td> -->
-                <td><input type="checkbox" name="record"></td>
-              </tr>
+              </tr> -->
           </tbody>
           <!-- <tr>
             <th>% of stud. with 3 or more</th>
@@ -130,7 +38,7 @@
             <td></td>
             <td></td>
             <!-- <td></td> -->
-            <td><button type="submit" class="btn btn-outline-secondary">Submit</button></td>
+            <td><button type="submit" class="btn btn-outline-secondary" id="submit">Submit</button></td>
             <td><input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row"></td>
             <td><input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row"></td>
           </tr>

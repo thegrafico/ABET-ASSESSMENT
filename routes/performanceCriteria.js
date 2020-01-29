@@ -20,7 +20,7 @@ parms["title"] = 'ABET Assessment';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  try{
+  try {
 
     parms.results = null;
     parms.current_outName = null;
