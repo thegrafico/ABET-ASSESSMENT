@@ -11,9 +11,9 @@ router.get('/', async function(req, res, next) {
       try {
         await authHelper.getTokenFromCode(code, res);
         // Redirect to home
-        res.redirect('/');
+        res.redirect('/auth');
       } catch (error) {
-        res.render('error', { title: 'Error', message: 'Error exchanging code for token', error: error });
+        res.render('error', {title: 'Error', message: 'Error exchanging code for token', error: error });
       }
     } else {
       // Otherwise complain
