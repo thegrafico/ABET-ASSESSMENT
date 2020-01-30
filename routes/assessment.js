@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 let parms ={};
-var general_queries = require('../../helpers/queries/general_queries');
-var chooseCourseTermQuery = require('../../helpers/queries/chooseCourseTermQueries');
+var general_queries = require('../helpers/queries/general_queries');
+var chooseCourseTermQuery = require('../helpers/queries/chooseCourseTermQueries');
 parms.title = 'ABET Assessment';
 
 
@@ -10,7 +10,7 @@ parms.title = 'ABET Assessment';
 //FROM STUDENT_OUTCOME inner join STUDY_PROGRAM using (prog_ID) where dep_ID = 1;
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/chooseCourseTerm', function(req, res, next) {
   console.log("This is the get");
   let table = "STUDY_PROGRAM";
 
@@ -36,7 +36,7 @@ router.get('/', function(req, res, next) {
 
           chooseCourseTermQuery.get_course_info(prog_id, function(err,results){
               parms.course = results;
-            res.render('professorReport/chooseCourseTerm', parms);
+            res.render('assessment/chooseCourseTerm', parms);
           })
         })
       })
@@ -47,7 +47,7 @@ router.get('/', function(req, res, next) {
 });
 
 //The search post method
-router.get('/:id', function(req, res, next) {
+router.get('/chooseCourseTerm/:id', function(req, res, next) {
   let prog_id = req.params.id;
 
     table = "STUDY_PROGRAM"
@@ -70,35 +70,35 @@ router.get('/:id', function(req, res, next) {
 
             chooseCourseTermQuery.get_course_info(prog_id, function(err,results){
                 parms.course = results;
-              res.render('professorReport/chooseCourseTerm', parms);
+              res.render('assessment/chooseCourseTerm', parms);
             })
           })
         })
     })
 });
 
-router.post('/', function(req, res, next){
+router.post('/chooseCourseTerm', function(req, res, next){
   //splits the URL for the prog_ID and saves it
   req.body.prog_ID = req.body.prog_ID.split("/")[req.body.prog_ID.split("/").length - 1];
   //the 1 needs to be replaced with a real user id
   let data = [req.body.course_ID, req.body.term_ID, 5, req.body.rubric_ID]
   chooseCourseTermQuery.insert_assessment(data, function(err,results){
     console.log(results);
-    res.redirect('/professorReport/'+ results.insertId +'/professorInput');
+    res.redirect('/assessment/'+ results.insertId +'/professorInput');
   })
 });
-module.exports = router;
+
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
-let base_url = '/courses/';
-var query = require("../../helpers/queries/pInput_queries");
+
+var query = require("../helpers/queries/pInput_queries");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-  res.render('professorReport/professorInput', { title: 'ABET Assessment' });
+  res.render('assessment/professorInput', { title: 'ABET Assessment' });
 });
 
 //Creando un Id para seguir mandando los datos
@@ -138,12 +138,11 @@ router.get('/', function(req, res, next) {
      res.redirect('/tableTest');
  });
 
-module.exports = router;
+
 //////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-let parms = {}
 
 router.post('/', function(req, res, next) {
 
@@ -231,5 +230,6 @@ router.post('/', function(req, res, next) {
 router.get('/', function(req, res, next) {
   res.render('tableTest', parms);
 });
+
 
 module.exports = router;
