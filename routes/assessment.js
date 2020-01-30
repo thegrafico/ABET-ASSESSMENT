@@ -82,8 +82,10 @@ router.post('/chooseCourseTerm', function(req, res, next){
   req.body.prog_ID = req.body.prog_ID.split("/")[req.body.prog_ID.split("/").length - 1];
   //the 1 needs to be replaced with a real user id
   let data = [req.body.course_ID, req.body.term_ID, 5, req.body.rubric_ID]
+  console.log("data", data);
+
   chooseCourseTermQuery.insert_assessment(data, function(err,results){
-    console.log(results);
+    console.log("here?", results);
     res.redirect('/assessment/'+ results.insertId +'/professorInput');
   })
 });
@@ -96,7 +98,7 @@ router.post('/chooseCourseTerm', function(req, res, next){
 var query = require("../helpers/queries/pInput_queries");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/:id/professorInput', function(req, res, next) {
 
   res.render('assessment/professorInput', { title: 'ABET Assessment' });
 });
@@ -122,7 +124,7 @@ router.get('/', function(req, res, next) {
 
 
 //Post guardando lo que se escribe en la pagina en la base de datos.
- router.post('/', function (req, res,next) {
+ router.post('/:id/professorInput', function (req, res,next) {
 
      // res.send(req.body);
      let data = [req.body.A, req.body.B, req.body.C, req.body.D, req.body.F,
