@@ -137,7 +137,7 @@ router.get('/:id/professorInput', function(req, res, next) {
    		if (err) throw err;
    		res.redirect(base_url);
 	   });
-     res.redirect('/tableTest');
+     res.redirect('/assessment/' + req.params.id + '/tableTest');
  });
 
 
@@ -146,7 +146,7 @@ router.get('/:id/professorInput', function(req, res, next) {
 ////////////////////////////////////////////////////////////////////////////
 
 
-router.post('/', function(req, res, next) {
+router.post('/:id/tableTest', function(req, res, next) {
 
   var input = req["body"]["rowValue"]; // input contains an array of objects which are the inputs of the user
   var studentScores= [];
@@ -229,7 +229,7 @@ router.post('/', function(req, res, next) {
 });
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/:id/tableTest', function(req, res, next) {
   res.render('tableTest', parms);
 });
 
