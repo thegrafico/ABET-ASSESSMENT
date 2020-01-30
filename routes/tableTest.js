@@ -82,7 +82,6 @@ router.post('/', function(req, res, next) {
   }
 
   let sum = 0;
-  let avgSum = 0;
   let avgRow = [];
 
   // for loops which calculates average per rows
@@ -95,10 +94,9 @@ router.post('/', function(req, res, next) {
     // avgRow is an array which contains all the average rolls
     avgRow[i] = sum/parseFloat(size);
     sum = 0;
-    avgSum += avgRow[i];
     // console.log("Avg of row", i, " : ", avgRow[i]);
   }
-  let colAvg = avgSum/(avgRow.length);
+  console.log(avgRow);
   // console.log("Avg Row Array here: ", avgRow);
 
   let count = 1;
@@ -116,6 +114,15 @@ router.post('/', function(req, res, next) {
 
   let threeMorePerc = [];
   let threeMoreCount = 0;
+  let avgtreeMoreCount = 0;
+
+  for(let i = 0; i < avgRow.length; i++) {
+    if(avgRow[i] >= 3) {
+      avgtreeMoreCount++;
+    }
+  }
+  
+  let avgPerc = (avgtreeMoreCount/avgRow.length)*100;
 
   for(let i = 0; i < size; i++) {
     for (let j = 0; j < studentScores.length; j++) {
@@ -127,10 +134,18 @@ router.post('/', function(req, res, next) {
     threeMoreCount = 0;
     // console.log("Here: ", threeMorePerc[i]);
   }
+  let colAvg = 54;
+  
+  console.log("Here is the percentage of the avarage column: ", avgPerc);
+
+  threeMorePerc[threeMorePerc.length] = avgPerc;
+
+  // threeMorePerc.push(avgPerc);
+
   parms.colNums = amountCol;
   parms.row = listOfObjects;
-  parms.avgCol = colAvg
-  parms.colPerc = threeMorePerc
+  parms.avgCol = colAvg;
+  parms.colPerc = threeMorePerc;
 
   let document = createReport(parms);
 
@@ -157,6 +172,9 @@ module.exports = router;
 
 function createReport(data) {
   // =================================================================== Document Generator ===================================================================================
+  
+  console.log(data);
+  
   const doc = new docx.Document({
     creator: "Inter American Assessment Team",
     description: "This is a Test",
@@ -223,8 +241,76 @@ function createReport(data) {
   let colPercent = data.colPerc;
   let listOfCell = [];     
   let listOfRow = [];
+  let headerCells = [];
+  let footerCells = [];
 
-  console.log("This is dataRow: ", rowData);
+  const studentCell = new docx.TableCell({
+    children: [
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Students",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+        spacing: {
+          after: 500,
+        },
+      })],
+    width: {
+      size : 320,
+      type: "AUTO",
+    },
+    verticalAlign: docx.VerticalAlign.CENTER,
+  });
+
+  headerCells.push(studentCell);
+
+  for(let i = 0; i < colNum; i++) {
+    let inputCell = new docx.TableCell({
+      children: [
+        new docx.Paragraph({
+          children: [
+            new docx.TextRun({
+              text: "Criteria " + i,
+              bold: true
+            }),
+          ],
+          alignment: docx.AlignmentType.CENTER,
+          spacing: {
+            after: 500,
+          },
+        })],
+      verticalAlign: docx.VerticalAlign.CENTER,
+    });
+    headerCells.push(inputCell);
+  }
+
+  let averageCell = new docx.TableCell({
+    children: [
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "Average",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+        spacing: {
+          after: 500,
+        },
+      })],
+    verticalAlign: docx.VerticalAlign.CENTER,
+  });
+
+  headerCells.push(averageCell);
+
+  let headerRow = new docx.TableRow({
+    children: headerCells
+  });
+
+  listOfRow.push(headerRow);
 
   for(let j = 0; j < rowData.length; j++) {      // This loops the amount of rows
     let indexCol = new docx.TableCell({
@@ -252,7 +338,7 @@ function createReport(data) {
             children: [
               new docx.TextRun({
                 text: rowData[j].rowIn[index],
-                bold: true
+                bold: false
               }),
             ],
             alignment: docx.AlignmentType.CENTER,
@@ -270,7 +356,7 @@ function createReport(data) {
           children: [
             new docx.TextRun({
               text: rowData[j].rowAvg,
-              bold: true
+              bold: false
             }),
           ],
           alignment: docx.AlignmentType.CENTER,
@@ -288,32 +374,49 @@ function createReport(data) {
     listOfRow.push(row);
   }
 
-  // for (let i = 0; i < 5; i++) { 
-  //   let row = new docx.TableRow({
-  //     children: listOfCell
-  //   });
-  //   listOfRow.push(row);
-  // }
+  let percDescCell = new docx.TableCell({
+    children: [
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({
+            text: "% of srud. with 3 or more",
+            bold: true
+          }),
+        ],
+        alignment: docx.AlignmentType.CENTER,
+        spacing: {
+          after: 500,
+        },
+      })],
+    verticalAlign: docx.VerticalAlign.CENTER,
+  });
 
-  // for (let index = 0; index < colNum; index++) {
-  //   let tableCol = new docx.TableCell({
-  //     children: [
-  //       new docx.Paragraph({
-  //         children: [
-  //           new docx.TextRun({
-  //             text: "User Input",
-  //             bold: true
-  //           }),
-  //         ],
-  //         alignment: docx.AlignmentType.CENTER,
-  //         spacing: {
-  //           after: 500,
-  //         },
-  //       })],
-  //     verticalAlign: docx.VerticalAlign.CENTER,
-  //   });
-  // listOfCell.push(tableCol)
-  // }
+  footerCells.push(percDescCell);
+
+  for(let i = 0; i < colPercent.length; i++) {
+    let percCell = new docx.TableCell({
+          children: [
+            new docx.Paragraph({
+              children: [
+                new docx.TextRun({
+                  text: colPercent[i],
+                  bold: true
+                }),
+              ],
+              alignment: docx.AlignmentType.CENTER,
+              spacing: {
+                after: 500,
+              },
+            })],
+          verticalAlign: docx.VerticalAlign.CENTER,
+        });
+    footerCells.push(percCell);    
+  }
+  let footerRow = new docx.TableRow({
+    children: footerCells
+  });
+  
+  listOfRow.push(footerRow);
 
   const table = new docx.Table({
     rows: listOfRow
