@@ -6,9 +6,6 @@ var chooseCourseTermQuery = require('../helpers/queries/chooseCourseTermQueries'
 parms.title = 'ABET Assessment';
 
 
-//SELECT *
-//FROM STUDENT_OUTCOME inner join STUDY_PROGRAM using (prog_ID) where dep_ID = 1;
-
 /* GET home page. */
 router.get('/chooseCourseTerm', function(req, res, next) {
   console.log("This is the get");
@@ -95,32 +92,13 @@ router.post('/chooseCourseTerm', function(req, res, next){
 ////////////////////////////////////////////////////////////////////////
 
 
-var query = require("../helpers/queries/pInput_queries");
+var pInput_queries = require("../helpers/queries/pInput_queries");
 
 /* GET home page. */
 router.get('/:id/professorInput', function(req, res, next) {
 
   res.render('assessment/professorInput', { title: 'ABET Assessment' });
 });
-
-//Creando un Id para seguir mandando los datos
-//a la proxima ruta.
-
-// router.get('/professorInput/:id',function(req,res,next){
-//   res.render('test',{output: req.params.id});
-// });
-//
-// router.post('/professorInput/next', function(req,res,next){
-//     var id = req.body.id;
-//   res.redirect('/professorInput/' + id);
-// });
-
-
-//Post de Prueba...
-
-// router.post('/', function(req,res,next){
-//   res.redirect('/chooseCourseTerm');
-// });
 
 
 //Post guardando lo que se escribe en la pagina en la base de datos.
@@ -132,7 +110,7 @@ router.get('/:id/professorInput', function(req, res, next) {
       //Esto es para ver si esta "receiving" la data
         console.log(data);
 
-     query.insert_into_report(data, function(err, results){
+     pInput_queries.insert_into_report(data, function(err, results){
    		//TODO: catch error properly
    		if (err) throw err;
    		res.redirect(base_url);
