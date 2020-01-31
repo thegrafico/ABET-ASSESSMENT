@@ -1,7 +1,8 @@
 var conn = require("../mysqlConnection").mysql_pool; //pool connection
 
 function insert_into_report(data, callback){
-
+//Este query manda los numeros de cuales son las notas y
+//toda los comentarios que el profesor ingrese.
   let insert_query = `insert into REPORTS
   (grade_A, grade_B, grade_C, grade_D, grade_F, UW, evaluation_comments,
     reflexion_comments, actions_comments, assessment_ID)
