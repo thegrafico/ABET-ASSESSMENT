@@ -273,7 +273,7 @@ function createReport(data) {
         new docx.Paragraph({
           children: [
             new docx.TextRun({
-              text: "Criteria " + i,
+              text: "Criteria " + i+1,
               bold: true
             }),
           ],
