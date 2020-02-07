@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs = require("hbs");
 const session = require("express-session");
+
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
@@ -73,6 +74,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ========================== USING ROUTES ==========================
+app.use(function (req, res, next) {
+  // set locals, only providing error in development
+  // res.locals.message = err.message;
+  console.log("USER: ", req.user)
+  next()
+});
+
 // Index route & authorize
 app.use('/', indexRouter);
 app.use('/authorize', authorize);
@@ -102,17 +110,6 @@ app.use('/professorInput', profInputRouter);
 app.use('/chooseOutcomes', chooseOutcomes);
 // ====================================================
 
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
 
 //Run the app
 app.listen(port, function () { console.log(`Server ${port} is online!`);});
