@@ -1,3 +1,6 @@
+<!-- Current error:
+results is not iterable 
+results returns null when debugging.-->
 <script>
 
     //RELOAD PAGE WHEN USER CLICK BACK BUTTON
@@ -11,12 +14,13 @@ window.addEventListener("pageshow", function (event) {
     }
 });
 </script>
+<%- include ('../partials/header', {signInUrl: signInUrl, singOutUrl: singOutUrl}) -%>
 
 <div class="container-fluid">
   <form action="studyPrograms" method="POST">
-    <h2>Study Programs</h2>
+    <h2><%= subtitle %></h2>
     <hr class="my-4">
-    <form action="{{create}}" method="post">
+    <!-- <form action="{{create}}" method="post"> -->
     <div class="row py-2">
         <div class="col-sm-3">
             <a href="/studyPrograms/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
@@ -24,10 +28,10 @@ window.addEventListener("pageshow", function (event) {
         <div class = "col-sm-9">
             <div class="input-group">
                 <select class="form-control" name = "dep_ID">
-                    <option value="{{current_depID}}">{{current_depName}}</option>
-                    {{#each resultsDD}}
-                    <option value="{{this.dep_ID}}">{{this.dep_name}}</option>
-                    {{/each}}
+                    <option value="<%= resultsDD.current_depID %>"><%= resultsDD.current_depName %></option>
+                    <% for (var elem of resultsDD) {%>
+                    <option value="<%= elem.dep_ID %>"><%= elem.dep_name %></option>
+                    <% } %>
                 </select>
                 <div class="input-group-append">
                     <button class="btn inter-green inter-green-btn" role="button">Filter</button>
@@ -45,23 +49,25 @@ window.addEventListener("pageshow", function (event) {
         <div class="col"><strong>Date Created</strong></div>
         <div class="col"></div>
     </div>
-    {{#each results}}
+    <% for (var elem of results) {%>
         <div class="row py-2 btn-light">
-            <div class="col">{{this.prog_name}}</div>
-            <div class="col">{{this.prog_ID}}</div>
+            <div class="col"><%= elem.prog_name %></div>
+            <div class="col"><%= elem.prog_ID %></div>
             <div class="col">Science Study Program Description</div>
-            <div class="col">{{this.dep_ID}}</div>
-            <div class="col">{{this.date_created}}</div>
+            <div class="col"><%= elem.dep_ID %></div>
+            <div class="col"><%= elem.date_created %></div>
             <div class="col dropdown">
                 <button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
                     Actions
                 </button>                
                 <div class="dropdown-menu">
-                    <a href="/studyPrograms/{{this.prog_ID}}/edit" type="submit" class="dropdown-item" >Edit</a>
-                    <a href="/studyPrograms/{{this.prog_ID}}/remove" type="submit" class="dropdown-item">Delete</a>
+                    <a href="/studyPrograms/<%= elem.prog_ID %>/edit" type="submit" class="dropdown-item" >Edit</a>
+                    <a href="/studyPrograms/<%= elem.prog_ID %>/remove" type="submit" class="dropdown-item">Delete</a>
                 </div>
             </div>
         </div>
-    {{/each}}
-    </form>
+    <% } %>
+    <!-- </form> -->
 </div>
+
+<%- include ('../partials/footer') -%>

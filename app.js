@@ -5,7 +5,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var hbs = require("hbs");
+var ejs = require("ejs");
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser'); //recuperar datos a traves de URL
 
@@ -57,9 +57,8 @@ app.use(express.static(__dirname + "public"));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-hbs.registerPartials(__dirname + '/views/partials/')
 
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 
 app.use(methodOverride("_method"));
 

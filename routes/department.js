@@ -6,6 +6,7 @@ var express = require('express');
 var router = express.Router();
 var query = require("../helpers/queries/department_queries");
 var general_queries = require("../helpers/queries/general_queries");
+var authHelper = require('../helpers/auth');
 
 //Routing for CRUD
 let base_url = '/department/'
@@ -21,6 +22,8 @@ routes_names.forEach(e => {
 //Same title for every department route??
 parms["title"] = 'ABET Assessment';
 parms["subtitle"] = 'Departments';
+parms.signInUrl = authHelper.getAuthUrl();
+parms.singOutUrl = "/authorize/signout";
 //============================================ DEPARMENT MAIN ROUTE =============================
 
 /* DEPARTMENT home page. */

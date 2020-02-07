@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
+var authHelper = require('../helpers/auth');
 // var queries = require('../helpers/queries');
 
 let base_url = '/evaluation/'
@@ -21,7 +22,9 @@ routes_names.forEach(e=>{
 // console.log("ROUTES", parms, "FINISH")
 
 parms["title"] = 'ABET Assessment';
-
+parms["subtitle"] = 'Departments';
+parms.signInUrl = authHelper.getAuthUrl();
+parms.singOutUrl = "/authorize/signout";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -46,7 +49,6 @@ router.get('/', function(req, res, next) {
         // console.log(results)
         parms.resultsF = results;
       }
-
       res.render('evaluations/evaluation', parms);
     });
   }
@@ -77,7 +79,6 @@ router.post('/', function(req, res, next) {
       if (results) {
         // console.log(results)
         parms.resultsF = results;
-
         let data = {
           "from": "EVALUATION_RUBRIC",
           "where": "outc_ID",
@@ -86,8 +87,6 @@ router.post('/', function(req, res, next) {
 
         general_queries.get_table_info_by_id(data, function (err, results) {
 
-          console.log(data);
-          console.log(results);
           parms.results = results;
 
           parms.current_outcID = req.body.outc_ID;
@@ -103,7 +102,7 @@ router.post('/', function(req, res, next) {
           general_queries.get_table_info_by_id(data2, function (err, results) {
 
             parms.current_outName = results[0].outc_name;
-
+            console.log(parms);
             res.render('evaluations/evaluation', parms);
           });
         });
