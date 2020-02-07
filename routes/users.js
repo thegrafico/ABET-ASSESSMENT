@@ -6,9 +6,13 @@ var express = require('express');
 var router = express.Router();
 var conn = require("../helpers/mysqlConnection").mysql_pool;
 var queries = require('../helpers/queries/user_queries');
+var authHelper = require('../helpers/auth');
 
 var parms = {
-  title: 'ABET Assessment'
+  title: 'ABET Assessment',
+  subtitle: 'Users',
+  signInUrl: authHelper.getAuthUrl(),
+  singOutUrl: "/authorize/signout",
 };
 //==================================== USER HOME PAGE=================================
 /* USER HOME*/
