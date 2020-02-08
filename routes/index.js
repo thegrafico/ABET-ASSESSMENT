@@ -24,7 +24,6 @@ let parms = {
 router.get('/', async function (req, res) {
   console.log("========================INDEX ROUTE===========================")
 
-
   // // Create Dummy data
   // dummy.insert_dummy_users()
   // dummy.insert_dummy_profile()
@@ -34,11 +33,7 @@ router.get('/', async function (req, res) {
   // dummy.update_user_profile(11,2);
 
   // Getting user information from microsoft account
-  // const accessToken = await authHelper.getAccessToken(req.cookies, res);
-  const userName = req.session.user;
-  const userEmail = req.session.userEmail;
-
-  console.log(userName, userEmail, req.session.x);
+  const accessToken = await authHelper.getAccessToken(req.cookies, res);
 
   parms.signInUrl = authHelper.getAuthUrl();
   parms.singOutUrl = "/signout";

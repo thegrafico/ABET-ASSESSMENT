@@ -4,9 +4,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var hbs = require("hbs");
-const session = require("express-session");
-
+var ejs = require("ejs");
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
@@ -52,17 +50,18 @@ app.use(express.static(__dirname + "public"));
 
 // ======================SETUP=======================*/ 
 // app.set('trust proxy', 1) // trust first proxy
-app.use(session({
-  secret: 'Rnwdasdlqwuhdajsdhlawue123814312kdlaksdjnuqwlehj3n1i',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true }
-}));
+// app.use(session({
+//   secret: 'Rnwdasdlqwuhdajsdhlawue123814312kdlaksdjnuqwlehj3n1i',
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { secure: true }
+// }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-hbs.registerPartials(__dirname + '/views/partials/')
-app.set('view engine', 'hbs');
+
+app.set('view engine', 'ejs');
+
 app.use(methodOverride("_method"));
 app.use(logger('dev'));
 app.use(express.json());

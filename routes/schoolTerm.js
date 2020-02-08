@@ -2,6 +2,7 @@ var express = require('express');
 var query = require("../helpers/queries/term_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
+var authHelper = require('../helpers/auth');
 
 
 let base_url = '/schoolTerm/'
@@ -26,6 +27,8 @@ general_queries.get_table_info(term_table, function(err, results){
 });
 parms["title"] = 'ABET Assessment';
 parms["subtitle"] = 'School Terms';
+parms.signInUrl = authHelper.getAuthUrl();
+parms.singOutUrl = "/authorize/signout";
 //================================ CREATE TERM  =================================
 
 

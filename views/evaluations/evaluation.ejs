@@ -1,18 +1,22 @@
+<!-- Current error:
+results is not iterable 
+results returns null when debugging.-->
+<%- include ('../partials/header') -%>
 <div class="container-fluid">
   <form action="evaluation" method="POST">
   <h2>Evaluation Rubric</h2>
   <hr class="my-4">
   <div class = "row py-2 d-flex justify-content-start">
     <div class = "col-sm-2">
-      <a href="{{create}}" class="btn inter-green inter-green-btn" role="button">Create New</a>
+      <a href="<%= create %>" class="btn inter-green inter-green-btn" role="button">Create New</a>
     </div>
     <div class="col-sm-5">
       <div class="input-group">
         <select class="form-control" name = "outc_ID">
-          <option value="{{current_outcID}}">{{current_outName}}</option>
-          {{#each resultsF}}
-          <option value="{{this.outc_ID}}">{{this.outc_name}}</option>
-          {{/each}}
+          <option value="<%= resultsF.current_outcID %>"><%= resultsF.current_outName %></option>
+          <% for (let elem of resultsF) {%>
+          <option value="<%= elem.outc_ID %>"><%= elem.outc_name %></option>
+          <% } %>
         </select>
         <div class="input-group-append">
           <button class="btn inter-green inter-green-btn" role="button">Filter</button>
@@ -30,21 +34,21 @@
       <div class="col"><strong>Student Outcome ID</strong></div>
       <div class="col"></div>
   </div>
-  {{#each results}}
+  <% for (let item of results) { %>
   <div class="row py-2 btn-light">
-      <div class="col">{{this.rubric_name}}</div>
-      <div class="col">{{this.rubric_ID}}</div>
-      <div class="col">{{this.rubric_description}}</div>
-      <div class="col">{{this.outc_ID}}</div>
+      <div class="col"><%= item.rubric_name %></div>
+      <div class="col"><%= item.rubric_ID %></div>
+      <div class="col"><%= item.rubric_description %></div>
+      <div class="col"><%= item.outc_ID %></div>
       <div class="col dropdown">
         <button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
           Actions
         </button>
         <div class="dropdown-menu">
-          <a href="evaluation/{{this.rubric_ID}}/edit" class="dropdown-item">Edit</a>
-          <a href="evaluation/{{this.rubric_ID}}/delete" class="dropdown-item">Delete</a>
+          <a href="evaluation/<%= item.rubric_ID %>/edit" class="dropdown-item">Edit</a>
+          <a href="evaluation/<%= item.rubric_ID %>/delete" class="dropdown-item">Delete</a>
         </div>
       </div>
   </div>
-  {{/each}}
+  <% } %>
 </div>

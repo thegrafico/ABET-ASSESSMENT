@@ -10,23 +10,28 @@ a {
 /* Beginning of custom classes: */
 .inter-green {
   background-color: #00833e !important; 
-  color: #FFF;
+  color: #FFF !important;
 }
 
 .inter-green-btn:hover {
   background-color: #00593a !important;
-  color: #FFF;
+  color: #FFF !important;
 }
 
-.collapser-control {
-  cursor: pointer;
+.inter-yellow {
+  background-color: #FED34E !important;
+  color: #00833e !important;
 }
 
-.accordion {
-  margin: 0;
-  padding: 0;
+.inter-yellow-btn:hover {
+  background-color: #e3b734 !important;
+  color: #00833e !important;
 }
 
 .accordion-panel {
   display: none;
+}
+
+.collapser-control {
+  cursor: pointer;
 }

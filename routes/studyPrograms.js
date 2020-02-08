@@ -2,7 +2,7 @@ var express = require('express');
 var query = require("../helpers/queries/studyProgramQueries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
-
+var authHelper = require('../helpers/auth');
 
 const base_url = '/studyPrograms/'
 let routes_names = ['create', 'delete', 'edit', 'details']
@@ -16,7 +16,9 @@ routes_names.forEach(e=>{
 });
 
 parms["title"] = 'ABET Assessment';
-
+parms["subtitle"] = 'Study Programs';
+parms.signInUrl = authHelper.getAuthUrl();
+parms.singOutUrl = "/authorize/signout";
 //================================ HOME PAGE =================================
 /* GET home page. */
 router.get('/', function(req, res, next) {

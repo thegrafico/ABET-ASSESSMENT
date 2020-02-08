@@ -6,14 +6,17 @@ var express = require('express');
 var router = express.Router();
 var query = require("../helpers/queries/outcomes_queries");
 var general_queries = require("../helpers/queries/general_queries");
-
+var authHelper = require('../helpers/auth');
 
 const base_url = '/outcomes/';
 
 //Paramns to routes links
 let parms = {
   "title": "ABET Assessment",
-  "base_url": base_url
+  "subtitle": "Outcomes",
+  "base_url": base_url,
+  "signInUrl": authHelper.getAuthUrl(),
+  "singOutUrl": "/authorize/signout"
 };
 
 // =========================================== HOME OUTCOME =====================================
