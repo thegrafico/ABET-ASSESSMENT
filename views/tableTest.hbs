@@ -1,43 +1,19 @@
   <body>
     <input type="hidden" id="amountOfCol" name="amountOfCol" value="{{colNums}}">
-    <form action="/tableTest" method="post">
+    <form action="/assessment/tableTest" method="post">
       <div class="container">
         <table id="table" class="table">
           <thead>
             <tr id="header">
               <th scope="col">Student</th>
-         <!-- <th scope="col">{Criteria 1}</th>
-              <th scope="col">{Criteria 2}</th>
-              <th scope="col">{Criteria 3}</th>
-              <th scope="col">{Criteria 4}</th> -->
-              <!-- <th scope="col"></th> -->
             </tr>
           </thead>
           <tbody id="tableBody">
-              <!-- <tr>
-                <th scope="row">1</th>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4" size = "25" required></td>
-                <td><input type="number" name="rowValue" min = "0" max = "4"  size = "25" required></td>
-
-                <td><input type="checkbox" name="record"></td>
-              </tr> -->
           </tbody>
-          <!-- <tr>
-            <th>% of stud. with 3 or more</th>
-            <td>{AVG of Criteria 1}</td>
-            <td>{AVG of Criteria 2}</td>
-            <td>{AVG of Criteria 3}</td>
-            <td>{AVG of Criteria 4}</td>
-            <td>{{colAverage}}</td>
-            <td></td>
-          </tr> -->
           <tr>
             <th></th>
             <td></td>
             <td></td>
-            <!-- <td></td> -->
             <td><button type="submit" class="btn btn-outline-secondary" id="submit">Submit</button></td>
             <td><input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row"></td>
             <td><input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row"></td>

@@ -1,8 +1,12 @@
 var conn = require("../mysqlConnection").mysql_pool; //pool connection
 
+/**
+ * Takes as arguements 
+ * Returns all data from a table.
+ * 
+ */
 
 function get_table_info(table_name, callback){
-
     `Getting data from any table`
 
     let get_table_info = `Select * From ??`;
