@@ -12,41 +12,28 @@ window.addEventListener("pageshow", function (event) {
 });
 </script>
 
-<div class="wrapper">
-  <div class="container">
-    <div class="row">
-      <h1>School Terms</h1>
-      <div class="col-sm-12">
-        <!-- Create New Button -->
-        <!-- Trigger/Open The Modal -->
-        <a href="/schoolTerm/create" class="btn btn-success" role="button">Create New</a>
-        <!-- Table -->
-        <table class="table">
-          <thead>
-            <form action="{{create}}" method="post">
-            <tr>
-              <th scope="col">Term Name</th>
-              <th scope="col"> </th>
-              <th scope="col"> </th>
-              <th scope="col"> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each results}}
-            <tr>
-              <td>{{this.term_name}}</td>
-              <td> </td>
-              <td> </td>
-              <td>
-                <a href="/schoolTerm/{{this.term_ID}}/edit" type="submit" class="btn btn-warning" style="color:#FFFFFF"
-                    name="editButton">Edit</a>
-                <a href="/schoolTerm/{{this.term_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
-              </td>
-            </tr>
-            {{/each}}
-          </tbody>
-        </table>
+<div class="container-fluid">
+    <h2>{{subtitle}}</h2>
+      <a href="/schoolTerm/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
+    <hr class="my-4">
+  <!-- Table -->
+  <div class="row p-2 bg-secondary text-light">
+    {{!-- <form action="{{create}}" method="post"> --}}
+    <div class="col-10"><strong>Term Name</strong></div>
+    <div class="col"></div>
+  </div>
+  {{#each results}}
+  <div class="row btn-light py-2">
+    <div class="col-10">{{this.term_name}}</div>
+    <div class="col dropdown">
+      <button class="btn inter-green inter-green-btn dropdown-toggle" data-toggle="dropdown">
+        Actions
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="/schoolTerm/{{this.term_ID}}/edit" type="submit" class="btn btn-dark" name="editButton">Edit</a>
+        <a class="dropdown-item" href="/schoolTerm/{{this.term_ID}}/remove" type="submit" class="btn btn-danger">Delete</a>
       </div>
     </div>
   </div>
+  {{/each}}
 </div>

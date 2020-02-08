@@ -1,39 +1,50 @@
-<div class="wrapper">
-    <div class="container">
-      <div class="row">
-        <h1>Evaluation Rubric</h1>
-        <div class="col-sm-12">
-          <!-- Create New Button -->
-          <a class="btn btn-success" role="button" name="button" href="{{create}}">Create New</a>
-          <!-- Table -->
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Evaluation Rubric ID</th>
-                <th scope="col">Description</th>
-                <th scope="col">Student Outcome ID</th>
-                <!-- <th scope="col">Date Created</th> -->
-                <th scope="col"> </th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each results}}
-              <tr>
-                <td>{{this.rubric_name}}</td>
-                <td>{{this.rubric_ID}}</td>
-                <td>{{this.rubric_description}}</td>
-                <td>{{this.outc_ID}}</td>
-                <!-- <td>{{dateCreated}}</td> -->
-                <td>
-                  <a class="btn btn-danger" role="button" name="button" href="evaluation/{{this.rubric_ID}}/edit">Edit</a>
-                  <a class="btn btn-warning" role="button" name="button" href="evaluation/{{this.rubric_ID}}/delete">Delete</a>
-                </td>
-              </tr>
-              {{/each}}
-            </tbody>
-          </table>
+<div class="container-fluid">
+  <form action="evaluation" method="POST">
+  <h2>Evaluation Rubric</h2>
+  <hr class="my-4">
+  <div class = "row py-2 d-flex justify-content-start">
+    <div class = "col-sm-2">
+      <a href="{{create}}" class="btn inter-green inter-green-btn" role="button">Create New</a>
+    </div>
+    <div class="col-sm-5">
+      <div class="input-group">
+        <select class="form-control" name = "outc_ID">
+          <option value="{{current_outcID}}">{{current_outName}}</option>
+          {{#each resultsF}}
+          <option value="{{this.outc_ID}}">{{this.outc_name}}</option>
+          {{/each}}
+        </select>
+        <div class="input-group-append">
+          <button class="btn inter-green inter-green-btn" role="button">Filter</button>
+        </div>
+    </div>
+    </div>
+    <div class="col-sm-4"></div>
+  </div>
+</div>
+<div class="container-fluid my-2">
+  <div class="row bg-secondary text-light p-2">
+      <div class="col"><strong>Name</strong></div>
+      <div class="col"><strong>Evaluation Rubric ID</strong></div>
+      <div class="col"><strong>Description</strong></div>
+      <div class="col"><strong>Student Outcome ID</strong></div>
+      <div class="col"></div>
+  </div>
+  {{#each results}}
+  <div class="row py-2 btn-light">
+      <div class="col">{{this.rubric_name}}</div>
+      <div class="col">{{this.rubric_ID}}</div>
+      <div class="col">{{this.rubric_description}}</div>
+      <div class="col">{{this.outc_ID}}</div>
+      <div class="col dropdown">
+        <button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
+          Actions
+        </button>
+        <div class="dropdown-menu">
+          <a href="evaluation/{{this.rubric_ID}}/edit" class="dropdown-item">Edit</a>
+          <a href="evaluation/{{this.rubric_ID}}/delete" class="dropdown-item">Delete</a>
         </div>
       </div>
-    </div>
   </div>
+  {{/each}}
+</div>

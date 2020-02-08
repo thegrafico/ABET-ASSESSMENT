@@ -21,7 +21,8 @@ router.get('/', function(req, res, next) {
     res.render('courses/indexCourses', parms);
   });
 });
-
+parms["title"] = 'ABET Assessment';
+parms["subtitle"] = 'Courses';
 //================================ CREATE COURSE  =================================
 /* CREATE home page. */
 router.get('/create', function(req, res, next) {
