@@ -24,32 +24,33 @@ let parms = {
 router.get('/', async function (req, res) {
   console.log("========================INDEX ROUTE===========================")
 
-  // // Create Dummy data
-  // dummy.insert_dummy_users()
-  // dummy.insert_dummy_profile()
-  // dummy.insert_new_user([ null, "G00473780", "Raul", "Pichardo Avalo", "RPICHARDO3780@INTERBAYAMON.EDU", "7873776957",null] )
-  // email = "RPICHARDO3780@INTERBAYAMON.EDU"; // id = 11
-  // dummy.set_profile_to_user(email, 1);
-  // dummy.update_user_profile(11,2);
-
   // Getting user information from microsoft account
   const accessToken = await authHelper.getAccessToken(req.cookies, res);
+  const userName = req.cookies.graph_user_name;
+  const userEmail = req.cookies.graph_user_email;
+  // console.log("DEBUG:", accessToken,userName, userEmail )
 
+  //Verify is there is user info
+  if (accessToken && userName && userEmail) {
+    parms.user = userName;
+
+    //TODO: user_data_profile have all the information that you need to keep working. 
+    //Next step is to display the values. 
+
+    //Compare user email in the DB, then get the data if there is any user. 
+    user_data_profile = get_user_profile(userEmail)
+
+    //Verify is not empty
+    if (user_data_profile)
+      console.log(user_data_profile)
+    else
+      console.log("This user don't have a profile")
+
+  }
   parms.signInUrl = authHelper.getAuthUrl();
-  parms.singOutUrl = "/signout";
-  let view_route = 'home';
+  parms.singOutUrl = "/authorize/signout"
+  res.render('index', parms);
 
-  // //Verify is there is user info
-  // if (userName && userEmail) {
-    
-  //   parms.user = userName;
-
-    res.render(view_route, parms);
-
-  // //By default, if there is not email, the user go to the home view
-  // }else{
-  //   res.render(view_route, parms)
-  // }
 });
 
 router.get("/auth", middleware.get_user_role, async function(req, res){
