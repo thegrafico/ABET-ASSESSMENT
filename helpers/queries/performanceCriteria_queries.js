@@ -1,4 +1,6 @@
-var conn = require("../mysqlConnection").mysql_pool; //pool connection
+var { db } = require("../mysqlConnection"); //pool connection
+var conn = db.mysql_pool;
+
 var general_queries = require('../../helpers/queries/general_queries');
 
 function create_perC(data, callback){

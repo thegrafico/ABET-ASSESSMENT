@@ -1,4 +1,5 @@
-var conn = require("../mysqlConnection").mysql_pool; //pool connection
+var { db } = require("../mysqlConnection"); //pool connection
+var conn = db.mysql_pool;
 
 
 function insert_outcome(data, callback) {

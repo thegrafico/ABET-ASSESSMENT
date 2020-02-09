@@ -1,7 +1,6 @@
-
 /*
-Raul Pichardo ROUTE
-*/ 
+	ROUTE - /users
+*/
 var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');

@@ -1,5 +1,7 @@
 
-var conn = require("./mysqlConnection").mysql_pool; //pool connection
+var { db } = require("../mysqlConnection"); //pool connection
+var conn = db.mysql_pool;
+
 var USER_QUERIES = require("./queries/user_queries");
 var faker = require('faker');
 
