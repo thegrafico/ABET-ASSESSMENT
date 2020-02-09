@@ -7,6 +7,7 @@ var queries = require('../helpers/queries/perfTable_queries');
 var docx = require("docx");
 var fs = require('fs');
 let parms ={};
+let assessmentID;
 
 parms.title = 'ABET Assessment';
 
@@ -121,10 +122,10 @@ router.post('/:id/professorInput', function (req, res,next) {
 // <------ tableTest GET request ------>
 // The ID being sent is the assessment ID
 router.get('/:id/tableTest', function(req, res, next) {
-  let assessmentID = req.params.id;
+  assessmentID = req.params.id;
   console.log('assessmentID: ', assessmentID);
   try {
-    queries.get_perf_criterias(assessmentID ,function(err, results) {
+    queries.get_perf_criterias(assessmentID ,(err, results) => { // If error check here
 
       //TODO: redirect user to another page
       if (err) {
@@ -161,8 +162,8 @@ router.get('/:id/tableTest', function(req, res, next) {
 */
 
 router.post('/tableTest', function(req, res, next) {
-
-  let input = req["body"]["rowValue"]; // input contains an array of objects which are the inputs of the user
+  // input contains an array of objects which are the inputs of the user
+  let input = req["body"]["rowValue"]; 
   let studentScores= [];
   let inputCount = 0;
   
@@ -252,6 +253,28 @@ router.post('/tableTest', function(req, res, next) {
   parms.colPerc = threeMorePerc;
 
   let document = createReport(parms);
+
+  console.log('Student Scores: ', studentScores);
+  if (size < 5)
+    size = 5;
+  for(let i = 0; i < studentScores.length; i++) {
+    let studentPerformance = [];
+      for(let j = 0; j < size; j++) {
+        studentPerformance.push(studentScores[i][j]);
+        if(studentPerformance[j] === undefined) {
+          studentPerformance[j] = null;
+        }
+      }
+      studentPerformance.push(assessmentID);
+      queries.insertData(studentPerformance, (err, results) => {
+        if(err) {
+          throw err;
+        }
+        if(results) {
+          console.log('Data was inserted to database!');
+        }
+      });
+  }
 
   docx.Packer.toBuffer(document).then((buffer) => {
     console.log("Created a doc");
