@@ -23,14 +23,12 @@ let parms = {
 router.get('/', async function (req, res) {
 	console.log("========================INDEX ROUTE===========================")
 
+	// to verify is user is loggin -> sessions 
 	let sess = req.session;
 
 	//Verify is there is user info
 	if (sess != undefined && sess.userEmail) {
 		parms.user = sess.userName;
-
-		//TODO: user_data_profile have all the information that you need to keep working. 
-		//Next step is to display the values. 
 
 		//Compare user email in the DB, then get the data if there is any user. 
 		user_data_profile = await middleware.get_user_role(sess.userEmail);
@@ -41,8 +39,6 @@ router.get('/', async function (req, res) {
 		else
 			console.log("This user don't have a profile");
 	}
-
-	console.log("SESSIONS: ", sess.userEmail);
 
 	parms.signInUrl = authHelper.getAuthUrl();
 	res.render('index', parms);
@@ -60,6 +56,7 @@ router.get("/auth", async function(req, res){
 
 	req.session.userName = userName;
 	req.session.userEmail = userEmail;
+	parms.signInUrl = authHelper.getAuthUrl();
 
 	console.log(req.session.userEmail, req.session.userName);
 	res.redirect("/");

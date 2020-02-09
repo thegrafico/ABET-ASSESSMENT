@@ -1,20 +1,23 @@
-var conn = require("../mysqlConnection").mysql_pool; //pool connection
+var { db } = require("../mysqlConnection"); //pool connection
+var conn = db.mysql_pool;
 
 
-function get_user_list(callback) {
-    `Getting the user's information from the database`
+/**
+ * get_user_list - get all users
+ * @return {Promise} resolve with results of database
+ */
+async function get_user_list() {
+    console.log("Getting List of users");
 
-    console.log("Getting List of users")
+    return new Promise(function(resolve, reject){
+        let userList = `Select * From USER natural join USER_PROFILES natural join PROFILE`;
 
-    let userList = `Select *
-                    From USER natural join USER_PROFILES natural join PROFILE`;
-
-    conn.query(userList, function (err, results, fields) {
-        if (err) {
-            return callback(err, null)
-        };
-        // console.log(results)
-        return callback(null, results);
+        conn.query(userList, function (err, results, fields) {
+            if (err)
+                reject(err || "error getting users");
+            else
+                resolve(results);
+        });
     });
 }
 
@@ -94,37 +97,85 @@ function delete_user_by_id(id, callback) {
     });
 }
 
-//Insert new user to the database
-function insert_user(data, callback) {
-    `INSERT USER`
 
+/**
+ * get_all_profiles get all profiles from database
+ * @param {Object} data -> {interId, firstName, lastName, email, phoneNumber} 
+ * @return {VoidFunction} resolve with all profiles
+ */
+async function insert_user(data) {
     console.log("CREATING USER");
 
+    // TODO: validate data
 
-    let add_user = `insert into USER (inter_ID, first_name, last_name, email, phone_number)  
-        values( ?, ?, ?, ?, ?);`;
+    // Promise 1
+    let add_user_promise = new Promise(function(resolve, reject){
+        
+        // query
+        let queryAddUser = `insert into USER (inter_ID, first_name, last_name, email, phone_number)  
+        values( ?, ?, ?, ?, ?);`;  
+        
+        // TODO: Validation - data of the user
+        let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber];
 
-    let setProfile = `insert into USER_PROFILES values(?, ?)`;
-
-    let user_data = [data.interID, data.name, data.lName, data.email, data.pNumber];
-
-    //Exe query
-    conn.query(add_user, user_data, function (err, results) {
+        //Exe query
+        conn.query(queryAddUser, user_data, function (err, results) {
+            
+            if (err) 
+                reject(err);
+            else
+                resolve(results.insertId);
+        });
+    });
     
-        //Getting user id
-        let userID = results.insertId;
-        // console.log("=========================USERID: ", userID);
-        if (err) {
-            return callback(err, null)
-        };
+    // Promise 2
+    let set_profile_promise = add_user_promise.then((userId) =>{
+        return new Promise(function(resolve, reject){
+            
+            // query
+            let querySetProfile = `insert into USER_PROFILES values(?, ?)`;
 
-        //Insert user into the profile
-        conn.query(setProfile, [userID, data.profile_id], function (error, results) {
-            if (error) {
-                return callback(error, null);
-            }
-            // console.log(results)
-            return callback(null, results);
+            conn.query(querySetProfile, [userId, data.profile_id], function (error, results) {
+                if (error) 
+                     reject(false);
+                else
+                    resolve(true);
+            });
+        }).catch((err) => {
+            console.log("There is an error adding the user: ", err);
+        });
+    });
+
+    // run promise 1 and 2
+    Promise.all([add_user_promise, set_profile_promise]).then(function([userId, was_added]){
+
+        if (was_added){
+            console.log("User was added with the id: ", userId);
+            return true;
+        }else
+            console.log("Error adding the user");
+        return false;
+    }).catch((err) => {
+        console.log(err);
+        return false;
+    });
+}
+
+
+/**
+ * get_all_profiles get all profiles from database
+ * @return {Promise} resolve with all profiles
+ */
+async function get_all_profiles(){
+    return new Promise(function(resolve, reject){
+        let query_profile = `Select * From PROFILE`;
+
+        //Database query
+        conn.query(query_profile, function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(results);
         });
     });
 }
@@ -135,3 +186,4 @@ module.exports.update_user = update_user;
 module.exports.delete_user_by_id = delete_user_by_id;
 module.exports.insert_user = insert_user;
 module.exports.get_user_ID_by_email = get_user_ID_by_email;
+module.exports.get_all_profiles = get_all_profiles;

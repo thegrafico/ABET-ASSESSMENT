@@ -4,3 +4,4 @@ helpers/mysqlConnection.js
 ~$cument.docx
 Document.docx
 alex/
+.DS_Store

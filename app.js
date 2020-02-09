@@ -14,7 +14,7 @@ db = db.mysql_pool;
 
 // connect to db
 db.query('SELECT 1', function (error, results, fields) {
-//   //TODO: Catch error if can't connect to the database
+// TODO: Catch error if can't connect to the database
   if (error) throw error;
   console.log('Connected to the database');
 });

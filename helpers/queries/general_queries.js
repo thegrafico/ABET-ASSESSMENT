@@ -1,19 +1,24 @@
-var conn = require("../mysqlConnection").mysql_pool; //pool connection
-
-
-function get_table_info(table_name, callback){
-
+var { db } = require("../mysqlConnection"); //pool connection
+var conn = db.mysql_pool;
+/**
+ * [get_table_info get all data from a table]
+ * @param  {String} table_name name of the table in the database
+ * @return {Promise} resolve with results of database
+ */
+function get_table_info(table_name){
     `Getting data from any table`
+    
+    return new Promise(function (resolve, reject){
+        let get_table_info = `Select * From ??`;
 
-    let get_table_info = `Select * From ??`;
-
-    conn.query(get_table_info, [table_name], function (err, results, fields) {
-        if (err) {
-            return callback(err, null)
-        };
-        // console.log(results)
-        return callback(null, results);
+        conn.query(get_table_info, [table_name], function (err, results, fields) {
+            if (err) 
+                reject(err);
+            else
+                resolve(results);
+        });
     });
+    
 }
 
 function get_table_info_by_id(table_info, callback){

@@ -4,9 +4,8 @@ var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
 var authHelper = require('../helpers/auth');
 
-
 let base_url = '/courses/'
-let parms = {"title":'ABET Assessment', "base_url":base_url  };
+let parms = {"title":'ABET Assessment', "base_url":base_url };
 
 //================================ HOME PAGE =================================
 /* GET home page. */
@@ -25,7 +24,6 @@ router.get('/', function(req, res, next) {
 parms["title"] = 'ABET Assessment';
 parms["subtitle"] = 'Courses';
 parms.signInUrl = authHelper.getAuthUrl();
-parms.singOutUrl = "/authorize/signout";
 //================================ CREATE COURSE  =================================
 /* CREATE home page. */
 router.get('/create', function(req, res, next) {
