@@ -20,26 +20,26 @@
       <div class="col-2"></div>
     </div>
     <% for (var elem of results) {%>
-    <div class="row py-2 btn-light">
-      <div class="col-1"><%=elem.user_ID%></div>
-      <div class="col-1"><%=elem.inter_ID%></div>
-      <div class="col"><%=elem.profile_Name%></div>
-      <div class="col-1"><%=elem.first_name%></div>
-      <div class="col-1"><%=elem.last_name%></div>
-      <div class="col-2" style="word-wrap: break-word;"><%=elem.email%></div>
-      <div class="col-2" style="word-wrap: break-word;"><%=elem.phone_number%></div>
-      <div class="col-1"><%=elem.date_created%></div>
-      <div class="col-2 dropdown">
-        <button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
-          Actions
-        </button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="users/<%=elem.user_ID%>/edit" type="submit" class="btn btn-warning btn-block" name="editButton">Edit</a>
-          <a class="dropdown-item" href="users/<%=elem.user_ID%>/remove" type="submit" class="btn btn-danger btn-block">Delete</a>
+      <div class="row py-2 btn-light">
+        <div class="col-1"><%=elem.user_ID%></div>
+        <div class="col-1"><%=elem.inter_ID%></div>
+        <div class="col"><%=elem.profile_Name%></div>
+        <div class="col-1"><%=elem.first_name%></div>
+        <div class="col-1"><%=elem.last_name%></div>
+        <div class="col-2" style="word-wrap: break-word;"><%=elem.email%></div>
+        <div class="col-2" style="word-wrap: break-word;"><%=elem.phone_number%></div>
+        <div class="col-1"><%=elem.date_created%></div>
+        <div class="col-2 dropdown">
+          <button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
+            Actions
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="users/<%=elem.user_ID%>/edit" type="submit" class="btn btn-warning btn-block" name="editButton">Edit</a>
+            <a class="dropdown-item" href="users/<%=elem.user_ID%>/remove" type="submit" class="btn btn-danger btn-block">Delete</a>
+          </div>
         </div>
       </div>
-    </div>
-  <% } %>
+    <% } %>
     <hr class="my-1">
 </div>
 

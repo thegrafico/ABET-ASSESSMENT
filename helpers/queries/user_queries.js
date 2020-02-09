@@ -21,22 +21,25 @@ async function get_user_list() {
     });
 }
 
-//GET USER DATA USING user_ID
-function get_user_by_id(id, callback) {
-    `Get user data using the id`
 
-    console.log("Getting user data");
+/**
+ * get_user_by_id ->  get all user information by id
+ * @param {Number} id -> id of the user 
+ * @return {Promise} resolve with user data
+ */
+function get_user_by_id(id) {
+    // TODO: validate id
 
-    let getUser = `Select *
-              FROM USER
-              where user_ID = ?`;
+    return new Promise(function(resolve, reject){
 
-    conn.query(getUser, [id], function (err, results, fields) {
-        if (err) {
-            return callback(err, null)
-        };
-        // console.log(results)
-        return callback(null, results);
+        let query_user_info= `Select * FROM USER where user_ID = ?`;
+
+        conn.query(query_user_info, [id], function (err, results, fields) {
+            if (err) 
+                reject(err);
+            else
+                resolve(results[0] || []);
+        });
     });
 }
 
@@ -96,7 +99,6 @@ function delete_user_by_id(id, callback) {
         return callback(null, results);
     });
 }
-
 
 /**
  * get_all_profiles get all profiles from database

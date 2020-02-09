@@ -7,7 +7,6 @@ try{
   var credentials = require("./raul_credentials");
 }catch (err){
   console.log("Credentials file for mysqlConnections dont exits");
-  throw err;
 }
 
 var options = {

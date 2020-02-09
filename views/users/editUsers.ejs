@@ -1,33 +1,35 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
 <div class="container-fluid">
 	<h1>Edit</h1>
 	<h4>User</h4>
 	<hr class="my-4">
-		<form action="/users/{{userID}}?_method=PUT" method="POST">
-			<input type="hidden" name="data[userID]" value="{{userID}}">
+		<form action="/users/<%= userID %>?_method=PUT" method="POST">
+			<input type="hidden" name="data[userID]" value="<%= userID %>">
 			<div class="row my-4">
 				<div class="col-2 align-self-center text-right"><strong>Inter ID</strong></div>
 				<div class="col-10"><input class="form-control" type="text" placeholder="User Inter ID" name="data[interID]"
-						value="{{interID}}" required></div>
+						value="<%= interID %>" required></div>
 			</div>
 			<div class="row my-4">
 				<div class="col-2 align-self-center text-right"><strong>Name</strong></div>
 				<div class="col-10"><input class="form-control" type="text" placeholder="User Name" name="data[fName]"
-						value="{{fName}}" required></div>
+						value="<%= fName %>" required></div>
 			</div>
 			<div class="row my-4">
 				<div class="col-2 align-self-center text-right"><strong>Last Name</strong></div>
 				<div class="col-10"><input class="form-control" type="text" placeholder="User Last Name" name="data[lName]"
-						value="{{lName}}" required></div>
+						value="<%= lName %>" required></div>
 			</div>
 			<div class="row my-4">
 				<div class="col-2 align-self-center text-right"><strong>Email</strong></div>
 				<div class="col-10"><input class="form-control" type="email" placeholder="User Email" name="data[email]"
-						value="{{email}}" required></div>
+						value="<%= email %>" required></div>
 			</div>
 			<div class="row my-4">
 				<div class="col-2 align-self-center text-right"><strong>Phone Number</strong></div>
 				<div class="col-10"><input class="form-control" type="text" placeholder="User Phone Number" name="data[pNumber]"
-						value="{{pNumber}}" required></div>
+						value="<%= pNumber %>" required></div>
 			</div>
 			<div class="row my-4 my-4">
 				<div class="col-2"></div>
@@ -35,3 +37,5 @@
 			</div>
 		</form>		
 </div>
+
+<%- include ('../partials/footer') -%>

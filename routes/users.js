@@ -71,21 +71,30 @@ router.post('/create', async function (req, res) {
 /*
  GET /users/:id/edit
 */
-router.get('/:id/edit', function (req, res) {
+router.get('/:id/edit', async function (req, res) {
 
-  //TODO: catch error in case there is not id
-  let user_id = req.params.id;
+  	//TODO: catch error in case there is not id
+	let user_id = req.params.id;
 
-  queries.get_user_by_id(user_id, function (err, results) {
-	parms.interID = results[0].inter_ID;
-	parms.fName = results[0].first_name;
-	parms.lName = results[0].last_name;
-	parms.email = results[0].email;
-	parms.pNumber = results[0].phone_number;
+	// get the user data
+	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
+		console.log(err);
+	});
+
+	// verify is user data is good
+	if (user_data == undefined ||  user_data.length < 1){
+		return res.send("ERROR GETTING THE USER INFO");
+	}
+
+	// set info of the user for frontend
+	parms.interID = user_data.inter_ID;
+	parms.fName = user_data.first_name;
+	parms.lName = user_data.last_name;
+	parms.email = user_data.email;
+	parms.pNumber = user_data.phone_number;
 	parms.userID = req.params.id;
-	// console.log(req.body.editButton);
+	
 	res.render('users/editUsers', parms);
-  });
 });
 
 /* PUT */
@@ -105,25 +114,33 @@ router.put('/:id', function (req, res) {
 });
 //==================================== REMOVE USER ROUTE =================================
 /* REMOVE USER ROUTE */
-router.get('/:id/remove', function (req, res) {
-  console.log("REMOVE ROUTE");
+router.get('/:id/remove',async function (req, res) {
+	console.log("REMOVE ROUTE");
+	
+	let user_id = req.params.id;
 
-  //TODO: catch error in case there is not id
-  let user_id = req.params.id;
+  	// get the user data
+	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
+		console.log(err);
+	});
 
-  queries.get_user_by_id(user_id, function (err, results) {
-	parms.interID = results[0].inter_ID;
-	parms.fName = results[0].first_name;
-	parms.lName = results[0].last_name;
-	parms.email = results[0].email;
-	parms.pNumber = results[0].phone_number;
+	// verify is user data is good
+	if (user_data == undefined ||  user_data.length < 1){
+		return res.send("ERROR GETTING THE USER INFO");
+	}
+	// set info of the user for frontend
+	parms.interID = user_data.inter_ID;
+	parms.fName = user_data.first_name;
+	parms.lName = user_data.last_name;
+	parms.email = user_data.email;
+	parms.pNumber = user_data.phone_number;
 	parms.userID = req.params.id;
 	res.render('users/deleteUsers', parms);
-  });
+
 });
+
 /* DELETE ROUTE */
 router.delete('/:id', function (req, res) {
-  console.log("===================DELETED ROUTE=====================");
 
   //TODO: catch error in case of null
   let user_id = req.params.id;
@@ -134,8 +151,7 @@ router.delete('/:id', function (req, res) {
 	if (err) {
 	  throw err;
 	}
-	console.log("USER DELETED")
-	console.log("===================DELETED ROUTE=====================");
+	// TODO: flash message
 	res.redirect("/users");
   });
 });
