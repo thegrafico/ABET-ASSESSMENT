@@ -4,40 +4,51 @@ var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
 var authHelper = require('../helpers/auth');
 
-let base_url = '/courses/'
-let parms = {"title":'ABET Assessment', "base_url":base_url };
+const base_url = '/courses/'
+let parms = {
+	"signInUrl": authHelper.getAuthUrl(),
+	"title": 'ABET Assessment',
+	"base_url":base_url,
+	"subtitle": 'Courses'
+};
 
-//================================ HOME PAGE =================================
-/* GET home page. */
+/*
+ GET /courses/
+*/
 router.get('/', function(req, res, next) {
 
   let course_table = 'COURSE';
 
   query.get_course_info(course_table, function(err, results){
-    //TODO: handle error
-    if (err) throw err;
+	//TODO: handle error
+	if (err) throw err;
 
-    parms.results = results;
-    res.render('courses/indexCourses', parms);
+	parms.results = results;
+	res.render('courses/index', parms);
   });
 });
-parms["title"] = 'ABET Assessment';
-parms["subtitle"] = 'Courses';
-parms.signInUrl = authHelper.getAuthUrl();
-//================================ CREATE COURSE  =================================
-/* CREATE home page. */
-router.get('/create', function(req, res, next) {
+
+
+/*
+ GET /courses/create 
+*/
+router.get('/create', async function(req, res, next) {
   let deparment_table = "STUDY_PROGRAM";
-  general_queries.get_table_info(deparment_table, function(err, resutls){
-
-    //TODO: handle this err;
-    if(err)throw err;
-
-    parms.results = resutls;
-    res.render('courses/createCourses', parms);
+  
+  let all_study_program =  await general_queries.get_table_info(deparment_table).catch((err)=>{
+	console.log("Error getting the programs");
   });
+
+  if (all_study_program != undefined){
+	parms.results = all_study_program;
+  }
+
+  res.render('courses/create', parms);
 });
 
+/* 
+POST courses/create
+*/
 router.post('/create', function(req, res, next) {
 
 
@@ -47,15 +58,16 @@ router.post('/create', function(req, res, next) {
 	//Insert into the DB the data from user
 	query.insert_into_course([data.crnumber,data.crname, data.crdesc, data.prog_id], function(err, results){
 		//TODO: catch error properly
-    // console.log("HERE", prog_id);
+	// console.log("HERE", prog_id);
 		if (err) throw err; 
 		res.redirect(base_url);
 
 	});
 });
 
-//==================================== REMOVE COURSE =================================
-/* REMOVE STUDY PROGRAM ROUTE */
+/*
+ GET cousers/:id/remove
+*/
 router.get('/:id/remove', function (req, res) {
   console.log("REMOVE ROUTE");
 
@@ -66,20 +78,20 @@ router.get('/:id/remove', function (req, res) {
   let data = {"from": course_table,"where":where_attr, "id":course_id};
   general_queries.get_table_info_by_id(data, function(err, results){
 
-    //TODO: catch erro
-    if (err) throw err;
-    try {
-      parms.course_ID = results[0].course_ID;
-      parms.course_name = results[0].course_name;
-      parms.course_description = results[0].course_description;
-      parms.date_created = results[0].date_created;
-      parms.course_number = results[0].course_number;
+	//TODO: catch erro
+	if (err) throw err;
+	try {
+	  parms.course_ID = results[0].course_ID;
+	  parms.course_name = results[0].course_name;
+	  parms.course_description = results[0].course_description;
+	  parms.date_created = results[0].date_created;
+	  parms.course_number = results[0].course_number;
 
 
-      res.render('courses/deleteCourses', parms);
-    } catch (error) {
-      res.redirect(base_url);
-    }
+	  res.render('courses/deleteCourses', parms);
+	} catch (error) {
+	  res.redirect(base_url);
+	}
   });
 });
 /* DELETE ROUTE */
@@ -95,13 +107,12 @@ router.delete('/:id', function (req, res) {
 
   general_queries.delete_record_by_id(data, function (err, results) {
 
-    //TODO: catch error
-    if (err) {
-      throw err;
-    }
-    console.log("===================DELETED ROUTE=====================");
-    res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-    res.redirect("back");
+	//TODO: catch error
+	if (err) {
+	  throw err;
+	}
+	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+	res.redirect("back");
   });
 });
 
@@ -116,44 +127,44 @@ router.get('/:id/edit', function(req, res, next) {
   let data = {"from":table_name, "where":where_atr, "id": id_course};
   general_queries.get_table_info_by_id(data, function(err, user_results){
 
-    //TODO: handle this err;
-    if(err)throw err;
+	//TODO: handle this err;
+	if(err)throw err;
 
-    let prog_table = "STUDY_PROGRAM";
+	let prog_table = "STUDY_PROGRAM";
 
-    general_queries.get_table_info(prog_table, function(error, resutls){
+	general_queries.get_table_info(prog_table, function(error, resutls){
 
-      //TODO: handle this err;
-      if(error)throw error;
+	  //TODO: handle this err;
+	  if(error)throw error;
 
-      parms.course_ID = id_course;
-      parms.std_results = resutls;
-      parms.user_results = user_results[0];
+	  parms.course_ID = id_course;
+	  parms.std_results = resutls;
+	  parms.user_results = user_results[0];
 
-      // course_queries.find_select_prog()
+	  // course_queries.find_select_prog()
 
-      let data = {
-        "from": "PROG_COURSE",
-        "from2": "STUDY_PROGRAM",
-        "where": "course_ID",
-        "id": id_course
-      };
+	  let data = {
+		"from": "PROG_COURSE",
+		"from2": "STUDY_PROGRAM",
+		"where": "course_ID",
+		"id": id_course
+	  };
 
-        general_queries.get_table_info_by_id_naturalJoin(data, function (err, results) {
+		general_queries.get_table_info_by_id_naturalJoin(data, function (err, results) {
 
-          console.log(results);
-          parms.current_progName = results[0].prog_name;
-          parms.current_progID   = results[0].prog_ID;
-          if (err) {
-            //HERE HAVE TO REDIRECT the user or send a error message
-            throw err;
-          }
-          res.render('courses/editCourses', parms);
-        });
+		  console.log(results);
+		  parms.current_progName = results[0].prog_name;
+		  parms.current_progID   = results[0].prog_ID;
+		  if (err) {
+			//HERE HAVE TO REDIRECT the user or send a error message
+			throw err;
+		  }
+		  res.render('courses/editCourses', parms);
+		});
 
-      // console.log("EDIT RESULTS: ", parms);
-      // res.render('courses/editCourses', parms);
-    });
+	  // console.log("EDIT RESULTS: ", parms);
+	  // res.render('courses/editCourses', parms);
+	});
   });
 
 });
@@ -175,12 +186,12 @@ router.put('/:id/edit', function(req, res, next) {
 
   let data2 = [prog_id, course_id];
   query.update_course(data, function(err, results){
-    console.log("HERE", data);
-    //TODO: cath this error
-    if (err) throw err;
+	console.log("HERE", data);
+	//TODO: cath this error
+	if (err) throw err;
 
-    console.log("EDITED STUDY PROGRAM");
-    res.redirect(base_url);
+	console.log("EDITED STUDY PROGRAM");
+	res.redirect(base_url);
   });
 });
 

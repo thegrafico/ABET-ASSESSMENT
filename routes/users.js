@@ -94,28 +94,33 @@ router.get('/:id/edit', async function (req, res) {
 	parms.pNumber = user_data.phone_number;
 	parms.userID = req.params.id;
 	
-	res.render('users/editUsers', parms);
+	res.render('users/edit', parms);
 });
 
-/* PUT */
+/*
+ UPDATE / users/:id
+*/
 router.put('/:id', function (req, res) {
 
-  //TODO: Validate data before sending to the database
-  let user_data_to_update = req.body.data;
+  	//TODO: Validate data before sending to the database
+  	let user_data_to_update = req.body.data;
 
-  queries.update_user(user_data_to_update, function (err, results) {
-	if (err) {
-	  //TODO: catch error
-	  throw err;
-	}
-	console.log("User update")
+	let user_was_update = queries.update_user(user_data_to_update);
+	
+	// another way for working with promise
+	user_was_update.then((is_user_update) => {
+		console.log("User was updated");
+	}).catch((err)=>{
+		console.log("Error: ", err);
+	})
+
 	res.redirect("/users");
-  });
 });
-//==================================== REMOVE USER ROUTE =================================
-/* REMOVE USER ROUTE */
-router.get('/:id/remove',async function (req, res) {
-	console.log("REMOVE ROUTE");
+
+/*
+ GET users/:id:/remove 
+*/
+router.get('/:id/remove', async function (req, res) {
 	
 	let user_id = req.params.id;
 
@@ -135,25 +140,31 @@ router.get('/:id/remove',async function (req, res) {
 	parms.email = user_data.email;
 	parms.pNumber = user_data.phone_number;
 	parms.userID = req.params.id;
-	res.render('users/deleteUsers', parms);
+	res.render('users/remove', parms);
 
 });
 
-/* DELETE ROUTE */
+/* 
+	REMOVE users/:id
+	
+*/
 router.delete('/:id', function (req, res) {
 
-  //TODO: catch error in case of null
-  let user_id = req.params.id;
+ 	//TODO: catch error in case of null	 
+	let user_id = req.params.id;
 
-  queries.delete_user_by_id(user_id, function (err, results) {
+	// getting promise
+  	let is_user_deleted = queries.delete_user_by_id(user_id);
 
-	//TODO: catch error
-	if (err) {
-	  throw err;
-	}
+	// run promise
+	is_user_deleted.then((yes) => {
+		console.log("User was deleted");
+	}).catch((no)=>{
+		console.log("Error deleting the user: ", no);
+	});
+
 	// TODO: flash message
 	res.redirect("/users");
-  });
 });
 //===============================================================================
 

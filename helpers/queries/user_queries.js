@@ -7,8 +7,6 @@ var conn = db.mysql_pool;
  * @return {Promise} resolve with results of database
  */
 async function get_user_list() {
-    console.log("Getting List of users");
-
     return new Promise(function(resolve, reject){
         let userList = `Select * From USER natural join USER_PROFILES natural join PROFILE`;
 
@@ -60,44 +58,49 @@ function get_user_ID_by_email(email, callback){
     });
 }
 
-//UPDATE TABLE USER
-function update_user(data, callback) {
-    `Update the user table in the database`
-    console.log("Getting user data")
+/**
+ * update_user - Update user in database
+ * @param {Object} data -> {interId, fName, lName, email, pNumber, userID} 
+ * @return {Promise} resolve with all profiles
+ */
+function update_user(data) {
 
-    let updateUser = `update USER
-            set inter_ID = ?, first_name= ?,
+    let updateUser = `update USER set inter_ID = ?, first_name= ?, 
             last_name= ?, email= ?, phone_number= ?
             where user_ID = ? `;
-
+    
+    // array with all user data, has to be in this order 
     let user_data = [data.interID, data.fName, data.lName, data.email, data.pNumber, parseInt(data.userID)];
 
-    conn.query(updateUser, user_data, function (err, results, fields) {
-        if (err) {
-            return callback(err, null)
-        };
-        // console.log(results)
-        return callback(null, results);
+    return new Promise(function(resolve, reject){
+        conn.query(updateUser, user_data, function (err, results, fields) {
+            if (err)
+                reject(err);
+            else
+                resolve(true);
+        });
     });
+    
 }
 
-//DELETE USER FROM DATABASE
-function delete_user_by_id(id, callback) {
-    `REMOVE USER BY ID`
-    console.log("REMOVING user");
+/**
+ * get_all_profiles get all profiles from database
+ * @param {Number} id -> id of the user 
+ * @return {Promise} resolve with all profiles
+ */
+function delete_user_by_id(id) {
 
-    let deleteUser = `DELETE
-                    FROM USER
-                    WHERE user_ID = ?;`;
+    return new Promise(function(resolve, reject){
 
-    //Exe query
-    conn.query(deleteUser, [id], function (err, results, fields) {
-        if (err) {
-            return callback(err, null)
-        };
-        // console.log(results)
-        return callback(null, results);
-    });
+    let deleteUser = `DELETE FROM USER WHERE user_ID = ?`;
+        //Exe query
+        conn.query(deleteUser, [id], function (err, results, fields) {
+            if (err)
+                 reject(err);
+            else            
+                resolve(true);
+        });
+    })
 }
 
 /**
