@@ -6,7 +6,6 @@ var authHelper = require('../helpers/auth');
 
 const base_url = '/courses/'
 let parms = {
-	"signInUrl": authHelper.getAuthUrl(),
 	"title": 'ABET Assessment',
 	"base_url":base_url,
 	"subtitle": 'Courses'

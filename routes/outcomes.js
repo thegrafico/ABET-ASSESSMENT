@@ -15,8 +15,6 @@ let parms = {
   "title": "ABET Assessment",
   "subtitle": "Outcomes",
   "base_url": base_url,
-  "signInUrl": authHelper.getAuthUrl(),
-  "singOutUrl": "/authorize/signout"
 };
 
 // =========================================== HOME OUTCOME =====================================

@@ -12,8 +12,7 @@ var conn = db.mysql_pool;
 
 var parms = {
   title: 'ABET Assessment',
-  subtitle: 'Users',
-  signInUrl: authHelper.getAuthUrl(),
+  subtitle: 'Users'
 };
 
 /*
@@ -21,18 +20,18 @@ var parms = {
 */
 router.get('/', async function (req, res) {
 
-	//Get all user from the database (callback)
+	parms.results = [];
+
+	// Get all user from the database (callback)
 	let list_of_users = await queries.get_user_list().catch( (err) =>{
 		// TODO: flash message with error
 		console.log("THERE IS AN ERROR: ", err);
 	});
 
-	//IF found results from the database
+	// IF found results from the database
 	if (list_of_users != undefined && list_of_users.length > 0)
 		parms.results = list_of_users;
-	else
-		parms.results = [];
-
+		
 	res.render('users/users', parms);
 });
 
@@ -123,6 +122,9 @@ router.put('/:id', function (req, res) {
 router.get('/:id/remove', async function (req, res) {
 	
 	let user_id = req.params.id;
+	
+	// TODO: Create locals var, [for loop in front end]
+	let locals = {};
 
   	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
@@ -133,6 +135,8 @@ router.get('/:id/remove', async function (req, res) {
 	if (user_data == undefined ||  user_data.length < 1){
 		return res.send("ERROR GETTING THE USER INFO");
 	}
+
+	console.log(user_data);
 	// set info of the user for frontend
 	parms.interID = user_data.inter_ID;
 	parms.fName = user_data.first_name;
@@ -157,7 +161,7 @@ router.delete('/:id', function (req, res) {
   	let is_user_deleted = queries.delete_user_by_id(user_id);
 
 	// run promise
-	is_user_deleted.then((yes) => {
+	is_user_deleted.then( (yes) => {
 		console.log("User was deleted");
 	}).catch((no)=>{
 		console.log("Error deleting the user: ", no);

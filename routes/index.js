@@ -40,7 +40,6 @@ router.get('/', async function (req, res) {
 			console.log("This user don't have a profile");
 	}
 
-	parms.signInUrl = authHelper.getAuthUrl();
 	res.render('index', parms);
 });
 
@@ -56,7 +55,6 @@ router.get("/auth", async function(req, res){
 
 	req.session.userName = userName;
 	req.session.userEmail = userEmail;
-	parms.signInUrl = authHelper.getAuthUrl();
 
 	console.log(req.session.userEmail, req.session.userName);
 	res.redirect("/");

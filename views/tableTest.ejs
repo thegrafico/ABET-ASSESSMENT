@@ -1,5 +1,6 @@
-  <body>
-    <input type="hidden" id="amountOfCol" name="amountOfCol" value="{{colNums}}">
+<%- include ('partials/header') -%>
+
+    <input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
     <form action="/assessment/tableTest" method="post">
       <div class="container">
         <table id="table" class="table">
@@ -24,3 +25,5 @@
     <!-- jQuery script -->
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/javascripts/tableTest.js"></script>
+
+<%- include ('partials/footer') -%>

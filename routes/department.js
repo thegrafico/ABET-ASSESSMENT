@@ -22,7 +22,6 @@ routes_names.forEach(e => {
 //Same title for every department route??
 parms["title"] = 'ABET Assessment';
 parms["subtitle"] = 'Departments';
-parms.signInUrl = authHelper.getAuthUrl();
 parms.singOutUrl = "/authorize/signout";
 //============================================ DEPARMENT MAIN ROUTE =============================
 
