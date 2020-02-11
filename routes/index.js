@@ -50,8 +50,8 @@ router.get('/', async function (req, res) {
  GET /login 
 */
 router.get('/login', function (req, res) {
-	
-	res.render('login');
+	parms.title = "Login";
+	res.render('login', parms);
 });
 
 
