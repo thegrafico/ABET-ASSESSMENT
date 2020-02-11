@@ -153,9 +153,9 @@ router.post('/chooseCourseTerm', async function(req, res) {
 	});
 });
 
-// <------ tableTest GET request ------>
+// <------ perfomanceTable GET request ------>
 // The ID being sent is the assessment ID
-router.get('/:id/tableTest', async function(req, res, next) {
+router.get('/:id/perfomanceTable', async function(req, res, next) {
 	
 	// TODO: validate 
 	assessmentID = req.params.id;
@@ -176,7 +176,7 @@ router.get('/:id/tableTest', async function(req, res, next) {
 	
 	parms.colNums = perf_criterias.length;
 
-	res.render('tableTest', parms);
+	res.render('assessment/perfomanceTable', parms);
 });
 
 
@@ -202,11 +202,11 @@ router.post('/:id/professorInput', function (req, res, next) {
 	  if (err) throw err;
 	  // res.redirect('/assessment/' + req.params.id + '/professorInput');
 	});
-	res.redirect('/assessment/' + req.params.id + '/tableTest');
+	res.redirect('/assessment/' + req.params.id + '/perfomanceTable');
 });
 
 
-// <------ tableTest Post request ------>
+// <------ perfomanceTable Post request ------>
 
 /* TODO: for Noah R. Almeda 
 	- Add graphs to report
@@ -215,7 +215,7 @@ router.post('/:id/professorInput', function (req, res, next) {
 	- Clean code
 */
 
-router.post('/tableTest', async function(req, res) {
+router.post('/perfomanceTable', async function(req, res) {
   // input contains an array of objects which are the inputs of the user
   let input = req["body"]["rowValue"];
   let studentScores= [];
