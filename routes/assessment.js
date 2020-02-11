@@ -10,6 +10,8 @@ var fs = require('fs');
 let parms ={};
 let assessmentID;
 
+var base_url = "/assessment/chooseCourseTerm"
+
 parms.title = 'ABET Assessment';
 
 /*
@@ -21,7 +23,7 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	parms.term = [];
 	parms.rubric = [];
 	parms.course = [];
-
+	
 	// get data from table
 	let table_info = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
 		// TODO: flash message with error
@@ -76,8 +78,9 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	res.render('assessment/chooseCourseTerm', parms);
 });
 
-// <------ ChooseCourseTems GET request ------>
-
+/* 
+	GET assessment/chooseCourseTerm/:id
+*/
 router.get('/chooseCourseTerm/:id', async function(req, res) {
 
 	// TODO: Validate prog_id 
@@ -123,19 +126,57 @@ router.get('/chooseCourseTerm/:id', async function(req, res) {
 	res.render('assessment/chooseCourseTerm', parms);
 });
 
-// <------ ChooseCourseTems Post request ------>
+/* 
+	POST assessment/chooseCourseTerm
+*/
+router.post('/chooseCourseTerm', async function(req, res) {
+	
+	let sess = req.session;
 
-router.post('/chooseCourseTerm', function(req, res, next) {
-  // splits the URL for the prog_ID and saves it
-  req.body.prog_ID = req.body.prog_ID.split("/")[req.body.prog_ID.split("/").length - 1];
-  // the 1 needs to be replaced with a real user id
-  let data = [req.body.course_ID, req.body.term_ID, 5, req.body.rubric_ID]
-  console.log("data", data);
+	if (sess == undefined || sess.user_id == undefined){
+		return res.status(200).send("Need to login");
+	}
 
-  chooseCourseTermQuery.insert_assessment(data, function(err,results) {
-	console.log("here?", results);
-	res.redirect('/assessment/'+ results.insertId +'/professorInput');
-  })
+	// TODO: Validate -- splits the URL for the prog_ID and saves it
+	req.body.prog_ID = req.body.prog_ID.split("/")[req.body.prog_ID.split("/").length - 1];
+	
+	// the 1 needs to be replaced with a real user id
+	let data = [req.body.course_ID, req.body.term_ID, sess.user_id, req.body.rubric_ID]
+
+	let assessment_was_added = chooseCourseTermQuery.insert_assessment(data);
+
+	assessment_was_added.then((id) =>{
+		res.redirect('/assessment/'+ id +'/professorInput');
+	}).catch((reason) =>{
+		console.log("Cannot add assessment: ", reason);
+		res.redirect(base_url);
+	});
+});
+
+// <------ tableTest GET request ------>
+// The ID being sent is the assessment ID
+router.get('/:id/tableTest', async function(req, res, next) {
+	
+	// TODO: validate 
+	assessmentID = req.params.id;
+	
+	// GET ALL performance criterias
+	let perf_criterias = await queries.get_perf_criterias(assessmentID).catch((err) => {
+		console.log(err);
+	}); 
+	
+	//IF found results from the database
+	if (perf_criterias == undefined || perf_criterias.length == 0) {
+		/* TODO:
+			- Add Flash Message
+		*/
+		console.log('Performance Criteria not found.');	
+		return res.send("Not perf criterias available");
+	}
+	
+	parms.colNums = perf_criterias.length;
+
+	res.render('tableTest', parms);
 });
 
 
@@ -148,7 +189,7 @@ router.get('/:id/professorInput', function(req, res, next) {
 
 // <------ Professor Input POST request ------>
 
-router.post('/:id/professorInput', function (req, res,next) {
+router.post('/:id/professorInput', function (req, res, next) {
 	let data = [
 	  req.body.A, req.body.B, req.body.C, req.body.D, req.body.F,
 	  req.body.UW, req.body.rCourse, req.body.cReflection, req.body.cImprovement, null
@@ -164,30 +205,6 @@ router.post('/:id/professorInput', function (req, res,next) {
 	res.redirect('/assessment/' + req.params.id + '/tableTest');
 });
 
-// <------ tableTest GET request ------>
-// The ID being sent is the assessment ID
-router.get('/:id/tableTest', async function(req, res, next) {
-	assessmentID = req.params.id;
-	console.log('assessmentID: ', assessmentID);
-	let perf_criterias = await queries.get_perf_criterias(assessmentID).catch((err) => {
-		console.log(err);
-	}); 
-	//IF found results from the database
-	if (perf_criterias == undefined || perf_criterias.length == 0) {
-		/* TODO:
-			- Add Flash Message
-		*/
-		console.log('Performance Criteria not found.');	
-		parms.colNums = 5;	
-	}
-	
-	let queryResult = perf_criterias;
-	amountCol = queryResult.length; // This is a test variable
-	parms.colNums = amountCol;
-	console.log("Query Results are: ", queryResult);
-
-	res.render('tableTest', parms);
-});
 
 // <------ tableTest Post request ------>
 
@@ -198,11 +215,12 @@ router.get('/:id/tableTest', async function(req, res, next) {
 	- Clean code
 */
 
-router.post('/tableTest', async function(req, res, next) {
+router.post('/tableTest', async function(req, res) {
   // input contains an array of objects which are the inputs of the user
   let input = req["body"]["rowValue"];
   let studentScores= [];
   let inputCount = 0;
+  let amountCol = req.body.amountOfCol;
 
   // console.log(input); // console.log which displays input
 
@@ -318,7 +336,8 @@ router.post('/tableTest', async function(req, res, next) {
 	fs.writeFileSync("Document.docx", buffer);
   });
 
-  res.render('resultTable', parms);
+  // TODO: flash message = Your report was generated
+  res.redirect(base_url);
 });
 
 module.exports = router;

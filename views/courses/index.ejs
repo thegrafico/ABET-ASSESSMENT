@@ -20,33 +20,7 @@ window.addEventListener("pageshow", function (event) {
   <a href="/courses/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
   <!-- Middle line -->
 </div>
-<div class="container-fluid my-2">
-  <!-- Table Header -->
-  <div class ="row bg-secondary text-light p-2">
-          <div class = "col-4"><strong>Course Name</strong></div>
-          <div class = "col-2"><strong>Course Number</strong></div>
-          <div class = "col-2"><strong>Study Program ID</strong></div>
-          <div class = "col-2"><strong>Date Created</strong></div>
-  </div>
-  <!-- Table Contents -->
- <% for (var elem of results) {%>
-  <div class = "row py-2 btn-light">
-    <div class = "col-4"><%= elem.course_name %></div>
-    <div class = "col-2"><%= elem.course_number %></div>
-    <div class = "col-2"><%= elem.prog_ID %></div>
-    <div class = "col-2"><%= elem.date_created %></div>
-    <div class = "col dropdown">
-      <button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
-        Actions
-      </button>
-      <div class= "dropdown-menu">
-        <a class="dropdown-item" href="/courses/<%= elem.course_ID %>/edit" type="submit" >Edit</a>
-        <a class="dropdown-item" href="/courses/<%= elem.course_ID %>/remove" type="submit" >Delete</a>
-      </div>
-    </div>
-  </div>
-  <% } %>
-  </form>
-</div>
+
+<%- include ('../partials/body', {signInUrl: signInUrl, signOutUrl: signOutUrl, table_header: table_header,results: results }) -%>
 
 <%- include ('../partials/footer') -%>

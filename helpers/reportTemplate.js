@@ -3,6 +3,8 @@
  * @param {List} data -> List of objects that contains all of the data for the report
  * @returns {Object} -> Returns DOCX object.
  */
+var docx = require("docx");
+var fs = require('fs');
 
 function createReport(data) {    
     console.log(data);

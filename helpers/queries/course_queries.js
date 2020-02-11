@@ -1,16 +1,18 @@
 var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
 
-function get_course_info(data, callback){
+function get_course_info(data){
+    return new Promise(function(resolve, reject){
 
-    let find_query = `Select * From ?? natural join PROG_COURSE;`;
+        let find_query = `Select * From ?? natural join PROG_COURSE;`;
 
-    conn.query(find_query, data, function (err, results, fields) {
-        if (err) {
-            return callback(err, null);
-        };
-        return callback(null, results);
-    });
+        conn.query(find_query, data, function (err, results, fields) {
+            if (err)
+                reject(err || "Cannot get the course information");
+            else
+                resolve(results);
+        });
+    });  
 }
 
 

@@ -72,7 +72,7 @@ app.use(session({
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 600000 } // 10 minutes ultil sessions ends
+  cookie: { maxAge: 3600000 } // 30 minutes ultil sessions ends
 }));
 
 
