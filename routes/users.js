@@ -14,7 +14,7 @@ var conn = db.mysql_pool;
 var parms = {
 	title: 'ABET Assessment',
 	subtitle: 'Users',
-	url_create:  "/users/create",
+	url_create: "/users/create",
 	base_url: "/users"
 };
 
@@ -68,6 +68,7 @@ router.get('/create', async function (req, res) {
 	parms.dropdown_title = "Profile";
 	parms.dropdown_name = "profile_id";
 	parms.inputs = user_create_inputs;
+	parms.title_action = "Create User";
 
 	// get all profiles
 	let profiles  = await queries.get_all_profiles().catch((err) =>{
@@ -83,7 +84,8 @@ router.get('/create', async function (req, res) {
 			});
 		});
 	}
-		
+	parms.form_method = "POST";
+	parms.url_form_rediret = "/users/create";
 	res.render('modals/create', parms);
 });
 
@@ -103,8 +105,9 @@ router.post('/create', async function (req, res) {
 */
 router.get('/:id/edit', async function (req, res) {
 
-  	//TODO: catch error in case there is not id
+	//TODO: catch error in case there is not id, Validate, Just number
 	let user_id = req.params.id;
+	
 
 	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
@@ -116,26 +119,64 @@ router.get('/:id/edit', async function (req, res) {
 		return res.send("ERROR GETTING THE USER INFO");
 	}
 
-	// set info of the user for frontend
-	parms.interID = user_data.inter_ID;
-	parms.fName = user_data.first_name;
-	parms.lName = user_data.last_name;
-	parms.email = user_data.email;
-	parms.pNumber = user_data.phone_number;
-	parms.userID = req.params.id;
-	
-	res.render('users/edit', parms);
+	// store all profiles
+	parms.profiles = [];
+	parms.dropdown_options = [];
+	parms.dropdown_title = "Profile";
+	parms.dropdown_name = "profile_id";
+
+	user = [
+		user_data.inter_ID,
+		user_data.first_name, 
+		user_data.last_name,
+		user_data.email,
+		user_data.phone_number
+	]
+
+	let index = 0;
+
+	user_create_inputs.forEach((record) =>{
+		record.value = user[index];
+		index++;
+	});
+
+	parms.inputs = user_create_inputs;
+
+	parms.title_action = "Edit User";
+
+	// get all profiles
+	let profiles  = await queries.get_all_profiles().catch((err) =>{
+		console.log("There is an error getting the profiles: ", err);
+		throw err;
+	})
+
+	// verify if profiles 
+	if (profiles != undefined && profiles.length > 0){
+		profiles.forEach( (element) =>{
+			parms.dropdown_options.push({
+				"ID" : element.profile_ID,
+				"NAME": element.profile_Name
+			});
+		});
+	}
+	parms.form_method = "post";
+
+	parms.url_form_rediret = `/users/${user_id}`;
+	// res.render('modals/create', parms);
+
+	res.render('modals/create', parms);
 });
 
 /*
  UPDATE / users/:id
 */
-router.put('/:id', function (req, res) {
-
-  	//TODO: Validate data before sending to the database
-  	let user_data_to_update = req.body.data;
-
-	let user_was_update = queries.update_user(user_data_to_update);
+router.post('/:id', function (req, res) {
+	
+	// TODO: Validate if user id is number and not empty
+	let user_id = req.params.id;
+	req.body.userID = user_id;
+	
+	let user_was_update = queries.update_user(req.body);
 	
 	// another way for working with promise
 	user_was_update.then((is_user_update) => {

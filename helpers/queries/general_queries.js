@@ -21,30 +21,26 @@ function get_table_info(table_name){
     
 }
 
-function get_table_info_by_id(table_info, callback){
+/**
+ * get_table_info_by_id - get a table info
+ * @param  {Object} table_info name of the table in the database
+ * @return {Promise} resolve with results of database
+ */
+function get_table_info_by_id(table_info){
 
-    `Getting data from any table by id`
-
-	let findDep = `Select *
-                From ??
-                where ?? = ?;`;
+	let find_dep_query = `Select * From ?? where ?? = ?;`;
 
     let data = [table_info.from, table_info.where, table_info.id];
 
-    console.log("GETTING THE INFO OF THE TABLE: ", data);
-    try {
-        conn.query(findDep, data, function (err, results) {
+    return new Promise(function(resolve, reject){
+        conn.query(find_dep_query, data, function (err, results) {
 
-            if (err) {
-                return callback(err, null)
-            };
-            return callback(null, results);
-        });
-    } catch (error) {
-        // console.log("ERROR IN get_table_info_id");
-        return callback(error, null);
-    }
-
+            if (err)
+                reject(err || "Error getting table information");
+            else
+                resolve(results);
+        });    
+    });
 }
 
 function get_table_info_by_id_naturalJoin(table_info, callback){
