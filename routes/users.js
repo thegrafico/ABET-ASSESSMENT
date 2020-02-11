@@ -54,7 +54,7 @@ router.get('/', async function (req, res) {
 		parms.results = results;
 	}
 
-	res.render('modals/home', parms);
+	res.render('layout/home', parms);
 });
 
 /* 
@@ -86,7 +86,7 @@ router.get('/create', async function (req, res) {
 	}
 	parms.form_method = "POST";
 	parms.url_form_rediret = "/users/create";
-	res.render('modals/create', parms);
+	res.render('layout/create', parms);
 });
 
 /*
@@ -162,9 +162,9 @@ router.get('/:id/edit', async function (req, res) {
 	parms.form_method = "post";
 
 	parms.url_form_rediret = `/users/${user_id}`;
-	// res.render('modals/create', parms);
+	// res.render('layout/create', parms);
 
-	res.render('modals/create', parms);
+	res.render('layout/create', parms);
 });
 
 /*
