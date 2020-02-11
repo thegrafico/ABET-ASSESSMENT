@@ -28,8 +28,13 @@ async function get_user_role(email){
         conn.query(query, [email.toLowerCase()], function(err, results){
             if (err)
                 reject(err);
-            else
-                resolve(results);
+            else{
+                if (results.length > 0){
+                    resolve(results[0]);
+                }else{
+                    reject("Not user found");
+                }
+            }
         });
     });
 }

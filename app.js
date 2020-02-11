@@ -8,6 +8,8 @@ var ejs = require("ejs");
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
+var authHelper = require('./helpers/auth');
+
 
 var  {options, db} = require("./helpers/mysqlConnection");
 db = db.mysql_pool;
@@ -70,7 +72,7 @@ app.use(session({
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 600000 } // 10 minutes ultil sessions ends
+  cookie: { maxAge: 3600000 } // 30 minutes ultil sessions ends
 }));
 
 
@@ -82,6 +84,7 @@ app.use(function(req, res, next){
   //locals variables
 
   res.locals.signOutUrl = "/authorize/signout";
+  res.locals.signInUrl =  authHelper.getAuthUrl();
 
   next();
 });

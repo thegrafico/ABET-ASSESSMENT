@@ -17,8 +17,7 @@ routes_names.forEach(e=>{
 
 parms["title"] = 'ABET Assessment';
 parms["subtitle"] = 'Study Programs';
-parms.signInUrl = authHelper.getAuthUrl();
-parms.singOutUrl = "/authorize/signout";
+
 //================================ HOME PAGE =================================
 /* GET home page. */
 router.get('/', function(req, res, next) {

@@ -22,7 +22,9 @@ router.get('/', async function(req, res, next) {
   	}
 });
 
-/* GET /authorize/signout */
+/* 
+	GET /authorize/signout
+*/
 router.get('/signout', async function(req, res, next) {
 	authHelper.clearCookies(res);
 	
@@ -31,12 +33,13 @@ router.get('/signout', async function(req, res, next) {
 		await req.session.destroy(function(err) {
 			if (err) throw err;
 
-			console.log("Sessions deleted")
+			console.log("Sessions deleted");
 		});
 	}
 	
+	res.redirect("/");
 	// TODO: Redirect to LOGIN
-    res.status(200).send("NEED TO LOGIN TO CONTINUE");
+    // res.status(200).send("NEED TO LOGIN TO CONTINUE");
 });
 
   

@@ -2,30 +2,46 @@ var express = require('express');
 var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
-var authHelper = require('../helpers/auth');
+const { course_create_inputs } = require("../helpers/modals_template/create");
+
+// var authHelper = require('../helpers/auth');
 
 const base_url = '/courses/'
 let parms = {
-	"signInUrl": authHelper.getAuthUrl(),
 	"title": 'ABET Assessment',
 	"base_url":base_url,
-	"subtitle": 'Courses'
+	"subtitle": 'Courses',
+	"url_create": "/courses/create"
 };
 
 /*
- GET /courses/
+ GET /courses
 */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res) {
 
-  let course_table = 'COURSE';
+	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created"];
+	parms.results = [];
+	let course_results = await query.get_course_info("COURSE").catch((err) =>{
+		console.log("Error getting the courses results: ", err);
+	});
 
-  query.get_course_info(course_table, function(err, results){
-	//TODO: handle error
-	if (err) throw err;
-
-	parms.results = results;
-	res.render('courses/index', parms);
-  });
+	if (course_results != undefined || course_results.length > 0 ){
+		let results = [];
+		let each_user = [];
+		course_results.forEach(course => {
+			
+			each_user.push(course["course_name"]);
+			each_user.push(course["course_number"]);
+			each_user.push(course["prog_ID"]);
+			each_user.push(course["date_created"]);
+		
+			results.push(each_user);
+			each_user = [];
+		});
+		parms.results = results;
+	}
+	console.log(parms);
+	res.render('modals/home', parms);
 });
 
 
@@ -34,16 +50,25 @@ router.get('/', function(req, res, next) {
 */
 router.get('/create', async function(req, res, next) {
   let deparment_table = "STUDY_PROGRAM";
+
+	parms.dropdown_options = [];
+	parms.dropdown_title = "Study Program";
+	parms.dropdown_name = "data[prog_id]";
+	parms.inputs = course_create_inputs;
   
   let all_study_program =  await general_queries.get_table_info(deparment_table).catch((err)=>{
 	console.log("Error getting the programs");
   });
 
   if (all_study_program != undefined){
-	parms.results = all_study_program;
+	all_study_program.forEach( (element) =>{
+		parms.dropdown_options.push({
+			"ID" : element.prog_ID,
+			"NAME": element.prog_name
+		});
+	});
   }
-
-  res.render('courses/create', parms);
+  res.render('modals/create', parms);
 });
 
 /* 
@@ -116,16 +141,20 @@ router.delete('/:id', function (req, res) {
   });
 });
 
-//========================================== EDIT ROUTE =====================================
-/* EDIT home page. */
-router.get('/:id/edit', function(req, res, next) {
-  let table_name = "COURSE";
-  let id_course = req.params.id;
-  let where_atr = "course_ID";
-  console.log ("I am in edit");
+/*
+ GET /courses/:id/edit
+*/
+router.get('/:id/edit', async function(req, res, next) {
+	let table_name = "COURSE";
+	let id_course = req.params.id;
+	let where_atr = "course_ID";
+	console.log ("I am in edit");
 
-  let data = {"from":table_name, "where":where_atr, "id": id_course};
-  general_queries.get_table_info_by_id(data, function(err, user_results){
+  	let data = {"from":table_name, "where":where_atr, "id": id_course};
+  
+ 	let courses_info = await general_queries.get_table_info_by_id(data).catch((err) => {
+		console.log("Error");
+	});
 
 	//TODO: handle this err;
 	if(err)throw err;
@@ -165,8 +194,6 @@ router.get('/:id/edit', function(req, res, next) {
 	  // console.log("EDIT RESULTS: ", parms);
 	  // res.render('courses/editCourses', parms);
 	});
-  });
-
 });
 
 /* EDIT home page. */

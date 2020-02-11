@@ -27,8 +27,7 @@ general_queries.get_table_info(term_table, function(err, results){
 });
 parms["title"] = 'ABET Assessment';
 parms["subtitle"] = 'School Terms';
-parms.signInUrl = authHelper.getAuthUrl();
-parms.singOutUrl = "/authorize/signout";
+
 //================================ CREATE TERM  =================================
 
 

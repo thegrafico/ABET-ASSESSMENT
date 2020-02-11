@@ -1,0 +1,25 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+<script>
+
+  //RELOAD PAGE WHEN USER CLICK BACK BUTTON
+window.addEventListener("pageshow", function (event) {
+    var historyTraversal = event.persisted ||
+        (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+    if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+    }
+});
+</script>
+
+<div class = "container-fluid mt-2">
+  <h1><%= subtitle %></h1>
+  <hr class = "my-4">
+  <a href="<%= url_create %> " class="btn inter-green inter-green-btn" role="button">Create New</a>
+  <!-- Middle line -->
+</div>
+
+<%- include ('../partials/body', {signInUrl: signInUrl, signOutUrl: signOutUrl, table_header: table_header,results: results }) -%>
+
+<%- include ('../partials/footer') -%>

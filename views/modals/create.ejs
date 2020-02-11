@@ -1,0 +1,46 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<div class="container-fluid">
+  <h2>Create</h2>
+  <hr class="my-4">
+  <!-- TODO: VALIDATE DATA [interID, username, lastname, email, phoneNumber ]-->
+  <form action="<%= url_create %>" method="POST">
+    <div class="row my-4">
+      <div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
+      <!-- TODO: if statement here if dont have dropdown menu -->
+      <div class="col-8">
+        <select type="text" name="<%= dropdown_name %>" required>
+          <% for (let profile of dropdown_options) {%>
+            <option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+          <% } %>
+        </select>
+      </div>
+    </div>
+    
+    <% inputs.forEach(element => { %>
+        <% if (element.isRequire) { %>
+            <div class="row my-4">
+                <div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+                <div class="col-8">
+                    <input class="form-control" type="text" placeholder="<%= element.placeHolder %> " name="<%= element.name %> " required>
+                </div>
+            </div>
+        <% }else {%>
+            <div class="row my-4">
+                <div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+                <div class="col-8">
+                    <input class="form-control" type="text" placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+                </div>
+            </div>
+        <% } %>    
+            
+    <% }) %>
+   
+    <div class="row my-4">
+      <div class="col-2"></div>
+      <div class="col"><button type ="submit" class="btn btn-outline-secondary">Create</button></div>
+    </div>
+    <p><a href="<%= base_url %> ">Back to List</a></p>
+</div>
+
+<%- include ('../partials/footer') -%>
