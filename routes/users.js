@@ -85,6 +85,7 @@ router.get('/create', async function (req, res) {
 	}
 	parms.form_method = "POST";
 	parms.url_form_rediret = "/users/create";
+	parms.btn_title = "Create";
 	res.render('layout/create', parms);
 });
 
@@ -140,6 +141,7 @@ router.get('/:id/edit', async function (req, res) {
 	});
 
 	parms.inputs = user_create_inputs;
+	parms.btn_title = "Submit";
 
 	parms.title_action = "Edit User";
 
@@ -161,7 +163,6 @@ router.get('/:id/edit', async function (req, res) {
 	parms.form_method = "post";
 
 	parms.url_form_rediret = `/users/${user_id}`;
-	// res.render('layout/create', parms);
 
 	res.render('layout/create', parms);
 });

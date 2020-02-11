@@ -54,7 +54,6 @@ router.get('/login', function (req, res) {
 	res.render('login', parms);
 });
 
-
 /* 
 * GET AUTH ROUTER - start sessions 
 */
