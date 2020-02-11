@@ -4,6 +4,7 @@
 var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
+const { user_create_inputs } = require("../helpers/modals_template/create");
 var authHelper = require('../helpers/auth');
 
 // DB conn
@@ -11,8 +12,10 @@ var { db } = require("../helpers/mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
 
 var parms = {
-  title: 'ABET Assessment',
-  subtitle: 'Users'
+	title: 'ABET Assessment',
+	subtitle: 'Users',
+	url_create:  "/users/create",
+	base_url: "/users"
 };
 
 /*
@@ -50,8 +53,8 @@ router.get('/', async function (req, res) {
 		});
 		parms.results = results;
 	}
-	
-	res.render('users/users', parms);
+
+	res.render('modals/home', parms);
 });
 
 /* 
@@ -61,6 +64,10 @@ router.get('/create', async function (req, res) {
 
 	// store all profiles
 	parms.profiles = [];
+	parms.dropdown_options = [];
+	parms.dropdown_title = "Profile";
+	parms.dropdown_name = "profile_id";
+	parms.inputs = user_create_inputs;
 
 	// get all profiles
 	let profiles  = await queries.get_all_profiles().catch((err) =>{
@@ -69,10 +76,15 @@ router.get('/create', async function (req, res) {
 
 	// verify if profiles 
 	if (profiles != undefined && profiles.length > 0){
-		parms.profiles = profiles;
+		profiles.forEach( (element) =>{
+			parms.dropdown_options.push({
+				"ID" : element.profile_ID,
+				"NAME": element.profile_Name
+			});
+		});
 	}
-
-	res.render('users/create', parms);
+		
+	res.render('modals/create', parms);
 });
 
 /*

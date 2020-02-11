@@ -30,7 +30,10 @@ router.get('/', async function (req, res) {
 		parms.user = sess.userName;
 
 		//Compare user email in the DB, then get the data if there is any user. 
-		user_data_profile = await middleware.get_user_role(sess.userEmail);
+		user_data_profile = await middleware.get_user_role(sess.userEmail).catch((err) =>{
+			console.log("You dont have a profile: ", err);
+			return res.redirect("/");
+		});
 
 		// //Verify is not empty
 		if (user_data_profile){
