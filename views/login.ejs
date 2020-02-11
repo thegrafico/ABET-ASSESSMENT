@@ -1,14 +1,23 @@
-<%- include ('partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
-
-<div class="container-fluid py-3 inter-bg">
-    <h2>Log In</h2>
-    <div class="card">
-        <div class="card-body">
-            <form class="needs-validation" novalidate>
-                <button href= <%=signInUrl%> class="btn inter-green inter-green-btn">Sign In</button>
-            </form>
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Bootsrapt CSS Link -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+        <!-- Icons -->
+        <script src="https://kit.fontawesome.com/6114d6256f.js" crossorigin="anonymous"></script>
+        <div class="wrapper inter-bg">
+    </head>
+    <body class="inter-bg">
+        <div class="container-fluid py-5 d-flex justify-content-center">
+            <div class="card my-5 text-center vertical-center" style="width: 25rem;">
+                <div class="card-header">
+                    <h2>Log In to Assessment</h2>
+                </div>
+                <div class="card-body">
+                    <button href= <%=signInUrl%> class="btn inter-green inter-green-btn">Sign In</button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
-<%- include ('partials/footer') -%>
+    </body>
+</html>
