@@ -43,7 +43,7 @@ router.get('/', async function(req, res) {
 		});
 		parms.results = results;
 	}
-	res.render('modals/home', parms);
+	res.render('layout/home', parms);
 });
 
 
@@ -75,7 +75,7 @@ router.get('/create', async function(req, res, next) {
 	parms.form_method = "POST";
 	parms.url_form_rediret = "/courses/create";
 
-  res.render('modals/create', parms);
+  res.render('layout/create', parms);
 });
 
 /* 
