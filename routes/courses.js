@@ -2,7 +2,7 @@ var express = require('express');
 var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
-const { course_create_inputs } = require("../helpers/modals_template/create");
+const { course_create_inputs } = require("../helpers/layout_template/create");
 
 // var authHelper = require('../helpers/auth');
 
@@ -83,7 +83,6 @@ POST courses/create
 */
 router.post('/create', function(req, res, next) {
 
-
   //TODO: verify values, null, undefined
   let data = req.body.data;
 
@@ -101,7 +100,6 @@ router.post('/create', function(req, res, next) {
  GET cousers/:id/remove
 */
 router.get('/:id/remove', function (req, res) {
-  console.log("REMOVE ROUTE");
 
   //TODO: catch error in case there is not id
   let course_id = req.params.id;

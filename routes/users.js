@@ -4,8 +4,7 @@
 var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
-const { user_create_inputs } = require("../helpers/modals_template/create");
-var authHelper = require('../helpers/auth');
+const { user_create_inputs } = require("../helpers/layout_template/create");
 
 // DB conn
 var { db } = require("../helpers/mysqlConnection"); //pool connection
