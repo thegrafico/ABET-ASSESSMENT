@@ -28,6 +28,11 @@ a {
   color: #00833e !important;
 }
 
+.inter-bg {
+  background-image: url('../images/inter.jpg') !important;
+  background-repeat: no-repeat;
+}
+
 .accordion-panel {
   display: none;
 }
