@@ -31,6 +31,14 @@ a {
 .inter-bg {
   background-image: url('../images/inter.jpg') !important;
   background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 40%;
+  transform: translateY(-40%);
 }
 
 .accordion-panel {
