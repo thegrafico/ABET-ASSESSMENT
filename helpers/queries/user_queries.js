@@ -65,12 +65,14 @@ function get_user_ID_by_email(email, callback){
  */
 function update_user(data) {
 
+    // TODO need to update the profile 
+    console.log(data);
     let updateUser = `update USER set inter_ID = ?, first_name= ?, 
             last_name= ?, email= ?, phone_number= ?
             where user_ID = ? `;
     
     // array with all user data, has to be in this order 
-    let user_data = [data.interID, data.fName, data.lName, data.email, data.pNumber, parseInt(data.userID)];
+    let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber, parseInt(data.userID)];
 
     return new Promise(function(resolve, reject){
         conn.query(updateUser, user_data, function (err, results, fields) {

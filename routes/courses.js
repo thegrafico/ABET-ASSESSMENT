@@ -6,7 +6,7 @@ const { course_create_inputs } = require("../helpers/modals_template/create");
 
 // var authHelper = require('../helpers/auth');
 
-const base_url = '/courses/'
+const base_url = '/courses'
 let parms = {
 	"title": 'ABET Assessment',
 	"base_url":base_url,
@@ -19,17 +19,20 @@ let parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created"];
+	parms.table_header = ["ID", "Course Name", "Course Number", "Study Program ID", "Date Created"];
 	parms.results = [];
 	let course_results = await query.get_course_info("COURSE").catch((err) =>{
 		console.log("Error getting the courses results: ", err);
 	});
 
+	console.log(course_results);
 	if (course_results != undefined || course_results.length > 0 ){
 		let results = [];
 		let each_user = [];
 		course_results.forEach(course => {
-			
+
+			// first have to be the ID
+			each_user.push(course["course_ID"]);
 			each_user.push(course["course_name"]);
 			each_user.push(course["course_number"]);
 			each_user.push(course["prog_ID"]);
@@ -40,7 +43,6 @@ router.get('/', async function(req, res) {
 		});
 		parms.results = results;
 	}
-	console.log(parms);
 	res.render('modals/home', parms);
 });
 
@@ -49,25 +51,30 @@ router.get('/', async function(req, res) {
  GET /courses/create 
 */
 router.get('/create', async function(req, res, next) {
-  let deparment_table = "STUDY_PROGRAM";
 
 	parms.dropdown_options = [];
 	parms.dropdown_title = "Study Program";
 	parms.dropdown_name = "data[prog_id]";
 	parms.inputs = course_create_inputs;
-  
-  let all_study_program =  await general_queries.get_table_info(deparment_table).catch((err)=>{
-	console.log("Error getting the programs");
-  });
+	parms.title_action = "Create Course";
 
-  if (all_study_program != undefined){
-	all_study_program.forEach( (element) =>{
-		parms.dropdown_options.push({
-			"ID" : element.prog_ID,
-			"NAME": element.prog_name
-		});
+
+	let all_study_program =  await general_queries.get_table_info("study_program").catch((err)=>{
+		console.log("Error getting the programs");
+		throw err;
 	});
-  }
+
+	if (all_study_program != undefined){
+		all_study_program.forEach( (element) =>{
+			parms.dropdown_options.push({
+				"ID" : element.prog_ID,
+				"NAME": element.prog_name
+			});
+		});
+	}
+	parms.form_method = "POST";
+	parms.url_form_rediret = "/courses/create";
+
   res.render('modals/create', parms);
 });
 
@@ -141,58 +148,52 @@ router.delete('/:id', function (req, res) {
   });
 });
 
+
 /*
  GET /courses/:id/edit
 */
-router.get('/:id/edit', async function(req, res, next) {
+router.get('/:id/edit', async function(req, res) {
 	let table_name = "COURSE";
 	let id_course = req.params.id;
 	let where_atr = "course_ID";
-	console.log ("I am in edit");
 
   	let data = {"from":table_name, "where":where_atr, "id": id_course};
   
  	let courses_info = await general_queries.get_table_info_by_id(data).catch((err) => {
-		console.log("Error");
+		console.log("Error Getting course info: ", err);
+		
+		// TODO: Rediret with message
+		throw err;
 	});
 
-	//TODO: handle this err;
-	if(err)throw err;
+	let study_program_info = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
+		console.log("Error getting study program info");
+		// TODO: Rediret with message
+		throw err;
+	});	
 
-	let prog_table = "STUDY_PROGRAM";
 
-	general_queries.get_table_info(prog_table, function(error, resutls){
+	parms.course_ID = id_course;
+	parms.std_results = study_program_info;
+	parms.user_results = courses_info[0];
 
-	  //TODO: handle this err;
-	  if(error)throw error;
+	data = {
+	"from": "PROG_COURSE",
+	"from2": "STUDY_PROGRAM",
+	"where": "course_ID",
+	"id": id_course
+	};
 
-	  parms.course_ID = id_course;
-	  parms.std_results = resutls;
-	  parms.user_results = user_results[0];
+	general_queries.get_table_info_by_id_naturalJoin(data, function (err, results) {
 
-	  // course_queries.find_select_prog()
-
-	  let data = {
-		"from": "PROG_COURSE",
-		"from2": "STUDY_PROGRAM",
-		"where": "course_ID",
-		"id": id_course
-	  };
-
-		general_queries.get_table_info_by_id_naturalJoin(data, function (err, results) {
-
-		  console.log(results);
-		  parms.current_progName = results[0].prog_name;
-		  parms.current_progID   = results[0].prog_ID;
-		  if (err) {
-			//HERE HAVE TO REDIRECT the user or send a error message
-			throw err;
-		  }
-		  res.render('courses/editCourses', parms);
-		});
-
-	  // console.log("EDIT RESULTS: ", parms);
-	  // res.render('courses/editCourses', parms);
+		console.log(results);
+		parms.current_progName = results[0].prog_name;
+		parms.current_progID   = results[0].prog_ID;
+		if (err) {
+		//HERE HAVE TO REDIRECT the user or send a error message
+		throw err;
+		}
+		res.render('courses/editCourses', parms);
 	});
 });
 
