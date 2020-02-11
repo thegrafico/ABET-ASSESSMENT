@@ -12,19 +12,35 @@ let parms = {
 };
 
 /*
- GET /courses/
+ GET /courses
 */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res) {
 
-  let course_table = 'COURSE';
+	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created"];
+	parms.results = [];
+	let course_results = await query.get_course_info("COURSE").catch((err) =>{
+		console.log("Error getting the courses results: ", err);
+	});
 
-  query.get_course_info(course_table, function(err, results){
-	//TODO: handle error
-	if (err) throw err;
+	console.log(course_results);
+	if (course_results != undefined || course_results.length > 0 ){
+		let results = [];
+		let each_user = [];
+		course_results.forEach(course => {
+			
+			console.log(course);
+			each_user.push(course["course_name"]);
+			each_user.push(course["course_number"]);
+			each_user.push(course["prog_ID"]);
+			each_user.push(course["date_created"]);
+		
+			results.push(each_user);
+			each_user = [];
+		});
+		parms.results = results;
+	}
 
-	parms.results = results;
 	res.render('courses/index', parms);
-  });
 });
 
 

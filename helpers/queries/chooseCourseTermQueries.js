@@ -61,7 +61,7 @@ function insert_assessment(data){
 			if (err)
 				reject(err || "error inserting assessment");
 			else
-				resolve(true);
+				resolve(results.insertId);
 		});
 	});
 }

@@ -21,17 +21,36 @@ var parms = {
 router.get('/', async function (req, res) {
 
 	parms.results = [];
+	parms.table_header = [
+		"User ID", "Inter ID", "Profile", "Name", "Last Name",
+		"Email", "Phone Number","Date Created"
+	];
 
 	// Get all user from the database (callback)
 	let list_of_users = await queries.get_user_list().catch( (err) =>{
 		// TODO: flash message with error
 		console.log("THERE IS AN ERROR: ", err);
 	});
-
+	let results = [];
+	let each_user = [];
 	// IF found results from the database
-	if (list_of_users != undefined && list_of_users.length > 0)
-		parms.results = list_of_users;
+	if (list_of_users != undefined && list_of_users.length > 0){
 		
+		list_of_users.forEach(user => {			
+			each_user.push(user["user_ID"]);
+			each_user.push(user["inter_ID"]);
+			each_user.push(user["profile_Name"]);
+			each_user.push(user["first_name"]);
+			each_user.push(user["last_name"]);
+			each_user.push(user["email"]);
+			each_user.push(user["phone_number"]);
+			each_user.push(user["date_created"]);
+			results.push(each_user);
+			each_user = [];
+		});
+		parms.results = results;
+	}
+	
 	res.render('users/users', parms);
 });
 
@@ -173,3 +192,7 @@ router.delete('/:id', function (req, res) {
 //===============================================================================
 
 module.exports = router;
+
+
+
+

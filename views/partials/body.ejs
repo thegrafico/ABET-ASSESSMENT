@@ -1,0 +1,25 @@
+<div class="container-fluid my-2">
+
+	<table class="table">
+		<thead class="thead-dark">
+		  <tr>
+			<% for (let header of table_header) { %>
+				<th scope="col"><%= header %></th>
+			<% } %>
+		  </tr>
+		</thead>
+		<tbody>
+			<% results.forEach(element => { %>
+				 
+				<tr>
+					<% element.forEach(val => { %>
+						<th> <%=val%></th>
+					<% }); %>
+				</tr>
+			<% }); %>
+		</tbody>
+	  </table>
+	<hr class="my-1">
+</div>
+
+
