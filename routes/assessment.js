@@ -133,7 +133,7 @@ router.post('/chooseCourseTerm', function(req, res, next) {
   console.log("data", data);
 
   chooseCourseTermQuery.insert_assessment(data, function(err,results) {
-	console.log("here?", results);
+	console.log("here: ", results);
 	res.redirect('/assessment/'+ results.insertId +'/professorInput');
   })
 });
