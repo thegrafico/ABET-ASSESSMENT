@@ -2,13 +2,16 @@ var express = require('express');
 var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
-var authHelper = require('../helpers/auth');
+const { course_create_inputs } = require("../helpers/modals_template/create");
+
+// var authHelper = require('../helpers/auth');
 
 const base_url = '/courses/'
 let parms = {
 	"title": 'ABET Assessment',
 	"base_url":base_url,
-	"subtitle": 'Courses'
+	"subtitle": 'Courses',
+	"url_create": "/courses/create"
 };
 
 /*
@@ -22,13 +25,11 @@ router.get('/', async function(req, res) {
 		console.log("Error getting the courses results: ", err);
 	});
 
-	console.log(course_results);
 	if (course_results != undefined || course_results.length > 0 ){
 		let results = [];
 		let each_user = [];
 		course_results.forEach(course => {
 			
-			console.log(course);
 			each_user.push(course["course_name"]);
 			each_user.push(course["course_number"]);
 			each_user.push(course["prog_ID"]);
@@ -39,8 +40,8 @@ router.get('/', async function(req, res) {
 		});
 		parms.results = results;
 	}
-
-	res.render('courses/index', parms);
+	console.log(parms);
+	res.render('modals/home', parms);
 });
 
 
@@ -49,16 +50,25 @@ router.get('/', async function(req, res) {
 */
 router.get('/create', async function(req, res, next) {
   let deparment_table = "STUDY_PROGRAM";
+
+	parms.dropdown_options = [];
+	parms.dropdown_title = "Study Program";
+	parms.dropdown_name = "data[prog_id]";
+	parms.inputs = course_create_inputs;
   
   let all_study_program =  await general_queries.get_table_info(deparment_table).catch((err)=>{
 	console.log("Error getting the programs");
   });
 
   if (all_study_program != undefined){
-	parms.results = all_study_program;
+	all_study_program.forEach( (element) =>{
+		parms.dropdown_options.push({
+			"ID" : element.prog_ID,
+			"NAME": element.prog_name
+		});
+	});
   }
-
-  res.render('courses/create', parms);
+  res.render('modals/create', parms);
 });
 
 /* 
