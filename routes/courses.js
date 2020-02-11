@@ -141,16 +141,20 @@ router.delete('/:id', function (req, res) {
   });
 });
 
-//========================================== EDIT ROUTE =====================================
-/* EDIT home page. */
-router.get('/:id/edit', function(req, res, next) {
-  let table_name = "COURSE";
-  let id_course = req.params.id;
-  let where_atr = "course_ID";
-  console.log ("I am in edit");
+/*
+ GET /courses/:id/edit
+*/
+router.get('/:id/edit', async function(req, res, next) {
+	let table_name = "COURSE";
+	let id_course = req.params.id;
+	let where_atr = "course_ID";
+	console.log ("I am in edit");
 
-  let data = {"from":table_name, "where":where_atr, "id": id_course};
-  general_queries.get_table_info_by_id(data, function(err, user_results){
+  	let data = {"from":table_name, "where":where_atr, "id": id_course};
+  
+ 	let courses_info = await general_queries.get_table_info_by_id(data).catch((err) => {
+		console.log("Error");
+	});
 
 	//TODO: handle this err;
 	if(err)throw err;
@@ -190,8 +194,6 @@ router.get('/:id/edit', function(req, res, next) {
 	  // console.log("EDIT RESULTS: ", parms);
 	  // res.render('courses/editCourses', parms);
 	});
-  });
-
 });
 
 /* EDIT home page. */
