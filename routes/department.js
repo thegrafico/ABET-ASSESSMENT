@@ -1,58 +1,56 @@
-/*
-Raul Pichardo ROUTE
-*/ 
-//Variables and queries to use
+// dependencies
 var express = require('express');
 var router = express.Router();
 var query = require("../helpers/queries/department_queries");
 var general_queries = require("../helpers/queries/general_queries");
-var authHelper = require('../helpers/auth');
 
-//Routing for CRUD
-let base_url = '/department/'
-let routes_names = ['create', 'delete', 'edit', 'details']
+// base url
+let base_url = '/department'
 
 //Paramns to routes links
-let parms = {};
+let parms = {
+	"title": 'ABET Assessment',
+	"subtitle": 'Departments',
+	"base_url": "/department"
+};
 
-//Populate parms
-routes_names.forEach(e => {
-	parms[e] = base_url + e;
-});
-//Same title for every department route??
-parms["title"] = 'ABET Assessment';
-parms["subtitle"] = 'Departments';
-parms.singOutUrl = "/authorize/signout";
-//============================================ DEPARMENT MAIN ROUTE =============================
 
-/* DEPARTMENT home page. */
-router.get('/', function (req, res, next) {
+/*
+ 	-- DEPARTMENT home page-- 
+	GET /deparment
+*/
+router.get('/', async function (req, res) {
 	
 	//Table to look into the database
 	let deparment_table = "DEPARTMENT";
 
 	//Getting the information from db
-	general_queries.get_table_info(deparment_table, function (err, results) {
+	let all_deparment = await general_queries.get_table_info(deparment_table).catch((err) => {
+		console.log("Cannot get deparment information: ", err);
 		
-		//TODO: redirect user to another route or send messsage to the user
-		if(err) throw err;
-
-		// console.log("DEBUG: ", results)
-		parms.results = results;
-		
-		res.render('departments/department', parms);
+		// TODO: flash message with err
+		return res.redirect("/");
 	});
 
-});
-//===================================CREATE DEPARTMENT=====================================
+	parms.results = all_deparment;
+	
+	res.render('departments/department', parms);
 
-// GET
-router.get('/' + routes_names[0], function (req, res) {	
+});
+
+/*
+	--SHOW Deparment create--
+	GET /deparment/create
+*/
+router.get('/create', function (req, res) {	
 	res.render('departments/createDepartment', parms);
 });
 
-// POST
-router.post('/' + routes_names[0], function (req, res, next) {
+/* 
+	--Create deparment--
+	POST /deparment/create
+*/
+router.post('/create', function (req, res, next) {
 	
 	//TODO: verify is empty
 	var depName = req.body.depName;
@@ -69,11 +67,12 @@ router.post('/' + routes_names[0], function (req, res, next) {
 		res.redirect(base_url);
 	});
 });
-//===================================DELETE DEPARTMENT=====================================
 
-// GET
-router.get('/:id/' + routes_names[1], function (req, res, next) {
-
+/*
+	--SHOW REMOVE DEPARMENT
+	GET /deparment/:id/remove
+*/
+router.get('/:id/remove', function (req, res) {
 
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
@@ -92,7 +91,10 @@ router.get('/:id/' + routes_names[1], function (req, res, next) {
 
 });
 
-// DELETE
+/* 
+	-- DELETE DEPARMENT
+	DELETE /deparment/:id
+*/
 router.delete('/:id' , function (req, res, next) {
 
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
@@ -105,10 +107,12 @@ router.delete('/:id' , function (req, res, next) {
 		res.redirect(base_url);
 	});
 });
-//================================== EDIT ROUTE=============================================
 
-/* GET */
-router.get('/:id/' + routes_names[2], function (req, res, next) {
+/*
+	-- SHOW DEPARMENT EDIT--
+	GET /deparment/:id/edit
+*/
+router.get('/:id/edit', function (req, res) {
 
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
@@ -126,7 +130,10 @@ router.get('/:id/' + routes_names[2], function (req, res, next) {
 
 });
 
-/* EDIT */
+/*
+	-- EDIT DEPARMENT EDIT--
+	PUT /deparment/:id
+*/
 router.put('/:id', function (req, res, next) {
 
 	//TODO: validate user data
@@ -146,13 +153,5 @@ router.put('/:id', function (req, res, next) {
 });
 
 //===============================================================================
-
-
-/* DETAILS home page. */
-router.get('/' + routes_names[3], function (req, res, next) {
-	res.render('departments/detailDepartment', parms);
-});
-
-
 
 module.exports = router;

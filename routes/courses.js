@@ -15,7 +15,8 @@ let parms = {
 };
 
 /*
- GET /courses
+	--HOME PAGE--
+	GET /courses
 */
 router.get('/', async function(req, res) {
 
@@ -50,7 +51,8 @@ router.get('/', async function(req, res) {
 
 
 /*
- GET /courses/create 
+	--SHOW CREATE--
+ 	GET /courses/create 
 */
 router.get('/create', async function(req, res, next) {
 
@@ -81,7 +83,8 @@ router.get('/create', async function(req, res, next) {
 });
 
 /* 
-POST courses/create
+	--CREATE COURSE--
+	POST courses/create
 */
 router.post('/create', function(req, res, next) {
 
@@ -99,7 +102,8 @@ router.post('/create', function(req, res, next) {
 });
 
 /*
- GET /courses/:id/edit
+	--SHOW EDIT ROUTE--
+ 	GET /courses/:id/edit
 */
 router.get('/:id/edit', async function(req, res) {
 
@@ -198,7 +202,7 @@ router.put('/:id', function(req, res) {
 });
 
 /*
-	--REMOVE COURSE--
+	--SHOW REMOVE COURSE--
 	GET cousers/:id/remove
 */
 router.get('/:id/remove', async function (req, res) {
@@ -243,26 +247,27 @@ router.get('/:id/remove', async function (req, res) {
 });
 
 
-/* DELETE ROUTE */
-router.delete('/:id', function (req, res) {
-  console.log("===================DELETED ROUTE=====================");
+/*
+ 	-- DELETE ROUTE -- 
+	DELETE /users/:id
+*/
+router.delete('/:id', async function (req, res) {
 
-  //TODO: catch error in case of null
-  let course_id = req.params.id;
-  let table_name = "COURSE";
-  let where_attr = "course_ID";
+	//TODO: Validate if null or not a number
+	let course_id = req.params.id;
 
-  let data = {"id":course_id, "from":table_name,"where":where_attr };
+	let data = {"id": course_id, "from":"COURSE","where":"course_ID" };
 
-  general_queries.delete_record_by_id(data, function (err, results) {
+	await general_queries.delete_record_by_id(data).catch((err) =>{
+		console.log("Cannot remove the record");
+		// TODO: flash message [ERR]
+		return res.redirect(base_url);
+	});
 
-	//TODO: catch error
-	if (err) {
-	  throw err;
-	}
 	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+
+	// TODO: flash message [SUCCESS]
 	res.redirect("back");
-  });
 });
 
 

@@ -35,26 +35,30 @@ router.get('/', async function (req, res) {
 	});
 
 	let results = [];
-	let each_user = [];
-	
 	// IF found results from the database
 	if (list_of_users != undefined && list_of_users.length > 0){
 		
 		list_of_users.forEach(user => {			
-			each_user.push(user["user_ID"]);
-			each_user.push(user["inter_ID"]);
-			each_user.push(user["profile_Name"]);
-			each_user.push(user["first_name"]);
-			each_user.push(user["last_name"]);
-			each_user.push(user["email"]);
-			each_user.push(user["phone_number"]);
-			each_user.push(user["date_created"]);
-			results.push(each_user);
-			each_user = [];
+
+			results.push({
+				"ID": user["user_ID"],
+				"Values": [
+					user["inter_ID"],
+					user["profile_Name"],
+					user["first_name"],
+					user["last_name"],
+					user["email"],
+					user["phone_number"],
+					user["date_created"],
+				]
+			});
 		});
 		parms.results = results;
 	}
-	res.render('layout/home', parms);
+
+	console.log(parms.results);
+	res.status(200).send("Good");
+	// res.render('layout/home', parms);
 });
 
 /* 
@@ -204,7 +208,9 @@ router.put('/:id', function (req, res) {
 */
 router.get('/:id/remove', async function (req, res) {
 	
+	// TODO: validate id, if null or not a number 
 	let user_id = req.params.id;
+
 	parms.title_action = "Remove";
 	parms.title_message = "Are you sure you want to delete this User?";
 	parms.form_action = `/users/${user_id}?_method=DELETE`;
@@ -217,11 +223,10 @@ router.get('/:id/remove', async function (req, res) {
 
 	// verify is user data is good
 	if (user_data == undefined ||  user_data.length < 1){
+		// TODO: flash message [ERROR]
 		return res.send("ERROR GETTING THE USER INFO");
 	}
 
-	// how many inputs options we show to user
-	let number_of_record_to_show = 6;
 
 	// console.log(user_data);
 	let names = ["User Id", "Inter Id", "Name", "Last Name", "Email", "Phone Number"];
@@ -235,7 +240,7 @@ router.get('/:id/remove', async function (req, res) {
 	];
 
 	let record = [];
-	for (let index = 0; index <number_of_record_to_show; index++) {
+	for (let index = 0; index < names.length; index++) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 
@@ -257,6 +262,7 @@ router.delete('/:id', function (req, res) {
 
 	// run promise
 	is_user_deleted.then( (yes) => {
+		// TODO: flash message [SUCCESS]
 		console.log("User was deleted");
 	}).catch((no)=>{
 		// TODO: flash message [Erro]

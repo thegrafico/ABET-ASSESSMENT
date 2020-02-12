@@ -11,9 +11,9 @@
 		<tbody>
 			<% results.forEach(element => { %>	 
 				<tr>
-					<% for( let index = 0; index < element.length; index++ ) { %>
+					<% for( let index = 0; index < element["values"].length; index++ ) { %>
 						<!-- IF NOT last position -->
-						<% if (index != element.length -1) { %>
+						<% if (index != (element["values"].length -1) ) { %>
 							<th> <%=element[index]%></th>							
 						<% }else{ %>
 							<!-- TODO: Fix date format -->
