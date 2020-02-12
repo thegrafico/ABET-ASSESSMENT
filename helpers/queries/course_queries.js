@@ -4,7 +4,7 @@ var conn = db.mysql_pool;
 function get_course_info(data){
     return new Promise(function(resolve, reject){
 
-        let find_query = `Select * From ?? natural join PROG_COURSE;`;
+        let find_query = `Select * From ?? natural join PROG_COURSE`;
 
         conn.query(find_query, data, function (err, results, fields) {
             if (err)
@@ -37,51 +37,55 @@ function insert_into_course(data, callback){
     });
 }
 
+/**
+ * update_course - Update the course information
+ * @param  {Object} data {"name", "course_description", "course_number", "course_id"}
+ * @return {Promise} resolve with results of database
+ */
+function update_course(course, std_program){
 
-function update_course(data, callback){
+    
+    // promise updating course
+    let editing_course  = new Promise( function(resolve, reject){
 
-    let data1 = [data.name, data.course_desc, data.course_number, data.course_id];
+        let update_query = `update COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID = ?`;
 
-    let update_query = `update COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID= ?`;
-    console.log("Inside",data1);
-
-    //Exe query
-    conn.query(update_query, data1, function (err, results) {
-        if (err) {
-            return callback(err, null)
-        };
-
-
-        let data2 = [data.prog_id, data.course_id];
-        let update_pc = `update PROG_COURSE set prog_ID= ? where course_ID= ?`;
-        conn.query(update_pc, data2, function (err, results) {
-            if (err) {
-                return callback(err, null)
-            };
-            // console.log(results)
-            return callback(null, results);
+        // Update course
+        conn.query(update_query, course, function (err, results) {
+            if (err)
+                reject(err || "Error updating the course");
+            else
+                resolve(true);
         });
     });
+
+    // Promise for update the std program
+    let editing_program_course = new Promise(function(resolve, reject){
+        let update_pc = `UPDATE PROG_COURSE SET prog_ID = ? WHERE course_ID= ?`;
+        conn.query(update_pc, std_program, function (err, results) {
+            if (err)
+                reject(err || "Error updating the Program ID");
+            else
+                resolve(true);
+        });
+    });
+
+    // run promise 1 and 2
+    Promise.all([editing_course, editing_program_course]).then(function([course_was_edited, program_was_edited]){
+
+        if (course_was_edited){
+            console.log("Course was edited");
+        }else
+            console.log("Error updating the course");
+
+        if (program_was_edited)
+            console.log("Program was edited");
+        else
+            console.log("Error updating the Program course");
+    }).catch((err) => {
+        console.log(err);
+    });
 }
-
-// function find_select_prog(data, callback){
-//
-//   let find_prog = `Select prog_name
-//                     from PROG_COURSE natural join COURSE natural join
-//                     (select prog_ID, course_ID, prog_name from PROG_COURSE natural join STUDY_PROGRAM) as STUDY
-//                     where course_ID = ?;`
-//                     conn.query(find_prog, data2, function (err, results) {
-//                         if (err) {
-//                             return callback(err, null)
-//                         };
-//                         // console.log(results)
-//                         return callback(null, results);
-//                     });
-// }
-
-
-
-
 
 module.exports.get_course_info = get_course_info;
 module.exports.insert_into_course = insert_into_course;

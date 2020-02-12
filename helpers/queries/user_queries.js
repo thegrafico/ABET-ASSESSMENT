@@ -107,7 +107,7 @@ function delete_user_by_id(id) {
 
 /**
  * get_all_profiles get all profiles from database
- * @param {Object} data -> {interId, firstName, lastName, email, phoneNumber} 
+ * @param {Array} data -> [interId, firstName, lastName, email, phoneNumbe]
  * @return {VoidFunction} resolve with all profiles
  */
 async function insert_user(data) {
@@ -115,18 +115,16 @@ async function insert_user(data) {
 
     // TODO: validate data
 
-    // Promise 1
+    // add user promise
     let add_user_promise = new Promise(function(resolve, reject){
         
         // query
         let queryAddUser = `insert into USER (inter_ID, first_name, last_name, email, phone_number)  
         values( ?, ?, ?, ?, ?);`;  
         
-        // TODO: Validation - data of the user
-        let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber];
 
         //Exe query
-        conn.query(queryAddUser, user_data, function (err, results) {
+        conn.query(queryAddUser, data, function (err, results) {
             
             if (err) 
                 reject(err);

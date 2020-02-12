@@ -4,7 +4,8 @@
 	<h2><%= title_action %> </h2>
 	<hr class="my-4">
 	<!-- TODO: VALIDATE DATA [interID, username, lastname, email, phoneNumber ]-->
-	<form action="<%= url_form_rediret %>" method="<%= form_method %>">
+	<form action="<%= url_form_redirect %>" method="<%= form_method %>">
+		
 		<div class="row my-4">
 			<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
 			<!-- TODO: if statement here if dont have dropdown menu -->
@@ -39,7 +40,7 @@
 
 		<div class="row my-4">
 			<div class="col-2"></div>
-			<div class="col"><button type ="submit" class="btn btn-outline-secondary">Create</button></div>
+			<div class="col"><button type ="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
 		</div>
 		<p><a href="<%= base_url %> ">Back to List</a></p>
 	</form>

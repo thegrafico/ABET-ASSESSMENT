@@ -1,0 +1,23 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<div class="container-fluid">
+	<h1><%= title_action %> </h1>
+	<h3><%= title_message %> </h3>
+	<hr class="my-4">
+	<form action="<%= form_action %>" method="POST">
+		
+		<% record.forEach(element => { %>
+			<div class="row my-4">
+				<div class="col-2 text-right"><strong><%= element.name %></strong></div>
+				<div class="col"><%= element.value %></div>
+			</div> 
+		<% }) %>
+		<div class="row my-4 my-4">
+			<div class="col-2"></div>
+			<div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
+		</div>
+		<a href="<%= base_url %>">Back to List</a>
+	</form>
+</div>
+
+<%- include ('../partials/footer') -%>

@@ -47,6 +47,14 @@ router.get('/', async function (req, res) {
 });
 
 /* 
+ GET /login 
+*/
+router.get('/login', function (req, res) {
+	parms.title = "Login";
+	res.render('login', parms);
+});
+
+/* 
 * GET AUTH ROUTER - start sessions 
 */
 router.get("/auth", async function(req, res){

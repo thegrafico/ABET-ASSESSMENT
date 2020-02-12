@@ -4,8 +4,7 @@
 var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
-const { user_create_inputs } = require("../helpers/modals_template/create");
-var authHelper = require('../helpers/auth');
+const { user_create_inputs } = require("../helpers/layout_template/create");
 
 // DB conn
 var { db } = require("../helpers/mysqlConnection"); //pool connection
@@ -31,11 +30,13 @@ router.get('/', async function (req, res) {
 
 	// Get all user from the database (callback)
 	let list_of_users = await queries.get_user_list().catch( (err) =>{
-		// TODO: flash message with error
+		// TODO: flash message [ERROR]
 		console.log("THERE IS AN ERROR: ", err);
 	});
+
 	let results = [];
 	let each_user = [];
+	
 	// IF found results from the database
 	if (list_of_users != undefined && list_of_users.length > 0){
 		
@@ -53,7 +54,6 @@ router.get('/', async function (req, res) {
 		});
 		parms.results = results;
 	}
-
 	res.render('layout/home', parms);
 });
 
@@ -75,17 +75,24 @@ router.get('/create', async function (req, res) {
 		console.log("There is an error: ", err);
 	})
 
-	// verify if profiles 
-	if (profiles != undefined && profiles.length > 0){
-		profiles.forEach( (element) =>{
-			parms.dropdown_options.push({
-				"ID" : element.profile_ID,
-				"NAME": element.profile_Name
-			});
-		});
+	if (profiles == undefined || profiles.length == 0){
+		console.log("There is not profile created");
+		// TODO: flash message [ERROR]
+		return res.redirect(base_url);
 	}
+
+	// for dynamic frontend
+	profiles.forEach( (element) =>{
+		parms.dropdown_options.push({
+			"ID" : element.profile_ID,
+			"NAME": element.profile_Name
+		});
+	});
+
 	parms.form_method = "POST";
-	parms.url_form_rediret = "/users/create";
+	parms.url_form_redirect = "/users/create";
+	parms.btn_title = "Create";
+
 	res.render('layout/create', parms);
 });
 
@@ -94,8 +101,11 @@ router.get('/create', async function (req, res) {
 */
 router.post('/create', async function (req, res) {
 	
+	// TODO: validate req.body date, 
+	let user_data = [req.body.interID, req.body.username, req.body.lastname, req.body.email, req.body.phoneNumber];
+
 	// insert user using promise
-	queries.insert_user(req.body);
+	queries.insert_user(user_data);
 
 	res.redirect('/users');
 });
@@ -105,7 +115,7 @@ router.post('/create', async function (req, res) {
 */
 router.get('/:id/edit', async function (req, res) {
 
-	//TODO: catch error in case there is not id, Validate, Just number
+	//TODO: Validate of null of not a number
 	let user_id = req.params.id;
 	
 
@@ -134,13 +144,13 @@ router.get('/:id/edit', async function (req, res) {
 	]
 
 	let index = 0;
-
 	user_create_inputs.forEach((record) =>{
 		record.value = user[index];
 		index++;
 	});
 
 	parms.inputs = user_create_inputs;
+	parms.btn_title = "Submit";
 
 	parms.title_action = "Edit User";
 
@@ -161,8 +171,7 @@ router.get('/:id/edit', async function (req, res) {
 	}
 	parms.form_method = "post";
 
-	parms.url_form_rediret = `/users/${user_id}`;
-	// res.render('layout/create', parms);
+	parms.url_form_redirect = `/users/${user_id}?_method=PUT`;
 
 	res.render('layout/create', parms);
 });
@@ -170,10 +179,11 @@ router.get('/:id/edit', async function (req, res) {
 /*
  UPDATE / users/:id
 */
-router.post('/:id', function (req, res) {
+router.put('/:id', function (req, res) {
 	
 	// TODO: Validate if user id is number and not empty
 	let user_id = req.params.id;
+	
 	req.body.userID = user_id;
 	
 	let user_was_update = queries.update_user(req.body);
@@ -183,8 +193,9 @@ router.post('/:id', function (req, res) {
 		console.log("User was updated");
 	}).catch((err)=>{
 		console.log("Error: ", err);
-	})
+	});
 
+	// TODO: flash message
 	res.redirect("/users");
 });
 
@@ -194,9 +205,10 @@ router.post('/:id', function (req, res) {
 router.get('/:id/remove', async function (req, res) {
 	
 	let user_id = req.params.id;
-	
-	// TODO: Create locals var, [for loop in front end]
-	let locals = {};
+	parms.title_action = "Remove";
+	parms.title_message = "Are you sure you want to delete this User?";
+	parms.form_action = `/users/${user_id}?_method=DELETE`;
+	parms.btn_title = "Delete";
 
   	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
@@ -208,16 +220,27 @@ router.get('/:id/remove', async function (req, res) {
 		return res.send("ERROR GETTING THE USER INFO");
 	}
 
-	console.log(user_data);
-	// set info of the user for frontend
-	parms.interID = user_data.inter_ID;
-	parms.fName = user_data.first_name;
-	parms.lName = user_data.last_name;
-	parms.email = user_data.email;
-	parms.pNumber = user_data.phone_number;
-	parms.userID = req.params.id;
-	res.render('users/remove', parms);
+	// how many inputs options we show to user
+	let number_of_record_to_show = 6;
 
+	// console.log(user_data);
+	let names = ["User Id", "Inter Id", "Name", "Last Name", "Email", "Phone Number"];
+	let values = [
+		user_id, 
+		user_data.inter_ID, 
+		user_data.first_name,
+		user_data.last_name, 
+		user_data.email,
+		user_data.phone_number
+	];
+
+	let record = [];
+	for (let index = 0; index <number_of_record_to_show; index++) {
+		record.push({"name": names[index], "value": values[index]})
+	}
+
+	parms.record = record;
+	res.render('layout/remove', parms);
 });
 
 /* 
@@ -226,7 +249,7 @@ router.get('/:id/remove', async function (req, res) {
 */
 router.delete('/:id', function (req, res) {
 
- 	//TODO: catch error in case of null	 
+ 	//TODO: Validate that user_id is not null and is a number
 	let user_id = req.params.id;
 
 	// getting promise
@@ -236,10 +259,11 @@ router.delete('/:id', function (req, res) {
 	is_user_deleted.then( (yes) => {
 		console.log("User was deleted");
 	}).catch((no)=>{
+		// TODO: flash message [Erro]
 		console.log("Error deleting the user: ", no);
 	});
 
-	// TODO: flash message
+	// TODO: flash message [Success]
 	res.redirect("/users");
 });
 //===============================================================================
