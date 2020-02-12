@@ -20,7 +20,7 @@ let parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.table_header = ["ID", "Course Name", "Course Number", "Study Program ID", "Date Created"];
+	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created"];
 	parms.results = [];
 	
 	let course_results = await query.get_course_info("COURSE").catch((err) =>{
@@ -29,20 +29,18 @@ router.get('/', async function(req, res) {
 	});
 
 	let results = [];
-	let each_user = [];
 	if (course_results != undefined || course_results.length > 0 ){
 		
 		course_results.forEach(course => {
-
-			// first have to be the ID
-			each_user.push(course["course_ID"]);
-			each_user.push(course["course_name"]);
-			each_user.push(course["course_number"]);
-			each_user.push(course["prog_ID"]);
-			each_user.push(course["date_created"]);
-		
-			results.push(each_user);
-			each_user = [];
+			results.push({
+				"ID": course["course_ID"],
+				"values": [
+					course["course_name"],
+					course["course_number"],
+					course["prog_ID"],
+					course["date_created"]
+				]
+			});
 		});
 		parms.results = results;
 	}
@@ -55,7 +53,8 @@ router.get('/', async function(req, res) {
  	GET /courses/create 
 */
 router.get('/create', async function(req, res, next) {
-
+	
+	parms.have_dropdown = true;
 	parms.dropdown_options = [];
 	parms.dropdown_title = "Study Program";
 	parms.dropdown_name = "data[prog_id]";
@@ -109,7 +108,6 @@ router.get('/:id/edit', async function(req, res) {
 
 	// TODO: validate id, if number and not empty
 	let id_course = req.params.id;
-	parms.dropdown_options = [];
 	
   	let data = {"from":"COURSE", "where": "course_ID", "id": id_course};
 	
@@ -143,6 +141,15 @@ router.get('/:id/edit', async function(req, res) {
 		return res.redirect(base_url);
 	}
 
+	parms.dropdown_options = [];
+	parms.have_dropdown = true;
+	parms.title_action = "Editing Course";
+	parms.dropdown_title = "Study Program";
+	parms.dropdown_name = "data[std_program]";
+	parms.btn_title = "Submit";
+	parms.url_form_redirect = `/courses/${id_course}?_method=PUT`;
+	parms.inputs = course_create_inputs;
+
 	parms.std_results = study_programs;
 
 	course = [
@@ -165,14 +172,7 @@ router.get('/:id/edit', async function(req, res) {
 		index++;
 	});
 
-	parms.inputs = course_create_inputs;
 
-	parms.form_method = "POST";
-	parms.title_action = "Editing Course";
-	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "data[std_program]";
-	parms.btn_title = "Submit";
-	parms.url_form_redirect = `/courses/${id_course}?_method=PUT`;
 
 	res.render('layout/create', parms);
 });

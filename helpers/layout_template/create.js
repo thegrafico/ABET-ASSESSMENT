@@ -65,4 +65,24 @@ module.exports.course_create_inputs = [
     },
 ];
 
+/*
+    * template for deparment create
+*/
+module.exports.department_create_inputs = [
+    {
+        "title": "Name",
+        "placeHolder": "Course Name",
+        "name": "depName",
+        "value": "",
+        "isRequire": true
+    },
+    {
+        "title": "Description",
+        "placeHolder": "Course Description",
+        "name": "depDesc",
+        "value": "",
+        "isRequire": true
+    }
+]
+
 

@@ -23,8 +23,7 @@ var parms = {
 router.get('/', async function (req, res) {
 
 	parms.results = [];
-	parms.table_header = [
-		"User ID", "Inter ID", "Profile", "Name", "Last Name",
+	parms.table_header = ["Inter ID", "Profile", "Name", "Last Name",
 		"Email", "Phone Number","Date Created"
 	];
 
@@ -34,6 +33,8 @@ router.get('/', async function (req, res) {
 		console.log("THERE IS AN ERROR: ", err);
 	});
 
+	console.log(list_of_users);
+
 	let results = [];
 	// IF found results from the database
 	if (list_of_users != undefined && list_of_users.length > 0){
@@ -42,7 +43,7 @@ router.get('/', async function (req, res) {
 
 			results.push({
 				"ID": user["user_ID"],
-				"Values": [
+				"values": [
 					user["inter_ID"],
 					user["profile_Name"],
 					user["first_name"],
@@ -56,9 +57,8 @@ router.get('/', async function (req, res) {
 		parms.results = results;
 	}
 
-	console.log(parms.results);
-	res.status(200).send("Good");
-	// res.render('layout/home', parms);
+	// res.status(200).send("Good");
+	res.render('layout/home', parms);
 });
 
 /* 
@@ -69,6 +69,7 @@ router.get('/create', async function (req, res) {
 	// store all profiles
 	parms.profiles = [];
 	parms.dropdown_options = [];
+	parms.have_dropdown = true;
 	parms.dropdown_title = "Profile";
 	parms.dropdown_name = "profile_id";
 	parms.inputs = user_create_inputs;
@@ -109,7 +110,7 @@ router.post('/create', async function (req, res) {
 	let user_data = [req.body.interID, req.body.username, req.body.lastname, req.body.email, req.body.phoneNumber];
 
 	// insert user using promise
-	queries.insert_user(user_data);
+	queries.insert_user(user_data, req.body.profile_id);
 
 	res.redirect('/users');
 });
@@ -129,12 +130,13 @@ router.get('/:id/edit', async function (req, res) {
 	});
 
 	// verify is user data is good
-	if (user_data == undefined ||  user_data.length < 1){
+	if (user_data == undefined ||  user_data.length == 0){
 		return res.send("ERROR GETTING THE USER INFO");
 	}
 
 	// store all profiles
 	parms.profiles = [];
+	parms.have_dropdown = true;
 	parms.dropdown_options = [];
 	parms.dropdown_title = "Profile";
 	parms.dropdown_name = "profile_id";

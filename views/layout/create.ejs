@@ -4,20 +4,21 @@
 	<h2><%= title_action %> </h2>
 	<hr class="my-4">
 	<!-- TODO: VALIDATE DATA [interID, username, lastname, email, phoneNumber ]-->
-	<form action="<%= url_form_redirect %>" method="<%= form_method %>">
+	<form action="<%= url_form_redirect %>" method="POST">
 		
-		<div class="row my-4">
-			<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
-			<!-- TODO: if statement here if dont have dropdown menu -->
-			<div class="col-8">
-				<select type="text" name="<%= dropdown_name %>" required>
-					<% for (let profile of dropdown_options) {%>
-						<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
-					<% } %>
-				</select>
+		<% if (have_dropdown) { %>
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
+				<!-- TODO: if statement here if dont have dropdown menu -->
+				<div class="col-8">
+					<select type="text" name="<%= dropdown_name %>" required>
+						<% for (let profile of dropdown_options) {%>
+							<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+						<% } %>
+					</select>
+				</div>
 			</div>
-		</div>
-
+		<% } %>
 		<% inputs.forEach(element => { %>
 				<% if (element.isRequire) { %>
 						<div class="row my-4">
