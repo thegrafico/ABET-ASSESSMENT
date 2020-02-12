@@ -5,3 +5,4 @@ helpers/mysqlConnection.js
 Document.docx
 alex/
 .DS_Store
+public/.DS_Store

@@ -340,4 +340,11 @@ router.post('/perfomanceTable', async function(req, res) {
   res.redirect(base_url);
 });
 
+
+router.get('/assessmentIndex', function(req, res, next) {
+	res.render('assessment/assessmentIndex', { title: 'ABET Assessment' });
+  });
+
+
+
 module.exports = router;
