@@ -59,8 +59,10 @@ module.exports.course_create_inputs = [
     {
         "title": "Description",
         "placeHolder":"Course Description",
-        "name": "data[crdesc]",
+        "name": "data[description]",
         "value": "",
         "isRequire": true
     },
-]
+];
+
+

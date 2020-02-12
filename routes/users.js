@@ -84,7 +84,7 @@ router.get('/create', async function (req, res) {
 		});
 	}
 	parms.form_method = "POST";
-	parms.url_form_rediret = "/users/create";
+	parms.url_form_redirect = "/users/create";
 	parms.btn_title = "Create";
 	res.render('layout/create', parms);
 });
@@ -134,7 +134,6 @@ router.get('/:id/edit', async function (req, res) {
 	]
 
 	let index = 0;
-
 	user_create_inputs.forEach((record) =>{
 		record.value = user[index];
 		index++;
@@ -162,7 +161,7 @@ router.get('/:id/edit', async function (req, res) {
 	}
 	parms.form_method = "post";
 
-	parms.url_form_rediret = `/users/${user_id}`;
+	parms.url_form_redirect = `/users/${user_id}?_method=PUT`;
 
 	res.render('layout/create', parms);
 });
@@ -170,7 +169,7 @@ router.get('/:id/edit', async function (req, res) {
 /*
  UPDATE / users/:id
 */
-router.post('/:id', function (req, res) {
+router.put('/:id', function (req, res) {
 	
 	// TODO: Validate if user id is number and not empty
 	let user_id = req.params.id;
@@ -183,8 +182,9 @@ router.post('/:id', function (req, res) {
 		console.log("User was updated");
 	}).catch((err)=>{
 		console.log("Error: ", err);
-	})
+	});
 
+	// TODO: flash message
 	res.redirect("/users");
 });
 
@@ -194,9 +194,10 @@ router.post('/:id', function (req, res) {
 router.get('/:id/remove', async function (req, res) {
 	
 	let user_id = req.params.id;
-	
-	// TODO: Create locals var, [for loop in front end]
-	let locals = {};
+	parms.title_action = "Remove";
+	parms.title_message = "Are you sure you want to delete this User?";
+	parms.form_action = `/users/${user_id}?_method=DELETE`;
+	parms.btn_title = "Delete";
 
   	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
@@ -208,16 +209,27 @@ router.get('/:id/remove', async function (req, res) {
 		return res.send("ERROR GETTING THE USER INFO");
 	}
 
-	console.log(user_data);
-	// set info of the user for frontend
-	parms.interID = user_data.inter_ID;
-	parms.fName = user_data.first_name;
-	parms.lName = user_data.last_name;
-	parms.email = user_data.email;
-	parms.pNumber = user_data.phone_number;
-	parms.userID = req.params.id;
-	res.render('users/remove', parms);
+	// how many inputs options we show to user
+	let number_of_record_to_show = 6;
 
+	// console.log(user_data);
+	let names = ["User Id", "Inter Id", "Name", "Last Name", "Email", "Phone Number"];
+	let values = [
+		user_id, 
+		user_data.inter_ID, 
+		user_data.first_name,
+		user_data.last_name, 
+		user_data.email,
+		user_data.phone_number
+	];
+
+	let record = [];
+	for (let index = 0; index <number_of_record_to_show; index++) {
+		record.push({"name": names[index], "value": values[index]})
+	}
+
+	parms.record = record;
+	res.render('layout/remove', parms);
 });
 
 /* 

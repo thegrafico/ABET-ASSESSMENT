@@ -8,9 +8,9 @@ var conn = db.mysql_pool;
 function get_table_info(table_name){
 
     return new Promise(function (resolve, reject){
-        let get_table_info = `Select * From ??`;
+        let query_get = `Select * From ??`;
 
-        conn.query(get_table_info, [table_name], function (err, results, fields) {
+        conn.query(query_get, [table_name], function (err, results) {
             if (err) 
                 reject(err);
             else
@@ -43,26 +43,25 @@ function get_table_info_by_id(table_info){
 
 /**
  * get_table_info_by_id_naturalJoin - get a table info
- * @param  {Object} table_info -> key {"from", "from2", "where", "id"}
+ * @param  {Object} table_info -> key {"from", "join", "where", "id"}
  * @return {Promise} resolve with results of database
  */
 function get_table_info_by_id_naturalJoin(table_info){
 
 	let findDep = `Select * From ?? natural join ?? where ?? = ?;`;
 
-    let data = [table_info.from, table_info.from2, table_info.where, table_info.id];
+    let data = [table_info.from, table_info.join, table_info.where, table_info.id];
 
     return new Promise(function(resolve, reject){
 
-        conn.query(findDep, data, function (err, results, fields) {
+        conn.query(findDep, data, function (err, results) {
 
             if (err) {
-                return callback(err, null)
-            };
-            return callback(null, results);
+                reject(err || "Error getting the table information");
+            }else
+                resolve(results);
         });
     });
-
 }
 
 function delete_record_by_id(table_info, callback){
