@@ -6,10 +6,6 @@ var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
 const { user_create_inputs } = require("../helpers/layout_template/create");
 
-// DB conn
-var { db } = require("../helpers/mysqlConnection"); //pool connection
-var conn = db.mysql_pool;
-
 var parms = {
 	title: 'ABET Assessment',
 	subtitle: 'Users',
@@ -18,13 +14,16 @@ var parms = {
 };
 
 /*
- GET /users
+	-- SHOW ALL USERS -- 
+	GET /users
 */
 router.get('/', async function (req, res) {
 
 	parms.results = [];
+
+	// the last header is for position the button
 	parms.table_header = ["Inter ID", "Profile", "Name", "Last Name",
-		"Email", "Phone Number","Date Created"
+		"Email", "Phone Number","Date Created", ""
 	];
 
 	// Get all user from the database (callback)
@@ -39,6 +38,10 @@ router.get('/', async function (req, res) {
 		
 		list_of_users.forEach(user => {			
 
+			// change date format 
+			let date = new Date(user.date_created);
+			date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+			
 			results.push({
 				"ID": user["user_ID"],
 				"values": [
@@ -48,7 +51,8 @@ router.get('/', async function (req, res) {
 					user["last_name"],
 					user["email"],
 					user["phone_number"],
-					user["date_created"],
+					date,
+					"" // position the buttons of remove, and edit
 				]
 			});
 		});
@@ -59,8 +63,9 @@ router.get('/', async function (req, res) {
 	res.render('layout/home', parms);
 });
 
-/* 
- *GET /users/createUsers (redundancia, deberia ser /user/create)
+/* 	
+	-- SHOW CREATE USER --
+ 	GET /users/create
 */
 router.get('/create', async function (req, res) {
 
@@ -77,6 +82,8 @@ router.get('/create', async function (req, res) {
 		console.log("There is an error: ", err);
 	})
 
+
+	// verify profiles
 	if (profiles == undefined || profiles.length == 0){
 		console.log("There is not profile created");
 		// TODO: flash message [ERROR]
@@ -97,7 +104,6 @@ router.get('/create', async function (req, res) {
 		});
 	});
 
-	parms.form_method = "POST";
 	parms.url_form_redirect = "/users/create";
 	parms.btn_title = "Create";
 
@@ -116,6 +122,7 @@ router.post('/create', async function (req, res) {
 	// insert user using promise
 	queries.insert_user(user_data, req.body.profile_id);
 
+	req.flash("success", "User created");
 	res.redirect('/users');
 });
 
@@ -201,27 +208,21 @@ router.put('/:id', function (req, res) {
 	// promise
 	let update_user = queries.update_user(req.body);
 	
-	Promise.all(promise_array).then((user_added, profile_updated) => {
+	Promise.all(update_user).then(( [user_added, profile_updated] ) => {
 		
 		if(user_added && profile_updated){
-			console.log("User edited!");
-		}else{
-			console.log("There was an error editing the user");
+			req.flash("success", "User Edited");
+			res.redirect("/users");
+		}else{		
+			req.flash("error", "Error editing the user");
+			res.redirect("/users");
 		}
-
 	}).catch((err) => {
 		console.log("Error updating the user: ", err);
+		req.flash("error", "Cannot edit the user");
+		res.redirect("/users");
 	});
-	
-	// // another way for working with promise
-	// user_was_update.then((is_user_update) => {
-	// 	console.log("User was updated");
-	// }).catch((err)=>{
-	// 	console.log("Error: ", err);
-	// });
 
-	// TODO: flash message
-	res.redirect("/users");
 });
 
 /*
@@ -283,15 +284,18 @@ router.delete('/:id', function (req, res) {
 
 	// run promise
 	is_user_deleted.then( (yes) => {
-		// TODO: flash message [SUCCESS]
+	
 		console.log("User was deleted");
+		req.flash("success", "User Removed");
+		res.redirect("/users");
+	
 	}).catch((no)=>{
-		// TODO: flash message [Erro]
+	
 		console.log("Error deleting the user: ", no);
+		req.flash("error", "Cannot removed user");
+		res.redirect("/users");
 	});
 
-	// TODO: flash message [Success]
-	res.redirect("/users");
 });
 //===============================================================================
 

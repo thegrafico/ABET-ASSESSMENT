@@ -10,31 +10,11 @@ try{
 }
 
 /* PARA TRABAJAR LOCAL*/ 
-// var options = {
-//   host     : credentials.host,          //THIS IS THE SAME FOR YOUR
-//   user     : credentials.user,               //THIS IS THE SAME FOR YOUR
-//   password : credentials.password,         //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
-//   database : "ABET",   //HERE GO THE DATABASE THAT WE ARE GONNA USED
-//   connectionLimit : 15,
-//   clearExpired: true,
-//   checkExpirationInterval: 900000, // 15 minutes
-//   expiration: 8640000, // 2 hours
-//   schema: {
-//       tableName: 'custom_sessions_table_name',
-//       columnNames: {
-//           session_id: 'custom_session_id',
-//           expires: 'custom_expires_column_name',
-//           data: 'custom_data_column_name'
-//       }
-//   }
-// };
-
-/* PARA TRABAJAR REMOTO*/ 
 var options = {
-  host     : '70.45.219.43',
-  user     : 'root',
-  password : 'abetserver',
-  database : 'ABET', 
+  host     : credentials.host,          //THIS IS THE SAME FOR YOUR
+  user     : credentials.user,               //THIS IS THE SAME FOR YOUR
+  password : credentials.password,         //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
+  database : "ABET",   //HERE GO THE DATABASE THAT WE ARE GONNA USED
   connectionLimit : 15,
   clearExpired: true,
   checkExpirationInterval: 900000, // 15 minutes
@@ -48,6 +28,26 @@ var options = {
       }
   }
 };
+
+/* PARA TRABAJAR REMOTO*/ 
+// var options = {
+//   host     : '70.45.219.43',
+//   user     : 'root',
+//   password : 'abetserver',
+//   database : 'ABET', 
+//   connectionLimit : 15,
+//   clearExpired: true,
+//   checkExpirationInterval: 900000, // 15 minutes
+//   expiration: 8640000, // 2 hours
+//   schema: {
+//       tableName: 'custom_sessions_table_name',
+//       columnNames: {
+//           session_id: 'custom_session_id',
+//           expires: 'custom_expires_column_name',
+//           data: 'custom_data_column_name'
+//       }
+//   }
+// };
 
 
 // FOR LOCAL CONNECTION

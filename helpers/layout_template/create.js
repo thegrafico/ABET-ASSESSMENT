@@ -71,18 +71,36 @@ module.exports.course_create_inputs = [
 module.exports.department_create_inputs = [
     {
         "title": "Name",
-        "placeHolder": "Course Name",
+        "placeHolder": "Department Name",
         "name": "depName",
         "value": "",
         "isRequire": true
     },
     {
         "title": "Description",
-        "placeHolder": "Course Description",
+        "placeHolder": "Department Description",
         "name": "depDesc",
         "value": "",
         "isRequire": true
     }
-]
+];
+
+
+module.exports.outcome_create_inputs = [
+    {
+        "title": "Name",
+        "placeHolder": "Outcome Name",
+        "name": "outcome_name",
+        "value": "",
+        "isRequire": true
+    },
+    {
+        "title": "Description",
+        "placeHolder": "Outcome Description",
+        "name": "outcome_description",
+        "value": "",
+        "isRequire": true
+    },
+];
 
 

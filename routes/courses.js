@@ -20,7 +20,7 @@ let parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created"];
+	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created", ""];
 	parms.results = [];
 	
 	let course_results = await query.get_course_info("COURSE").catch((err) =>{
@@ -32,13 +32,19 @@ router.get('/', async function(req, res) {
 	if (course_results != undefined || course_results.length > 0 ){
 		
 		course_results.forEach(course => {
+
+			// change date format 
+			let date = new Date(course.date_created);
+			date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+			
 			results.push({
 				"ID": course["course_ID"],
 				"values": [
 					course["course_name"],
 					course["course_number"],
 					course["prog_ID"],
-					course["date_created"]
+					date,
+					""
 				]
 			});
 		});
@@ -106,6 +112,7 @@ router.post('/create', function(req, res) {
 		"course_decr": data.description
 	});
 
+	req.flash("success", "Course created");
 	res.redirect(base_url);
 });
 
@@ -205,6 +212,7 @@ router.put('/:id', function(req, res) {
 
 	query.update_course(course_data_for_update);
 
+	req.flash("success", "Course Edited");
 	res.redirect(base_url);
 });
 
@@ -275,6 +283,7 @@ router.delete('/:id', async function (req, res) {
 	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
 	// TODO: flash message [SUCCESS]
+	req.flash("success", "Course Removed");
 	res.redirect(base_url);
 });
 

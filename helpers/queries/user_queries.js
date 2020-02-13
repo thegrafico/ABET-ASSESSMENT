@@ -103,6 +103,7 @@ function delete_user_by_id(id) {
     return new Promise(function(resolve, reject){
 
     let deleteUser = `DELETE FROM USER WHERE user_ID = ?`;
+    
         //Exe query
         conn.query(deleteUser, [id], function (err, results, fields) {
             if (err)

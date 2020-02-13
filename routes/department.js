@@ -24,9 +24,6 @@ router.get('/', async function (req, res) {
 	//Getting the  DEPARTMENT information from db
 	let all_deparment = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
 		console.log("Cannot get deparment information: ", err);
-		
-		// TODO: flash message with err
-		return res.redirect("/");
 	});
 
 	parms.table_header = ["Name", "Description", "Date Created", ""];
@@ -47,7 +44,7 @@ router.get('/', async function (req, res) {
 					deparment.dep_name,
 					deparment.dep_description,
 					date,
-					" "
+					""
 				]
 			});
 		});
@@ -93,13 +90,15 @@ router.post('/create', function (req, res, next) {
 
 	// Insert into the DB the data from user
 	query.insert_into_deparment([depName, depDesc]).then((was_edit) =>{
+
 		console.log("Department was created");
-		// TODO: flash message [OK]
+		req.flash("success", "Department created");
 		res.redirect(base_url);
 
 	}).catch((err) =>{
 		// flash message [ERRO]
 		console.log("Error: ", err);
+		req.flash("error", "Cannot Department created");
 		res.redirect("/");
 	});
 });
@@ -122,7 +121,8 @@ router.get('/:id/edit', async function (req, res) {
 	// validate data
 	if (dept_data == undefined ||  dept_data.length == 0){
 		console.log("Cannot find this department");
-		return res.redirect("/");
+		req.flash("error", "Cannot find this department");
+		return res.redirect(base_url);
 	}
 
 	// We only care about the first one
@@ -154,17 +154,17 @@ router.get('/:id/edit', async function (req, res) {
 */
 router.put('/:id', function (req, res, next) {
 
-	//TODO: validate user data
+	// TODO: validate user data
 	let dpt_data = [req.body.depName, req.body.depDesc, req.params.id] 
 	
-	//Exe the query into the database
+	// Exe the query into the database
 	query.update_deparment(dpt_data).then((ok) => {
 		console.log("Department EDITED!");
-		// TODO: flash message [SUCCESS]
+		req.flash("success", "Deparment edited");
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("ERROR: ", err);
-		// TODO: flash message [ERROR];
+		req.flash("error", "Cannot Edit department");
 		res.redirect("/");
 	});		
 });
@@ -220,15 +220,16 @@ router.get('/:id/remove', async function (req, res) {
 */
 router.delete('/:id' , function (req, res, next) {
 
+	// TODO: validate id
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.delete_record_by_id(tabla_data).then((was_deleted) => {
 		console.log("Record delete");
-		// TODO: flash success 
+		req.flash("success", "Deparment removed");
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("ERROR: ", err);
-		// TODO: flash error 
+		req.flash("error", "Cannot remove the department");
 		res.redirect("/");		
 	});		
 });
