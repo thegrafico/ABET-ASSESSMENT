@@ -33,8 +33,6 @@ router.get('/', async function (req, res) {
 		console.log("THERE IS AN ERROR: ", err);
 	});
 
-	console.log(list_of_users);
-
 	let results = [];
 	// IF found results from the database
 	if (list_of_users != undefined && list_of_users.length > 0){
@@ -72,7 +70,6 @@ router.get('/create', async function (req, res) {
 	parms.have_dropdown = true;
 	parms.dropdown_title = "Profile";
 	parms.dropdown_name = "profile_id";
-	parms.inputs = user_create_inputs;
 	parms.title_action = "Create User";
 
 	// get all profiles
@@ -85,6 +82,12 @@ router.get('/create', async function (req, res) {
 		// TODO: flash message [ERROR]
 		return res.redirect(base_url);
 	}
+
+	// reset value to nothing when creating a new record
+	user_create_inputs.forEach((record) =>{
+		record.value = "";
+	});
+	parms.inputs = user_create_inputs;
 
 	// for dynamic frontend
 	profiles.forEach( (element) =>{
@@ -102,7 +105,8 @@ router.get('/create', async function (req, res) {
 });
 
 /*
- POST /users/create
+	-- CREATE USER -- 
+ 	POST /users/create
 */
 router.post('/create', async function (req, res) {
 	
@@ -115,15 +119,15 @@ router.post('/create', async function (req, res) {
 	res.redirect('/users');
 });
 
-/*
- GET /users/:id/edit
+/*	
+	--SHOW USERS EDIT--
+ 	GET /users/:id/edit
 */
 router.get('/:id/edit', async function (req, res) {
 
 	//TODO: Validate of null of not a number
 	let user_id = req.params.id;
 	
-
 	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
 		console.log(err);
@@ -155,11 +159,6 @@ router.get('/:id/edit', async function (req, res) {
 		index++;
 	});
 
-	parms.inputs = user_create_inputs;
-	parms.btn_title = "Submit";
-
-	parms.title_action = "Edit User";
-
 	// get all profiles
 	let profiles  = await queries.get_all_profiles().catch((err) =>{
 		console.log("There is an error getting the profiles: ", err);
@@ -175,8 +174,12 @@ router.get('/:id/edit', async function (req, res) {
 			});
 		});
 	}
+	
+	// Dynamic EJS
+	parms.inputs = user_create_inputs;
+	parms.btn_title = "Submit";
+	parms.title_action = "Edit User";
 	parms.form_method = "post";
-
 	parms.url_form_redirect = `/users/${user_id}?_method=PUT`;
 
 	res.render('layout/create', parms);
@@ -190,16 +193,32 @@ router.put('/:id', function (req, res) {
 	// TODO: Validate if user id is number and not empty
 	let user_id = req.params.id;
 	
+	// TODO: validate req.body
 	req.body.userID = user_id;
 	
-	let user_was_update = queries.update_user(req.body);
+	console.log(req.body);
+
+	// promise
+	let update_user = queries.update_user(req.body);
 	
-	// another way for working with promise
-	user_was_update.then((is_user_update) => {
-		console.log("User was updated");
-	}).catch((err)=>{
-		console.log("Error: ", err);
+	Promise.all(promise_array).then((user_added, profile_updated) => {
+		
+		if(user_added && profile_updated){
+			console.log("User edited!");
+		}else{
+			console.log("There was an error editing the user");
+		}
+
+	}).catch((err) => {
+		console.log("Error updating the user: ", err);
 	});
+	
+	// // another way for working with promise
+	// user_was_update.then((is_user_update) => {
+	// 	console.log("User was updated");
+	// }).catch((err)=>{
+	// 	console.log("Error: ", err);
+	// });
 
 	// TODO: flash message
 	res.redirect("/users");

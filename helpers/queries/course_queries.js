@@ -16,33 +16,55 @@ function get_course_info(data){
 }
 
 
-function insert_into_course(data, callback){
+// {
+//     prog_id: '51',
+//     crnumber: 'COEN 900',
+//     crname: 'Computer Archic',
+//     description: 'Yeckle'
+//   }
+/**
+ * insert_into_course - Create a new record of the course
+ * @param {Object} data -> {"prog_id", "crnumber", "crname", "course_decr" } 
+ * @return {Promise} resolve with all profiles
+ */
+function insert_into_course(data){
 
-    let insert_query = `insert into COURSE (course_number, course_name, course_description) values(?, ?, ?);`;
-    let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values(?, ?);`;
-    let prog_id_index = 3;
-    conn.query(insert_query, data, function (err, results) {
-
-        let courseid = results.insertId;
-
-        if (err) {
-            return callback(err, null);
-        };
-        conn.query(insert_prog_course, [courseid, data[prog_id_index]], function (err, results) {
-            if (err) {
-            return callback(err, null);
-            }
-            return callback(null, results);
-          });
+   
+    let create_course_promise = new Promise(function(resolve, reject){
+        let insert_query = `insert into COURSE (course_number, course_name, course_description) values(?, ?, ?);`;
+        
+        conn.query(insert_query, [data.crnumber, data.crname, data.course_decr], function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(results.insertId);
+            
+        });
     });
+
+    create_course_promise.then((new_course_id) => {
+        
+        let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values(?, ?);`;
+
+        conn.query(insert_prog_course, [new_course_id, data.prog_id], function (err, results) {
+            
+            if (err) throw err;
+
+            console.log("Course Created");
+        });
+
+    }).catch((err) => {
+        console.log("ERROR updating the coyrse")
+    });
+    
 }
 
 /**
  * update_course - Update the course information
- * @param  {Object} data {"name", "course_description", "course_number", "course_id"}
+ * @param  {Object} data {"crname", "crdescr", "crnumber", "ID", std_program}
  * @return {Promise} resolve with results of database
  */
-function update_course(course, std_program){
+function update_course(data){
 
     
     // promise updating course
@@ -51,7 +73,7 @@ function update_course(course, std_program){
         let update_query = `update COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID = ?`;
 
         // Update course
-        conn.query(update_query, course, function (err, results) {
+        conn.query(update_query, [data.crname, data.crdescr, data.crnumber, data.ID], function (err, results) {
             if (err)
                 reject(err || "Error updating the course");
             else
@@ -62,7 +84,7 @@ function update_course(course, std_program){
     // Promise for update the std program
     let editing_program_course = new Promise(function(resolve, reject){
         let update_pc = `UPDATE PROG_COURSE SET prog_ID = ? WHERE course_ID= ?`;
-        conn.query(update_pc, std_program, function (err, results) {
+        conn.query(update_pc, [data.std_program, data.ID], function (err, results) {
             if (err)
                 reject(err || "Error updating the Program ID");
             else
@@ -73,14 +95,9 @@ function update_course(course, std_program){
     // run promise 1 and 2
     Promise.all([editing_course, editing_program_course]).then(function([course_was_edited, program_was_edited]){
 
-        if (course_was_edited){
-            console.log("Course was edited");
+        if (course_was_edited && program_was_edited){
+            console.log("Course was edited successfully");
         }else
-            console.log("Error updating the course");
-
-        if (program_was_edited)
-            console.log("Program was edited");
-        else
             console.log("Error updating the Program course");
     }).catch((err) => {
         console.log(err);

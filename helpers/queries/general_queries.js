@@ -55,7 +55,7 @@ function get_table_info_by_id_naturalJoin(table_info){
 
         conn.query(findDep, data, function (err, results) {
 
-            if (err || results.length == 0)
+            if (err)
                 reject(err || "Error getting the table information");
             else
                 resolve(results);
