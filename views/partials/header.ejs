@@ -55,9 +55,9 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/department">Departments</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/evaluation">Evaluation Rubric</a>
-                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/outcomes">Outcomes</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/evaluation">Evaluation Rubric</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/performanceCriteria">Performance Criteria</a>
                 <div class="dropdown-divider"></div>
@@ -72,3 +72,18 @@
           </ul>
         </div>
       </nav>
+
+      <div class="container feedback">
+        <!--check if error and display a message-->
+        <% if(error && error.length > 0 ){ %>
+          <div class="alert alert-danger" role="alert">
+            <%=error%>
+          </div>
+        <% } %>
+        <!--check if success and display a message-->
+        <% if(success && success.length > 0 ){ %>
+          <div class="alert alert-success" role="alert">
+            <%=success%>
+          </div>
+        <% } %>
+      </div>

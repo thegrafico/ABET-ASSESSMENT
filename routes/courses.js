@@ -15,11 +15,12 @@ let parms = {
 };
 
 /*
- GET /courses
+	--HOME PAGE--
+	GET /courses
 */
 router.get('/', async function(req, res) {
 
-	parms.table_header = ["ID", "Course Name", "Course Number", "Study Program ID", "Date Created"];
+	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created", ""];
 	parms.results = [];
 	
 	let course_results = await query.get_course_info("COURSE").catch((err) =>{
@@ -28,20 +29,24 @@ router.get('/', async function(req, res) {
 	});
 
 	let results = [];
-	let each_user = [];
 	if (course_results != undefined || course_results.length > 0 ){
 		
 		course_results.forEach(course => {
 
-			// first have to be the ID
-			each_user.push(course["course_ID"]);
-			each_user.push(course["course_name"]);
-			each_user.push(course["course_number"]);
-			each_user.push(course["prog_ID"]);
-			each_user.push(course["date_created"]);
-		
-			results.push(each_user);
-			each_user = [];
+			// change date format 
+			let date = new Date(course.date_created);
+			date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+			
+			results.push({
+				"ID": course["course_ID"],
+				"values": [
+					course["course_name"],
+					course["course_number"],
+					course["prog_ID"],
+					date,
+					""
+				]
+			});
 		});
 		parms.results = results;
 	}
@@ -50,87 +55,99 @@ router.get('/', async function(req, res) {
 
 
 /*
- GET /courses/create 
+	--SHOW CREATE--
+ 	GET /courses/create 
 */
 router.get('/create', async function(req, res, next) {
-
+	
+	parms.have_dropdown = true;
 	parms.dropdown_options = [];
 	parms.dropdown_title = "Study Program";
 	parms.dropdown_name = "data[prog_id]";
-	parms.inputs = course_create_inputs;
 	parms.title_action = "Create Course";
 
-
 	let all_study_program =  await general_queries.get_table_info("STUDY_PROGRAM").catch((err)=>{
-		console.log("Error getting the programs");
-		throw err;
+		console.log("Error getting the programs: ", err);
 	});
 
-	if (all_study_program != undefined){
-		all_study_program.forEach( (element) =>{
-			parms.dropdown_options.push({
-				"ID" : element.prog_ID,
-				"NAME": element.prog_name
-			});
-		});
+	// Validate study program
+	if (all_study_program == undefined || all_study_program.length == 0){
+		console.log("NOT study programn found");
+		// Flash message ERROR
+		return res.redirect("/");
 	}
-	parms.form_method = "POST";
+	
+	all_study_program.forEach( (element) =>{
+		parms.dropdown_options.push({
+			"ID" : element.prog_ID,
+			"NAME": element.prog_name
+		});
+	});
+
+	// reset value to nothing when creating a new record
+	course_create_inputs.forEach((record) =>{
+		record.value = "";
+	});
+	parms.inputs = course_create_inputs;
+
 	parms.url_form_redirect = "/courses/create";
 	parms.btn_title = "Create";
   	res.render('layout/create', parms);
 });
 
 /* 
-POST courses/create
+	--CREATE COURSE--
+	POST courses/create
 */
-router.post('/create', function(req, res, next) {
+router.post('/create', function(req, res) {
 
-  //TODO: verify values, null, undefined
-  let data = req.body.data;
+	//TODO: verify values, null, undefined
+	let data = req.body.data;
 
 	//Insert into the DB the data from user
-	query.insert_into_course([data.crnumber,data.crname, data.crdesc, data.prog_id], function(err, results){
-		//TODO: catch error properly
-	// console.log("HERE", prog_id);
-		if (err) throw err; 
-		res.redirect(base_url);
-
+	query.insert_into_course({
+		"prog_id": data.prog_id,
+		"crnumber": data.crnumber,
+		"crname": data.crname,
+		"course_decr": data.description
 	});
+
+	req.flash("success", "Course created");
+	res.redirect(base_url);
 });
 
 /*
- GET /courses/:id/edit
+	--SHOW EDIT ROUTE--
+ 	GET /courses/:id/edit
 */
 router.get('/:id/edit', async function(req, res) {
 
 	// TODO: validate id, if number and not empty
 	let id_course = req.params.id;
-	parms.dropdown_options = [];
 	
   	let data = {"from":"COURSE", "where": "course_ID", "id": id_course};
 	
 	// get course information by id
  	let courses_info = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("Error Getting course info: ", err);
-		
 		// TODO: Rediret with message
 		throw err;
 	});
-	
+
+	// validate course 
 	if (courses_info == undefined || courses_info.length == 0){
 		console.log("There is not information about this course");
 		// TODO: Flash message
-		return res.redirect(base_url);
+		return res.redirect("/");
 	}
-
+	// We only care about the first position
 	courses_info = courses_info[0];
-
 	
 	// Get all study program
 	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
-		console.log("Error getting study program info");
+		console.log("Error getting study program info: ", err);
 		// TODO: Rediret with message
-		throw err;
+		return res.redirect("/");
 	});
 	
 	// verify study program
@@ -139,13 +156,14 @@ router.get('/:id/edit', async function(req, res) {
 		return res.redirect(base_url);
 	}
 
-	parms.std_results = study_programs;
-
-	course = [
-		courses_info.course_number,
-		courses_info.course_name,
-		courses_info.course_description
-	];
+	// Dynamic frontend vars
+	parms.dropdown_options = [];
+	parms.have_dropdown = true;
+	parms.title_action = "Editing Course";
+	parms.dropdown_title = "Study Program";
+	parms.dropdown_name = "data[std_program]";
+	parms.btn_title = "Submit";
+	parms.url_form_redirect = `/courses/${id_course}?_method=PUT`;
 
 	// Set dropdown data 
 	study_programs.forEach( (element) =>{
@@ -154,21 +172,23 @@ router.get('/:id/edit', async function(req, res) {
 			"NAME": element.prog_name
 		});
 	});
-	
+
+	// course information for edit
+	course = [
+		courses_info.course_number,
+		courses_info.course_name,
+		courses_info.course_description
+	];
+
+	// set the ejs data to append
 	let index = 0;
 	course_create_inputs.forEach((record) =>{
 		record.value = course[index];
 		index++;
 	});
 
+	// append the course information to the EJS
 	parms.inputs = course_create_inputs;
-
-	parms.form_method = "POST";
-	parms.title_action = "Editing Course";
-	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "data[std_program]";
-	parms.btn_title = "Submit";
-	parms.url_form_redirect = `/courses/${id_course}?_method=PUT`;
 
 	res.render('layout/create', parms);
 });
@@ -182,23 +202,22 @@ router.put('/:id', function(req, res) {
 	// TODO: validate if number or empty 
 	let course_id = req.params.id;
 
-	// TODO: verify
-	let course_data = [
-		req.body.data.crname,
-		req.body.data.description,
-		req.body.data.crnumber,
-		req.body.data.std_program
-	];
+	let course_data_for_update = {
+		"crname": req.body.data.crname,
+		"crdescr": req.body.data.description,
+		"crnumber": req.body.data.crnumber,
+		"ID": course_id,
+		"std_program": req.body.data.std_program
+	}
 
-	let study_program_update = [req.body.data.std_program, course_id];
+	query.update_course(course_data_for_update);
 
-	query.update_course(course_data, study_program_update);
-
+	req.flash("success", "Course Edited");
 	res.redirect(base_url);
 });
 
 /*
-	--REMOVE COURSE--
+	--SHOW REMOVE COURSE--
 	GET cousers/:id/remove
 */
 router.get('/:id/remove', async function (req, res) {
@@ -212,18 +231,17 @@ router.get('/:id/remove', async function (req, res) {
 	// getting course information from db
 	let course = await general_queries.get_table_info_by_id_naturalJoin(data).catch((err) =>{
 		console.log("Error getting the course: ", err);
-		return res.redirect(base_url);
 	});
 
 	// validate course
 	if (course == undefined || course.length == 0){
 		console.log("Course not found");
-		res.redirect(base_url);
+		return res.redirect(base_url);
 	}
 
 	// we only care about the first position
 	course = course[0];
-	
+
 	// == variables for dinamic frondend ==
 	parms.title_action = "Remove";
 	parms.title_message = "Are you sure you want to delete this Course?";
@@ -243,26 +261,30 @@ router.get('/:id/remove', async function (req, res) {
 });
 
 
-/* DELETE ROUTE */
-router.delete('/:id', function (req, res) {
-  console.log("===================DELETED ROUTE=====================");
+/*
+ 	-- DELETE ROUTE -- 
+	DELETE /users/:id
+*/
+router.delete('/:id', async function (req, res) {
 
-  //TODO: catch error in case of null
-  let course_id = req.params.id;
-  let table_name = "COURSE";
-  let where_attr = "course_ID";
+	//TODO: Validate if null or not a number
+	let course_id = req.params.id;
 
-  let data = {"id":course_id, "from":table_name,"where":where_attr };
+	let data = {"id": course_id, "from":"COURSE","where":"course_ID" };
 
-  general_queries.delete_record_by_id(data, function (err, results) {
+	await general_queries.delete_record_by_id(data).catch((err) =>{
+		console.log("Cannot remove the record");
+		// TODO: flash message [ERR]
+		return res.redirect(base_url);
+	});
 
-	//TODO: catch error
-	if (err) {
-	  throw err;
-	}
+	console.log("COURSE REMOVED");
+
 	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-	res.redirect("back");
-  });
+
+	// TODO: flash message [SUCCESS]
+	req.flash("success", "Course Removed");
+	res.redirect(base_url);
 });
 
 

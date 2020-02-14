@@ -31,8 +31,7 @@ function get_table_info_by_id(table_info){
 
     return new Promise(function(resolve, reject){
         conn.query(find_dep_query, data, function (err, results) {
-
-            if (err)
+            if (err || results.length == 0)
                 reject(err || "Error getting table information");
             else
                 resolve(results);
@@ -56,31 +55,34 @@ function get_table_info_by_id_naturalJoin(table_info){
 
         conn.query(findDep, data, function (err, results) {
 
-            if (err) {
+            if (err)
                 reject(err || "Error getting the table information");
-            }else
+            else
                 resolve(results);
         });
     });
 }
 
-function delete_record_by_id(table_info, callback){
-    `Remove a record by id`
+/**
+ * delete_record_by_id - Delete the element by id
+ * @param  {Object} table_info -> key {"from", "where", "id"}
+ * @return {Promise} resolve with true or error
+ */
+function delete_record_by_id(table_info){
 
-	let delete_query = `DELETE
-                  FROM ??
-                  WHERE ?? = ?;`;
+	let delete_query = `DELETE FROM ?? WHERE ?? = ?;`;
 
     let data = [table_info.from, table_info.where, table_info.id];
 
-    conn.query(delete_query, data, function (err, results, fields) {
-        if (err) {
-            return callback(err, null)
-        };
-        // console.log(results)
-        return callback(null, results);
-    });
+    return new Promise(function(resolve, reject){
 
+        conn.query(delete_query, data, function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(true);
+        });
+    });
 }
 
 

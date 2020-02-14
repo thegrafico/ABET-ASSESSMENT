@@ -9,6 +9,8 @@ var methodOverride = require("method-override");
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var authHelper = require('./helpers/auth');
+var flash = require("connect-flash");
+
 
 
 var  {options, db} = require("./helpers/mysqlConnection");
@@ -31,7 +33,7 @@ var sessionStore = new MySQLStore(options);
 // ===== Index Route =====
 var indexRouter = require('./routes/index');
 // ===== Evaluation Section =====
-var evaluationRouter = require('./routes/evaluation');
+var evaluationRouter = require('./routes/evaluationRubric');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerm');
 // ===== Departments Section =====
@@ -60,6 +62,7 @@ app.use(express.static(__dirname + "public"));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(flash());
 app.use(methodOverride("_method"));
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -81,6 +84,10 @@ app.use(session({
 // Locals variables, or consts variables goes here. 
 // create a global variable - req.locals.name = value
 app.use(function(req, res, next){
+
+  res.locals.error = req.flash("error"); //error mesage go red
+	res.locals.success = req.flash("success"); //success message go green
+
   //locals variables
 
   res.locals.signOutUrl = "/authorize/signout";

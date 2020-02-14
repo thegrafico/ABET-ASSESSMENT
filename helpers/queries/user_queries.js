@@ -64,18 +64,25 @@ function get_user_ID_by_email(email, callback){
  * @return {Promise} resolve with all profiles
  */
 function update_user(data) {
-
-    // TODO need to update the profile 
-    console.log(data);
-    let updateUser = `update USER set inter_ID = ?, first_name= ?, 
-            last_name= ?, email= ?, phone_number= ?
-            where user_ID = ? `;
     
     // array with all user data, has to be in this order 
-    let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber, parseInt(data.userID)];
+    let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber, data.userID];
 
-    return new Promise(function(resolve, reject){
-        conn.query(updateUser, user_data, function (err, results, fields) {
+    let add_user_promise = new Promise(function(resolve, reject){
+
+        let updateUser = `UPDATE USER SET inter_ID = ?, first_name= ?, last_name= ?, email= ?, phone_number= ? WHERE user_ID = ? `;
+
+        conn.query(updateUser, user_data, function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(true);
+        });
+    });
+
+    let update_profile_promise = new Promise(function(resolve, reject) {
+        let update_profile_query = "UPDATE USER_PROFILES SET profile_ID = ? WHERE user_ID = ?";
+        conn.query(update_profile_query, [data.profile_id, data.userID], function (err, results) {
             if (err)
                 reject(err);
             else
@@ -83,6 +90,7 @@ function update_user(data) {
         });
     });
     
+    return [add_user_promise, update_profile_promise];
 }
 
 /**
@@ -95,6 +103,7 @@ function delete_user_by_id(id) {
     return new Promise(function(resolve, reject){
 
     let deleteUser = `DELETE FROM USER WHERE user_ID = ?`;
+    
         //Exe query
         conn.query(deleteUser, [id], function (err, results, fields) {
             if (err)
@@ -110,7 +119,9 @@ function delete_user_by_id(id) {
  * @param {Array} data -> [interId, firstName, lastName, email, phoneNumbe]
  * @return {VoidFunction} resolve with all profiles
  */
-async function insert_user(data) {
+
+ // TODO: refactor
+async function insert_user(data, profile_id) {
     console.log("CREATING USER");
 
     // TODO: validate data
@@ -134,21 +145,22 @@ async function insert_user(data) {
     });
     
     // Promise 2
-    let set_profile_promise = add_user_promise.then((userId) =>{
-        return new Promise(function(resolve, reject){
-            
-            // query
-            let querySetProfile = `insert into USER_PROFILES values(?, ?)`;
-
-            conn.query(querySetProfile, [userId, data.profile_id], function (error, results) {
-                if (error) 
-                     reject(false);
-                else
-                    resolve(true);
+    let set_profile_promise = add_user_promise.then(async (userId) =>{
+        try {
+            return new Promise(function (resolve, reject) {
+                // query
+                let querySetProfile = `insert into USER_PROFILES values(?, ?)`;
+                conn.query(querySetProfile, [userId, profile_id], function (error, results) {
+                    if (error)
+                        reject(false);
+                    else
+                        resolve(true);
+                });
             });
-        }).catch((err) => {
+        }
+        catch (err) {
             console.log("There is an error adding the user: ", err);
-        });
+        }
     });
 
     // run promise 1 and 2
