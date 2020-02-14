@@ -76,17 +76,19 @@ router.get('/create', async function (req, res) {
 	parms.dropdown_title = "Profile";
 	parms.dropdown_name = "profile_id";
 	parms.title_action = "Create User";
+	parms.url_form_redirect = "/users/create";
+	parms.btn_title = "Create";
 
 	// get all profiles
 	let profiles  = await queries.get_all_profiles().catch((err) =>{
 		console.log("There is an error: ", err);
 	})
 
-
 	// verify profiles
 	if (profiles == undefined || profiles.length == 0){
 		console.log("There is not profile created");
-		// TODO: flash message [ERROR]
+		
+		req.flash("error", "Cannot find any profiles");
 		return res.redirect(base_url);
 	}
 
@@ -103,10 +105,7 @@ router.get('/create', async function (req, res) {
 			"NAME": element.profile_Name
 		});
 	});
-
-	parms.url_form_redirect = "/users/create";
-	parms.btn_title = "Create";
-
+	
 	res.render('layout/create', parms);
 });
 

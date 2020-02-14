@@ -107,7 +107,7 @@ app.use('/schoolTerm', schoolTermRouter);
 // ===== Departments Section =====
 app.use('/department', departmentRouter);
 // ===== Study Programs Section =====
-app.use('/studyPrograms', studyProgramsRouter);
+app.use('/studyprograms', studyProgramsRouter);
 // ===== Users Section =====
 app.use('/users', usersRouter);
 // ===== Outcomes Section =====

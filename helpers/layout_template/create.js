@@ -103,4 +103,20 @@ module.exports.outcome_create_inputs = [
     },
 ];
 
+module.exports.study_program_create_input = [
+    {
+        "title": "Name",
+        "placeHolder": "Program Name",
+        "name": "std_name",
+        "value": "",
+        "isRequire": true
+    },
+    {
+        "title": "Description",
+        "placeHolder": "Program Description",
+        "name": "std_description",
+        "value": "",
+        "isRequire": false
+    }
+];
 
