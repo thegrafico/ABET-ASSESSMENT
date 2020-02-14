@@ -1,8 +1,20 @@
 <%- include ('../partials/header') -%>
-
+<div class="container reportTabs">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="options" id="option1" checked> In Progress
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="options" id="option2"> Completed
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="options" id="option3"> Archived
+        </label>
+    </div>
+</div>
 <div class="container assessmentContainer">
     <div class="row search">
-        <input placeholder="Search" type="search" id="reportSearch" name="reportSearch">
+        <input class="reportSearch" placeholder="Search" type="text" name="reportSearch">
         <div>Filter</div>
     </div>
     <div class="container assessmentReports">

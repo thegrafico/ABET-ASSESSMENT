@@ -27,14 +27,12 @@
 
 /* Srcoolbar CSS Ends Here */
 
-
-
 .container.assessmentContainer {
 	padding-left: 0;
 	padding-right: 2.5%;
 	margin-left: 10%;
 	margin-right: 10%;
-	margin-top: 20px;
+	margin-top: 0;
 	width: 2000px;
 	height: 600px;
 	border: 1px solid #aaaaaa;
@@ -52,6 +50,10 @@
 	border-radius: 25px;
 }
 
+.reportTabs {
+	margin-top: 1%;
+}
+
 .col {
 	margin-left:2.5%;
 	margin-right: 2.5%;
@@ -62,12 +64,25 @@
 	border-radius: 25px;
 }
 
-#reportSearch {margin-top: 1%;
+.reportSearch {
+	margin-top: 1%;
 	margin-left: 2.5%;
 	width: 90%;
 	height: 35px;
 	border: 1px solid #aaaaaa;
 	border-radius: 25px;
+	padding-left: 10px;
+}
+
+input[type=text]:focus:not([readonly]) {
+	border: 1px solid #00833e;
+	box-shadow: 0 0 0 1px #00833e;
+	border-radius: 25px;
+	outline: none;
+}
+
+.reportSearch::placeholder {
+	margin-left: 100px;
 }
 
 .col.picture {

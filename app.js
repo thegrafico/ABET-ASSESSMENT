@@ -27,7 +27,7 @@ var MySQLStore = require('express-mysql-session')(session);
 var sessionStore = new MySQLStore(options);
 
 
-//==================================ROUTES====================================
+// =============================== ROUTES ===================================
 // ===== Index Route =====
 var indexRouter = require('./routes/index');
 // ===== Evaluation Section =====
@@ -50,7 +50,7 @@ var perfCritRouter = require('./routes/performanceCriteria');
 var authorize = require('./routes/authorize');
 // ===== Program/Course/Term Selection =====
 var assessmentRouter = require('./routes/assessment');
-//==================================ROUTES====================================
+//================================= ROUTES ===================================
 
 var app = express();
 const port = process.env.PORT || 3000;
