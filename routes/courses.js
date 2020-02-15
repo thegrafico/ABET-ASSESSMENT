@@ -35,7 +35,7 @@ router.get('/', async function(req, res) {
 
 			// change date format 
 			let date = new Date(course.date_created);
-			date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 			
 			results.push({
 				"ID": course["course_ID"],

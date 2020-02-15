@@ -40,7 +40,7 @@ router.get('/', async function (req, res) {
 
 			// change date format 
 			let date = new Date(user.date_created);
-			date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 			
 			results.push({
 				"ID": user["user_ID"],
@@ -133,6 +133,15 @@ router.get('/:id/edit', async function (req, res) {
 
 	//TODO: Validate of null of not a number
 	let user_id = req.params.id;
+	// store all profiles
+	parms.profiles = [];
+	parms.have_dropdown = true;
+	parms.dropdown_options = [];
+	parms.dropdown_title = "Profile";
+	parms.dropdown_name = "profile_id";
+	parms.btn_title = "Submit";
+	parms.title_action = "Edit User";
+	parms.url_form_redirect = `/users/${user_id}?_method=PUT`;
 	
 	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
@@ -143,13 +152,6 @@ router.get('/:id/edit', async function (req, res) {
 	if (user_data == undefined ||  user_data.length == 0){
 		return res.send("ERROR GETTING THE USER INFO");
 	}
-
-	// store all profiles
-	parms.profiles = [];
-	parms.have_dropdown = true;
-	parms.dropdown_options = [];
-	parms.dropdown_title = "Profile";
-	parms.dropdown_name = "profile_id";
 
 	user = [
 		user_data.inter_ID,
@@ -183,11 +185,7 @@ router.get('/:id/edit', async function (req, res) {
 	
 	// Dynamic EJS
 	parms.inputs = user_create_inputs;
-	parms.btn_title = "Submit";
-	parms.title_action = "Edit User";
-	parms.form_method = "post";
-	parms.url_form_redirect = `/users/${user_id}?_method=PUT`;
-
+	
 	res.render('layout/create', parms);
 });
 

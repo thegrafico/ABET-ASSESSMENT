@@ -36,7 +36,7 @@ router.get('/', async function (req, res) {
 			
 			// change date format 
 			let date = new Date(deparment.date_created);
-			date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 			
 			results.push({
 				"ID": deparment.dep_ID,
@@ -177,7 +177,13 @@ router.put('/:id', function (req, res, next) {
 router.get('/:id/remove', async function (req, res) {
 
 	// TODO: validate id
-	let dept_id =  req.params.id ;
+	let dept_id =  req.params.id;
+
+	// dynamic frontend
+	parms.title_action = "Remove";
+	parms.title_message = "Are you sure you want to delete this department?";
+	parms.form_action = `/department/${dept_id}?_method=DELETE`;
+	parms.btn_title = "Delete";
 
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id":dept_id};
 	
@@ -187,6 +193,7 @@ router.get('/:id/remove', async function (req, res) {
 
 	if( department == undefined || department.length == 0){
 		console.log("There is not deparment with the id you're looking for");
+		req.flash("error", "Cannot find any department, Please create one");
 		return res.redirect(base_url);
 	}
 
@@ -195,8 +202,8 @@ router.get('/:id/remove', async function (req, res) {
 
 	// change date format 
 	let date = new Date(department.date_created);
-	date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
-	
+	date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+			
 	let names = ["Name", "Description", "Date"];
 	let values = [ department.dep_name, department.dep_description, date];
 
@@ -205,12 +212,6 @@ router.get('/:id/remove', async function (req, res) {
 		record.push({"name": names[index], "value": values[index]})
 	parms.record = record;
 	
-	// dynamic frontend
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this department?";
-	parms.form_action = `/department/${dept_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
-
 	res.render('layout/remove', parms);
 });
 

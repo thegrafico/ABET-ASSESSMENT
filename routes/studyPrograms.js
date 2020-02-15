@@ -28,7 +28,7 @@ router.get('/', async function(req, res) {
 		console.log("ERROR: ", err)
 	});
 
-	parms.table_header = ["Name", "Department", "Date", ""];
+	parms.table_header = ["Name", "Department ID", "Date", ""];
 
 	if (study_programs != undefined && study_programs.length > 0){
 		
@@ -37,8 +37,8 @@ router.get('/', async function(req, res) {
 
 			// change date format 
 			let date = new Date(std_program.date_created);
-			date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
-			
+			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+
 			results.push({
 				"ID": std_program["prog_ID"],
 				"values": [
@@ -129,9 +129,20 @@ router.post('/create', function(req, res) {
 router.get('/:id/edit', async function(req, res) {
 
 	// validate id
-	let id_stp = req.params.id;
+	let studyp_id = req.params.id;
+	
+	// store all profiles
+	parms.profiles = [];
+	parms.dropdown_options = [];
+	parms.have_dropdown = true;
+	parms.dropdown_title = "Study Programs";
+	parms.dropdown_name = "department_id";
+	parms.title_action = "Edit Study Program";
+	parms.url_form_redirect = `/studyprograms/${studyp_id}?_method=PUT`;
+	parms.btn_title = "Edit";
+	
 
-	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": id_stp};
+	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": studyp_id};
 	
 	let std_program_to_edit = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("ERROR: ", err);
@@ -142,6 +153,8 @@ router.get('/:id/edit', async function(req, res) {
 		req.flash("error", "Cannot find study program");
 		return res.redirect(base_url);
 	}
+
+	std_program_to_edit = std_program_to_edit[0];
 	
 	let deparments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
 		console.log("Error getting deparments: ", err);
@@ -152,86 +165,120 @@ router.get('/:id/edit', async function(req, res) {
 		req.flash("error", "Cannot find any department, Please create one");
 		return res.redirect(base_url);
 	}
-	
-	parms.prog_ID = id_stp;
-	parms.dpt_results = resutls;
-	parms.user_results = user_results[0];
-	parms.current_deptID = user_results[0].dep_ID;
 
-	res.render('studyPrograms/editStudyPrograms', parms);
+	let std_progran = [
+		std_program_to_edit.prog_name,
+		"" //description
+	]
+
+	let index = 0;
+	study_program_create_input.forEach((record) =>{
+		record.value = std_progran[index];
+		index++;
+	});
+	parms.inputs = study_program_create_input;
+
+	deparments.forEach( (element) =>{
+		parms.dropdown_options.push({
+			"ID" : element.dep_ID,
+			"NAME": element.dep_name
+		});
+	});
+
+	res.render('layout/create', parms);
 });
 
+/* 
+	-- EDIT study program -- 
+	PUT /studyprograms/:id 
+*/
+router.put('/:id', function(req, res, next) {
 
-/* REMOVE STUDY PROGRAM ROUTE */
-router.get('/:id/remove', function (req, res) {
-	console.log("REMOVE ROUTE");
+	// TODO: validate id
+	let stdp_id = req.params.id;
 
-	//TODO: catch error in case there is not id
-	let stud_id = req.params.id;
-	let stud_table = "STUDY_PROGRAM";
-	let where_attr = "prog_ID";
-	let data = {"from": stud_table,"where":where_attr, "id":stud_id};
-	general_queries.get_table_info_by_id(data, function(err, results){
-
-		//TODO: catch erro
-		if (err) throw err;
-		try {
-			parms.prog_ID = results[0].prog_ID;
-			parms.prog_name = results[0].prog_name;
-			parms.date_created = results[0].date_created;
-			res.render('studyPrograms/deleteStudyPrograms', parms);
-		} catch (error) {
-			res.redirect(base_url);
-		}
+	let data = {
+		"name": req.body.std_name,
+		"program_id": stdp_id,
+		"department_id": req.body.department_id
+	};
+	query.update_study_program(data).then((ok) => {
+		req.flash("success", "Study Program edited");
+		return res.redirect(base_url);
+	}).catch((err) => {
+		console.log("Error: ", err);
+		req.flash("error", "Cannot edit study program");
+		return res.redirect(base_url);
 	});
 });
 
 /* 
-	DELETE ROUTE 
+	-- SHOW REMOVE study program -- 
+	GET /studyprograms/:id/remove 
 */
-router.delete('/:id', function (req, res) {
-	console.log("===================DELETED ROUTE=====================");
+router.get('/:id/remove', async function (req, res) {
+	// TODO: validate id, if null or not a number 
+	let std_program_id = req.params.id;
 
-	//TODO: catch error in case of null
-	let std_id = req.params.id;
-	let table_name = "STUDY_PROGRAM";
-	let where_attr = "prog_ID";
+	// for dynamic design
+	parms.title_action = "Remove";
+	parms.title_message = "Are you sure you want to delete this Study Program?";
+	parms.form_action = `/studyprograms/${std_program_id}?_method=DELETE`;
+	parms.btn_title = "Delete";
 
-	let data = {"id":std_id, "from":table_name,"where":where_attr };
+	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": std_program_id};
+	
+	// get std program
+	let std_program_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
+		console.log("ERROR: ", err);
+	})
 
-	general_queries.delete_record_by_id(data, function (err, results) {
+	// validate std program
+	if( std_program_to_remove == undefined || std_program_to_remove.length == 0){
+		console.log("There is not study program with the id you're looking for");
+		req.flash("error", "Cannot find study program, Please create one");
+		return res.redirect(base_url);
+	}
+	std_program_to_remove = std_program_to_remove[0];
 
-		//TODO: catch error
-		if (err) {
-			throw err;
-		}
-		console.log("STUDY PROGRAM DELETED")
-		console.log("===================DELETED ROUTE=====================");
-		res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-		res.redirect("back");
-	});
+	let date = new Date(std_program_to_remove.date_created);
+	date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+	
+
+	// header of inputs
+	let names = ["Name", "Department", "Date created"];
+	let values = [ std_program_to_remove.prog_name, std_program_to_remove.dep_ID, date];
+
+	let record = [];
+	for (let index = 0; index < names.length; index++)
+		record.push({"name": names[index], "value": values[index]})
+	parms.record = record;
+
+	res.render("layout/remove", parms);
 });
 
+/* 
+	-- REMOVE study program -- 
+	DELETE /studyprograms/:id/remove 
+*/
+router.delete('/:id', function (req, res) {
 
-/* EDIT home page. */
-router.put('/:id', function(req, res, next) {
-
-	//TODO: verify values befero enter to DB
-	let name = req.body.data.cname;
+	//TODO: Validate
 	let std_id = req.params.id;
-	let dept_id =  req.body.data.dept_id;
 
-	//TIENE QUE IR EN ESTE ORDEN.
-	let data = [name, dept_id, std_id];
+	let data = {"id":std_id, "from":"STUDY_PROGRAM","where":"prog_ID" };
 
-	query.update_study_program(data, function(err, results){
-
-		//TODO: cath this error
-		if (err) throw err;
-
-		console.log("EDITED STUDY PROGRAM");
+	general_queries.delete_record_by_id(data).then((ok) => {
+		req.flash("success", "Study Program removed");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log("Error:", err);
+		req.flash("error", "Cannot remove Study Program");
 		res.redirect(base_url);
 	});
 });
+
+
+
 
 module.exports = router;
