@@ -111,6 +111,7 @@ router.get('/:id/edit', async function(req, res) {
 	term_to_edit = term_to_edit[0];
 
 
+	// 8,738 ++  9,220 --
 	term = [
 		term_to_edit.term_name,
 	];
