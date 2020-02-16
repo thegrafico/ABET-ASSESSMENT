@@ -85,7 +85,7 @@ module.exports.department_create_inputs = [
     }
 ];
 
-
+// create and edit outcome
 module.exports.outcome_create_inputs = [
     {
         "title": "Name",
@@ -103,6 +103,7 @@ module.exports.outcome_create_inputs = [
     },
 ];
 
+// create and edit study program
 module.exports.study_program_create_input = [
     {
         "title": "Name",
@@ -119,4 +120,41 @@ module.exports.study_program_create_input = [
         "isRequire": false
     }
 ];
+
+
+// create and edit evaluation rubric
+module.exports.evaluation_rubric_input = [
+    {
+        "title": "Name",
+        "placeHolder": "Rubric Name",
+        "name": "name",
+        "value": "",
+        "isRequire": true
+    },
+    {
+        "title": "Description",
+        "placeHolder": "Rubric Description",
+        "name": "description",
+        "value": "",
+        "isRequire": true
+    }
+];
+
+/* 
+    - create and edit academic term
+*/
+
+module.exports.academic_term = [
+    {
+        "title": "Name",
+        "placeHolder": "Academic Name",
+        "name": "name",
+        "value": "",
+        "isRequire": true
+    }
+];
+
+
+
+
 

@@ -103,7 +103,7 @@ app.use('/authorize', authorize);
 // ===== Evaluation Section =====
 app.use('/evaluation', evaluationRouter);
 // ===== School Term Section =====
-app.use('/schoolTerm', schoolTermRouter);
+app.use('/term', schoolTermRouter);
 // ===== Departments Section =====
 app.use('/department', departmentRouter);
 // ===== Study Programs Section =====

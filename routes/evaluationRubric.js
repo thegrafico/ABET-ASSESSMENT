@@ -4,8 +4,9 @@
 */
 var express = require('express');
 var router = express.Router();
-var queries = require('../helpers/queries/evaluation_queries');
+var query = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
+const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 // var queries = require('../helpers/queries');
 
 let base_url = '/evaluation'
@@ -14,7 +15,7 @@ let base_url = '/evaluation'
 let parms = {
 	"base_url": base_url,
 	"title": 'ABET Assessment',
-	"subtitle": 'Evaluation',
+	"subtitle": 'Evaluation Rubric',
 	"base_url": "/evaluation",
 	"url_create": "/evaluation/create"
 };
@@ -26,115 +27,106 @@ let parms = {
 router.get('/', async function(req, res) {
 
 	parms.results = [];
-	parms.current_outName = null;
-	parms.create = "/evaluation/create";
-
+	parms.table_header = ["Name", "Description", "outcome", ""];
+	
 	//Get all perfCrit from the database (callback)
-	let stud_outcomes = await general_queries.get_table_info("STUDENT_OUTCOME").catch((err) => {
-		console.log("Error getting student outcomes: ", err);
+	let eval_rubric = await general_queries.get_table_info("evaluation_rubric").catch((err) => {
+		console.log("Error getting all evaluation rubric: ", err);
 	});
 
 	// Validate data
-	if (stud_outcomes != undefined && stud_outcomes.length > 0){
-		parms.resultsF = stud_outcomes;
-	}
+	if (eval_rubric != undefined && eval_rubric.length > 0){
+		let results = [];
+		
+		eval_rubric.forEach(rubric => {			
 
-	console.log("OUTCOMES: ", stud_outcomes);
-
-	res.render('evaluations/evaluation', parms);
-});
-
-/* POST home page. */
-router.post('/', function(req, res, next) {
-	try{
-
-		let performance_table = 'STUDENT_OUTCOME';
-
-		//Get all perfCrit from the database (callback)
-		general_queries.get_table_info(performance_table, function (err, results) {
-
-			//TODO: redirect user to another page
-			if (err) {
-				//HERE HAS TO REDIRECT the user or send a error message
-				throw err;
-			}
-
-			//IF found results from the database
-			if (results) {
-				// console.log(results)
-				parms.resultsF = results;
-				let data = {
-					"from": "EVALUATION_RUBRIC",
-					"where": "outc_ID",
-					"id": req.body.outc_ID
-				};
-
-				general_queries.get_table_info_by_id(data, function (err, results) {
-
-					parms.results = results;
-
-					parms.current_outcID = req.body.outc_ID;
-
-					let data2 = {
-						"from" : "STUDENT_OUTCOME",
-						"where": "outc_ID",
-						"id"   : parms.current_outcID
-					};
-
-					console.log(data);
-
-					general_queries.get_table_info_by_id(data2, function (err, results) {
-
-						parms.current_outName = results[0].outc_name;
-						console.log(parms);
-						res.render('evaluations/evaluation', parms);
-					});
-				});
-			}
+			results.push({
+				"ID": rubric["rubric_ID"],
+				"values": [
+					rubric["rubric_name"],
+					rubric["rubric_description"],
+					rubric["outc_ID"],
+					"" // position the buttons of remove, and edit
+				]
+			});
 		});
+		parms.results = results;
 	}
-	catch (error) {
-
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.render('evaluations/evaluation', parms);
-	}
+	res.render('layout/home', parms);
 });
 
 /*
 	-- SHOW EVALUATION --
 	GET evaluation/create
 */
-router.get('/create', function(req, res, next) {
-	try{
-		let evaluation_table = 'STUDENT_OUTCOME';
+router.get('/create', async function(req, res) {
+	
+	let outcomes = await general_queries.get_table_info("student_outcome").catch((err) => {
+		console.log("Error: ", err);
+	});
 
-		//Get all perfCrit from the database (callback)
-		general_queries.get_table_info(evaluation_table, function (err, results) {
+	if (outcomes == undefined || outcomes.length == 0){
+		res.flash("error", "Need to create outcome first");
+		return res.redirect(base_url);
+	}
 
-			//TODO: redirect user to another page
-			if (err) {
-				//HERE HAS TO REDIRECT the user or send a error message
-				throw err;
-			}
+	// store all profiles
+	parms.profiles = [];
+	parms.dropdown_options = [];
+	parms.have_dropdown = true;
+	parms.dropdown_title = "Outcomes";
+	parms.dropdown_name = "outcome";
+	parms.title_action = "Create Evaluation Rubric";
+	parms.url_form_redirect = "/evaluation/create";
+	parms.btn_title = "Create";
 
-			//IF found results from the database
-			if (results) {
-				// console.log(results)
-				parms.results = results;
-			}
+	// reset value to nothing when creating a new record
+	evaluation_rubric_input.forEach((record) =>{
+		record.value = "";
+	});
 
-			res.render('evaluations/createEvaluation', parms);
+	// set the input for user
+	parms.inputs = evaluation_rubric_input;
+
+	// for dynamic frontend
+	outcomes.forEach( (element) =>{
+		parms.dropdown_options.push({
+			"ID" : element.outc_ID,
+			"NAME": element.outc_name
 		});
-	}
-	catch (error) {
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.render('evaluations/createEvaluation', parms);
-	}
+	});
+
+	res.render('layout/create', parms);
 });
 
-router.get('/create/:id', function(req, res, next) {
+/* 
+	-- CREATE EVALUATION RUBRIC --
+	POST /evaluation/creates
+*/
+router.post("/create", function(req, res){
+	
+	// validate req.body
+	let rubric = {
+		"name": req.body.name,
+		"description": req.body.description,
+		"outcome_id": req.body.outcome
+	}
+
+	// create in db
+	query.insert_evaluation_rubric(rubric).then((ok) => {
+		req.flash("success", "Evaluation Rubric created");
+		res.redirect(base_url);
+	}).catch((err) =>{
+		req.flash("error", "Cannot create Evaluation Rubric");
+		res.redirect(base_url);
+	});
+});
+
+/* 
+	-- SHOW evaluation rubri to edit --
+	GET /
+*/
+router.get('/:id/edit', function(req, res, next) {
 	try {
 
 		// sending the outc id to the post method
