@@ -122,7 +122,6 @@ function delete_user_by_id(id) {
 
  // TODO: refactor
 async function insert_user(data, profile_id) {
-    console.log("CREATING USER");
 
     // TODO: validate data
 
@@ -133,7 +132,6 @@ async function insert_user(data, profile_id) {
         let queryAddUser = `insert into USER (inter_ID, first_name, last_name, email, phone_number)  
         values( ?, ?, ?, ?, ?);`;  
         
-
         //Exe query
         conn.query(queryAddUser, data, function (err, results) {
             
@@ -168,13 +166,10 @@ async function insert_user(data, profile_id) {
 
         if (was_added){
             console.log("User was added with the id: ", userId);
-            return true;
         }else
             console.log("Error adding the user");
-        return false;
     }).catch((err) => {
         console.log(err);
-        return false;
     });
 }
 

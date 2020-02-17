@@ -150,7 +150,8 @@ router.get('/:id/edit', async function (req, res) {
 
 	// verify is user data is good
 	if (user_data == undefined ||  user_data.length == 0){
-		return res.send("ERROR GETTING THE USER INFO");
+		req.flash("error", "Cannot find this user");
+		return res.redirect(base_url);
 	}
 
 	user = [
@@ -245,7 +246,6 @@ router.get('/:id/remove', async function (req, res) {
 		// TODO: flash message [ERROR]
 		return res.send("ERROR GETTING THE USER INFO");
 	}
-
 
 	// console.log(user_data);
 	let names = ["User Id", "Inter Id", "Name", "Last Name", "Email", "Phone Number"];

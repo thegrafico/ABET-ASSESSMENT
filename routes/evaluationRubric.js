@@ -7,9 +7,8 @@ var router = express.Router();
 var query = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
-// var queries = require('../helpers/queries');
 
-let base_url = '/evaluation'
+let base_url = '/evaluation';
 
 //Paramns to routes links
 let parms = {
@@ -28,8 +27,8 @@ router.get('/', async function(req, res) {
 
 	parms.results = [];
 	parms.table_header = ["Name", "Description", "outcome", ""];
-	
-	//Get all perfCrit from the database (callback)
+
+	// getting evaluation rubric from db
 	let eval_rubric = await general_queries.get_table_info("evaluation_rubric").catch((err) => {
 		console.log("Error getting all evaluation rubric: ", err);
 	});
@@ -124,242 +123,160 @@ router.post("/create", function(req, res){
 
 /* 
 	-- SHOW evaluation rubri to edit --
-	GET /
+	GET /evaluation/:id/edit
 */
-router.get('/:id/edit', function(req, res, next) {
-	try {
+router.get('/:id/edit', async function(req, res) {
 
-		// sending the outc id to the post method
-		parms.id = req.params.id;
+	//TODO: Validate of null of not a number
+	let evaluation_id = req.params.id;
+	
+	// store all profiles
+	parms.profiles = [];
+	parms.dropdown_options = [];
+	parms.have_dropdown = true;
+	parms.dropdown_title = "Outcomes";
+	parms.dropdown_name = "outcome";
+	parms.title_action = "Edit Evaluation Rubric";
+	parms.url_form_redirect = `/evaluation/${evaluation_id}?_method=PUT`;
+	parms.btn_title = "Edit";
+	
+	let rubric_data = {"from": "evaluation_rubric", "where": "rubric_ID", "id": evaluation_id};
+	let rubric_to_edit = await general_queries.get_table_info_by_id(rubric_data).catch((err) =>{
+		console.log("Cannot get the rubric");
+	});
 
-		let data = {
-			"from": "PERF_CRITERIA",
-			"where": "outc_ID",
-			"id": req.params.id
-		};
+	// validate
+	if (rubric_to_edit == undefined || rubric_to_edit.length == 0){
+		req.flash("error", "Cannot find the rubric to edit");
+		return res.redirect(base_url);
+	}
+	
+	// Only contain one element
+	rubric_to_edit = rubric_to_edit[0];
 
-		let data2 = {
-			"from": "STUDENT_OUTCOME",
-			"where": "outc_ID",
-			"id": req.params.id
-		};
+	// get all outcomes
+	let outcomes = await general_queries.get_table_info("student_outcome").catch((err) => {
+		console.log("Error: ", err);
+	});
 
-		//Insert all data to the database (callback)
-		general_queries.get_table_info_by_id(data, function (err, results) {
+	// validate outcomes
+	if (outcomes == undefined || outcomes.length == 0){
+		res.flash("error", "Need to create outcome first");
+		return res.redirect(base_url);
+	}
 
-			parms.resultsPC = results;
+	// input data
+	let rubric_to_input = [
+		rubric_to_edit.rubric_name,
+		rubric_to_edit.rubric_description,
+	]
 
-			//TODO: redirect user to another page
-			if (err) {
-				//HERE HAVE TO REDIRECT the user or send a error message
-				throw err;
-			}
+	// fill out the values with the template 
+	let index = 0;
+	evaluation_rubric_input.forEach((record) =>{
+		record.value = rubric_to_input[index];
+		index++;
+	});
 
-			general_queries.get_table_info_by_id(data2, function (err, results) {
-
-				parms.current_outName = results[0].outc_name;
-
-				res.render('evaluations/createEvaluation', parms);
-				});
+	// fill out the dropdowm menu
+	outcomes.forEach( (element) =>{
+		parms.dropdown_options.push({
+			"ID" : element.outc_ID,
+			"NAME": element.outc_name
 		});
-	}
+	});
+	
+	// Dynamic EJS
+	parms.inputs = evaluation_rubric_input;
 
-	catch (error) {
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.reder('evaluations/createEvaluation', parms);
-	}
+	res.render('layout/create', parms);
 });
 
+/* 
+	-- EDIT Evaluation rubric -- 
+	PUT /evaluation/:id
+*/
+router.put('/:id', function(req, res) {
+	// validate id
+	let evaluation_id = req.params.id;
 
-router.post('/create/:id', function(req, res, next) {
-	try {
-
-		console.log("Performance Criteria Selected", req.body.perfIDs);
-		console.log("req.body", req.params.id);
-
-		let data = [req.body.eval_name, req.body.eval_decription, req.params.id];
-
-		//Insert all data to the database (callback)
-		queries.insert_evalRub(data, function (err, results) {
-
-			// TODO: redirect user to another page
-			if (err) {
-				//HERE HAVE TO REDIRECT the user or send a error message
-				throw err;
-			}
-
-			let perfIDs = req.body.perfIDs;
-
-			for (var i = 0; i < perfIDs.length; i++){
-
-				let data2 = [results.insertId, perfIDs[i]];
-
-				queries.insert_evalRubPerfCrit(data2, function (err, results) {
-
-					// TODO: redirect user to another page
-					if (err) {
-						//HERE HAVE TO REDIRECT the user or send a error message
-						throw err;
-					}
-					// console.log(results);
-					console.log("Rubric Created");
-
-					});
-				}
-				res.redirect('/evaluation');
-		});
+	let evaluation_data = {
+		"name": req.body.name,
+		"description": req.body.description,
+		"outcome_id": req.body.outcome,
+		"rubric_id": evaluation_id
 	}
-	catch (error) {
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.redirect('/evaluation');
-	}
+	query.update_evaluation_rubric(evaluation_data).then((ok) => {
+		req.flash("success", "Evaluation Rubric edited");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log("Error: ", err);
+		req.flash("error", "Cannot edit the Evaluation Rubric");
+		res.redirect(base_url);
+	});
 });
 
+/* 
+	-- SHOW DELETE EVAluation rubric --
+	GET /evaluation/:id/delete 
+*/
+router.get('/:id/remove', async function(req, res) {
 
-/* DELETE home page. */
-router.get('/:id/delete', function(req, res, next) {
-	try {
+	// TODO: validate id, if null or not a number 
+	let rubric_id = req.params.id;
 
-		let data = {
-			"from": "EVALUATION_RUBRIC",
-			"where": "rubric_ID",
-			"id": req.params.id
-		};
+	parms.title_action = "Remove";
+	parms.title_message = "Are you sure you want to delete this Evaluation Rubric?";
+	parms.form_action = `/evaluation/${rubric_id}?_method=DELETE`;
+	parms.btn_title = "Delete";
 
-		//Insert all data to the database (callback)
-		general_queries.get_table_info_by_id(data, function (err, results) {
+	
+	let rubric_for_query = {"from": "evaluation_rubric", "where": "rubric_ID", "id": rubric_id};
+	let rubric_to_remove = await general_queries.get_table_info_by_id(rubric_for_query).catch((err) =>{
+		console.log("Cannot get the rubric: ", err);
+	});
 
-			parms.Name = results[0].rubric_name;
-			parms.Description = results[0].rubric_description;
-			parms.StudentOutcome = results[0].outc_ID;
-
-			//TODO: redirect user to another page
-			if (err) {
-				//HERE HAVE TO REDIRECT the user or send a error message
-				throw err;
-			}
-
-			// console.log(results);
-			console.log("Rubric Created");
-			res.render('evaluations/deleteEvaluation', parms);
-		});
+	// verify is user data is good
+	if (rubric_to_remove == undefined ||  rubric_to_remove.length == 0){
+		req.flash("error", "Cannot find the Evaluation rubric");
+		return res.redirect(base_url);
 	}
-	catch (error) {
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.render('evaluations/deleteEvaluation', parms);
+
+	rubric_to_remove = rubric_to_remove[0];
+
+	let names = ["Outcome", "Name", "Description"];
+	let values = [
+		rubric_to_remove.outc_ID, 
+		rubric_to_remove.rubric_name, 
+		rubric_to_remove.rubric_description,
+	];
+
+	let record = [];
+	for (let index = 0; index < names.length; index++) {
+		record.push({"name": names[index], "value": values[index]})
 	}
+
+	parms.record = record;
+	res.render('layout/remove', parms);
 });
 
-router.delete('/:id/delete', function(req, res, next) {
-	try {
+/* 
+	-- DELETE evaluation rubric -- 
+	DELETE /evaluation/:id
+*/
+router.delete('/:id', function(req, res) {
 
-		let data = {
-			"from": "EVALUATION_RUBRIC",
-			"where": "rubric_ID",
-			"id": req.params.id
-		};
-
-		//Insert all data to the database (callback)
-		general_queries.delete_record_by_id(data, function (err, results) {
-
-			//TODO: redirect user to another page
-			if (err) {
-				//HERE HAVE TO REDIRECT the user or send a error message
-				throw err;
-			}
-
-			// console.log(results);
-			console.log("Rubric Created");
-			res.redirect('/evaluation');
-		});
-	}
-	catch (error) {
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.redirect('/evaluation');
-	}
-});
-
-
-/* EDIT home page. */
-router.get('/:id/edit', function(req, res, next) {
-	try {
-
-		let data = {
-			"from": "EVALUATION_RUBRIC",
-			"where": "rubric_ID",
-			"id": req.params.id
-		};
-
-		//Insert all data to the database (callback)
-		general_queries.get_table_info_by_id(data, function (err, results) {
-
-			parms.rubric_name = results[0].rubric_name;
-			parms.rubric_description = results[0].rubric_description;
-			parms.current_outID = results[0].outc_ID;
-
-			let data = "STUDENT_OUTCOME";
-
-			general_queries.get_table_info(data, function (err, results) {
-
-				parms.outc_ID = results;
-
-				if (err) {
-					//HERE HAVE TO REDIRECT the user or send a error message
-					throw err;
-				}
-
-				// let data = {
-				//   "from": "STUDENT_OUTCOME",
-				//   "where": "outc_ID",
-				//   "id": parms.current_outID
-				// };
-				//
-				// general_queries.get_table_info_by_id(data, function (err, results) {
-				//
-				//     console.log("HERE", data, results);
-				//     parms.current_outName = results[0].outc_name;
-
-					res.render('evaluations/editEvaluation', parms);
-				// });
-			});
-		});
-	}
-	catch (error) {
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.render('evaluations/editEvaluation', parms);
-	}
-});
-
-router.put('/:id/edit', function(req, res, next) {
-	try {
-
-		let newInfo = [req.body.rubric_name, req.body.rubric_description,
-									req.body.outc_ID, req.params.id];
-
-		//Insert all data to the database (callback)
-		queries.update_evalRub(newInfo, function (err, results) {
-
-			//TODO: redirect user to another page
-			if (err) {
-				//HERE HAVE TO REDIRECT the user or send a error message
-				throw err;
-			}
-
-			// console.log(results);
-			console.log("Rubric Updated");
-			res.redirect('/evaluation');
-		});
-	}
-	catch (error) {
-		//TODO: send a error message to the user.
-		console.log(error);
-		res.redirect('/evaluation');
-	}
+	// TODO: validate data
+	let rubric_id = req.params.id;
+	let rubric_for_query = {"from": "evaluation_rubric", "where": "rubric_ID", "id": rubric_id};
+	general_queries.delete_record_by_id(rubric_for_query).then((ok) =>{
+		req.flash("success", "Rubric removed");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log("Error: ", err);
+		req.flash("error", "Cannot removed Rubric");
+		res.redirect(base_url);		
+	});	
 });
 
 module.exports = router;

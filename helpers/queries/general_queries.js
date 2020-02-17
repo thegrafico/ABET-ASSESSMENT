@@ -20,7 +20,7 @@ function get_table_info(table_name){
 }
 /**
  * get_table_info_by_id - get a table info
- * @param  {Object} table_info name of the table in the database
+ * @param  {Object} table_info keys = {"from", "where", "id"}
  * @return {Promise} resolve with results of database
  */
 function get_table_info_by_id(table_info){
