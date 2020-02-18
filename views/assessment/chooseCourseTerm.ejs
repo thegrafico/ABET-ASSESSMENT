@@ -1,5 +1,4 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
-
     <form action="/assessment/chooseCourseTerm" method="POST">
         <div class ="container">
             <h1 class = "my-4"> Choose Course and Term</h1>
@@ -9,7 +8,7 @@
                 <label for ="chooseStudyProgram">Choose a study program</label>
                 <select class="form-control" name = "prog_ID" id="chooseStudyProgram" onChange = "window.location.href=this.value">
                     <% for (let val of program) { %> 
-                        <option value = "/assessment/chooseCourseTerm/<%= val.prog_ID %>"><%=val.prog_name %></option>
+                        <option value = "/assessment/chooseCourseTerm/<%= val.prog_ID %>"><%= val.prog_name %></option>
                     <% } %> 
                 </select>
             </div>

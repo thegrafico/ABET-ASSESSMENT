@@ -1,30 +1,38 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <%- include ('../partials/header') -%>
-
-    <input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
-    <form action="/assessment/perfomanceTable" method="post">
-      <div class="container">
-        <table id="table" class="table">
-          <thead>
-            <tr id="header">
-              <th scope="col">Student</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-          </tbody>
-          <tr>
-            <th></th>
-            <td></td>
-            <td></td>
-            <td><button type="submit" class="btn btn-outline-secondary" id="submit">Submit</button></td>
-            <td><input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row"></td>
-            <td><input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row"></td>
-          </tr>
-        </div>
-      </div>
-    </form>
-    <%- include ('../partials/footer') -%>
-    <!-- jQuery script -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/javascripts/tableTest.js"></script>
+	<input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
+	<input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">
+	<div class="container">
+		<div class="row">
+			<div class="col-8 perfomanceTable">
+				<form id="performanceTable" action="/assessment/perfomanceTable" method="POST"></form>
+				<table id="table" class="table">
+					<thead>
+						<tr id="header">
+							<th scope="col">Student</th>
+						</tr>
+					</thead>
+					<tbody id="tableBody">
+					</tbody>
+				</table>
+				<tr>
+					<td><button type="submit" value = "Submit" class="btn btn-outline-secondary" id="submit">Submit</button></td>
+				</tr>
+				</form>
+			</div>
+			<div class="col-4 barChart">
+				<canvas id="myChart"></canvas>
+				<div class="row">
+					<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
+					<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
+					<input type="button" class="btn btn-outline-secondary" id="generateChart" value="generateChart">
+				</div>
+			</div>
+		</div>
+	</div>
+<%- include ('../partials/footer') -%>
+<!-- jQuery script -->
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/javascripts/performanceTable.js"></script>
 
 

@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chart.js": "^2.9.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
     "docx": "^5.0.2",

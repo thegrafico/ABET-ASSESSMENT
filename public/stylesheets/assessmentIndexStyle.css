@@ -27,7 +27,7 @@
 
 /* Srcoolbar CSS Ends Here */
 
-.container.assessmentContainer {
+.assessmentContainer {
 	padding-left: 0;
 	padding-right: 2.5%;
 	margin-left: 10%;
@@ -41,7 +41,16 @@
 	overflow-y: auto;
 }
 
-.container.assessmentReports {
+.perfomanceTable {
+	width: 2000px;
+	height: 600px;
+	border: 1px solid #aaaaaa;
+	box-shadow: 2.5px 2.5px 2.5px #aaaaaa;
+	border-radius: 15px;
+	overflow-y: auto;
+}
+
+.assessmentReports {
 	margin-left: 0;
 	margin-top: 2.5%;
 	margin-bottom: 2.5%;
@@ -54,7 +63,9 @@
 	margin-top: 1%;
 }
 
-.col {
+/* Need to fix this because it's mixin with other pages */
+
+/* .col {
 	margin-left:2.5%;
 	margin-right: 2.5%;
 	width: 25%;
@@ -62,7 +73,7 @@
 	border: 1px solid #aaaaaa;
 	box-shadow: 2.5px 2.5px 2.5px #aaaaaa;
 	border-radius: 25px;
-}
+} */
 
 .reportSearch {
 	margin-top: 1%;
@@ -85,7 +96,7 @@ input[type=text]:focus:not([readonly]) {
 	margin-left: 100px;
 }
 
-.col.picture {
+.picture {
 	height: 50%;
 	width: 100%;
 	padding: 5% 5% 5% 5%;
@@ -93,7 +104,7 @@ input[type=text]:focus:not([readonly]) {
 	box-shadow: none;
 }
 
-.col.assessmentInfo {
+.assessmentInfo {
 	height: 25%;
 	width: 100%;
 	padding-top: 10%;
