@@ -5,12 +5,12 @@ var chooseCourseTermQuery = require('../helpers/queries/chooseCourseTermQueries'
 var pInput_queries = require('../helpers/queries/pInput_queries');
 var queries = require('../helpers/queries/perfTable_queries');
 var reportTemplate = require('../helpers/reportTemplate');
-var docx = require("docx");
+var docx = require('docx');
 var fs = require('fs');
 let parms ={};
 let assessmentID;
 
-var base_url = "/assessment/chooseCourseTerm"
+var base_url = '/assessment/chooseCourseTerm';
 
 parms.title = 'ABET Assessment';
 
@@ -18,6 +18,7 @@ parms.title = 'ABET Assessment';
   GET /assessment/chooseCourseTerm
 */
 router.get('/chooseCourseTerm', async function(req, res) {
+	console.log('You are in chooseCourseTerm');
 
 	parms.program = [];
 	parms.term = [];
@@ -25,7 +26,7 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	parms.course = [];
 	
 	// get data from table
-	let table_info = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
+	let table_info = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		// TODO: flash message with error
 		console.log(err);
 	});
@@ -59,7 +60,7 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	// validation
 	if (course_term == undefined || course_term.length == 0){
 		// TODO: flash message with error
-		console.log("Can get course term");
+		console.log("Can't get course term");
 		return res.redirect("/");
 	}
 	// assign
@@ -107,7 +108,7 @@ router.get('/chooseCourseTerm/:id', async function(req, res) {
 		study_program[0] = temp;
 	}
 
-	let academic_term = await general_queries.get_table_info("ACADEMIC_TERM").catch((err)=>{
+	let academic_term = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
 		console.log("Error getting the Academic term: ", err);
 	});
 
@@ -153,33 +154,6 @@ router.post('/chooseCourseTerm', async function(req, res) {
 	});
 });
 
-// <------ perfomanceTable GET request ------>
-// The ID being sent is the assessment ID
-router.get('/:id/perfomanceTable', async function(req, res, next) {
-	
-	// TODO: validate 
-	assessmentID = req.params.id;
-	
-	// GET ALL performance criterias
-	let perf_criterias = await queries.get_perf_criterias(assessmentID).catch((err) => {
-		console.log(err);
-	}); 
-	
-	//IF found results from the database
-	if (perf_criterias == undefined || perf_criterias.length == 0) {
-		/* TODO:
-			- Add Flash Message
-		*/
-		console.log('Performance Criteria not found.');	
-		return res.send("Not perf criterias available");
-	}
-	
-	parms.colNums = perf_criterias.length;
-
-	res.render('assessment/perfomanceTable', parms);
-});
-
-
 // <------ Professor Input GET request ------>
 
 router.get('/:id/professorInput', function(req, res, next) {
@@ -206,6 +180,38 @@ router.post('/:id/professorInput', function (req, res, next) {
 });
 
 
+// <------ perfomanceTable GET request ------>
+
+// The ID being sent is the assessment ID
+router.get('/:id/perfomanceTable', async function(req, res, next) {
+	let perfOrder = [];
+	console.log('You are in perfomance table');
+	// TODO: validate 
+	assessmentID = req.params.id;
+	
+	// GET ALL performance criterias
+	let perf_criterias = await queries.get_perf_criterias(assessmentID).catch((err) => {
+		console.log(err);
+	}); 
+	
+	//IF found results from the database
+	if (perf_criterias == undefined || perf_criterias.length == 0) {
+		/* TODO:
+			- Add Flash Message
+		*/
+		console.log('Performance Criteria not found.');	
+		return res.send("No performancw criterias available");
+	}
+	for(let i = 0; i < perf_criterias.length; i++) {
+		perfOrder[i] = perf_criterias[i].perC_order
+	}
+	console.log(perfOrder);
+	parms.colNums = perf_criterias.length;
+	parms.perfCrit = perfOrder;
+
+	res.render('assessment/perfomanceTable', parms);
+});
+
 // <------ perfomanceTable Post request ------>
 
 /* TODO: for Noah R. Almeda 
@@ -217,127 +223,133 @@ router.post('/:id/professorInput', function (req, res, next) {
 
 router.post('/perfomanceTable', async function(req, res) {
   // input contains an array of objects which are the inputs of the user
-  let input = req["body"]["rowValue"];
-  let studentScores= [];
-  let inputCount = 0;
-  let amountCol = req.body.amountOfCol;
+	console.log('PerformanceTable POST');
+	let input = req["body"]["rowValue"];
+	let studentScores= [];
+	let inputCount = 0;
+	let amountCol = req.body.amountOfCol;
 
-  // console.log(input); // console.log which displays input
+	// console.log(input); // console.log which displays input
 
-  // for loop creating a multidimession array
-  for (let i = 0; i < (input.length/4); i++ ) {
-	studentScores[i] = [];
-  }
-
-  for (let i = 0; i < (input.length/4); i++) {
-	for (let j = 0; j < amountCol; j++) {
-	  studentScores[i][j] = input[inputCount];
-	  inputCount++;
+	// for loop creating a multidimession array
+	for (let i = 0; i < (input.length/4); i++) {
+		studentScores[i] = [];
 	}
-  }
-  // console.log("Here is inArr: ", studentScores);  // console.log which display the input in a arrays of arrays
-  let firstRow = studentScores[0];
-  let size = 0;
-  // For loop to count the size of a rows since the input is receive as Objects
-  for (let s in firstRow) {
-	size++;
-  }
 
-  let sum = 0;
-  let avgRow = [];
+	for (let i = 0; i < (input.length/4); i++) {
+	for (let j = 0; j < amountCol; j++) {
+		studentScores[i][j] = input[inputCount];
+		inputCount++;
+	}
+	}
+	// console.log("Here is inArr: ", studentScores);  // console.log which display the input in a arrays of arrays
+	let firstRow = studentScores[0];
+	let size = 0;
+	// For loop to count the size of a rows since the input is receive as Objects
+	for (let s in firstRow) {
+		size++;
+	}
 
-  // for loops which calculates average per rows
-  for(let i = 0; i < studentScores.length; i++) {
+	let sum = 0;
+	let avgRow = [];
+
+	// for loops which calculates average per rows
+	for(let i = 0; i < studentScores.length; i++) {
 	for(let j = 0; j < size; j++) {
-	  // console.log("Student Score is: ", studentScores[i][j]);
-	  sum += parseFloat(studentScores[i][j]);
-	  // console.log("Sum is: ", sum);
+		// console.log("Student Score is: ", studentScores[i][j]);
+		sum += parseFloat(studentScores[i][j]);
+		// console.log("Sum is: ", sum);
 	}
 	// avgRow is an array which contains all the average rolls
 	avgRow[i] = sum/parseFloat(size);
 	sum = 0;
 	// console.log("Avg of row", i, " : ", avgRow[i]);
-  }
-  console.log(avgRow);
-  // console.log("Avg Row Array here: ", avgRow);
-
-  let count = 1;
-  let listOfObjects = [];
-  // forEach creates a list of dictionaries
-  avgRow.forEach(function(entry) {
-	let singleObj = {};
-	singleObj['rowID'] = count;
-	singleObj['rowIn'] = studentScores[count-1];
-	singleObj['rowAvg'] = entry;
-	listOfObjects.push(singleObj);
-	count++;
-  });
-  // console.log(listOfObjects); // This log displays the array of objects created. It contains all of the outputs for the tha table
-
-  let threeMorePerc = [];
-  let threeMoreCount = 0;
-  let avgtreeMoreCount = 0;
-
-  for(let i = 0; i < avgRow.length; i++) {
-	if(avgRow[i] >= 3) {
-	  avgtreeMoreCount++;
 	}
-  }
+	console.log(avgRow);
+	// console.log("Avg Row Array here: ", avgRow);
 
-  let avgPerc = (avgtreeMoreCount/avgRow.length)*100;
+	let count = 1;
+	let listOfObjects = [];
+	// forEach creates a list of dictionaries
+	avgRow.forEach(function(entry) {
+		let singleObj = {};
+		singleObj['rowID'] = count;
+		singleObj['rowIn'] = studentScores[count - 1];
+		singleObj['rowAvg'] = entry;
+		listOfObjects.push(singleObj);
+		count++;
+	});
+	// console.log(listOfObjects); // This log displays the array of objects created. It contains all of the outputs for the tha table
 
-  for(let i = 0; i < size; i++) {
-	for (let j = 0; j < studentScores.length; j++) {
-	  if(studentScores[j][i] >= 3) {
-		threeMoreCount++;
-	  }
+	let threeMorePerc = [];
+	let threeMoreCount = 0;
+	let avgtreeMoreCount = 0;
+
+	for(let i = 0; i < avgRow.length; i++) {
+		if(avgRow[i] >= 3) {
+			avgtreeMoreCount++;
+		}
+	}
+
+	let avgPerc = (avgtreeMoreCount/avgRow.length)*100;
+
+	for(let i = 0; i < size; i++) {
+		for (let j = 0; j < studentScores.length; j++) {
+			if(studentScores[j][i] >= 3) {
+			threeMoreCount++;
+		}
 	}
 	threeMorePerc[i] = (threeMoreCount/studentScores.length)*100;
 	threeMoreCount = 0;
 	// console.log("Here: ", threeMorePerc[i]);
-  }
-  let colAvg = 54;
-
-  console.log("Here is the percentage of the avarage column: ", avgPerc);
-
-  threeMorePerc[threeMorePerc.length] = avgPerc;
-
-  parms.colNums = amountCol;
-  parms.row = listOfObjects;
-  parms.avgCol = colAvg;
-  parms.colPerc = threeMorePerc;
-
-  let document = reportTemplate.createReport(parms);
-
-  console.log('Student Scores: ', studentScores);
-  if (size < 5)
-	size = 5;
-  for(let i = 0; i < studentScores.length; i++) {
-	let studentPerformance = [];
-	for(let j = 0; j < size; j++) {
-		studentPerformance.push(studentScores[i][j]);
-
-		if(studentPerformance[j] === undefined) {
-			studentPerformance[j] = null;
-		}
 	}
-	studentPerformance.push(assessmentID);
-	let stud_performance_inserted = queries.insertData(studentPerformance);
-	stud_performance_inserted.then((yes)=>{
-		if(yes)
-			console.log('Data was added to STUD_PERFORMANCE table.');
-	}).catch((err) => {
-		console.log('Wasn\'t able to add data.');
+	let colAvg = 54;
+
+	console.log("Here is the percentage of the avarage column: ", avgPerc);
+
+	threeMorePerc[threeMorePerc.length] = avgPerc;
+
+	parms.colNums = amountCol;
+	parms.row = listOfObjects;
+	parms.avgCol = colAvg;
+	parms.colPerc = threeMorePerc;
+
+	let document = reportTemplate.createReport(parms);
+
+	console.log('Student Scores: ', studentScores);
+	if (size < 5)
+	size = 5;
+	for(let i = 0; i < studentScores.length; i++) {
+		let studentPerformance = [];
+		for(let j = 0; j < size; j++) {
+			studentPerformance.push(studentScores[i][j]);
+
+			if(studentPerformance[j] === undefined) {
+				studentPerformance[j] = null;
+			}
+		}
+		studentPerformance.push(assessmentID);
+		let stud_performance_inserted = queries.insertData(studentPerformance);
+		stud_performance_inserted.then((yes) => {
+			if(yes)
+				console.log('Data was added to STUD_PERFORMANCE table.');
+		}).catch((err) => {
+			console.log('Wasn\'t able to add data.');
+		});
+	}
+
+	docx.Packer.toBuffer(document).then((buffer) => {
+		console.log("Created a doc");
+		fs.writeFileSync("Document.docx", buffer);
 	});
-  }
 
-  docx.Packer.toBuffer(document).then((buffer) => {
-	console.log("Created a doc");
-	fs.writeFileSync("Document.docx", buffer);
-  });
+	// TODO: flash message = Your report was generated
+	res.redirect(base_url);
+});
 
-  // TODO: flash message = Your report was generated
-  res.redirect(base_url);
+
+router.get('/assessmentIndex', function(req, res, next) {
+	res.render('assessment/assessmentIndex', { title: 'ABET Assessment' });
 });
 
 module.exports = router;

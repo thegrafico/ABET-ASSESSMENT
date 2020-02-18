@@ -9,7 +9,7 @@ var conn = db.mysql_pool;
 
 function get_perf_criterias(assessmentID){
 	return new Promise(function(resolve, reject) {
-		let findPerfCrit = `SELECT perC_Desk
+		let findPerfCrit = `SELECT *
                       FROM PERF_CRITERIA, (SELECT perC_ID
                                            FROM PERFORMANCE_RUBRIC,(SELECT rubric_ID
                                                                     FROM EVALUATION_RUBRIC

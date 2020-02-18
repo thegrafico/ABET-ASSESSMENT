@@ -22,6 +22,7 @@ function get_course_info(data){
 //     crname: 'Computer Archic',
 //     description: 'Yeckle'
 //   }
+
 /**
  * insert_into_course - Create a new record of the course
  * @param {Object} data -> {"prog_id", "crnumber", "crname", "course_decr" } 

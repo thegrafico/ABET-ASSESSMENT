@@ -1,0 +1,70 @@
+<%- include ('../partials/header') -%>
+<div class="container reportTabs">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="options" id="option1" checked> In Progress
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="options" id="option2"> Completed
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="options" id="option3"> Archived
+        </label>
+    </div>
+</div>
+<div class="container assessmentContainer">
+    <div class="row search">
+        <input class="reportSearch" placeholder="Search" type="text" name="reportSearch">
+        <div>Filter</div>
+    </div>
+    <div class="container assessmentReports">
+        <div class="row row-cols-4">
+          <div class="col">
+            <div class="col picture">
+                <img src="../images/paper.png" alt="">
+            </div>
+            <div class="col assessmentInfo">{Course}</div>
+            <div class="col assessmentInfo">{Term}</div>
+          </div>  
+          <div class="col">
+            <div class="col picture">
+                <img src="../images/paper.png" alt="">
+            </div>
+            <div class="col assessmentInfo">{Course}</div>
+            <div class="col assessmentInfo">{Term}</div>
+          </div>
+          <div class="col">
+            <div class="col picture">
+                <img src="../images/paper.png" alt="">
+            </div>
+            <div class="col assessmentInfo">{Course}</div>
+            <div class="col assessmentInfo">{Term}</div>
+          </div>
+          <div class="col">
+            <div class="col picture">
+                <img src="../images/paper.png" alt="">
+            </div>
+            <div class="col assessmentInfo">{Course}</div>
+            <div class="col assessmentInfo">{Term}</div>
+          </div>
+        </div>
+    </div>
+    <div class="container assessmentReports">
+        <div class="row row-cols-4">
+          <div class="col">Report</div>  
+          <div class="col">Report</div>
+          <div class="col">Report</div>
+          <div class="col">Report</div>
+        </div>
+    </div>
+    <div class="container assessmentReports">
+        <div class="row row-cols-4">
+          <div class="col">Report</div>  
+          <div class="col">Report</div>
+          <div class="col">Report</div>
+          <div class="col">Report</div>
+        </div>
+    </div>
+</div>
+    
+<%- include ('../partials/footer') -%>

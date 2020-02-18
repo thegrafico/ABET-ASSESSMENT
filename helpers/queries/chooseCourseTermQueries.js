@@ -17,7 +17,7 @@ function get_rubric_info(id){
 		// exe query
 		conn.query(find_query, [id], function (err, results, fields) {
 			if (err)
-				reject(err || "error getting rubric info");
+				reject(err || "Error getting rubric info");
 			else
 				resolve(results);
 		});
@@ -37,7 +37,7 @@ function get_course_info(id){
 
 		conn.query(find_query, [id],function (err, results, fields) {
 			if (err)
-				reject(err || " Error getting all courses information");
+				reject(err || "Error getting all courses information");
 			else
 				resolve(results);
 		});
@@ -59,7 +59,7 @@ function insert_assessment(data){
 
 		conn.query(find_query, data,function(err,results,fields){
 			if (err)
-				reject(err || "error inserting assessment");
+				reject(err || "Error inserting assessment");
 			else
 				resolve(results.insertId);
 		});
