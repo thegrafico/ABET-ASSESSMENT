@@ -60,7 +60,7 @@ function get_user_ID_by_email(email, callback){
 
 /**
  * update_user - Update user in database
- * @param {Object} data -> {interId, fName, lName, email, pNumber, userID} 
+ * @param {Object} data -> {interID, username, lastname, email, phoneNumber, userID, "profile_id"} 
  * @return {Promise} resolve with all profiles
  */
 function update_user(data) {

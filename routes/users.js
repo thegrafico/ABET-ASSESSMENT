@@ -5,12 +5,14 @@ var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
 const { user_create_inputs } = require("../helpers/layout_template/create");
+var { validate_form } = require("../helpers/validation");
 
+const base_url = "/users";
 var parms = {
 	title: 'ABET Assessment',
 	subtitle: 'Users',
 	url_create: "/users/create",
-	base_url: "/users"
+	base_url: base_url
 };
 
 /*
@@ -28,7 +30,6 @@ router.get('/', async function (req, res) {
 
 	// Get all user from the database (callback)
 	let list_of_users = await queries.get_user_list().catch( (err) =>{
-		// TODO: flash message [ERROR]
 		console.log("THERE IS AN ERROR: ", err);
 	});
 
@@ -113,9 +114,29 @@ router.get('/create', async function (req, res) {
 	-- CREATE USER -- 
  	POST /users/create
 */
-router.post('/create', async function (req, res) {
+router.post('/create', function (req, res) {
 	
-	// TODO: validate req.body date, 
+	if (req.body == undefined){
+		req.flash("error", "Cannot find the data to create user");
+		return res.redirect(base_url);
+	}
+
+	// key with expected types (string, number);
+	let keys_types = {
+		"interID": "s",
+		"username": "s", 
+		"lastname": "s", 
+		"email": "s", 
+		"phoneNumber": "n",
+		"profile_id": "n"
+	};
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, keys_types)){
+		req.flash("error", "Error in the information of the user");
+		return res.redirect("back");	
+	}
+	
 	let user_data = [req.body.interID, req.body.username, req.body.lastname, req.body.email, req.body.phoneNumber];
 
 	// insert user using promise
@@ -131,9 +152,13 @@ router.post('/create', async function (req, res) {
 */
 router.get('/:id/edit', async function (req, res) {
 
-	//TODO: Validate of null of not a number
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This user don't exits");
+		return res.redirect(base_url);
+	}
+
 	let user_id = req.params.id;
-	// store all profiles
 	parms.profiles = [];
 	parms.have_dropdown = true;
 	parms.dropdown_options = [];
@@ -195,14 +220,31 @@ router.get('/:id/edit', async function (req, res) {
 */
 router.put('/:id', function (req, res) {
 	
-	// TODO: Validate if user id is number and not empty
-	let user_id = req.params.id;
 	
-	// TODO: validate req.body
-	req.body.userID = user_id;
+	if (req.body == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find this id");
+		return res.redirect(base_url);
+	}
 	
-	console.log(req.body);
+	req.body.userID = req.params.id;
 
+	// key with expected types (string, number);
+	let keys_types = {
+		"interID": "s",
+		"username": "s", 
+		"lastname": "s", 
+		"email": "s", 
+		"phoneNumber": "n",
+		"userID": "n",
+		"profile_id": "n"
+	};
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, keys_types)){
+		req.flash("error", "Error in the information of the user");
+		return res.redirect("back");	
+	}
+	
 	// promise
 	let update_user = queries.update_user(req.body);
 	
