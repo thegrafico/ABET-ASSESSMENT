@@ -1,12 +1,10 @@
-/**
- * RAUL PICHARDO ROUTE
- */
-
 var express = require('express');
 var router = express.Router();
 var outcome_query = require("../helpers/queries/outcomes_queries");
 var general_queries = require("../helpers/queries/general_queries");
 const { outcome_create_inputs } = require("../helpers/layout_template/create");
+var { validate_form } = require("../helpers/validation");
+
 
 const base_url = '/outcomes';
 
@@ -105,14 +103,32 @@ router.get('/create', async function (req, res) {
 	POST /outcomes/create 
 */
 router.post('/create', function (req, res) {
-	// // outc_ID, outc_name, outc_description, date_created, prog_ID
 
-	// //TODO: Validate the data
+	// validate body
+	if (req.body == undefined){
+		req.flash("error", "Cannot find outcome data");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"outcome_name": 's',
+		"outcome_description": 's',
+		"std_program": 'n'
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the outcome");
+		return res.redirect(base_url);	
+	}
+
 	let data = {
 		"outcome_name": req.body.outcome_name,
 		"outcome_description": req.body.outcome_description,
 		"program_id": req.body.std_program
-	}
+	};
 
 	outcome_query.insert_outcome(data).then(() => {
 		req.flash("success", "Outcome Created");
@@ -131,7 +147,11 @@ router.post('/create', function (req, res) {
 */
 router.get('/:id/edit', async function (req, res) {
 
-	//TODO: validate variables
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the outcome");
+		return res.redirect(base_url);
+	}
+
 	let out_id = req.params.id;
 
 	// store all profiles
@@ -203,13 +223,30 @@ router.get('/:id/edit', async function (req, res) {
 */
 router.put('/:id', function (req, res) {
 
-	// TODO: validate variables
-	let out_id = req.params.id;
+	// validate body
+	if (req.body == undefined || req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Outcome don't exits");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"outcome_name": 's',
+		"outcome_description": 's',
+		"std_program": 'n'
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the outcome");
+		return res.redirect(base_url);	
+	}
 
 	let data = {
 		"outc_name": req.body.outcome_name,
 		"outc_description": req.body.outcome_description,
-		"outc_ID": out_id,
+		"outc_ID": req.params.id,
 		"prog_ID": req.body.std_program
 	};
 
@@ -231,7 +268,11 @@ router.put('/:id', function (req, res) {
 */
 router.get('/:id/remove',async function (req, res, next) {
 	
-	//TODO: verify id
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the outcome");
+		return res.redirect(base_url);
+	}
+
 	let out_id = req.params.id;
 	let data = {
 		"from": "STUDENT_OUTCOME",
@@ -286,7 +327,11 @@ router.get('/:id/remove',async function (req, res, next) {
 */
 router.delete('/:id', function (req, res, next) {
 
-	//TODO: validate
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the outcome");
+		return res.redirect(base_url);
+	}
+	
 	let out_id = req.params.id;
 	
 	// Data to remove outcome

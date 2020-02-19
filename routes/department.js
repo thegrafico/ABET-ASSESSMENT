@@ -4,9 +4,11 @@ var router = express.Router();
 var query = require("../helpers/queries/department_queries");
 var general_queries = require("../helpers/queries/general_queries");
 const { department_create_inputs } = require("../helpers/layout_template/create");
+var { validate_form } = require("../helpers/validation");
+
 
 // base url
-let base_url = '/department'
+let base_url = '/department';
 
 //Paramns to routes links
 let parms = {
@@ -82,14 +84,29 @@ router.get('/create', function (req, res) {
 	--Create deparment--
 	POST /deparment/create
 */
-router.post('/create', function (req, res, next) {
+router.post('/create', function (req, res) {
 	
-	// TODO: verify is empty or string
-	var depName = req.body.depName;
-	var depDesc = req.body.depDesc;
+	// validate body
+	if (req.body == undefined){
+		req.flash("error", "Cannot find department data");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"name": 's',
+		"description": 's'
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the course");
+		return res.redirect(base_url);	
+	}
 
 	// Insert into the DB the data from user
-	query.insert_into_deparment([depName, depDesc]).then((was_edit) =>{
+	query.insert_into_deparment([req.body.name, req.body.description]).then((was_edit) =>{
 
 		console.log("Department was created");
 		req.flash("success", "Department created");
@@ -109,7 +126,12 @@ router.post('/create', function (req, res, next) {
 */
 router.get('/:id/edit', async function (req, res) {
 	
-	// TODO: validate dept_id
+	// validating
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the department");
+		return res.redirect(base_url);
+	}
+
 	let dept_id = req.params.id;
 
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id":  dept_id};
@@ -154,18 +176,33 @@ router.get('/:id/edit', async function (req, res) {
 */
 router.put('/:id', function (req, res, next) {
 
-	// TODO: validate user data
-	let dpt_data = [req.body.depName, req.body.depDesc, req.params.id] 
-	
+	if (req.params.id == undefined || req.body == undefined){
+		req.flash("error", "Department do not exits");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"name": 's',
+		"description": 's'
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the course");
+		return res.redirect(base_url);	
+	}
+
 	// Exe the query into the database
-	query.update_deparment(dpt_data).then((ok) => {
+	query.update_deparment([req.body.name, req.body.description, req.params.id]).then((ok) => {
 		console.log("Department EDITED!");
 		req.flash("success", "Deparment edited");
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("ERROR: ", err);
 		req.flash("error", "Cannot Edit department");
-		res.redirect("/");
+		res.redirect(base_url);
 	});		
 });
 
@@ -176,7 +213,12 @@ router.put('/:id', function (req, res, next) {
 */
 router.get('/:id/remove', async function (req, res) {
 
-	// TODO: validate id
+	// validating
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the department");
+		return res.redirect(base_url);
+	}
+
 	let dept_id =  req.params.id;
 
 	// dynamic frontend
@@ -221,7 +263,11 @@ router.get('/:id/remove', async function (req, res) {
 */
 router.delete('/:id' , function (req, res, next) {
 
-	// TODO: validate id
+	// validating
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the department");
+		return res.redirect(base_url);
+	}
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
 
 	general_queries.delete_record_by_id(tabla_data).then((was_deleted) => {

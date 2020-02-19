@@ -196,7 +196,7 @@ router.get('/:id/edit', async function (req, res) {
 	// get all profiles
 	let profiles  = await queries.get_all_profiles().catch((err) =>{
 		console.log("There is an error getting the profiles: ", err);
-		throw err;
+		// throw err;
 	})
 
 	// verify if profiles 
@@ -222,7 +222,7 @@ router.put('/:id', function (req, res) {
 	
 	
 	if (req.body == undefined || isNaN(req.params.id)){
-		req.flash("error", "Cannot find this id");
+		req.flash("error", "Cannot find the user");
 		return res.redirect(base_url);
 	}
 	
@@ -270,7 +270,11 @@ router.put('/:id', function (req, res) {
 */
 router.get('/:id/remove', async function (req, res) {
 	
-	// TODO: validate id, if null or not a number 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the user");
+		return res.redirect(base_url);
+	}
+
 	let user_id = req.params.id;
 
 	parms.title_action = "Remove";
@@ -284,9 +288,9 @@ router.get('/:id/remove', async function (req, res) {
 	});
 
 	// verify is user data is good
-	if (user_data == undefined ||  user_data.length < 1){
-		// TODO: flash message [ERROR]
-		return res.send("ERROR GETTING THE USER INFO");
+	if (user_data == undefined ||  user_data.length == 0){
+		req.flash("error", "Cannot find the user information");
+		return res.redirect(base_url);
 	}
 
 	// console.log(user_data);
@@ -311,11 +315,15 @@ router.get('/:id/remove', async function (req, res) {
 
 /* 
 	REMOVE users/:id
-	
 */
 router.delete('/:id', function (req, res) {
-
- 	//TODO: Validate that user_id is not null and is a number
+	
+	
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the user");
+		return res.redirect(base_url);
+	}
+	
 	let user_id = req.params.id;
 
 	// getting promise
@@ -323,13 +331,10 @@ router.delete('/:id', function (req, res) {
 
 	// run promise
 	is_user_deleted.then( (yes) => {
-	
 		console.log("User was deleted");
 		req.flash("success", "User Removed");
 		res.redirect("/users");
-	
 	}).catch((no)=>{
-	
 		console.log("Error deleting the user: ", no);
 		req.flash("error", "Cannot removed user");
 		res.redirect("/users");

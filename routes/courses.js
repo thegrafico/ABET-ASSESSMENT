@@ -3,6 +3,8 @@ var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
 const { course_create_inputs } = require("../helpers/layout_template/create");
+var { validate_form } = require("../helpers/validation");
+
 
 // var authHelper = require('../helpers/auth');
 
@@ -99,21 +101,49 @@ router.get('/create', async function(req, res, next) {
 	--CREATE COURSE--
 	POST courses/create
 */
-router.post('/create', function(req, res) {
+router.post('/create', async function(req, res) {
 
-	//TODO: verify values, null, undefined
+	// validate body
+	if (req.body == undefined || req.body.data == undefined){
+		req.flash("error", "Error in the course data");
+		return res.redirect(base_url);
+	}
+
+	// to validation
+	let key_types = {
+		"prog_id": 'n',
+		"number": 's',
+		"name": 's',
+		"description": 's'
+	}
+
+	// get the course data 
 	let data = req.body.data;
 
-	//Insert into the DB the data from user
-	query.insert_into_course({
-		"prog_id": data.prog_id,
-		"crnumber": data.crnumber,
-		"crname": data.crname,
-		"course_decr": data.description
+	// if the values don't mach the type 
+	if (!validate_form(data, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the course");
+		return res.redirect(base_url);	
+	}
+
+	let course_id = await query.insert_into_course(data).catch((err) => {
+		console.log("Cannot create the course");
 	});
 
-	req.flash("success", "Course created");
-	res.redirect(base_url);
+	if (course_id == undefined){
+		req.flash("error", "Error creating the course");
+		return res.redirect(base_url);
+	}
+
+	query.insert_program_course(course_id, data.prog_id).then((ok) => {
+		req.flash("success", "Course created");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log("error: ", err);
+		req.flash("error", "Error creating the course");
+		return res.redirect(base_url);
+	});
 });
 
 /*
@@ -122,7 +152,12 @@ router.post('/create', function(req, res) {
 */
 router.get('/:id/edit', async function(req, res) {
 
-	// TODO: validate id, if number and not empty
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This course does not exits");
+		return res.redirect(base_url);
+	}
+
 	let id_course = req.params.id;
 	
   	let data = {"from":"COURSE", "where": "course_ID", "id": id_course};
@@ -130,14 +165,13 @@ router.get('/:id/edit', async function(req, res) {
 	// get course information by id
  	let courses_info = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("Error Getting course info: ", err);
-		// TODO: Rediret with message
-		throw err;
+		//throw err;
 	});
 
 	// validate course 
 	if (courses_info == undefined || courses_info.length == 0){
 		console.log("There is not information about this course");
-		// TODO: Flash message
+		req.flash("error", "This course does not exits");
 		return res.redirect("/");
 	}
 	// We only care about the first position
@@ -146,13 +180,12 @@ router.get('/:id/edit', async function(req, res) {
 	// Get all study program
 	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
 		console.log("Error getting study program info: ", err);
-		// TODO: Rediret with message
-		return res.redirect("/");
 	});
 	
 	// verify study program
 	if (study_programs == undefined || study_programs.length == 0){
 		console.log("This course do not belong to any study program");
+		req.flash("error", "This course does not belong to any study program");
 		return res.redirect(base_url);
 	}
 
@@ -161,7 +194,7 @@ router.get('/:id/edit', async function(req, res) {
 	parms.have_dropdown = true;
 	parms.title_action = "Editing Course";
 	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "data[std_program]";
+	parms.dropdown_name = "data[prog_id]";
 	parms.btn_title = "Submit";
 	parms.url_form_redirect = `/courses/${id_course}?_method=PUT`;
 
@@ -199,19 +232,33 @@ router.get('/:id/edit', async function(req, res) {
 */
 router.put('/:id', function(req, res) {
 
-	// TODO: validate if number or empty 
-	let course_id = req.params.id;
-
-	let course_data_for_update = {
-		"crname": req.body.data.crname,
-		"crdescr": req.body.data.description,
-		"crnumber": req.body.data.crnumber,
-		"ID": course_id,
-		"std_program": req.body.data.std_program
+	if (req.params.id == undefined || isNaN(req.params.id) || req.body == undefined ||
+		req.body.data == undefined){
+		req.flash("error", "Cannot find the user");
+		return res.redirect(base_url);
 	}
 
-	query.update_course(course_data_for_update);
+		// to validation
+	let key_types = {
+		"prog_id": 'n',
+		"number": 's',
+		"name": 's',
+		"description": 's'
+	}
 
+	// get the course data 
+	let data = req.body.data;
+
+	// if the values don't mach the type 
+	if (!validate_form(data, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the course");
+		return res.redirect(base_url);	
+	}
+	
+	data["id"] = req.params.id;
+
+	query.update_course(data);
 	req.flash("success", "Course Edited");
 	res.redirect(base_url);
 });
@@ -222,7 +269,12 @@ router.put('/:id', function(req, res) {
 */
 router.get('/:id/remove', async function (req, res) {
 
-	//TODO: validate id, if null or not a number
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This course don't exits");
+		return res.redirect(base_url);
+	}
+
 	let course_id = req.params.id;
 
 	// for query
@@ -266,27 +318,23 @@ router.get('/:id/remove', async function (req, res) {
 	DELETE /users/:id
 */
 router.delete('/:id', async function (req, res) {
+	
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This course don't exits");
+		return res.redirect(base_url);
+	}
 
-	//TODO: Validate if null or not a number
 	let course_id = req.params.id;
 
 	let data = {"id": course_id, "from":"COURSE","where":"course_ID" };
 
 	await general_queries.delete_record_by_id(data).catch((err) =>{
-		console.log("Cannot remove the record");
-		// TODO: flash message [ERR]
-		return res.redirect(base_url);
+		console.log("Cannot remove the record: ", err);
 	});
 
-	console.log("COURSE REMOVED");
-
-	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-
-	// TODO: flash message [SUCCESS]
 	req.flash("success", "Course Removed");
 	res.redirect(base_url);
 });
-
-
 
 module.exports = router;

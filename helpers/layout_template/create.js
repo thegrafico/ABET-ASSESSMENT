@@ -45,14 +45,14 @@ module.exports.course_create_inputs = [
     {
         "title": "Number",
         "placeHolder":"Course Number",
-        "name": "data[crnumber]",
+        "name": "data[number]",
         "value": "",
         "isRequire": true
     },
     {
         "title": "Name",
         "placeHolder":"Course Name",
-        "name": "data[crname]",
+        "name": "data[name]",
         "value": "",
         "isRequire": true
     },
@@ -72,14 +72,14 @@ module.exports.department_create_inputs = [
     {
         "title": "Name",
         "placeHolder": "Department Name",
-        "name": "depName",
+        "name": "name",
         "value": "",
         "isRequire": true
     },
     {
         "title": "Description",
         "placeHolder": "Department Description",
-        "name": "depDesc",
+        "name": "description",
         "value": "",
         "isRequire": true
     }
@@ -111,14 +111,14 @@ module.exports.study_program_create_input = [
         "name": "std_name",
         "value": "",
         "isRequire": true
-    },
-    {
-        "title": "Description",
-        "placeHolder": "Program Description",
-        "name": "std_description",
-        "value": "",
-        "isRequire": false
     }
+    // {
+    //     "title": "Description",
+    //     "placeHolder": "Program Description",
+    //     "name": "std_description",
+    //     "value": "",
+    //     "isRequire": false
+    // }
 ];
 
 

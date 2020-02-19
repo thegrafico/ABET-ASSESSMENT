@@ -3,6 +3,7 @@ var query = require("../helpers/queries/term_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
 const { academic_term } = require("../helpers/layout_template/create");
+var { validate_form } = require("../helpers/validation");
 
 
 const base_url = '/term';
@@ -73,6 +74,24 @@ router.get('/create', function(req, res) {
 
 router.post('/create', function(req, res) {
 
+	// validate body
+	if (req.body == undefined){
+		req.flash("error", "Cannot find term data");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"name": 's',
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the outcome");
+		return res.redirect(base_url);	
+	}
+
 	//TODO: verify values, null, undefined
 	let data = {"name": req.body.name }; 
 
@@ -93,6 +112,12 @@ router.post('/create', function(req, res) {
 */
 router.get('/:id/edit', async function(req, res) {
 
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This term don't exits");
+		return res.redirect(base_url);
+	}
+
 	// Validate id
 	let id_term = req.params.id;
 
@@ -110,8 +135,6 @@ router.get('/:id/edit', async function(req, res) {
 	// We only care about the first one
 	term_to_edit = term_to_edit[0];
 
-
-	// 8,738 ++  9,220 --
 	term = [
 		term_to_edit.term_name,
 	];
@@ -135,7 +158,25 @@ router.get('/:id/edit', async function(req, res) {
 	-- Update the term -- 
 	PUT /term/:id 
 */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', function(req, res) {
+
+	// validate body
+	if (req.body == undefined || req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find term data");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"name": 's',
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the outcome");
+		return res.redirect(base_url);	
+	}
 
 	// TODO: verify values befero enter to DB
 	let data = {
@@ -160,7 +201,13 @@ router.put('/:id', function(req, res, next) {
 	GET /term/:id/remove
 */
 router.get('/:id/remove', async function (req, res) {
-	//TODO: catch error in case there is not id
+	
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This term don't exits");
+		return res.redirect(base_url);
+	}
+
 	let term_id = req.params.id;
 	let data = {"from": "ACADEMIC_TERM", "where": "term_ID", "id": term_id};
 	
@@ -200,7 +247,12 @@ router.get('/:id/remove', async function (req, res) {
 */
 router.delete('/:id', function (req, res) {
 	
-	//TODO: catch error in case of null
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This term don't exits");
+		return res.redirect(base_url);
+	}
+	
 	let term_id = req.params.id;
 
 	let data = {"id": term_id, "from": "ACADEMIC_TERM", "where":"term_ID" };

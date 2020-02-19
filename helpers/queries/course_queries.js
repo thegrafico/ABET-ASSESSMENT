@@ -25,44 +25,46 @@ function get_course_info(data){
 
 /**
  * insert_into_course - Create a new record of the course
- * @param {Object} data -> {"prog_id", "crnumber", "crname", "course_decr" } 
+ * @param {Object} data -> {"prog_id", "number", "name", "description" } 
  * @return {Promise} resolve with all profiles
  */
 function insert_into_course(data){
-
-   
-    let create_course_promise = new Promise(function(resolve, reject){
+    return new Promise(function(resolve, reject){
         let insert_query = `insert into COURSE (course_number, course_name, course_description) values(?, ?, ?);`;
         
-        conn.query(insert_query, [data.crnumber, data.crname, data.course_decr], function (err, results) {
+        conn.query(insert_query, [data.number, data.name, data.description], function (err, results) {
             if (err)
                 reject(err);
             else
-                resolve(results.insertId);
-            
+                resolve(results.insertId);        
         });
     });
-
-    create_course_promise.then((new_course_id) => {
-        
-        let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values(?, ?);`;
-
-        conn.query(insert_prog_course, [new_course_id, data.prog_id], function (err, results) {
-            
-            if (err) throw err;
-
-            console.log("Course Created");
-        });
-
-    }).catch((err) => {
-        console.log("ERROR updating the coyrse")
-    });
-    
 }
 
 /**
+ * insert_program_course - set the course study program
+ * @param {Number} course_id of the new course 
+ * @param {Number} program_id of the study program
+ * @return {Promise} resolve with all profiles
+ */
+function insert_program_course(course_id, program_id){
+
+    return new Promise(function(resolve, reject){
+        let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values(?, ?);`;
+
+        conn.query(insert_prog_course, [course_id, program_id], function (err, results) {
+            
+            if (err)
+                reject(err);
+            else
+                resolve(true);
+        });
+    });
+
+}
+/**
  * update_course - Update the course information
- * @param  {Object} data {"crname", "crdescr", "crnumber", "ID", std_program}
+ * @param  {Object} data {"name", "description", "number", "id", "program_id"}
  * @return {Promise} resolve with results of database
  */
 function update_course(data){
@@ -74,9 +76,9 @@ function update_course(data){
         let update_query = `update COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID = ?`;
 
         // Update course
-        conn.query(update_query, [data.crname, data.crdescr, data.crnumber, data.ID], function (err, results) {
+        conn.query(update_query, [data.name, data.description, data.number, data.id], function (err, results) {
             if (err)
-                reject(err || "Error updating the course");
+                reject(err);
             else
                 resolve(true);
         });
@@ -85,9 +87,9 @@ function update_course(data){
     // Promise for update the std program
     let editing_program_course = new Promise(function(resolve, reject){
         let update_pc = `UPDATE PROG_COURSE SET prog_ID = ? WHERE course_ID= ?`;
-        conn.query(update_pc, [data.std_program, data.ID], function (err, results) {
+        conn.query(update_pc, [data.prog_id, data.id], function (err, results) {
             if (err)
-                reject(err || "Error updating the Program ID");
+                reject(err);
             else
                 resolve(true);
         });
@@ -95,16 +97,13 @@ function update_course(data){
 
     // run promise 1 and 2
     Promise.all([editing_course, editing_program_course]).then(function([course_was_edited, program_was_edited]){
-
-        if (course_was_edited && program_was_edited){
-            console.log("Course was edited successfully");
-        }else
-            console.log("Error updating the Program course");
+        console.log("Course was edited successfully");
     }).catch((err) => {
-        console.log(err);
+        console.log("THERE IS AN ERROR: ", err);
     });
 }
 
 module.exports.get_course_info = get_course_info;
 module.exports.insert_into_course = insert_into_course;
 module.exports.update_course = update_course;
+module.exports.insert_program_course = insert_program_course;

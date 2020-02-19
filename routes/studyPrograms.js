@@ -3,6 +3,7 @@ var query = require("../helpers/queries/studyProgramQueries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
 const { study_program_create_input } = require("../helpers/layout_template/create");
+var { validate_form } = require("../helpers/validation");
 
 
 const base_url = '/studyprograms'
@@ -106,6 +107,25 @@ router.get('/create', async function(req, res) {
 */
 router.post('/create', function(req, res) {
 
+	// validate body
+	if (req.body == undefined){
+		req.flash("error", "Error in the course data");
+		return res.redirect(base_url);
+	}
+
+	// to validation
+	let key_types = {
+		"std_name": 's',
+		"department_id": 'n'
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the course");
+		return res.redirect(base_url);	
+	}
+	
 	// validate req.body
 	let std_to_update = {
 		"name": req.body.std_name,
@@ -127,6 +147,12 @@ router.post('/create', function(req, res) {
 	GET /studyprograms/:id/id 
 */
 router.get('/:id/edit', async function(req, res) {
+
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This Study program does not exits");
+		return res.redirect(base_url);
+	}
 
 	// validate id
 	let studyp_id = req.params.id;
@@ -192,7 +218,26 @@ router.get('/:id/edit', async function(req, res) {
 	-- EDIT study program -- 
 	PUT /studyprograms/:id 
 */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', function(req, res) {
+
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id) || req.body == undefined){
+		req.flash("error", "This Study program does not exits");
+		return res.redirect(base_url);
+	}
+
+	// to validation
+	let key_types = {
+		"std_name": 's',
+		"department_id": 'n'
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the Study program");
+		return res.redirect(base_url);	
+	}
 
 	// TODO: validate id
 	let stdp_id = req.params.id;
@@ -217,7 +262,13 @@ router.put('/:id', function(req, res, next) {
 	GET /studyprograms/:id/remove 
 */
 router.get('/:id/remove', async function (req, res) {
-	// TODO: validate id, if null or not a number 
+
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This Study program does not exits");
+		return res.redirect(base_url);
+	}
+
 	let std_program_id = req.params.id;
 
 	// for dynamic design
@@ -262,8 +313,13 @@ router.get('/:id/remove', async function (req, res) {
 	DELETE /studyprograms/:id/remove 
 */
 router.delete('/:id', function (req, res) {
+	
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This Study program does not exits");
+		return res.redirect(base_url);
+	}
 
-	//TODO: Validate
 	let std_id = req.params.id;
 
 	let data = {"id":std_id, "from":"STUDY_PROGRAM","where":"prog_ID" };
