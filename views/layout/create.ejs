@@ -7,16 +7,33 @@
 	<form action="<%= url_form_redirect %>" method="POST">
 		
 		<% if (have_dropdown) { %>
-			<div class="row my-4">
-				<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
-				<!-- TODO: if statement here if dont have dropdown menu -->
-				<div class="col-8">
-					<select type="text" name="<%= dropdown_name %>" required>
-						<% for (let profile of dropdown_options) {%>
-							<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
-						<% } %>
-					</select>
+			<div class="container-fluid">
+
+				<div class="row my-4">
+					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
+					<!-- TODO: if statement here if dont have dropdown menu -->
+					<div class="col-8">
+						<select type="text" name="<%= dropdown_name %>" required>
+							<% for (let profile of dropdown_options) {%>
+								<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+							<% } %>
+						</select>
+					</div>
 				</div>
+
+				<div class="row my-4">
+					<div class="col-2 align-self-center text-right"><strong>Departmet</strong></div>
+					<div class="col-8">
+						<span class="multi-select"></span>
+					</div>
+				</div>
+							
+				<script>
+					let department = <%- JSON.stringify(department) %>;
+				</script>
+
+				<script src="/javascripts/multiselect.js"></script>
+				<link rel="stylesheet" type="text/css" href="/stylesheets/multiselect.css">
 			</div>
 		<% } %>
 		<% inputs.forEach(element => { %>

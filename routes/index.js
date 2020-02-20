@@ -71,4 +71,24 @@ router.get("/auth", async function(req, res){
 	res.redirect("/");
 });
 
+/* 
+ GET /login 
+*/
+router.get('/test', function (req, res) {
+	parms.department = [
+		{
+			label: "COEN",
+			value: "1"
+		},
+		{
+			label: "MEC",
+			value: "2"
+		},
+		{
+			label: "ELEN",
+			value: "3"
+		}
+	];
+	res.render('partials/selection', parms);
+});
 module.exports = router;

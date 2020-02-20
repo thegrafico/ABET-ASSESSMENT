@@ -4,11 +4,13 @@
 var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
+var general_queries = require("../helpers/queries/general_queries");
+
 const { user_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
 
 const base_url = "/users";
-var parms = {
+var locals = {
 	title: 'ABET Assessment',
 	subtitle: 'Users',
 	url_create: "/users/create",
@@ -21,10 +23,10 @@ var parms = {
 */
 router.get('/', async function (req, res) {
 
-	parms.results = [];
+	locals.results = [];
 
 	// the last header is for position the button
-	parms.table_header = ["Inter ID", "Profile", "Name", "Last Name",
+	locals.table_header = ["Inter ID", "Profile", "Name", "Last Name",
 		"Email", "Phone Number","Date Created", ""
 	];
 
@@ -57,11 +59,11 @@ router.get('/', async function (req, res) {
 				]
 			});
 		});
-		parms.results = results;
+		locals.results = results;
 	}
 
 	// res.status(200).send("Good");
-	res.render('layout/home', parms);
+	res.render('layout/home', locals);
 });
 
 /* 	
@@ -71,19 +73,21 @@ router.get('/', async function (req, res) {
 router.get('/create', async function (req, res) {
 
 	// store all profiles
-	parms.profiles = [];
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.dropdown_title = "Profile";
-	parms.dropdown_name = "profile_id";
-	parms.title_action = "Create User";
-	parms.url_form_redirect = "/users/create";
-	parms.btn_title = "Create";
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	// locals.have_dropdown_multiple = true;
+	locals.dropdown_title = "Profile";
+	locals.dropdown_name = "profile_id";
+	locals.title_action = "Create User";
+	locals.url_form_redirect = "/users/create";
+	locals.btn_title = "Create";
+	locals.department = [];
 
 	// get all profiles
 	let profiles  = await queries.get_all_profiles().catch((err) =>{
 		console.log("There is an error: ", err);
-	})
+	});
 
 	// verify profiles
 	if (profiles == undefined || profiles.length == 0){
@@ -93,21 +97,38 @@ router.get('/create', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
+	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+		console.log("Cannot get deparment information: ", err);
+	});
+
+	if (departments == undefined || departments.length == 0){
+		console.log("There is not department created");
+		req.flash("error", "Please create a department befero creating a user");
+		return res.redirect(base_url);
+	}
+	
+	departments.forEach( (element) =>{
+		locals.department.push({
+			label: element.dep_name,
+			value: element.dep_ID.toString()
+		});
+	});
+
 	// reset value to nothing when creating a new record
 	user_create_inputs.forEach((record) =>{
 		record.value = "";
 	});
-	parms.inputs = user_create_inputs;
+	locals.inputs = user_create_inputs;
 
 	// for dynamic frontend
 	profiles.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.profile_ID,
 			"NAME": element.profile_Name
 		});
 	});
 	
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /*
@@ -159,14 +180,14 @@ router.get('/:id/edit', async function (req, res) {
 	}
 
 	let user_id = req.params.id;
-	parms.profiles = [];
-	parms.have_dropdown = true;
-	parms.dropdown_options = [];
-	parms.dropdown_title = "Profile";
-	parms.dropdown_name = "profile_id";
-	parms.btn_title = "Submit";
-	parms.title_action = "Edit User";
-	parms.url_form_redirect = `/users/${user_id}?_method=PUT`;
+	locals.profiles = [];
+	locals.have_dropdown = true;
+	locals.dropdown_options = [];
+	locals.dropdown_title = "Profile";
+	locals.dropdown_name = "profile_id";
+	locals.btn_title = "Submit";
+	locals.title_action = "Edit User";
+	locals.url_form_redirect = `/users/${user_id}?_method=PUT`;
 	
 	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
@@ -202,7 +223,7 @@ router.get('/:id/edit', async function (req, res) {
 	// verify if profiles 
 	if (profiles != undefined && profiles.length > 0){
 		profiles.forEach( (element) =>{
-			parms.dropdown_options.push({
+			locals.dropdown_options.push({
 				"ID" : element.profile_ID,
 				"NAME": element.profile_Name
 			});
@@ -210,9 +231,9 @@ router.get('/:id/edit', async function (req, res) {
 	}
 	
 	// Dynamic EJS
-	parms.inputs = user_create_inputs;
+	locals.inputs = user_create_inputs;
 	
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /*
@@ -277,10 +298,10 @@ router.get('/:id/remove', async function (req, res) {
 
 	let user_id = req.params.id;
 
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this User?";
-	parms.form_action = `/users/${user_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this User?";
+	locals.form_action = `/users/${user_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
 
   	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
@@ -309,8 +330,8 @@ router.get('/:id/remove', async function (req, res) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 
-	parms.record = record;
-	res.render('layout/remove', parms);
+	locals.record = record;
+	res.render('layout/remove', locals);
 });
 
 /* 
