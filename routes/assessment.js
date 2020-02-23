@@ -72,10 +72,7 @@ router.get('/chooseCourseTerm', async function(req, res) {
 		console.log(err);
 	});
 
-	console.log("COURSE INFO: ", course_info);
-
 	parms.course = course_info;
-	// console.group('ChooseTerm Load: ', parms);
 	res.render('assessment/chooseCourseTerm', parms);
 });
 
@@ -205,10 +202,9 @@ router.get('/:id/perfomanceTable', async function(req, res, next) {
 	for(let i = 0; i < perf_criterias.length; i++) {
 		perfOrder[i] = perf_criterias[i].perC_order
 	}
-	console.log(perfOrder);
+
 	parms.colNums = perf_criterias.length;
 	parms.perfCrit = perfOrder;
-
 	res.render('assessment/perfomanceTable', parms);
 });
 
@@ -216,20 +212,19 @@ router.get('/:id/perfomanceTable', async function(req, res, next) {
 
 /* TODO: for Noah R. Almeda 
 	- Add graphs to report
-	- Post the student scores into STUDENT_PERFORMANCE table
 	- Comment code
 	- Clean code
 */
 
 router.post('/perfomanceTable', async function(req, res) {
-  // input contains an array of objects which are the inputs of the user
+  // Input contains an array of objects which are the inputs of the user
 	console.log('PerformanceTable POST');
 	let input = req["body"]["rowValue"];
 	let studentScores= [];
 	let inputCount = 0;
-	let amountCol = req.body.amountOfCol;
+	let amountCol = parms.colNums;
 
-	// console.log(input); // console.log which displays input
+	console.log('Req Body: ', req.body.amountOfCol);
 
 	// for loop creating a multidimession array
 	for (let i = 0; i < (input.length/4); i++) {
@@ -242,7 +237,7 @@ router.post('/perfomanceTable', async function(req, res) {
 		inputCount++;
 	}
 	}
-	// console.log("Here is inArr: ", studentScores);  // console.log which display the input in a arrays of arrays
+	
 	let firstRow = studentScores[0];
 	let size = 0;
 	// For loop to count the size of a rows since the input is receive as Objects
@@ -256,20 +251,16 @@ router.post('/perfomanceTable', async function(req, res) {
 	// for loops which calculates average per rows
 	for(let i = 0; i < studentScores.length; i++) {
 	for(let j = 0; j < size; j++) {
-		// console.log("Student Score is: ", studentScores[i][j]);
 		sum += parseFloat(studentScores[i][j]);
-		// console.log("Sum is: ", sum);
 	}
 	// avgRow is an array which contains all the average rolls
 	avgRow[i] = sum/parseFloat(size);
 	sum = 0;
-	// console.log("Avg of row", i, " : ", avgRow[i]);
 	}
-	console.log(avgRow);
-	// console.log("Avg Row Array here: ", avgRow);
 
 	let count = 1;
 	let listOfObjects = [];
+
 	// forEach creates a list of dictionaries
 	avgRow.forEach(function(entry) {
 		let singleObj = {};
@@ -279,7 +270,6 @@ router.post('/perfomanceTable', async function(req, res) {
 		listOfObjects.push(singleObj);
 		count++;
 	});
-	// console.log(listOfObjects); // This log displays the array of objects created. It contains all of the outputs for the tha table
 
 	let threeMorePerc = [];
 	let threeMoreCount = 0;
@@ -301,19 +291,14 @@ router.post('/perfomanceTable', async function(req, res) {
 	}
 	threeMorePerc[i] = (threeMoreCount/studentScores.length)*100;
 	threeMoreCount = 0;
-	// console.log("Here: ", threeMorePerc[i]);
 	}
-	let colAvg = 54;
-
-	console.log("Here is the percentage of the avarage column: ", avgPerc);
 
 	threeMorePerc[threeMorePerc.length] = avgPerc;
 
-	parms.colNums = amountCol;
 	parms.row = listOfObjects;
-	parms.avgCol = colAvg;
 	parms.colPerc = threeMorePerc;
-
+	console.log('colNums: ', parms.colNums);
+	console.log('Data for report: ', parms);
 	let document = reportTemplate.createReport(parms);
 
 	console.log('Student Scores: ', studentScores);

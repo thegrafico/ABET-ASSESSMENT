@@ -213,7 +213,7 @@ function createReport(data) {
         new docx.Paragraph({
           children: [
             new docx.TextRun({
-              text: "% of srud. with 3 or more",
+              text: "% of stud. with 3 or more",
               bold: true
             }),
           ],
