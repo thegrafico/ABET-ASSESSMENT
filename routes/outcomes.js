@@ -23,8 +23,14 @@ router.get('/', async function (req, res) {
 
 	locals.results = [];
 
+	let performance_query = {
+		"from": "student_outcome",
+		"join": "study_program",
+		"using": "prog_ID",
+	}
+
 	//Getting all the entries for the dropdown
-	let stud_outcomes = await general_queries.get_table_info("student_outcome").catch((err) => {
+	let stud_outcomes = await general_queries.get_table_info_inner_join(performance_query).catch((err) => {
 		console.log("Error getting the outcomes information: ", err);
 	});
 
@@ -43,7 +49,7 @@ router.get('/', async function (req, res) {
 				"values": [
 					outcome["outc_name"],
 					outcome["outc_description"],
-					outcome["prog_ID"],
+					outcome["prog_name"],
 					date,
 					"" // position the buttons of remove, and edit
 				]

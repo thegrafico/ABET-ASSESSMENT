@@ -25,11 +25,17 @@ router.get('/', async function(req, res) {
 
 	locals.results = [];
 
-	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
+	let all_std_query = {
+		"from": "DEPARTMENT",
+		"join": "study_program",
+		"using": "dep_ID",
+	}
+
+	let study_programs = await general_queries.get_table_info_inner_join(all_std_query).catch((err) => {
 		console.log("ERROR: ", err)
 	});
 
-	locals.table_header = ["Name", "Department ID", "Date", ""];
+	locals.table_header = ["Name", "Department", "Date", ""];
 
 	if (study_programs != undefined && study_programs.length > 0){
 		
@@ -44,7 +50,7 @@ router.get('/', async function(req, res) {
 				"ID": std_program["prog_ID"],
 				"values": [
 					std_program["prog_name"],
-					std_program["dep_ID"],
+					std_program["dep_name"],
 					date,
 					"" // position the buttons of remove, and edit
 				]

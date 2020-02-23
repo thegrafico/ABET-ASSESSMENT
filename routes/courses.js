@@ -22,14 +22,14 @@ let locals = {
 */
 router.get('/', async function(req, res) {
 
-	locals.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created", ""];
+	locals.table_header = ["Course Name", "Course Number", "Study Program", "Date Created", ""];
 	locals.results = [];
 	
-	let course_results = await query.get_course_info("COURSE").catch((err) =>{
+	let course_results = await query.get_course_info().catch((err) =>{
 		console.log("Error getting the courses results: ", err);
 		return res.redirect("/");
 	});
-
+	
 	let results = [];
 	if (course_results != undefined || course_results.length > 0 ){
 		
@@ -44,7 +44,7 @@ router.get('/', async function(req, res) {
 				"values": [
 					course["course_name"],
 					course["course_number"],
-					course["prog_ID"],
+					course["prog_name"],
 					date,
 					""
 				]

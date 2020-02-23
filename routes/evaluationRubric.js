@@ -25,13 +25,19 @@ let locals = {
 */
 router.get('/', async function(req, res) {
 
-	locals.results = [];
-	locals.table_header = ["Name", "Description", "outcome", ""];
-
+	let rubric_query = {
+		"from": "evaluation_rubric",
+		"join": "student_outcome",
+		"using": "outc_ID",
+	}
 	// getting evaluation rubric from db
-	let eval_rubric = await general_queries.get_table_info("evaluation_rubric").catch((err) => {
+	let eval_rubric = await general_queries.get_table_info_inner_join(rubric_query).catch((err) => {
 		console.log("Error getting all evaluation rubric: ", err);
 	});
+
+	
+	locals.results = [];
+	locals.table_header = ["Name", "Description", "outcome", ""];
 
 	// Validate data
 	if (eval_rubric != undefined && eval_rubric.length > 0){
@@ -44,7 +50,7 @@ router.get('/', async function(req, res) {
 				"values": [
 					rubric["rubric_name"],
 					rubric["rubric_description"],
-					rubric["outc_ID"],
+					rubric["outc_name"],
 					"" // position the buttons of remove, and edit
 				]
 			});

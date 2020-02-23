@@ -18,13 +18,19 @@ var locals = {
 */
 router.get('/', async function(req, res) {
 
-	locals.results = [];
-	locals.table_header = ["Description", "Order", "outcome", ""];
+	let performance_query = {
+		"from": "perf_criteria",
+		"join": "student_outcome",
+		"using": "outc_ID",
+	}
 	
 	//Get all perfCrit from the database
-	let all_perfomance = await general_queries.get_table_info("perf_criteria").catch((err) => {
+	let all_perfomance = await general_queries.get_table_info_inner_join(performance_query).catch((err) => {
 		console.log("There is an error getting the Performance Criteria: ", err);
 	});
+	
+	locals.results = [];
+	locals.table_header = ["Description", "Order", "outcome", ""];
 
 	// Validate data
 	if (all_perfomance != undefined && all_perfomance.length > 0){
@@ -37,7 +43,7 @@ router.get('/', async function(req, res) {
 				"values": [
 					performance["perC_Desk"],
 					performance["perC_order"],
-					performance["outc_ID"],
+					performance["outc_name"],
 					"" // position the buttons of remove, and edit
 				]
 			});

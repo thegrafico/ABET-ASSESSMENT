@@ -23,6 +23,7 @@ let locals = {
 */
 router.get('/', async function (req, res) {
 	
+	
 	//Getting the  DEPARTMENT information from db
 	let all_deparment = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
 		console.log("Cannot get deparment information: ", err);

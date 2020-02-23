@@ -1,12 +1,19 @@
 var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
 
-function get_course_info(data){
+
+/**
+ * get_course_info - Get the course information
+ * @return {Promise} resolve with all profiles
+ */
+function get_course_info(){
     return new Promise(function(resolve, reject){
 
-        let find_query = `Select * From ?? natural join PROG_COURSE`;
+        let find_query = `SELECT * FROM course 
+        INNER JOIN  prog_course on course.course_ID = prog_course.course_ID
+        INNER JOIN study_program on prog_course.prog_ID = study_program.prog_ID;`;
 
-        conn.query(find_query, data, function (err, results, fields) {
+        conn.query(find_query, function (err, results, fields) {
             if (err)
                 reject(err || "Cannot get the course information");
             else
@@ -14,14 +21,6 @@ function get_course_info(data){
         });
     });  
 }
-
-
-// {
-//     prog_id: '51',
-//     crnumber: 'COEN 900',
-//     crname: 'Computer Archic',
-//     description: 'Yeckle'
-//   }
 
 /**
  * insert_into_course - Create a new record of the course
