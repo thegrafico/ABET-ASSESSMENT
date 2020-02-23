@@ -11,7 +11,7 @@ const { evaluation_rubric_input } = require("../helpers/layout_template/create")
 let base_url = '/evaluation';
 
 //Paramns to routes links
-let parms = {
+let locals = {
 	"base_url": base_url,
 	"title": 'ABET Assessment',
 	"subtitle": 'Evaluation Rubric',
@@ -25,8 +25,8 @@ let parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.results = [];
-	parms.table_header = ["Name", "Description", "outcome", ""];
+	locals.results = [];
+	locals.table_header = ["Name", "Description", "outcome", ""];
 
 	// getting evaluation rubric from db
 	let eval_rubric = await general_queries.get_table_info("evaluation_rubric").catch((err) => {
@@ -49,9 +49,9 @@ router.get('/', async function(req, res) {
 				]
 			});
 		});
-		parms.results = results;
+		locals.results = results;
 	}
-	res.render('layout/home', parms);
+	res.render('layout/home', locals);
 });
 
 /*
@@ -70,14 +70,14 @@ router.get('/create', async function(req, res) {
 	}
 
 	// store all profiles
-	parms.profiles = [];
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.dropdown_title = "Outcomes";
-	parms.dropdown_name = "outcome";
-	parms.title_action = "Create Evaluation Rubric";
-	parms.url_form_redirect = "/evaluation/create";
-	parms.btn_title = "Create";
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.dropdown_title = "Outcomes";
+	locals.dropdown_name = "outcome";
+	locals.title_action = "Create Evaluation Rubric";
+	locals.url_form_redirect = "/evaluation/create";
+	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
 	evaluation_rubric_input.forEach((record) =>{
@@ -85,17 +85,17 @@ router.get('/create', async function(req, res) {
 	});
 
 	// set the input for user
-	parms.inputs = evaluation_rubric_input;
+	locals.inputs = evaluation_rubric_input;
 
 	// for dynamic frontend
 	outcomes.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.outc_ID,
 			"NAME": element.outc_name
 		});
 	});
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /* 
@@ -131,14 +131,14 @@ router.get('/:id/edit', async function(req, res) {
 	let evaluation_id = req.params.id;
 	
 	// store all profiles
-	parms.profiles = [];
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.dropdown_title = "Outcomes";
-	parms.dropdown_name = "outcome";
-	parms.title_action = "Edit Evaluation Rubric";
-	parms.url_form_redirect = `/evaluation/${evaluation_id}?_method=PUT`;
-	parms.btn_title = "Edit";
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.dropdown_title = "Outcomes";
+	locals.dropdown_name = "outcome";
+	locals.title_action = "Edit Evaluation Rubric";
+	locals.url_form_redirect = `/evaluation/${evaluation_id}?_method=PUT`;
+	locals.btn_title = "Edit";
 	
 	let rubric_data = {"from": "evaluation_rubric", "where": "rubric_ID", "id": evaluation_id};
 	let rubric_to_edit = await general_queries.get_table_info_by_id(rubric_data).catch((err) =>{
@@ -180,16 +180,16 @@ router.get('/:id/edit', async function(req, res) {
 
 	// fill out the dropdowm menu
 	outcomes.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.outc_ID,
 			"NAME": element.outc_name
 		});
 	});
 	
 	// Dynamic EJS
-	parms.inputs = evaluation_rubric_input;
+	locals.inputs = evaluation_rubric_input;
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /* 
@@ -225,10 +225,10 @@ router.get('/:id/remove', async function(req, res) {
 	// TODO: validate id, if null or not a number 
 	let rubric_id = req.params.id;
 
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this Evaluation Rubric?";
-	parms.form_action = `/evaluation/${rubric_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this Evaluation Rubric?";
+	locals.form_action = `/evaluation/${rubric_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
 
 	
 	let rubric_for_query = {"from": "evaluation_rubric", "where": "rubric_ID", "id": rubric_id};
@@ -256,8 +256,8 @@ router.get('/:id/remove', async function(req, res) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 
-	parms.record = record;
-	res.render('layout/remove', parms);
+	locals.record = record;
+	res.render('layout/remove', locals);
 });
 
 /* 

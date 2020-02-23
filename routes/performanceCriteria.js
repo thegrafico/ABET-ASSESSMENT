@@ -6,7 +6,7 @@ var queries = require('../helpers/queries/performanceCriteria_queries');
 let base_url = '/performanceCriteria';
 
 //Params to routes links
-var parms = {
+var locals = {
 	title: 'ABET Assessment',
 	subtitle: 'Perfomance Criteria',
 	url_create: "/perfomanceCriteria/create",
@@ -18,8 +18,8 @@ var parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.results = [];
-	parms.table_header = ["Description", "Order", "outcome", ""];
+	locals.results = [];
+	locals.table_header = ["Description", "Order", "outcome", ""];
 	
 	//Get all perfCrit from the database
 	let all_perfomance = await general_queries.get_table_info("perf_criteria").catch((err) => {
@@ -42,9 +42,9 @@ router.get('/', async function(req, res) {
 				]
 			});
 		});
-		parms.results = results;
+		locals.results = results;
 	}
-	res.render('layout/home', parms);
+	res.render('layout/home', locals);
 });
 
 /* 

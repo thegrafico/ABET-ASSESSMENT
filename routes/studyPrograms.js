@@ -10,7 +10,7 @@ const base_url = '/studyprograms'
 // let routes_names = ['create', 'delete', 'edit', 'details']
 
 //Paramns to routes links
-let parms = {
+let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Study Programs",
 	"base_url": base_url,
@@ -23,13 +23,13 @@ let parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.results = [];
+	locals.results = [];
 
 	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
 		console.log("ERROR: ", err)
 	});
 
-	parms.table_header = ["Name", "Department ID", "Date", ""];
+	locals.table_header = ["Name", "Department ID", "Date", ""];
 
 	if (study_programs != undefined && study_programs.length > 0){
 		
@@ -50,9 +50,9 @@ router.get('/', async function(req, res) {
 				]
 			});
 		});
-		parms.results = results;
+		locals.results = results;
 	}
-	res.render('layout/home', parms);
+	res.render('layout/home', locals);
 });
 
 
@@ -73,14 +73,14 @@ router.get('/create', async function(req, res) {
 	}
 
 	// store all profiles
-	parms.profiles = [];
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.dropdown_title = "Study Programs";
-	parms.dropdown_name = "department_id";
-	parms.title_action = "Create Study Program";
-	parms.url_form_redirect = "/studyprograms/create";
-	parms.btn_title = "Create";
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.dropdown_title = "Study Programs";
+	locals.dropdown_name = "department_id";
+	locals.title_action = "Create Study Program";
+	locals.url_form_redirect = "/studyprograms/create";
+	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
 	study_program_create_input.forEach((record) =>{
@@ -88,17 +88,17 @@ router.get('/create', async function(req, res) {
 	});
 
 	// set the input for user
-	parms.inputs = study_program_create_input;
+	locals.inputs = study_program_create_input;
 
 	// for dynamic frontend
 	deparments.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.dep_ID,
 			"NAME": element.dep_name
 		});
 	});
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /* 	
@@ -158,14 +158,14 @@ router.get('/:id/edit', async function(req, res) {
 	let studyp_id = req.params.id;
 	
 	// store all profiles
-	parms.profiles = [];
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.dropdown_title = "Study Programs";
-	parms.dropdown_name = "department_id";
-	parms.title_action = "Edit Study Program";
-	parms.url_form_redirect = `/studyprograms/${studyp_id}?_method=PUT`;
-	parms.btn_title = "Edit";
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.dropdown_title = "Study Programs";
+	locals.dropdown_name = "department_id";
+	locals.title_action = "Edit Study Program";
+	locals.url_form_redirect = `/studyprograms/${studyp_id}?_method=PUT`;
+	locals.btn_title = "Edit";
 	
 
 	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": studyp_id};
@@ -202,16 +202,16 @@ router.get('/:id/edit', async function(req, res) {
 		record.value = std_progran[index];
 		index++;
 	});
-	parms.inputs = study_program_create_input;
+	locals.inputs = study_program_create_input;
 
 	deparments.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.dep_ID,
 			"NAME": element.dep_name
 		});
 	});
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /* 
@@ -272,10 +272,10 @@ router.get('/:id/remove', async function (req, res) {
 	let std_program_id = req.params.id;
 
 	// for dynamic design
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this Study Program?";
-	parms.form_action = `/studyprograms/${std_program_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this Study Program?";
+	locals.form_action = `/studyprograms/${std_program_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
 
 	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": std_program_id};
 	
@@ -303,9 +303,9 @@ router.get('/:id/remove', async function (req, res) {
 	let record = [];
 	for (let index = 0; index < names.length; index++)
 		record.push({"name": names[index], "value": values[index]})
-	parms.record = record;
+	locals.record = record;
 
-	res.render("layout/remove", parms);
+	res.render("layout/remove", locals);
 });
 
 /* 

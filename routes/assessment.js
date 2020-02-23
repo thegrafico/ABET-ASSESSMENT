@@ -7,12 +7,12 @@ var queries = require('../helpers/queries/perfTable_queries');
 var reportTemplate = require('../helpers/reportTemplate');
 var docx = require('docx');
 var fs = require('fs');
-let parms ={};
+let locals ={};
 let assessmentID;
 
 var base_url = '/assessment/chooseCourseTerm';
 
-parms.title = 'ABET Assessment';
+locals.title = 'ABET Assessment';
 
 /*
   GET /assessment/chooseCourseTerm
@@ -20,10 +20,10 @@ parms.title = 'ABET Assessment';
 router.get('/chooseCourseTerm', async function(req, res) {
 	console.log('You are in chooseCourseTerm');
 
-	parms.program = [];
-	parms.term = [];
-	parms.rubric = [];
-	parms.course = [];
+	locals.program = [];
+	locals.term = [];
+	locals.rubric = [];
+	locals.course = [];
 	
 	// get data from table
 	let table_info = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
@@ -38,7 +38,7 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	}
 
 	// assign value of table info
-	parms.program = table_info;
+	locals.program = table_info;
 
 	// get program Id for choose course term
 	prog_id = table_info[0].prog_ID;
@@ -48,8 +48,8 @@ router.get('/chooseCourseTerm', async function(req, res) {
 		console.log("Error getting academic term: ", err);
 	});
 
-	//copy the result to parms.terms
-	parms.term = academic_term;
+	//copy the result to locals.terms
+	locals.term = academic_term;
 
 	// type (array of object)
 	let course_term = await chooseCourseTermQuery.get_rubric_info(prog_id).catch((err) => {
@@ -64,7 +64,7 @@ router.get('/chooseCourseTerm', async function(req, res) {
 		return res.redirect("/");
 	}
 	// assign
-	parms.rubric = course_term;
+	locals.rubric = course_term;
 
 	// type( \array of object)
 	let course_info = await chooseCourseTermQuery.get_course_info(prog_id).catch((err) =>{
@@ -74,9 +74,9 @@ router.get('/chooseCourseTerm', async function(req, res) {
 
 	console.log("COURSE INFO: ", course_info);
 
-	parms.course = course_info;
-	// console.group('ChooseTerm Load: ', parms);
-	res.render('assessment/chooseCourseTerm', parms);
+	locals.course = course_info;
+	// console.group('ChooseTerm Load: ', locals);
+	res.render('assessment/chooseCourseTerm', locals);
 });
 
 /* 
@@ -120,11 +120,11 @@ router.get('/chooseCourseTerm/:id', async function(req, res) {
 		console.log("Error getting course info: ", err);
 	});
 
-	parms.program = study_program;
-	parms.term = academic_term;
-	parms.rubric = rubric_info;
-	parms.course = course_info;
-	res.render('assessment/chooseCourseTerm', parms);
+	locals.program = study_program;
+	locals.term = academic_term;
+	locals.rubric = rubric_info;
+	locals.course = course_info;
+	res.render('assessment/chooseCourseTerm', locals);
 });
 
 /* 
@@ -206,10 +206,10 @@ router.get('/:id/perfomanceTable', async function(req, res, next) {
 		perfOrder[i] = perf_criterias[i].perC_order
 	}
 	console.log(perfOrder);
-	parms.colNums = perf_criterias.length;
-	parms.perfCrit = perfOrder;
+	locals.colNums = perf_criterias.length;
+	locals.perfCrit = perfOrder;
 
-	res.render('assessment/perfomanceTable', parms);
+	res.render('assessment/perfomanceTable', locals);
 });
 
 // <------ perfomanceTable Post request ------>
@@ -309,12 +309,12 @@ router.post('/perfomanceTable', async function(req, res) {
 
 	threeMorePerc[threeMorePerc.length] = avgPerc;
 
-	parms.colNums = amountCol;
-	parms.row = listOfObjects;
-	parms.avgCol = colAvg;
-	parms.colPerc = threeMorePerc;
+	locals.colNums = amountCol;
+	locals.row = listOfObjects;
+	locals.avgCol = colAvg;
+	locals.colPerc = threeMorePerc;
 
-	let document = reportTemplate.createReport(parms);
+	let document = reportTemplate.createReport(locals);
 
 	console.log('Student Scores: ', studentScores);
 	if (size < 5)

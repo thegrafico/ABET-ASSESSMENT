@@ -1,12 +1,14 @@
 console.log("IN MULTISELECT FILE");
-console.log(department);
+
+document.getElementById("profiles").value = profile;
 
 var multi = new SelectPure(".multi-select", {
     options: department,
+    value: user_dept,
     multiple: true,
     icon: "fa fa-times",
     placeholder: "-Please select-",
-    onChange: value => { console.log(value); },
+    onChange: value => { setValue(value) },
     classNames: {
         select: "select-pure__select",
         dropdownShown: "select-pure__select--opened",
@@ -21,3 +23,9 @@ var multi = new SelectPure(".multi-select", {
         optionHidden: "select-pure__option--hidden",
     }
 });
+
+
+function setValue(value){
+    let departments = document.getElementById("department");
+    departments.value = value + ",";
+}

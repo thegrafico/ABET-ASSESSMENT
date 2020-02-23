@@ -10,7 +10,7 @@ var conn = db.mysql_pool;
 		2: Admin
 		5: testing
 */
-let parms = {
+let locals = {
 	title: 'ABET Assessment',
 	active: {
 		home: true
@@ -27,7 +27,7 @@ router.get('/', async function (req, res) {
 
 	//Verify is there is user info
 	if (sess != undefined && sess.userEmail) {
-		parms.user = sess.userName;
+		locals.user = sess.userName;
 
 		//Compare user email in the DB, then get the data if there is any user. 
 		user_data_profile = await middleware.get_user_role(sess.userEmail).catch((err) =>{
@@ -43,15 +43,15 @@ router.get('/', async function (req, res) {
 			console.log("This user don't have a profile");
 	}
 
-	res.render('index', parms);
+	res.render('index', locals);
 });
 
 /* 
  GET /login 
 */
 router.get('/login', function (req, res) {
-	parms.title = "Login";
-	res.render('login', parms);
+	locals.title = "Login";
+	res.render('login', locals);
 });
 
 /* 
@@ -75,7 +75,7 @@ router.get("/auth", async function(req, res){
  GET /login 
 */
 router.get('/test', function (req, res) {
-	parms.department = [
+	locals.department = [
 		{
 			label: "COEN",
 			value: "1"
@@ -89,6 +89,6 @@ router.get('/test', function (req, res) {
 			value: "3"
 		}
 	];
-	res.render('partials/selection', parms);
+	res.render('partials/selection', locals);
 });
 module.exports = router;

@@ -9,7 +9,7 @@ var { validate_form } = require("../helpers/validation");
 const base_url = '/outcomes';
 
 //Paramns to routes links
-let parms = {
+let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Outcomes",
 	"base_url": base_url,
@@ -21,14 +21,14 @@ let parms = {
 */
 router.get('/', async function (req, res) {
 
-	parms.results = [];
+	locals.results = [];
 
 	//Getting all the entries for the dropdown
 	let stud_outcomes = await general_queries.get_table_info("student_outcome").catch((err) => {
 		console.log("Error getting the outcomes information: ", err);
 	});
 
-	parms.table_header = ["Name", "Description", "Study Program", "Date", ""];
+	locals.table_header = ["Name", "Description", "Study Program", "Date", ""];
 
 	if (stud_outcomes != undefined && stud_outcomes.length > 0){
 		let results = [];
@@ -49,9 +49,9 @@ router.get('/', async function (req, res) {
 				]
 			});
 		});
-		parms.results = results;
+		locals.results = results;
 	}
-	res.render('layout/home', parms);
+	res.render('layout/home', locals);
 });
 
 /* 
@@ -61,14 +61,14 @@ router.get('/', async function (req, res) {
 router.get('/create', async function (req, res) {
 
 	// store all profiles
-	parms.profiles = [];
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "std_program";
-	parms.title_action = "Create Outcome";
-	parms.url_form_redirect = "/outcomes/create";
-	parms.btn_title = "Create";
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.dropdown_title = "Study Program";
+	locals.dropdown_name = "std_program";
+	locals.title_action = "Create Outcome";
+	locals.url_form_redirect = "/outcomes/create";
+	locals.btn_title = "Create";
 
 	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		console.log("ERROR: ", err);
@@ -86,17 +86,17 @@ router.get('/create', async function (req, res) {
 		record.value = "";
 	});
 
-	parms.inputs = outcome_create_inputs;
+	locals.inputs = outcome_create_inputs;
 
 	// for dynamic frontend
 	study_programs.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.prog_ID,
 			"NAME": element.prog_name
 		});
 	});
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 /*
 	-- CREATE NEW OUTCOMES-- 
@@ -155,14 +155,14 @@ router.get('/:id/edit', async function (req, res) {
 	let out_id = req.params.id;
 
 	// store all profiles
-	parms.profiles = [];
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "std_program";
-	parms.title_action = "Edit Outcome";
-	parms.url_form_redirect = `/outcomes/${out_id}?_method=PUT`;
-	parms.btn_title = "Edit";
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.dropdown_title = "Study Program";
+	locals.dropdown_name = "std_program";
+	locals.title_action = "Edit Outcome";
+	locals.url_form_redirect = `/outcomes/${out_id}?_method=PUT`;
+	locals.btn_title = "Edit";
 
 	// data to find the outcome
 	let data = {
@@ -205,17 +205,17 @@ router.get('/:id/edit', async function (req, res) {
 		index++;
 	});
 
-	parms.inputs = outcome_create_inputs;
+	locals.inputs = outcome_create_inputs;
 
 	// for dynamic frontend
 	study_programs.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.prog_ID,
 			"NAME": element.prog_name
 		});
 	});
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 /* 
 	-- Update the outcome -- 
@@ -293,10 +293,10 @@ router.get('/:id/remove',async function (req, res, next) {
 
 	outcome_to_remove = outcome_to_remove[0];
 
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this Outcome?";
-	parms.form_action = `/outcomes/${out_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this Outcome?";
+	locals.form_action = `/outcomes/${out_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
 
 	let names = ["Name", "Description", "Study Program", "Date created"];
 
@@ -316,9 +316,9 @@ router.get('/:id/remove',async function (req, res, next) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 
-	parms.record = record;
+	locals.record = record;
 
-	res.render('layout/remove', parms);
+	res.render('layout/remove', locals);
 });
 
 /*	

@@ -9,7 +9,7 @@ var { validate_form } = require("../helpers/validation");
 // var authHelper = require('../helpers/auth');
 
 const base_url = '/courses'
-let parms = {
+let locals = {
 	"title": 'ABET Assessment',
 	"base_url":base_url,
 	"subtitle": 'Courses',
@@ -22,8 +22,8 @@ let parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created", ""];
-	parms.results = [];
+	locals.table_header = ["Course Name", "Course Number", "Study Program ID", "Date Created", ""];
+	locals.results = [];
 	
 	let course_results = await query.get_course_info("COURSE").catch((err) =>{
 		console.log("Error getting the courses results: ", err);
@@ -50,9 +50,9 @@ router.get('/', async function(req, res) {
 				]
 			});
 		});
-		parms.results = results;
+		locals.results = results;
 	}
-	res.render('layout/home', parms);
+	res.render('layout/home', locals);
 });
 
 
@@ -62,11 +62,11 @@ router.get('/', async function(req, res) {
 */
 router.get('/create', async function(req, res, next) {
 	
-	parms.have_dropdown = true;
-	parms.dropdown_options = [];
-	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "data[prog_id]";
-	parms.title_action = "Create Course";
+	locals.have_dropdown = true;
+	locals.dropdown_options = [];
+	locals.dropdown_title = "Study Program";
+	locals.dropdown_name = "data[prog_id]";
+	locals.title_action = "Create Course";
 
 	let all_study_program =  await general_queries.get_table_info("STUDY_PROGRAM").catch((err)=>{
 		console.log("Error getting the programs: ", err);
@@ -80,7 +80,7 @@ router.get('/create', async function(req, res, next) {
 	}
 	
 	all_study_program.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.prog_ID,
 			"NAME": element.prog_name
 		});
@@ -90,11 +90,11 @@ router.get('/create', async function(req, res, next) {
 	course_create_inputs.forEach((record) =>{
 		record.value = "";
 	});
-	parms.inputs = course_create_inputs;
+	locals.inputs = course_create_inputs;
 
-	parms.url_form_redirect = "/courses/create";
-	parms.btn_title = "Create";
-  	res.render('layout/create', parms);
+	locals.url_form_redirect = "/courses/create";
+	locals.btn_title = "Create";
+  	res.render('layout/create', locals);
 });
 
 /* 
@@ -190,17 +190,17 @@ router.get('/:id/edit', async function(req, res) {
 	}
 
 	// Dynamic frontend vars
-	parms.dropdown_options = [];
-	parms.have_dropdown = true;
-	parms.title_action = "Editing Course";
-	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "data[prog_id]";
-	parms.btn_title = "Submit";
-	parms.url_form_redirect = `/courses/${id_course}?_method=PUT`;
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.title_action = "Editing Course";
+	locals.dropdown_title = "Study Program";
+	locals.dropdown_name = "data[prog_id]";
+	locals.btn_title = "Submit";
+	locals.url_form_redirect = `/courses/${id_course}?_method=PUT`;
 
 	// Set dropdown data 
 	study_programs.forEach( (element) =>{
-		parms.dropdown_options.push({
+		locals.dropdown_options.push({
 			"ID" : element.prog_ID,
 			"NAME": element.prog_name
 		});
@@ -221,9 +221,9 @@ router.get('/:id/edit', async function(req, res) {
 	});
 
 	// append the course information to the EJS
-	parms.inputs = course_create_inputs;
+	locals.inputs = course_create_inputs;
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /*
@@ -295,10 +295,10 @@ router.get('/:id/remove', async function (req, res) {
 	course = course[0];
 
 	// == variables for dinamic frondend ==
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this Course?";
-	parms.form_action = `/courses/${course_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this Course?";
+	locals.form_action = `/courses/${course_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
 
 	let names = ["Study Program", "Number", "Name", "description"];
 	let values = [course.prog_ID, course.course_number, course.course_name, course.course_description];
@@ -308,8 +308,8 @@ router.get('/:id/remove', async function (req, res) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 	// == end ==
-	parms.record = record;
-	res.render('layout/remove', parms);
+	locals.record = record;
+	res.render('layout/remove', locals);
 });
 
 

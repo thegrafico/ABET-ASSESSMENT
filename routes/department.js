@@ -11,7 +11,7 @@ var { validate_form } = require("../helpers/validation");
 let base_url = '/department';
 
 //Paramns to routes links
-let parms = {
+let locals = {
 	"title": 'ABET Assessment',
 	"subtitle": 'Departments',
 	"base_url": "/department",
@@ -28,7 +28,7 @@ router.get('/', async function (req, res) {
 		console.log("Cannot get deparment information: ", err);
 	});
 
-	parms.table_header = ["Name", "Description", "Date Created", ""];
+	locals.table_header = ["Name", "Description", "Date Created", ""];
 	let results = [];
 
 	// Validate department 
@@ -51,8 +51,8 @@ router.get('/', async function (req, res) {
 			});
 		});
 	}
-	parms.results = results;
-	res.render('layout/home', parms);
+	locals.results = results;
+	res.render('layout/home', locals);
 });
 
 /*
@@ -61,23 +61,23 @@ router.get('/', async function (req, res) {
 */
 router.get('/create', function (req, res) {	
 
-	parms.have_dropdown = false;
-	parms.title_action = "Create Department";
-	parms.dropdown_options = [];
-	parms.dropdown_title = "Study Program";
-	parms.dropdown_name = "data[prog_id]";
-	parms.form_method = "POST";
-	parms.url_form_redirect = "/department/create";
-	parms.btn_title = "Create";
+	locals.have_dropdown = false;
+	locals.title_action = "Create Department";
+	locals.dropdown_options = [];
+	locals.dropdown_title = "Study Program";
+	locals.dropdown_name = "data[prog_id]";
+	locals.form_method = "POST";
+	locals.url_form_redirect = "/department/create";
+	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
 	department_create_inputs.forEach((record) =>{
 		record.value = "";
 	});
 
-	parms.inputs = department_create_inputs;
+	locals.inputs = department_create_inputs;
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /* 
@@ -161,13 +161,13 @@ router.get('/:id/edit', async function (req, res) {
 		index++;
 	});
 
-	parms.url_form_redirect = `/department/${dept_id}?_method=PUT`;
-	parms.have_dropdown = false;
-	parms.title_action = "Editing Department";
-	parms.btn_title = "Submit";
-	parms.inputs = department_create_inputs;
+	locals.url_form_redirect = `/department/${dept_id}?_method=PUT`;
+	locals.have_dropdown = false;
+	locals.title_action = "Editing Department";
+	locals.btn_title = "Submit";
+	locals.inputs = department_create_inputs;
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /*
@@ -222,10 +222,10 @@ router.get('/:id/remove', async function (req, res) {
 	let dept_id =  req.params.id;
 
 	// dynamic frontend
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this department?";
-	parms.form_action = `/department/${dept_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this department?";
+	locals.form_action = `/department/${dept_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
 
 	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id":dept_id};
 	
@@ -252,9 +252,9 @@ router.get('/:id/remove', async function (req, res) {
 	let record = [];
 	for (let index = 0; index < names.length; index++)
 		record.push({"name": names[index], "value": values[index]})
-	parms.record = record;
+	locals.record = record;
 	
-	res.render('layout/remove', parms);
+	res.render('layout/remove', locals);
 });
 
 /* 

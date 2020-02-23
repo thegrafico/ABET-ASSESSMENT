@@ -1,4 +1,8 @@
-var { db } = require("../mysqlConnection"); //pool connection
+var { db, options } = require("../mysqlConnection");
+var mysql = require("mysql");
+var connection = mysql.createConnection(options);
+connection.connect();
+
 var conn = db.mysql_pool;
 
 
@@ -7,7 +11,13 @@ var conn = db.mysql_pool;
  * @return {Promise} resolve with results of database
  */
 async function get_user_list() {
-    return new Promise(function(resolve, reject){
+    return new Promise(function (resolve, reject) {
+
+        //         SELECT * FROM user
+        // INNER JOIN (SELECT * FROM profile NATURAL JOIN user_profiles) as user_prof 
+        // ON user.user_ID = user_prof.user_ID
+        // INNER JOIN (SELECT * FROM department NATURAL JOIN user_dep) as dep
+        // ON user.user_ID = dep.user_ID;
         let userList = `Select * From USER natural join USER_PROFILES natural join PROFILE`;
 
         conn.query(userList, function (err, results, fields) {
@@ -26,23 +36,51 @@ async function get_user_list() {
  * @return {Promise} resolve with user data
  */
 function get_user_by_id(id) {
-    // TODO: validate id
 
-    return new Promise(function(resolve, reject){
+    return new Promise(function (resolve, reject) {
 
-        let query_user_info= `Select * FROM USER where user_ID = ?`;
+        // Get all user information, including department and profile
+        let query_user_info = `SELECT * FROM user NATURAL JOIN user_profiles WHERE user.user_ID = ?`;
 
-        conn.query(query_user_info, [id], function (err, results, fields) {
-            if (err) 
-                reject(err);
-            else
-                resolve(results[0] || []);
+        conn.query(query_user_info, [id], function (err, results) {
+            
+            if (err){ return reject(err);}
+    
+            resolve(results[0]);
+        });
+    });
+}
+
+
+/**
+ * get_user_department_by_id - get all user departments
+ * @param {Number} id id of the user 
+ * @return {Promise} resolve with all departments
+ */
+function get_user_department_by_id(id) {
+
+    return new Promise(function (resolve, reject) {
+
+        // Get all user information, including department and profile
+        let query_user_info = `SELECT dep_ID FROM user_dep WHERE user_ID = ?`;
+
+        conn.query(query_user_info, [id], function (err, results) {
+            
+            if (err){ return reject(err);}
+            
+            let dept = [];            
+            
+            results.forEach((record) =>{
+                dept.push(record["dep_ID"].toString());
+            });
+
+            resolve(dept);
         });
     });
 }
 
 //GET user ID by email
-function get_user_ID_by_email(email, callback){
+function get_user_ID_by_email(email, callback) {
     'Get user ID using the email'
     console.log("Getting user ID");
 
@@ -50,7 +88,7 @@ function get_user_ID_by_email(email, callback){
                     FROM USER
                     WHERE email = ?
                     LIMIT 1`;
-    conn.query(slq_getID, [email], function(err, results){
+    conn.query(slq_getID, [email], function (err, results) {
 
         if (err) return callback(err, null);
 
@@ -64,11 +102,11 @@ function get_user_ID_by_email(email, callback){
  * @return {Promise} resolve with all profiles
  */
 function update_user(data) {
-    
-    // array with all user data, has to be in this order 
-    let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber, data.userID];
 
-    let add_user_promise = new Promise(function(resolve, reject){
+
+    return new Promise(function (resolve, reject) {
+    
+        let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber, data.userID];
 
         let updateUser = `UPDATE USER SET inter_ID = ?, first_name= ?, last_name= ?, email= ?, phone_number= ? WHERE user_ID = ? `;
 
@@ -79,97 +117,154 @@ function update_user(data) {
                 resolve(true);
         });
     });
+}
 
-    let update_profile_promise = new Promise(function(resolve, reject) {
+/**
+ * update_user_profile by id
+ * @param {Number} user_id id of the user
+ * @param {Number} profile_id id of the profile  
+ * @return {Promise} resolve with true
+ */
+function update_user_profile(user_id, profile_id){
+  
+    return  new Promise(function (resolve, reject) {
         let update_profile_query = "UPDATE USER_PROFILES SET profile_ID = ? WHERE user_ID = ?";
-        conn.query(update_profile_query, [data.profile_id, data.userID], function (err, results) {
+        conn.query(update_profile_query, [profile_id, user_id], function (err, results) {
             if (err)
                 reject(err);
             else
                 resolve(true);
         });
     });
-    
-    return [add_user_promise, update_profile_promise];
 }
 
 /**
- * get_all_profiles get all profiles from database
+ * delete_user_by_id delete a user by id
  * @param {Number} id -> id of the user 
  * @return {Promise} resolve with all profiles
  */
 function delete_user_by_id(id) {
 
-    return new Promise(function(resolve, reject){
+    return new Promise(function (resolve, reject) {
 
-    let deleteUser = `DELETE FROM USER WHERE user_ID = ?`;
-    
+        let deleteUser = `DELETE FROM USER WHERE user_ID = ?`;
+
         //Exe query
         conn.query(deleteUser, [id], function (err, results, fields) {
             if (err)
-                 reject(err);
-            else            
+                reject(err);
+            else
                 resolve(true);
         });
     })
 }
 
+
 /**
- * get_all_profiles get all profiles from database
- * @param {Array} data -> [interId, firstName, lastName, email, phoneNumbe]
- * @return {VoidFunction} resolve with all profiles
+ * create_user get Create new user
+ * @param {Object} user -> {id, name, lastname, email, phoneNumber}
+ * @param {Number} profile_id id of the profile
+ * @param {Array} departments_id ids of departments 
+ * @return {Promise} resolve with all profiles
  */
+async function create_user(user, profile_id, departments_id) {
 
- // TODO: refactor
-async function insert_user(data, profile_id) {
-
-    // TODO: validate data
 
     // add user promise
-    let add_user_promise = new Promise(function(resolve, reject){
-        
-        // query
-        let queryAddUser = `insert into USER (inter_ID, first_name, last_name, email, phone_number)  
-        values( ?, ?, ?, ?, ?);`;  
-        
-        //Exe query
-        conn.query(queryAddUser, data, function (err, results) {
-            
-            if (err) 
-                reject(err);
-            else
-                resolve(results.insertId);
-        });
-    });
-    
-    // Promise 2
-    let set_profile_promise = add_user_promise.then(async (userId) =>{
-        try {
-            return new Promise(function (resolve, reject) {
-                // query
+    return new Promise(function (resolve, reject) {
+
+        connection.beginTransaction(function (err) {
+            if (err) { return reject(err) }
+
+            // query
+            let queryAddUser = `insert into USER (inter_ID, first_name, last_name, email, phone_number)
+             values( ?, ?, ?, ?, ?);`;
+
+            connection.query(queryAddUser, [user.id, user.name, user.lastname, user.email, user.phoneNumber], function (error, results) {
+
+                if (error) return connection.rollback(function () { reject(error); });
+
+                let user_id = results.insertId;
                 let querySetProfile = `insert into USER_PROFILES values(?, ?)`;
-                conn.query(querySetProfile, [userId, profile_id], function (error, results) {
-                    if (error)
-                        reject(false);
-                    else
-                        resolve(true);
+
+                connection.query(querySetProfile, [user_id, profile_id], function (error, results) {
+                    if (error) return connection.rollback(function () { reject(error); });
+
+                    let values = [];
+                    departments_id.forEach((dept_id) => {
+                        if (dept_id != undefined && dept_id.length != 0 && !isNaN(dept_id)) {
+                            values.push([user_id, parseInt(dept_id)])
+                        }
+                    });
+
+                    if (values.length == 0){return connection.rollback(function () { reject("Not department found"); });}
+                    
+                    let set_dept_query = `INSERT INTO user_dep (user_ID, dep_ID) values ?;`;
+
+                    connection.query(set_dept_query, [values], function (error, results) {
+
+                        if (error) return connection.rollback(function () { reject(error); });
+
+                        connection.commit(function (err) {
+                            if (err) {
+                                return connection.rollback(function () {
+                                    reject(err);
+                                });
+                            }
+                            connection.end;
+                            resolve(true);
+                        });
+                    });
                 });
             });
-        }
-        catch (err) {
-            console.log("There is an error adding the user: ", err);
-        }
+        });
     });
+}
 
-    // run promise 1 and 2
-    Promise.all([add_user_promise, set_profile_promise]).then(function([userId, was_added]){
+/**
+ * set_user_profile - set the user profile
+ * @param {Number} user_id id of the user
+ * @param {Number} profile_id id of the profile
+ * @return {Promise} resolve with true
+ */
+function set_user_profile(user_id, profile_id) {
 
-        if (was_added){
-            console.log("User was added with the id: ", userId);
-        }else
-            console.log("Error adding the user");
-    }).catch((err) => {
-        console.log(err);
+    return new Promise(function (resolve, reject) {
+
+        let querySetProfile = `insert into USER_PROFILES values(?, ?)`;
+        conn.query(querySetProfile, [user_id, profile_id], function (error, results) {
+            if (error)
+                reject(false);
+            else
+                resolve(true);
+        });
+    });
+}
+
+/**
+ * add_user_to_department - set the user department
+ * @param {Number} user_id id of the user
+ * @param {Array} dept_id array with all the dept_id
+ * @return {Promise} resolve with true
+ */
+function set_user_to_department(user_id, dept_id) {
+
+    return new Promise(function (resolve, reject) {
+
+        let values = [];
+        dept_id.forEach((department_id) => {
+            if (department_id != undefined && department_id.length != 0) {
+                values.push([user_id, department_id])
+            }
+        });
+
+        let query = "insert into USER_DEP (user_ID, dep_ID) VALUES ?";
+        conn.query(query, [values], function (error, results) {
+            if (error)
+                reject(error);
+            else
+                resolve(true);
+        });
     });
 }
 
@@ -178,8 +273,8 @@ async function insert_user(data, profile_id) {
  * get_all_profiles get all profiles from database
  * @return {Promise} resolve with all profiles
  */
-async function get_all_profiles(){
-    return new Promise(function(resolve, reject){
+async function get_all_profiles() {
+    return new Promise(function (resolve, reject) {
         let query_profile = `Select * From PROFILE`;
 
         //Database query
@@ -196,6 +291,11 @@ module.exports.get_user_list = get_user_list;
 module.exports.get_user_by_id = get_user_by_id;
 module.exports.update_user = update_user;
 module.exports.delete_user_by_id = delete_user_by_id;
-module.exports.insert_user = insert_user;
+module.exports.create_user = create_user;
 module.exports.get_user_ID_by_email = get_user_ID_by_email;
 module.exports.get_all_profiles = get_all_profiles;
+module.exports.set_user_to_department = set_user_to_department;
+module.exports.set_user_profile = set_user_profile;
+module.exports.get_user_department_by_id = get_user_department_by_id;
+module.exports.update_user_profile = update_user_profile;
+

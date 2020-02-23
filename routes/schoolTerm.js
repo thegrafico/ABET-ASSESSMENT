@@ -9,7 +9,7 @@ var { validate_form } = require("../helpers/validation");
 const base_url = '/term';
 
 //Paramns to routes links
-let parms = {
+let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Term",
 	"base_url": base_url,
@@ -22,7 +22,7 @@ let parms = {
 */
 router.get('/', async function(req, res) {
 
-	parms.results = [];
+	locals.results = [];
 
 	let academic_terms = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
 		console.log("Error getting the terms");
@@ -42,11 +42,11 @@ router.get('/', async function(req, res) {
 				]
 			});
 		});
-		parms.results = results;
+		locals.results = results;
 	}
-	parms.table_header = ["Name", ""];
+	locals.table_header = ["Name", ""];
 
-	res.render('layout/home', parms);
+	res.render('layout/home', locals);
 });
 
 /* 
@@ -56,10 +56,10 @@ router.get('/', async function(req, res) {
 router.get('/create', function(req, res) {
 	
 	// store all profiles
-	parms.have_dropdown = false;
-	parms.title_action = "Create Academic Term";
-	parms.url_form_redirect = "/term/create";
-	parms.btn_title = "Create";
+	locals.have_dropdown = false;
+	locals.title_action = "Create Academic Term";
+	locals.url_form_redirect = "/term/create";
+	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
 	academic_term.forEach((record) =>{
@@ -67,9 +67,9 @@ router.get('/create', function(req, res) {
 	});
 
 	// set the input for user
-	parms.inputs = academic_term;
+	locals.inputs = academic_term;
 
-	res.render("layout/create", parms);
+	res.render("layout/create", locals);
 });
 
 router.post('/create', function(req, res) {
@@ -145,13 +145,13 @@ router.get('/:id/edit', async function(req, res) {
 		index++;
 	});
 
-	parms.url_form_redirect = `/term/${id_term}?_method=PUT`;
-	parms.have_dropdown = false;
-	parms.title_action = "Editing Academic Term";
-	parms.btn_title = "Submit";
-	parms.inputs = academic_term;
+	locals.url_form_redirect = `/term/${id_term}?_method=PUT`;
+	locals.have_dropdown = false;
+	locals.title_action = "Editing Academic Term";
+	locals.btn_title = "Submit";
+	locals.inputs = academic_term;
 
-	res.render('layout/create', parms);
+	res.render('layout/create', locals);
 });
 
 /* 
@@ -222,10 +222,10 @@ router.get('/:id/remove', async function (req, res) {
 
 	term_to_remove = term_to_remove[0];
 
-	parms.title_action = "Remove";
-	parms.title_message = "Are you sure you want to delete this academic term?";
-	parms.form_action = `/term/${term_id}?_method=DELETE`;
-	parms.btn_title = "Delete";
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this academic term?";
+	locals.form_action = `/term/${term_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
 
 	let names = ["Name"];
 	let values = [term_to_remove.term_name];
@@ -235,8 +235,8 @@ router.get('/:id/remove', async function (req, res) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 
-	parms.record = record;
-	res.render('layout/remove', parms);
+	locals.record = record;
+	res.render('layout/remove', locals);
 
 });
 

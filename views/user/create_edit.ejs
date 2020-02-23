@@ -8,17 +8,37 @@
 		
 		<% if (have_dropdown) { %>
 			<div class="container-fluid">
+
 				<div class="row my-4">
 					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
 					<!-- TODO: if statement here if dont have dropdown menu -->
 					<div class="col-8">
-						<select type="text" name="<%= dropdown_name %>" required>
+						<select id="profiles" type="text" name="<%= dropdown_name %>" required>
 							<% for (let profile of dropdown_options) {%>
 								<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
 							<% } %>
 						</select>
+						<input type="hidden" name="actual_profile" value="<%=user_profile %>">
 					</div>
 				</div>
+
+				<div class="row my-4">
+					<div class="col-2 align-self-center text-right"><strong>Departmet</strong></div>
+					<div class="col-8">
+                        <span class="multi-select"></span>
+						<input id="department" type="hidden" name="department">
+						<input type="hidden" name="current_dept" value="<%=user_dept%> ">
+					</div>
+				</div>
+							
+				<script>
+					let department = <%- JSON.stringify(department) %>;
+					let user_dept = <%- JSON.stringify(user_dept) %>;
+					let profile = <%- JSON.stringify(user_profile) %>;
+				</script>
+
+				<script src="/javascripts/multiselect.js"></script>
+				<link rel="stylesheet" type="text/css" href="/stylesheets/multiselect.css">
 			</div>
 		<% } %>
 		<% inputs.forEach(element => { %>
