@@ -1,9 +1,10 @@
 var express = require('express');
 var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
+var roolback_queries = require("../helpers/queries/roolback_queries");
 var router = express.Router();
 const { course_create_inputs } = require("../helpers/layout_template/create");
-var { validate_form } = require("../helpers/validation");
+var { validate_form, split_and_filter, get_data_for_update } = require("../helpers/validation");
 
 
 // var authHelper = require('../helpers/auth');
@@ -25,9 +26,12 @@ router.get('/', async function(req, res) {
 	locals.table_header = ["Course Name", "Course Number", "Study Program", "Date Created", ""];
 	locals.results = [];
 	
-	let course_results = await query.get_course_info().catch((err) =>{
+	let course_results = await query.get_course_with_std_program().catch((err) =>{
+		console.log("Error getting the courses with std program results: ", err);
+	});
+
+	let plain_course = await query.get_course_info().catch((err) =>{
 		console.log("Error getting the courses results: ", err);
-		return res.redirect("/");
 	});
 	
 	let results = [];
@@ -50,6 +54,25 @@ router.get('/', async function(req, res) {
 				]
 			});
 		});
+
+		
+		plain_course.forEach(course => {
+
+			// change date format 
+			let date = new Date(course.date_created);
+			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+			
+			results.push({
+				"ID": course["course_ID"],
+				"values": [
+					course["course_name"],
+					course["course_number"],
+					"NONE",
+					date,
+					""
+				]
+			});
+		});
 		locals.results = results;
 	}
 	res.render('layout/home', locals);
@@ -67,6 +90,8 @@ router.get('/create', async function(req, res, next) {
 	locals.dropdown_title = "Study Program";
 	locals.dropdown_name = "data[prog_id]";
 	locals.title_action = "Create Course";
+	locals.url_form_redirect = "/courses/create";
+	locals.btn_title = "Create";
 
 	let all_study_program =  await general_queries.get_table_info("STUDY_PROGRAM").catch((err)=>{
 		console.log("Error getting the programs: ", err);
@@ -79,10 +104,13 @@ router.get('/create', async function(req, res, next) {
 		return res.redirect("/");
 	}
 	
+	locals.study_programs = [];
+	locals.selected = [];
+
 	all_study_program.forEach( (element) =>{
-		locals.dropdown_options.push({
-			"ID" : element.prog_ID,
-			"NAME": element.prog_name
+		locals.study_programs.push({
+			label: element.prog_name,
+			value: element.prog_ID.toString()
 		});
 	});
 
@@ -90,11 +118,10 @@ router.get('/create', async function(req, res, next) {
 	course_create_inputs.forEach((record) =>{
 		record.value = "";
 	});
-	locals.inputs = course_create_inputs;
 
-	locals.url_form_redirect = "/courses/create";
-	locals.btn_title = "Create";
-  	res.render('layout/create', locals);
+	locals.inputs = course_create_inputs;
+	  
+	res.render('course/create_edit', locals);
 });
 
 /* 
@@ -109,39 +136,32 @@ router.post('/create', async function(req, res) {
 		return res.redirect(base_url);
 	}
 
+	req.body.data["study_programs"] = req.body.user_selection;
 	// to validation
 	let key_types = {
-		"prog_id": 'n',
 		"number": 's',
 		"name": 's',
-		"description": 's'
-	}
+		"description": 's',
+		"study_programs": 's',
+	};
 
-	// get the course data 
 	let data = req.body.data;
 
 	// if the values don't mach the type 
 	if (!validate_form(data, key_types)){
 		console.log("Error in validation");
 		req.flash("error", "Error in the information of the course");
-		return res.redirect(base_url);	
+		return res.redirect("back");	
 	}
 
-	let course_id = await query.insert_into_course(data).catch((err) => {
-		console.log("Cannot create the course");
-	});
+	data["study_programs"] = split_and_filter(data["study_programs"], ",") 
 
-	if (course_id == undefined){
-		req.flash("error", "Error creating the course");
-		return res.redirect(base_url);
-	}
-
-	query.insert_program_course(course_id, data.prog_id).then((ok) => {
+	roolback_queries.create_course(data).then((ok) => {
 		req.flash("success", "Course created");
 		res.redirect(base_url);
-	}).catch((err) => {
-		console.log("error: ", err);
-		req.flash("error", "Error creating the course");
+	}).catch((err) =>{
+		console.log("ERROR: ", err);
+		req.flash("error", "Error creating the course, Contact the Admin");
 		return res.redirect(base_url);
 	});
 });
@@ -158,8 +178,18 @@ router.get('/:id/edit', async function(req, res) {
 		return res.redirect(base_url);
 	}
 
+	// Dynamic frontend vars
 	let id_course = req.params.id;
-	
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.title_action = "Editing Course";
+	locals.dropdown_title = "Study Program";
+	locals.dropdown_name = "data[prog_id]";
+	locals.btn_title = "Submit";
+	locals.url_form_redirect = `/courses/${id_course}?_method=PUT`;
+	locals.study_programs = [];
+	locals.selected = [];
+
   	let data = {"from":"COURSE", "where": "course_ID", "id": id_course};
 	
 	// get course information by id
@@ -170,7 +200,6 @@ router.get('/:id/edit', async function(req, res) {
 
 	// validate course 
 	if (courses_info == undefined || courses_info.length == 0){
-		console.log("There is not information about this course");
 		req.flash("error", "This course does not exits");
 		return res.redirect("/");
 	}
@@ -178,31 +207,27 @@ router.get('/:id/edit', async function(req, res) {
 	courses_info = courses_info[0];
 	
 	// Get all study program
-	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
+	let all_study_program = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
 		console.log("Error getting study program info: ", err);
 	});
 	
 	// verify study program
-	if (study_programs == undefined || study_programs.length == 0){
+	if (all_study_program == undefined || all_study_program.length == 0){
 		console.log("This course do not belong to any study program");
 		req.flash("error", "This course does not belong to any study program");
 		return res.redirect(base_url);
 	}
 
-	// Dynamic frontend vars
-	locals.dropdown_options = [];
-	locals.have_dropdown = true;
-	locals.title_action = "Editing Course";
-	locals.dropdown_title = "Study Program";
-	locals.dropdown_name = "data[prog_id]";
-	locals.btn_title = "Submit";
-	locals.url_form_redirect = `/courses/${id_course}?_method=PUT`;
+	let course_study_program = await query.get_study_program_for_course(id_course).catch((err) => {
+		console.log("Error getting the course: ", err);
+	});
 
-	// Set dropdown data 
-	study_programs.forEach( (element) =>{
-		locals.dropdown_options.push({
-			"ID" : element.prog_ID,
-			"NAME": element.prog_name
+	locals.selected = course_study_program;
+
+	all_study_program.forEach( (element) =>{
+		locals.study_programs.push({
+			label: element.prog_name,
+			value: element.prog_ID.toString()
 		});
 	});
 
@@ -223,42 +248,62 @@ router.get('/:id/edit', async function(req, res) {
 	// append the course information to the EJS
 	locals.inputs = course_create_inputs;
 
-	res.render('layout/create', locals);
+	res.render('course/create_edit', locals);
 });
 
 /*
 	** EDIT COURSES ** 
 	PUT /courses/:id
 */
-router.put('/:id', function(req, res) {
+router.put('/:id', async function(req, res) {
 
 	if (req.params.id == undefined || isNaN(req.params.id) || req.body == undefined ||
 		req.body.data == undefined){
 		req.flash("error", "Cannot find the user");
 		return res.redirect(base_url);
 	}
+	let course_id = req.params.id;
+	let data = req.body.data;
 
-		// to validation
+	// to validation
 	let key_types = {
-		"prog_id": 'n',
 		"number": 's',
 		"name": 's',
 		"description": 's'
 	}
 
-	// get the course data 
-	let data = req.body.data;
-
-	// if the values don't mach the type 
+	// // if the values don't mach the type 
 	if (!validate_form(data, key_types)){
 		console.log("Error in validation");
 		req.flash("error", "Error in the information of the course");
-		return res.redirect(base_url);	
+		return res.redirect("back");	
 	}
-	
-	data["id"] = req.params.id;
 
-	query.update_course(data);
+	if (req.body.user_selection == undefined || req.body.user_selection.length == 0 || req.body.user_selection == ""){
+		req.body.user_selection = req.body.selected;
+	}
+	let current_study_program = split_and_filter(req.body.selected, ",");
+	let expected_study_program = split_and_filter(req.body.user_selection, ",");
+
+	let study_program_for_update = get_data_for_update(current_study_program, expected_study_program);
+	// console.log(study_program_for_update);
+
+	// remove element if there is any
+	if (study_program_for_update["delete"].length > 0){
+		
+		await query.remove_program_course(course_id, study_program_for_update["delete"]).catch((err) =>{
+			console.log("There is an error removing: ", err);
+			throw err;
+		});
+	}
+
+	// remove element if there is any
+	if (study_program_for_update["insert"].length > 0){
+		await query.insert_program_course(course_id, study_program_for_update["insert"]).catch((err) =>{
+			console.log("There is an error Updating: ", err);
+			throw err;
+		});
+	}
 	req.flash("success", "Course Edited");
 	res.redirect(base_url);
 });

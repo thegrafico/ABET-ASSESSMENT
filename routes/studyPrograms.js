@@ -82,7 +82,7 @@ router.get('/create', async function(req, res) {
 	locals.profiles = [];
 	locals.dropdown_options = [];
 	locals.have_dropdown = true;
-	locals.dropdown_title = "Study Programs";
+	locals.dropdown_title = "Departments";
 	locals.dropdown_name = "department_id";
 	locals.title_action = "Create Study Program";
 	locals.url_form_redirect = "/studyprograms/create";

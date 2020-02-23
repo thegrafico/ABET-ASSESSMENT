@@ -6,8 +6,9 @@ var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
 var general_queries = require("../helpers/queries/general_queries");
 var department_query = require("../helpers/queries/department_queries");
+var roolback_queries = require("../helpers/queries/roolback_queries");
 const { user_create_inputs } = require("../helpers/layout_template/create");
-var { validate_form, get_departmets_for_update, split_and_filter } = require("../helpers/validation");
+var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
 
 const base_url = "/users";
 var locals = {
@@ -152,7 +153,7 @@ router.post('/create', async function (req, res) {
 		"email": "s", 
 		"phoneNumber": "n",
 		"profile_id": "n",
-		"department": "s"
+		"selected_values": "s"
 	};
 
 	// if the values don't mach the type 
@@ -170,10 +171,10 @@ router.post('/create', async function (req, res) {
 	}
 
 	// get all departments 
-	let departments = req.body.department.split(",");
+	let departments = req.body.selected_values.split(",");
 
 	// promise -- adding user
-	queries.create_user(create_user_data, req.body.profile_id, departments).then((ok) => {
+	roolback_queries.create_user(create_user_data, req.body.profile_id, departments).then((ok) => {
 		
 		req.flash("success", "User created");
 		res.redirect('/users');	
@@ -299,6 +300,7 @@ router.put('/:id', async function (req, res) {
 	}
 
 	let user_id = parseInt(req.params.id);
+	console.log(req.body);
 	// key with expected types (string, number);
 	let keys_types = {
 		"interID": "s",
@@ -317,11 +319,18 @@ router.put('/:id', async function (req, res) {
 	}
 
 	req.body.userID = user_id;
+	if (req.body.selected_values == undefined || req.body.selected_values.length == 0 || req.body.selected_values == ""){
+		req.body.selected_values = req.body.selected;
+	}
+	let current_department = split_and_filter(req.body.selected, ",");
+	let selected_department = split_and_filter(req.body.selected_values, ",");
 
-	let current_department = split_and_filter(req.body.current_dept, ",");
-	let selected_department = split_and_filter(req.body.department, ",");
+	console.log("CURRENT: ", current_department);
+	console.log("EXPECTED: ", selected_department);
 
-	let departments_for_update = get_departmets_for_update(current_department, selected_department);
+
+	let departments_for_update = get_data_for_update(current_department, selected_department);
+	// console.log("RESULTS: ", departments_for_update);
 
 	let user_was_updated = await queries.update_user(req.body).catch((err) => {
 		console.log("Error updating the user: ", err);
@@ -342,6 +351,7 @@ router.put('/:id', async function (req, res) {
 	// update the department if != undefined
 	if (departments_for_update != undefined){
 
+		console.log(departments_for_update);
 		// remove element if there is any
 		if (departments_for_update["delete"].length > 0){
 			

@@ -1,10 +1,14 @@
 console.log("IN MULTISELECT FILE");
 
-document.getElementById("profiles").value = profile;
+try {        
+    document.getElementById("profiles").value = profile;
+} catch (error) {
+    console.log("Profile dont exits");
+}
 
 var multi = new SelectPure(".multi-select", {
-    options: department,
-    value: user_dept,
+    options: dropdowm_values,
+    value: dropdown_selected,
     multiple: true,
     icon: "fa fa-times",
     placeholder: "-Please select-",
@@ -26,6 +30,6 @@ var multi = new SelectPure(".multi-select", {
 
 
 function setValue(value){
-    let departments = document.getElementById("department");
+    let departments = document.getElementById("multiple_values");
     departments.value = value + ",";
 }

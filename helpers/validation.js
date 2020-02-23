@@ -17,7 +17,7 @@ function validate_form(body, keys_types){
 
 		if (keys_types[key] == "s"){
 			
-			if (body[key] == undefined || !isNaN(body[key]) || body[key].length == 0){
+			if (body[key] == undefined || !isNaN(body[key]) || body[key].length < 2){
 				console.log("Error with the parameter: ", body[key], "With the key: ", key);
 				return false
 			}
@@ -38,11 +38,11 @@ function validate_form(body, keys_types){
  * @param {Array} selected_for_update actual department the user should have
  * @return {Object} Object of array for "delete" and "insert"
  */
-function get_departmets_for_update(current, selected_for_update){
+function get_data_for_update(current, selected_for_update){
 
-	if (current == undefined  || selected_for_update == undefined || selected_for_update.length == 0){
-		return undefined;
-	}
+	// if (current == undefined  || selected_for_update == undefined || selected_for_update.length == 0){
+	// 	return undefined;
+	// }
 
 	for (let i = 0; i < current.length; i++) {
 		for (let j = 0; j < selected_for_update.length; j++) {
@@ -78,7 +78,7 @@ function split_and_filter(str, pattern){
 }
 
 module.exports.validate_form = validate_form;
-module.exports.get_departmets_for_update = get_departmets_for_update;
+module.exports.get_data_for_update = get_data_for_update;
 module.exports.split_and_filter = split_and_filter;
 
 

@@ -6,7 +6,7 @@ var conn = db.mysql_pool;
  * get_course_info - Get the course information
  * @return {Promise} resolve with all profiles
  */
-function get_course_info(){
+function get_course_with_std_program(){
     return new Promise(function(resolve, reject){
 
         let find_query = `SELECT * FROM course 
@@ -23,43 +23,111 @@ function get_course_info(){
 }
 
 /**
- * insert_into_course - Create a new record of the course
- * @param {Object} data -> {"prog_id", "number", "name", "description" } 
+ * get_course_info - Get the course information
  * @return {Promise} resolve with all profiles
  */
-function insert_into_course(data){
+function get_course_info(){
     return new Promise(function(resolve, reject){
-        let insert_query = `insert into COURSE (course_number, course_name, course_description) values(?, ?, ?);`;
-        
-        conn.query(insert_query, [data.number, data.name, data.description], function (err, results) {
+
+        let find_query = `SELECT * FROM course`;
+
+        conn.query(find_query, function (err, results, fields) {
             if (err)
-                reject(err);
+                reject(err || "Cannot get the course information");
             else
-                resolve(results.insertId);        
+                resolve(results);
+        });
+    });  
+}
+
+/**
+ * get_user_department_by_id - get all user departments
+ * @param {Number} id id of the course
+ * @return {Promise} resolve with all departments
+ */
+function get_study_program_for_course(id) {
+
+    return new Promise(function (resolve, reject) {
+
+        // Get all user information, including department and profile
+        let query_user_info = `SELECT prog_ID FROM prog_course WHERE course_ID = ?`;
+
+        conn.query(query_user_info, [id], function (err, results) {
+            
+            if (err){ return reject(err);}
+            
+            let course = [];            
+            
+            results.forEach((record) =>{
+                course.push(record["prog_ID"].toString());
+            });
+
+            resolve(course);
+        });
+    });
+}
+/**
+ * update_deparment ->  update department data
+ * @param {Number} course_id id of the course
+ * @param {Array} programs_id all id of the department
+ * @return {Promise} resolve with true
+ */
+function remove_program_course(course_id, programs_id){
+
+    return new Promise(function(resolve, reject){
+        
+        if (course_id == undefined || isNaN(course_id) ||  programs_id == undefined || programs_id.length == 0){
+            return reject("Error in parameters");
+        }
+        
+        let to_insert = [];
+        
+        programs_id.forEach((element) => {
+            to_insert.push([course_id, element]);
+        });
+
+        let update_query = `DELETE FROM prog_course WHERE (course_ID, prog_ID) IN (?)`;
+
+        //Exe query
+        conn.query(update_query, [to_insert], function (err, results) {
+            if (err)
+                reject(err || "Error updating department");
+            else            
+                resolve(true);
         });
     });
 }
 
 /**
- * insert_program_course - set the course study program
- * @param {Number} course_id of the new course 
- * @param {Number} program_id of the study program
- * @return {Promise} resolve with all profiles
+ * update_deparment ->  update department data
+ * @param {Number} course_id id of the course
+ * @param {Array} programs_id all id of the department
+ * @return {Promise} resolve with true
  */
-function insert_program_course(course_id, program_id){
+function insert_program_course(course_id, programs_id){
 
     return new Promise(function(resolve, reject){
-        let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values(?, ?);`;
+        
+        if (course_id == undefined || isNaN(course_id) ||  programs_id.length == 0){
+            return reject("Error in parameters");
+        }
+        
+        let to_insert = [];
+        
+        programs_id.forEach((element) => {
+            to_insert.push([course_id, element]);
+        });
 
-        conn.query(insert_prog_course, [course_id, program_id], function (err, results) {
-            
+        let set_dept_query = `INSERT INTO prog_course (course_ID, prog_ID) values ?;`;
+
+        //Exe query
+        conn.query(set_dept_query, [to_insert], function (err, results) {
             if (err)
-                reject(err);
-            else
+                reject(err || "Error updating department");
+            else            
                 resolve(true);
         });
     });
-
 }
 /**
  * update_course - Update the course information
@@ -67,8 +135,6 @@ function insert_program_course(course_id, program_id){
  * @return {Promise} resolve with results of database
  */
 function update_course(data){
-
-    
     // promise updating course
     let editing_course  = new Promise( function(resolve, reject){
 
@@ -103,6 +169,8 @@ function update_course(data){
 }
 
 module.exports.get_course_info = get_course_info;
-module.exports.insert_into_course = insert_into_course;
+module.exports.remove_program_course = remove_program_course;
 module.exports.update_course = update_course;
 module.exports.insert_program_course = insert_program_course;
+module.exports.get_study_program_for_course = get_study_program_for_course;
+module.exports.get_course_with_std_program = get_course_with_std_program;

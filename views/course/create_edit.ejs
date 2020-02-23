@@ -10,31 +10,17 @@
 			<div class="container-fluid">
 
 				<div class="row my-4">
-					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
-					<!-- TODO: if statement here if dont have dropdown menu -->
-					<div class="col-8">
-						<select id="profiles" type="text" name="<%= dropdown_name %>" required>
-							<% for (let profile of dropdown_options) {%>
-								<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
-							<% } %>
-						</select>
-						<input type="hidden" name="actual_profile" value="<%=user_profile %>">
-					</div>
-				</div>
-
-				<div class="row my-4">
-					<div class="col-2 align-self-center text-right"><strong>Departmet</strong></div>
+					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %></strong></div>
 					<div class="col-8">
                         <span class="multi-select"></span>
-						<input id="multiple_values" type="hidden" name="selected_values">
-						<input type="hidden" name="selected" value="<%=user_dept%> ">
+						<input id="multiple_values" type="hidden" name="user_selection">
+						<input type="hidden" name="selected" value="<%=selected%> ">
 					</div>
 				</div>
 							
 				<script>
-					let dropdowm_values = <%- JSON.stringify(department) %>;
-					let dropdown_selected = <%- JSON.stringify(user_dept) %>;
-					let profile = <%- JSON.stringify(user_profile) %>;
+					let dropdowm_values = <%- JSON.stringify(study_programs) %>;
+					let dropdown_selected = <%- JSON.stringify(selected) %>;
 				</script>
 
 				<script src="/javascripts/multiselect.js"></script>
