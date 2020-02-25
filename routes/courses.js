@@ -26,53 +26,30 @@ router.get('/', async function(req, res) {
 	locals.table_header = ["Course Name", "Course Number", "Study Program", "Date Created", ""];
 	locals.results = [];
 	
-	let course_results = await query.get_course_with_std_program().catch((err) =>{
+	let courses = await query.get_course_with_std_program().catch((err) =>{
 		console.log("Error getting the courses with std program results: ", err);
 	});
 
-	let plain_course = await query.get_course_info().catch((err) =>{
-		console.log("Error getting the courses results: ", err);
-	});
-	
 	let results = [];
-	if (course_results != undefined || course_results.length > 0 ){
+	if (courses != undefined && Object.keys(courses).length > 0 ){
 		
-		course_results.forEach(course => {
+		for (let key in courses){
 
 			// change date format 
-			let date = new Date(course.date_created);
+			let date = new Date(courses[key].date_created);
 			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 			
 			results.push({
-				"ID": course["course_ID"],
+				"ID": courses[key]["course_ID"],
 				"values": [
-					course["course_name"],
-					course["course_number"],
-					course["prog_name"],
+					courses[key]["course_name"],
+					courses[key]["course_number"],
+					courses[key]["prog_name"],
 					date,
 					""
 				]
 			});
-		});
-
-		
-		plain_course.forEach(course => {
-
-			// change date format 
-			let date = new Date(course.date_created);
-			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-			
-			results.push({
-				"ID": course["course_ID"],
-				"values": [
-					course["course_name"],
-					course["course_number"],
-					"NONE",
-					date,
-					""
-				]
-			});
-		});
+		}
 		locals.results = results;
 	}
 	res.render('layout/home', locals);
@@ -262,6 +239,13 @@ router.put('/:id', async function(req, res) {
 		req.flash("error", "Cannot find the user");
 		return res.redirect(base_url);
 	}
+
+	// if the user remove all options
+	if (req.body.user_selection == ","){
+		req.flash("error", "Course need to have a least one study program");
+		return res.redirect("back");
+	}
+
 	let course_id = req.params.id;
 	let data = req.body.data;
 

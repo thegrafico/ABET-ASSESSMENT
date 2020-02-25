@@ -31,8 +31,8 @@ function get_table_info_by_id(table_info){
 
     return new Promise(function(resolve, reject){
         conn.query(find_dep_query, data, function (err, results) {
-            if (err || results.length == 0)
-                reject(err || "Error getting table information");
+            if (err)
+                reject(err);
             else
                 resolve(results);
         });    

@@ -15,9 +15,23 @@ function get_course_with_std_program(){
 
         conn.query(find_query, function (err, results, fields) {
             if (err)
-                reject(err || "Cannot get the course information");
-            else
-                resolve(results);
+                return reject(err || "Cannot get the course information");
+            
+            if (results.length == 0) return resolve(results);
+            
+            let courses = {};
+            results.forEach((each_course) => {
+                if ( !(each_course["course_ID"] in courses) ){
+                    courses[each_course["course_ID"]] = each_course;
+                }else{
+                    courses[each_course["course_ID"]].prog_name += ', ' +  each_course["prog_name"];
+                }
+            });
+
+            console.log("Results: ", results);
+            console.log("MY RESULTS: ", courses);
+
+            resolve(courses);
         });
     });  
 }
