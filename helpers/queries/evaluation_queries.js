@@ -23,7 +23,7 @@ function insert_evaluation_rubric(data) {
 }
 /**
  * update_evaluation_rubric -  update the evaluation rubric
- * @param {Object} data -> keys {"name", "description", "outcome_id", "rubric_id"} 
+ * @param {Object} data -> keys {"name", "description", "rubric_id"} 
  * @return {Promise} resolve with true
  */
 function update_evaluation_rubric(data) {
@@ -31,10 +31,10 @@ function update_evaluation_rubric(data) {
     return new Promise(function (resolve, reject){
 
         let update_query = `
-        update EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?, outc_ID = ? 
+        update EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?
         where rubric_ID = ?`;
         
-        data = [data.name, data.description, data.outcome_id, data.rubric_id];
+        data = [data.name, data.description, data.rubric_id];
 
         conn.query(update_query, data, function (err, results, fields) {
             if (err)

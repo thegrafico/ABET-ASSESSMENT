@@ -1,0 +1,54 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<div class="container-fluid mt-2">
+    <h1><%= subtitle %></h1>
+    <hr class="my-4">
+    <a href="<%= url_create %> " class="btn inter-green inter-green-btn" role="button">Create New</a>
+    <!-- Middle line -->
+</div>
+
+<div class="container-fluid my-2">
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <% for (let header of table_header) { %>
+                <th scope="col"><%= header %></th>
+                <% } %>
+            </tr>
+        </thead>
+        <tbody>
+            <% results.forEach(element => { %>
+            <tr>
+                <% for( let index = 0; index < element["values"].length; index++ ) { %>
+                <!-- IF NOT last position -->
+                <% if((index == (element["values"].length -2) )) { %>
+                    <th> <a href="<%= base_url %>/<%= element["ID"]%>/evaluationrubric"
+                            class="btn btn-secondary">Administrate</a>
+                    </th>
+                <% }else if (index != (element["values"].length -1) ) { %>
+
+                <th> <%=element["values"][index]%></th>
+                <% }else{ %>
+                <th> <%=element["values"][index]%>
+                    <div class="col dropdown">
+                        <button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
+                            data-toggle="dropdown">
+                            Actions
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="<%= base_url %>/<%= element["ID"]%>/edit" class="dropdown-item">Edit</a>
+                            <a href="<%= base_url %>/<%= element["ID"]%>/remove" class="dropdown-item">Delete</a>
+                        </div>
+                    </div>
+                </th>
+                <% } %>
+                <% } %>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <hr class="my-1">
+</div>
+
+<%- include ('../partials/footer') -%>

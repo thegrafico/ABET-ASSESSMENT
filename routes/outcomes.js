@@ -34,7 +34,7 @@ router.get('/', async function (req, res) {
 		console.log("Error getting the outcomes information: ", err);
 	});
 
-	locals.table_header = ["Name", "Description", "Study Program", "Date", ""];
+	locals.table_header = ["Name", "Description", "Study Program", "Creation date", "Evaluation Rubric", ""];
 
 	if (stud_outcomes != undefined && stud_outcomes.length > 0){
 		let results = [];
@@ -51,13 +51,14 @@ router.get('/', async function (req, res) {
 					outcome["outc_description"],
 					outcome["prog_name"],
 					date,
-					"" // position the buttons of remove, and edit
+					"",
+					""
 				]
 			});
 		});
 		locals.results = results;
 	}
-	res.render('layout/home', locals);
+	res.render('outcome/home', locals);
 });
 
 /* 
