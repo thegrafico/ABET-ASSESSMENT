@@ -211,7 +211,7 @@ router.get('/:id/perfomanceTable', async function(req, res, next) {
 // <------ perfomanceTable Post request ------>
 
 /* TODO: for Noah R. Almeda 
-	- Add graphs to report
+	- Add graphs to report (Done)
 	- Comment code
 	- Clean code
 */
@@ -219,18 +219,21 @@ router.get('/:id/perfomanceTable', async function(req, res, next) {
 router.post('/perfomanceTable', async function(req, res) {
   // Input contains an array of objects which are the inputs of the user
 	console.log('PerformanceTable POST');
-	let input = req["body"]["rowValue"];
+	// input => Array of all the student inputs
+	let input = req.body.rowValue;
 	let studentScores= [];
-	let inputCount = 0;
+	// amountCol => number that represents the amount of columns that the table has. 
+	// That number depends on the performance criterias being evaluated
 	let amountCol = parms.colNums;
 
-	console.log('Req Body: ', req.body.amountOfCol);
-
-	// for loop creating a multidimession array
+	// Loop creating a multi-dimension array
 	for (let i = 0; i < (input.length/4); i++) {
 		studentScores[i] = [];
 	}
 
+	let inputCount = 0;
+
+	// Nested for loops that populates the multi-dimension array with the users input. (input => Students Scores)
 	for (let i = 0; i < (input.length/4); i++) {
 		for (let j = 0; j < amountCol; j++) {
 			studentScores[i][j] = input[inputCount];
@@ -238,9 +241,10 @@ router.post('/perfomanceTable', async function(req, res) {
 		}
 	}
 	
+	// firstRow => array which contains the first row of user inputs
 	let firstRow = studentScores[0];
 	let size = 0;
-	// For loop to count the size of a rows since the input is receive as Objects
+	// For loop to count the size of a rows
 	for (let s in firstRow) {
 		size++;
 	}
@@ -248,12 +252,12 @@ router.post('/perfomanceTable', async function(req, res) {
 	let sum = 0;
 	let avgRow = [];
 
-	// for loops which calculates average per rows
+	// Nested loops which calculates average per rows
 	for(let i = 0; i < studentScores.length; i++) {
 		for(let j = 0; j < size; j++) {
 			sum += parseFloat(studentScores[i][j]);
 		}
-		// avgRow is an array which contains all the average rolls
+		// avgRow => array which contains all the average value per roll
 		avgRow[i] = sum/parseFloat(size);
 		sum = 0;
 	}
@@ -261,7 +265,7 @@ router.post('/perfomanceTable', async function(req, res) {
 	let count = 1;
 	let listOfObjects = [];
 
-	// forEach creates a list of dictionaries
+	// forEach creates a list of Objects
 	avgRow.forEach(function(entry) {
 		let singleObj = {};
 		singleObj['rowID'] = count;
@@ -275,6 +279,18 @@ router.post('/perfomanceTable', async function(req, res) {
 	let threeMoreCount = 0;
 	let avgtreeMoreCount = 0;
 
+	// Nested loop that check student score greater than 3 per column
+	for(let i = 0; i < size; i++) {
+		for (let j = 0; j < studentScores.length; j++) {
+			if(studentScores[j][i] >= 3) {
+				threeMoreCount++;
+			}
+		}
+		threeMorePerc[i] = (threeMoreCount/studentScores.length)*100;
+		threeMoreCount = 0;
+	}
+
+	// Loop checks if the avg is greater than 3
 	for(let i = 0; i < avgRow.length; i++) {
 		if(avgRow[i] >= 3) {
 			avgtreeMoreCount++;
@@ -282,27 +298,15 @@ router.post('/perfomanceTable', async function(req, res) {
 	}
 
 	let avgPerc = (avgtreeMoreCount/avgRow.length)*100;
-
-	for(let i = 0; i < size; i++) {
-		for (let j = 0; j < studentScores.length; j++) {
-			if(studentScores[j][i] >= 3) {
-			threeMoreCount++;
-		}
-	}
-	threeMorePerc[i] = (threeMoreCount/studentScores.length)*100;
-	threeMoreCount = 0;
-	}
-
 	threeMorePerc[threeMorePerc.length] = avgPerc;
 
 	parms.row = listOfObjects;
 	parms.colPerc = threeMorePerc;
 
-	let document = reportTemplate.createReport(parms);
+	if (size < 5) size = 5;
 
-	console.log('Student Scores: ', studentScores);
-	if (size < 5)
-	size = 5;
+	// TODO: Noah R. Almeda
+	//     - Need to find way to insert null or 0 to Performance Criterias not being evaluated
 	for(let i = 0; i < studentScores.length; i++) {
 		let studentPerformance = [];
 		for(let j = 0; j < size; j++) {
@@ -322,15 +326,17 @@ router.post('/perfomanceTable', async function(req, res) {
 		});
 	}
 
+	// pngDataURL => contains a base64 encoding of the graph created
 	let pngDataURL = req.body.graph;
 	let img = pngDataURL.split(',');
 
-	// TODO: Investigate how writeFileSync works
+	// Create .png of the graph display on the page
 	fs.writeFileSync("graph.png", img[1], 'base64', (err) => {
 		console.log(err);
 	});
 
-	docx.Packer.toBuffer(document).then((buffer) => {
+	// Creates the .docx file by calling the createReport()
+	docx.Packer.toBuffer(reportTemplate.createReport(parms)).then((buffer) => {
 		console.log("Created a doc");
 		fs.writeFileSync("Document.docx", buffer);
 	});

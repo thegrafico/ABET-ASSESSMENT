@@ -28,7 +28,7 @@ function createReport(data) {
 	  }
 	});
 
-	const graph = docx.Media.addImage(doc, fs.readFileSync("./graph.png"), 200, 200, {
+	const graph = docx.Media.addImage(doc, fs.readFileSync("./graph.png"), 400, 200, {
 	  floating: {
 		horizontalPosition: {
 		  relative: docx.HorizontalPositionRelativeFrom.LEFT_MARGIN,

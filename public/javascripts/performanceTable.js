@@ -7,12 +7,8 @@ let labels = [];
 let row = 1;
 let graph; 
 
+// Loads empty chart when page is load
 window.onload = createChart();
-
-for(let i = 0; i < performanceCriteria.length; i++) {
-	performanceCriteria[i] = parseInt(performanceCriteria[i]);
-	labels[i] = "Criteria " + performanceCriteria[i];
-}
 
 $(document).ready(function () {
 	generateCols();
@@ -26,6 +22,8 @@ $(document).ready(function () {
 	});
 });
 
+
+// This function creates a row with the amount of columns which depends of the amount of performance Criterias
 function generateRow(r) {
 	var markup = "<tr><th scope='row'> " + r + " </th>";
 	for(let i = 1; i <= amountOfColumns; i++) {
@@ -35,6 +33,7 @@ function generateRow(r) {
 	$("#tableBody").append(markup);
 }
 
+// Creates header row of the table
 function generateCols() {
 	for(let i = 1; i <= amountOfColumns; i++) {
 		var col = "<th> Criteria " + performanceCriteria[i - 1] + "</th>";
@@ -42,11 +41,13 @@ function generateCols() {
 	}
 }
 
+// Creates a new row
 function addRow() {
 	++row;
 	$("#tableBody").append(generateRow(row));
 }
 
+// Deletes selected rows
 function delRow() {
 	$("#tableBody").find('input[name="record"]').each(function(){
 		if($(this).is(":checked")){
@@ -55,9 +56,16 @@ function delRow() {
 	});
 }
 
+// Creates chart depending the users input
 function createChart() {
 	let formData = [];
 	let data = [];
+
+	// Creates labels for the x-axis of the chart
+	for(let i = 0; i < performanceCriteria.length; i++) {
+		performanceCriteria[i] = parseInt(performanceCriteria[i]);
+		labels[i] = "Criteria " + performanceCriteria[i];
+	}
 
 	$("#performanceTable, input[type=number]").each(function(index) {
 		let input = $(this); // This is the jquery object of the input, do what you will
@@ -109,13 +117,6 @@ function createChart() {
 			}
 		}
 	});
-
-	
-	// var graph = document.getElementById('myChart');
-	// var img = graph.toDataURL("image/jpeg");
-	console.log('Data URL:', graph);
-	// var inputGraph = document.getElementById('graph');
-	// inputGraph.value = img;
 
 	$(document).ready(function() {
 		$('input[name="graph"]').val(graph);
