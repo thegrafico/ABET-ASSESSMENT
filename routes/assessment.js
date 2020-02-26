@@ -232,10 +232,10 @@ router.post('/perfomanceTable', async function(req, res) {
 	}
 
 	for (let i = 0; i < (input.length/4); i++) {
-	for (let j = 0; j < amountCol; j++) {
-		studentScores[i][j] = input[inputCount];
-		inputCount++;
-	}
+		for (let j = 0; j < amountCol; j++) {
+			studentScores[i][j] = input[inputCount];
+			inputCount++;
+		}
 	}
 	
 	let firstRow = studentScores[0];
@@ -250,12 +250,12 @@ router.post('/perfomanceTable', async function(req, res) {
 
 	// for loops which calculates average per rows
 	for(let i = 0; i < studentScores.length; i++) {
-	for(let j = 0; j < size; j++) {
-		sum += parseFloat(studentScores[i][j]);
-	}
-	// avgRow is an array which contains all the average rolls
-	avgRow[i] = sum/parseFloat(size);
-	sum = 0;
+		for(let j = 0; j < size; j++) {
+			sum += parseFloat(studentScores[i][j]);
+		}
+		// avgRow is an array which contains all the average rolls
+		avgRow[i] = sum/parseFloat(size);
+		sum = 0;
 	}
 
 	let count = 1;
@@ -297,8 +297,7 @@ router.post('/perfomanceTable', async function(req, res) {
 
 	parms.row = listOfObjects;
 	parms.colPerc = threeMorePerc;
-	console.log('colNums: ', parms.colNums);
-	console.log('Data for report: ', parms);
+
 	let document = reportTemplate.createReport(parms);
 
 	console.log('Student Scores: ', studentScores);
@@ -322,6 +321,14 @@ router.post('/perfomanceTable', async function(req, res) {
 			console.log('Wasn\'t able to add data.');
 		});
 	}
+
+	let pngDataURL = req.body.graph;
+	let img = pngDataURL.split(',');
+
+	// TODO: Investigate how writeFileSync works
+	fs.writeFileSync("graph.png", img[1], 'base64', (err) => {
+		console.log(err);
+	});
 
 	docx.Packer.toBuffer(document).then((buffer) => {
 		console.log("Created a doc");
