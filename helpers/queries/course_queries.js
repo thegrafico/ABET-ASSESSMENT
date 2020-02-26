@@ -27,9 +27,8 @@ function get_course_with_std_program(){
                     courses[each_course["course_ID"]].prog_name += ', ' +  each_course["prog_name"];
                 }
             });
-
-            console.log("Results: ", results);
-            console.log("MY RESULTS: ", courses);
+            // console.log("Results: ", results);
+            // console.log("MY RESULTS: ", courses);
 
             resolve(courses);
         });
@@ -145,12 +144,12 @@ function insert_program_course(course_id, programs_id){
 }
 /**
  * update_course - Update the course information
- * @param  {Object} data {"name", "description", "number", "id", "program_id"}
+ * @param  {Object} data {"name", "description", "number", "id"}
  * @return {Promise} resolve with results of database
  */
 function update_course(data){
     // promise updating course
-    let editing_course  = new Promise( function(resolve, reject){
+    return new Promise( function(resolve, reject){
 
         let update_query = `update COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID = ?`;
 
@@ -161,24 +160,6 @@ function update_course(data){
             else
                 resolve(true);
         });
-    });
-
-    // Promise for update the std program
-    let editing_program_course = new Promise(function(resolve, reject){
-        let update_pc = `UPDATE PROG_COURSE SET prog_ID = ? WHERE course_ID= ?`;
-        conn.query(update_pc, [data.prog_id, data.id], function (err, results) {
-            if (err)
-                reject(err);
-            else
-                resolve(true);
-        });
-    });
-
-    // run promise 1 and 2
-    Promise.all([editing_course, editing_program_course]).then(function([course_was_edited, program_was_edited]){
-        console.log("Course was edited successfully");
-    }).catch((err) => {
-        console.log("THERE IS AN ERROR: ", err);
     });
 }
 

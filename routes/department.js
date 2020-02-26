@@ -15,7 +15,8 @@ let locals = {
 	"title": 'ABET Assessment',
 	"subtitle": 'Departments',
 	"base_url": "/department",
-	"url_create": "/department/create"
+	"url_create": "/department/create",
+	"form_id": "department_data"
 };
 /*
  	-- DEPARTMENT home page-- 
@@ -64,10 +65,6 @@ router.get('/create', function (req, res) {
 
 	locals.have_dropdown = false;
 	locals.title_action = "Create Department";
-	locals.dropdown_options = [];
-	locals.dropdown_title = "Study Program";
-	locals.dropdown_name = "data[prog_id]";
-	locals.form_method = "POST";
 	locals.url_form_redirect = "/department/create";
 	locals.btn_title = "Create";
 

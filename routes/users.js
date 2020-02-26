@@ -15,7 +15,8 @@ var locals = {
 	title: 'ABET Assessment',
 	subtitle: 'Users',
 	url_create: "/users/create",
-	base_url: base_url
+	base_url: base_url,
+	form_id: "user_data"
 };
 
 /*
@@ -151,7 +152,7 @@ router.post('/create', async function (req, res) {
 		"username": "s", 
 		"lastname": "s", 
 		"email": "s", 
-		"phoneNumber": "n",
+		// "phoneNumber": "s",
 		"profile_id": "n",
 		"selected_values": "s"
 	};
@@ -307,7 +308,7 @@ router.put('/:id', async function (req, res) {
 		"username": "s", 
 		"lastname": "s", 
 		"email": "s", 
-		"phoneNumber": "n",
+		// "phoneNumber": "s",
 		"profile_id": "n",
 		"actual_profile": "n",
 	};

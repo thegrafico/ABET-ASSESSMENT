@@ -13,7 +13,8 @@ let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Outcomes",
 	"base_url": base_url,
-	"url_create": "/outcomes/create"
+	"url_create": "/outcomes/create",
+	"form_id": "outcome_data"
 };
 
 /* 

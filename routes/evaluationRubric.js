@@ -15,6 +15,7 @@ let locals = {
 	"title": 'ABET Assessment',
 	"subtitle": 'Evaluation Rubric',
 	"base_url": base_url,
+	"form_id": "rubric_data"
 };
 
 

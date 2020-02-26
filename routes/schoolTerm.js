@@ -13,7 +13,9 @@ let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Term",
 	"base_url": base_url,
-	"url_create": "/term/create"
+	"url_create": "/term/create",
+	"form_id": "term_data"
+
 };
 
 /* 

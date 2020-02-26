@@ -3,12 +3,11 @@
 <div class="container-fluid">
 	<h2><%= title_action %> </h2>
 	<hr class="my-4">
-	<!-- TODO: VALIDATE DATA [interID, username, lastname, email, phoneNumber ]-->
-	<form action="<%= url_form_redirect %>" method="POST">
+	<form id="<%= form_id %>" action="<%= url_form_redirect %>" method="POST">
 		
 		<% if (have_dropdown) { %>
 			<div class="container-fluid">
-
+				
 				<div class="row my-4">
 					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %></strong></div>
 					<div class="col-8">
@@ -28,24 +27,14 @@
 			</div>
 		<% } %>
 		<% inputs.forEach(element => { %>
-				<% if (element.isRequire) { %>
-						<div class="row my-4">
-								<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-								<div class="col-8">
-									<input class="form-control" value="<%= element.value %>" 
-									type="text" placeholder="<%= element.placeHolder %>" name="<%= element.name %>" required>
-								</div>
-						</div>
-				<% }else {%>
-						<div class="row my-4">
-								<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-								<div class="col-8">
-										<input class="form-control" value="<%= element.value %>"
-										type="text" placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
-								</div>
-						</div>
-				<% } %>
-		<% }) %>
+			<div class="row my-4">
+					<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+					<div class="col-8">
+						<input class="form-control" value="<%= element.value %>" 
+						type="text" placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+					</div>
+			</div>
+		<% }); %>
 
 		<div class="row my-4">
 			<div class="col-2"></div>

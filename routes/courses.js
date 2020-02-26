@@ -14,7 +14,8 @@ let locals = {
 	"title": 'ABET Assessment',
 	"base_url":base_url,
 	"subtitle": 'Courses',
-	"url_create": "/courses/create"
+	"url_create": "/courses/create",
+	"form_id": "course_data",
 };
 
 /*
@@ -248,7 +249,8 @@ router.put('/:id', async function(req, res) {
 
 	let course_id = req.params.id;
 	let data = req.body.data;
-
+	data["id"] = course_id;
+	
 	// to validation
 	let key_types = {
 		"number": 's',
@@ -288,8 +290,16 @@ router.put('/:id', async function(req, res) {
 			throw err;
 		});
 	}
-	req.flash("success", "Course Edited");
-	res.redirect(base_url);
+
+	query.update_course(data).then((ok) => {
+		req.flash("success", "Course Edited");
+		res.redirect(base_url);
+	}).catch((err) =>{
+		console.log(err);
+		req.flash("error", "Cannot update the course");
+		res.redirect(base_url);
+	});
+	
 });
 
 /*

@@ -14,7 +14,8 @@ let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Study Programs",
 	"base_url": base_url,
-	"url_create": "/studyprograms/create"
+	"url_create": "/studyprograms/create",
+	"form_id": "std_data"
 };
 
 /* 

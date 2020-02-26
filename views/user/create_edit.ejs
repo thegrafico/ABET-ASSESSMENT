@@ -3,17 +3,15 @@
 <div class="container-fluid">
 	<h2><%= title_action %> </h2>
 	<hr class="my-4">
-	<!-- TODO: VALIDATE DATA [interID, username, lastname, email, phoneNumber ]-->
-	<form action="<%= url_form_redirect %>" method="POST">
+	<form id="<%= form_id %>" action="<%= url_form_redirect %>" method="POST">
 		
 		<% if (have_dropdown) { %>
 			<div class="container-fluid">
 
 				<div class="row my-4">
 					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
-					<!-- TODO: if statement here if dont have dropdown menu -->
 					<div class="col-8">
-						<select id="profiles" type="text" name="<%= dropdown_name %>" required>
+						<select id="profiles" type="text" name="<%= dropdown_name %>">
 							<% for (let profile of dropdown_options) {%>
 								<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
 							<% } %>
@@ -47,7 +45,7 @@
 								<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
 								<div class="col-8">
 									<input class="form-control" value="<%= element.value %>" 
-									type="text" placeholder="<%= element.placeHolder %>" name="<%= element.name %>" required>
+									type="text" placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
 								</div>
 						</div>
 				<% }else {%>
@@ -68,5 +66,6 @@
 		<p><a href="<%= base_url %> ">Back to List</a></p>
 	</form>
 </div>
+
 
 <%- include ('../partials/footer') -%>
