@@ -110,12 +110,13 @@ app.use('/users', usersRouter);
 
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
-app.use('/evaluation', evaluationRubric);
-
-// ===== Courses Section =====
-app.use('/courses', coursesRouter);
 // ===== Performance Criteria Section =====
 app.use('/performanceCriteria', perfCritRouter);
+
+// ===== EVALUATION RUBRIC =====
+app.use('/evaluation', evaluationRubric);
+// ===== Courses Section =====
+app.use('/courses', coursesRouter);
 // ===== Program/Course/Term Selection =====
 app.use('/assessment', assessmentRouter);
 // ====================================================

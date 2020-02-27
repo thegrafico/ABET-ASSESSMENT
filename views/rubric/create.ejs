@@ -1,0 +1,79 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<div class="container-fluid">
+    <h2>Create Evaluation Rubric</h2>
+    <hr class="my-4">
+
+    <form id="<%= form_id %>" action="<%= url_form_redirect %>" method="POST">
+
+        <div class="container-fluid">
+            <div class="row my-4">
+                <div class="col-2 align-self-center text-right"><strong>Study Programs</strong></div>
+                <div class="col-8">
+                    <select id="study_program" type="text" name="study_program" required>
+                        <option disabled selected value> -- Select Study Program -- </option>
+                        <% for (let std of std_options) {%>
+                        <option class="dropdown-item" value="<%=std.ID%>"> <%= std.NAME%> </option>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row my-4">
+                <div class="col-2 align-self-center text-right"><strong>Outcomes</strong></div>
+                <div class="col-8 ">
+                    <select id="outcomes" type="text" name="outcome" required>
+                        <option disabled selected value> -- Select Outcome -- </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <% inputs.forEach(element => { %>
+          
+            <div class="row my-4">
+                <div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+                <div class="col-8">
+                    <input class="form-control" value="<%= element.value %>" type="text"
+                        placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+                </div>
+            </div>
+        <% }) %>
+
+        <div class="row my-4">
+            <div class="col-2"></div>
+            <div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
+        </div>
+        <p><a href="<%= base_url %> ">Back to List</a></p>
+    </form>
+</div>
+
+<script>
+    $(document).ready(() => {
+
+        // change the data when user select study program
+        $("#study_program").change(function () {
+
+            // clean outcomes data
+            $('#outcomes').empty().append('<option disabled selected value> -- Select Outcome -- </option>');
+
+            // get the selected id of the study program to make the request
+            var selected = $(this).children("option:selected").val();
+
+            $.ajax({
+                'url': `/outcomes/${selected}/getStudyProgram`,
+                type: 'GET',
+                dataType: 'json',
+                success: (data) => {
+                    
+                    // populate the options
+                    data.forEach(element => {
+                        $('#outcomes').append('<option class="val" value="' + element.outc_ID + '">' + element.outc_name + '</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>
+<%- include ('../partials/footer') -%>

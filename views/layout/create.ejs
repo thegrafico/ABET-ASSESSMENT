@@ -11,7 +11,7 @@
 			<div class="row my-4">
 				<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
 				<div class="col-8">
-					<select id="testing_ajax" type="text" name="<%= dropdown_name %>" required>
+					<select type="text" name="<%= dropdown_name %>" required>
 						<% for (let profile of dropdown_options) {%>
 						<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
 						<% } %>
@@ -47,21 +47,4 @@
 		<p><a href="<%= base_url %> ">Back to List</a></p>
 	</form>
 </div>
-
-<script>
-	$(document).ready(() => {
-
-		$("#testing_ajax").change(function () {
-			var selected = $(this).children("option:selected").val();
-			$.ajax({
-				'url': `/outcomes/${selected}/getStudyProgram`,
-				type: 'GET',
-				dataType: 'json',
-				success: (data) => {
-					console.log(data);
-				}
-			});
-		});
-	});
-</script>
 <%- include ('../partials/footer') -%>

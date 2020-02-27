@@ -35,16 +35,16 @@ router.get('/', async function (req, res) {
 		console.log("Error getting the outcomes information: ", err);
 	});
 
-	locals.table_header = ["Name", "Description", "Study Program", "Creation date", "Evaluation Rubric", ""];
+	locals.table_header = ["Name", "Description", "Study Program", "Creation date", "Performance Criteria", ""];
 
-	if (stud_outcomes != undefined && stud_outcomes.length > 0){
+	if (stud_outcomes != undefined && stud_outcomes.length > 0) {
 		let results = [];
-		stud_outcomes.forEach(outcome => {			
+		stud_outcomes.forEach(outcome => {
 
 			// change date format 
 			let date = new Date(outcome.date_created);
 			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-			
+
 			results.push({
 				"ID": outcome["outc_ID"],
 				"values": [
@@ -64,14 +64,27 @@ router.get('/', async function (req, res) {
 
 router.get('/:id/getStudyProgram', async function (req, res) {
 
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
 	}
 
-	console.error("ID: ", req.params.id);
+	// id of the study program
+	let study_program_id = req.params.id;
+	let get_outcomes_query = { "from": "student_outcome", "where": "prog_ID", "id": study_program_id };
+	
+	// fetching data from db
+	let outcomes = await general_queries.get_table_info_by_id(get_outcomes_query).catch((err) => {
+		console.log("Error getting the information: ", err);
+	});
 
-	res.json({"PUTO": "PUTO"});
+	// verify
+	if (outcomes == undefined || outcomes.length == 0) {
+		return res.json([]);
+	}
+
+	// send response if it's good
+	res.json(outcomes);
 });
 
 
@@ -96,23 +109,23 @@ router.get('/create', async function (req, res) {
 	});
 
 	// validate
-	if (study_programs == undefined || study_programs.length == 0){
+	if (study_programs == undefined || study_programs.length == 0) {
 		console.log("Need to create a study program to work with outcomes");
 		req.flash("error", "Cannot find any Study program, Need to create one");
 		return res.redirect("/");
 	}
 
 	// reset value to nothing when creating a new record
-	outcome_create_inputs.forEach((record) =>{
+	outcome_create_inputs.forEach((record) => {
 		record.value = "";
 	});
 
 	locals.inputs = outcome_create_inputs;
 
 	// for dynamic frontend
-	study_programs.forEach( (element) =>{
+	study_programs.forEach((element) => {
 		locals.dropdown_options.push({
-			"ID" : element.prog_ID,
+			"ID": element.prog_ID,
 			"NAME": element.prog_name
 		});
 	});
@@ -126,7 +139,7 @@ router.get('/create', async function (req, res) {
 router.post('/create', function (req, res) {
 
 	// validate body
-	if (req.body == undefined){
+	if (req.body == undefined) {
 		req.flash("error", "Cannot find outcome data");
 		return res.redirect(base_url);
 	}
@@ -139,10 +152,10 @@ router.post('/create', function (req, res) {
 	}
 
 	// if the values don't mach the type 
-	if (!validate_form(req.body, key_types)){
+	if (!validate_form(req.body, key_types)) {
 		console.log("Error in validation");
 		req.flash("error", "Error in the information of the outcome");
-		return res.redirect(base_url);	
+		return res.redirect(base_url);
 	}
 
 	let data = {
@@ -168,7 +181,7 @@ router.post('/create', function (req, res) {
 */
 router.get('/:id/edit', async function (req, res) {
 
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
 	}
@@ -197,7 +210,7 @@ router.get('/:id/edit', async function (req, res) {
 		console.log("Error getting the outcome: ", err);
 	});
 
-	if (outcome_to_edit == undefined || outcome_to_edit.length == 0){
+	if (outcome_to_edit == undefined || outcome_to_edit.length == 0) {
 		console.log("Cannot find the outcome");
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
@@ -210,7 +223,7 @@ router.get('/:id/edit', async function (req, res) {
 	});
 
 	// validate study programs
-	if (study_programs == undefined || study_programs.length == 0){
+	if (study_programs == undefined || study_programs.length == 0) {
 		console.log("Cannot find any study program");
 		return res.redirect(base_url);
 	}
@@ -221,7 +234,7 @@ router.get('/:id/edit', async function (req, res) {
 	]
 
 	let index = 0;
-	outcome_create_inputs.forEach((record) =>{
+	outcome_create_inputs.forEach((record) => {
 		record.value = outcome[index];
 		index++;
 	});
@@ -229,9 +242,9 @@ router.get('/:id/edit', async function (req, res) {
 	locals.inputs = outcome_create_inputs;
 
 	// for dynamic frontend
-	study_programs.forEach( (element) =>{
+	study_programs.forEach((element) => {
 		locals.dropdown_options.push({
-			"ID" : element.prog_ID,
+			"ID": element.prog_ID,
 			"NAME": element.prog_name
 		});
 	});
@@ -245,7 +258,7 @@ router.get('/:id/edit', async function (req, res) {
 router.put('/:id', function (req, res) {
 
 	// validate body
-	if (req.body == undefined || req.params.id == undefined || isNaN(req.params.id)){
+	if (req.body == undefined || req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "Outcome don't exits");
 		return res.redirect(base_url);
 	}
@@ -258,10 +271,10 @@ router.put('/:id', function (req, res) {
 	}
 
 	// if the values don't mach the type 
-	if (!validate_form(req.body, key_types)){
+	if (!validate_form(req.body, key_types)) {
 		console.log("Error in validation");
 		req.flash("error", "Error in the information of the outcome");
-		return res.redirect(base_url);	
+		return res.redirect(base_url);
 	}
 
 	let data = {
@@ -287,9 +300,9 @@ router.put('/:id', function (req, res) {
 	-- SHOW OUTCOME TO remove --
 	GET /outcome/:id/delete
 */
-router.get('/:id/remove',async function (req, res, next) {
-	
-	if (req.params.id == undefined || isNaN(req.params.id)){
+router.get('/:id/remove', async function (req, res, next) {
+
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
 	}
@@ -300,13 +313,13 @@ router.get('/:id/remove',async function (req, res, next) {
 		"where": "outc_ID",
 		"id": out_id
 	};
-	
+
 	// Get outcome to remove 
 	let outcome_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("Error: ", err);
 	});
 
-	if (outcome_to_remove == undefined || outcome_to_remove.length == 0){
+	if (outcome_to_remove == undefined || outcome_to_remove.length == 0) {
 		console.log("Cannot find the outcome");
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
@@ -324,9 +337,9 @@ router.get('/:id/remove',async function (req, res, next) {
 	// change date format 
 	let date = new Date(outcome_to_remove.date_created);
 	date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
-	
+
 	let values = [
-		outcome_to_remove.outc_name, 
+		outcome_to_remove.outc_name,
 		outcome_to_remove.outc_description,
 		outcome_to_remove.prog_ID,
 		date
@@ -334,7 +347,7 @@ router.get('/:id/remove',async function (req, res, next) {
 
 	let record = [];
 	for (let index = 0; index < names.length; index++) {
-		record.push({"name": names[index], "value": values[index]})
+		record.push({ "name": names[index], "value": values[index] })
 	}
 
 	locals.record = record;
@@ -348,13 +361,13 @@ router.get('/:id/remove',async function (req, res, next) {
 */
 router.delete('/:id', function (req, res, next) {
 
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
 	}
-	
+
 	let out_id = req.params.id;
-	
+
 	// Data to remove outcome
 	let data = {
 		"from": "STUDENT_OUTCOME",
