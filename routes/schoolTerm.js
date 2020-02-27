@@ -2,194 +2,273 @@ var express = require('express');
 var query = require("../helpers/queries/term_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
-var authHelper = require('../helpers/auth');
+const { academic_term } = require("../helpers/layout_template/create");
+var { validate_form } = require("../helpers/validation");
 
 
-let base_url = '/schoolTerm/'
-// let routes_names = ['create', 'delete', 'edit']
+const base_url = '/term';
 
 //Paramns to routes links
-let parms = {"title":'ABET Assessment', "base_url":base_url  };
+let locals = {
+	"title": "ABET Assessment",
+	"subtitle": "Term",
+	"base_url": base_url,
+	"url_create": "/term/create",
+	"form_id": "term_data"
 
-//================================ HOME PAGE =================================
-router.get('/', function(req, res, next) {
+};
 
-let term_table = 'ACADEMIC_TERM';
+/* 
+	-- SHOW all terms -- 
+	GET /term
+*/
+router.get('/', async function(req, res) {
 
-general_queries.get_table_info(term_table, function(err, results){
-  //TODO: handle error
-  if (err) throw err;
+	locals.results = [];
 
+	let academic_terms = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
+		console.log("Error getting the terms");
+	});
 
-  parms.results = results;
-  res.render('schoolTerms/schoolTerm', parms);
-  });
+	// Validation
+	if (academic_terms != undefined && academic_terms.length > 0){
+		
+		let results = [];
+		academic_terms.forEach(term => {			
+
+			results.push({
+				"ID": term["term_ID"],
+				"values": [
+					term["term_name"],
+					"" // position the buttons of remove, and edit
+				]
+			});
+		});
+		locals.results = results;
+	}
+	locals.table_header = ["Name", ""];
+
+	res.render('layout/home', locals);
 });
-parms["title"] = 'ABET Assessment';
-parms["subtitle"] = 'School Terms';
 
-//================================ CREATE TERM  =================================
+/* 
+	-- SHOW CREATE TERM --
+	GET /term/create
+*/ 
+router.get('/create', function(req, res) {
+	
+	// store all profiles
+	locals.have_dropdown = false;
+	locals.title_action = "Create Academic Term";
+	locals.url_form_redirect = "/term/create";
+	locals.btn_title = "Create";
 
+	// reset value to nothing when creating a new record
+	academic_term.forEach((record) =>{
+		record.value = "";
+	});
 
-router.get('/create', function(req, res, next) {
-    res.render('schoolTerms/createSchoolTerm', parms);
+	// set the input for user
+	locals.inputs = academic_term;
 
+	res.render("layout/create", locals);
 });
 
-router.post('/create', function(req, res, next) {
+router.post('/create', function(req, res) {
 
-  //TODO: verify values, null, undefined
-  let data = req.body.data;
+	// validate body
+	if (req.body == undefined){
+		req.flash("error", "Cannot find term data");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"name": 's',
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the outcome");
+		return res.redirect(base_url);	
+	}
+
+	//TODO: verify values, null, undefined
+	let data = {"name": req.body.name }; 
 
 	//Insert into the DB the data from user
-	query.insert_into_term([data.tname], function(err, results){
-
-		//TODO: catch error properly
-		if (err) throw err;
-
+	query.insert_into_term(data).then((ok) => {
+		req.flash("success", "Term Created");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log(err);
+		req.flash("error", "Cannot Create the term");
 		res.redirect(base_url);
 	});
 });
-//==================================== REMOVE TERM =================================
-router.get('/:id/remove', function (req, res) {
-  //TODO: catch error in case there is not id
-  let term_id = req.params.id;
-  let term_table = "ACADEMIC_TERM";
-  let where_attr = "term_ID";
-  let data = {"from": term_table,"where":where_attr, "id":term_id};
-  general_queries.get_table_info_by_id(data, function(err, results){
 
-    //TODO: catch erro
-    if (err) throw err;
-    try {
-      parms.term_ID = results[0].term_ID;
-      res.render('schoolTerms/deleteSchoolTerm', parms);
-    } catch (error) {
-      res.redirect(base_url);
-    }
-  });
+/* 
+	-- SHOW Update the term -- 
+	PUT /term/:id/edit 
+*/
+router.get('/:id/edit', async function(req, res) {
+
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This term don't exits");
+		return res.redirect(base_url);
+	}
+
+	// Validate id
+	let id_term = req.params.id;
+
+	let data = {"from":"ACADEMIC_TERM", "where":"term_ID", "id": id_term};
+
+	let term_to_edit = await general_queries.get_table_info_by_id(data).catch((err) => {
+		console.log("Error getting the term: ", err);
+	});
+
+	if (term_to_edit == undefined || term_to_edit.length == 0){
+		req.flash("error", "Cannot find the term");
+		return res.redirect(base_url);
+	}
+
+	// We only care about the first one
+	term_to_edit = term_to_edit[0];
+
+	term = [
+		term_to_edit.term_name,
+	];
+
+	let index = 0;
+	academic_term.forEach((record) =>{
+		record.value = term[index];
+		index++;
+	});
+
+	locals.url_form_redirect = `/term/${id_term}?_method=PUT`;
+	locals.have_dropdown = false;
+	locals.title_action = "Editing Academic Term";
+	locals.btn_title = "Submit";
+	locals.inputs = academic_term;
+
+	res.render('layout/create', locals);
 });
-/* DELETE ROUTE */
+
+/* 
+	-- Update the term -- 
+	PUT /term/:id 
+*/
+router.put('/:id', function(req, res) {
+
+	// validate body
+	if (req.body == undefined || req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find term data");
+		return res.redirect(base_url);
+	}
+
+	// to validation - expected values
+	let key_types = {
+		"name": 's',
+	}
+
+	// if the values don't mach the type 
+	if (!validate_form(req.body, key_types)){
+		console.log("Error in validation");
+		req.flash("error", "Error in the information of the outcome");
+		return res.redirect(base_url);	
+	}
+
+	// TODO: verify values befero enter to DB
+	let data = {
+		"name": req.body.name,
+		"id": req.params.id
+	}
+
+	query.update_term(data).then((ok) => {
+		req.flash("success", "Term edited");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log(err);
+		req.flash("error", "Cannot edit the term");
+		res.redirect(base_url);
+	});
+});
+
+
+
+/* 
+	-- SHOW TERM TO DELETE --
+	GET /term/:id/remove
+*/
+router.get('/:id/remove', async function (req, res) {
+	
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This term don't exits");
+		return res.redirect(base_url);
+	}
+
+	let term_id = req.params.id;
+	let data = {"from": "ACADEMIC_TERM", "where": "term_ID", "id": term_id};
+	
+	let term_to_remove = await general_queries.get_table_info_by_id(data).catch((err) =>{
+		console.log("Error getting the term: ", err);
+	});
+
+	if (term_to_remove == undefined || term_to_remove.length == 0){
+		req.flash("error", "Cannot find the term");
+		return res.redirect(base_url);
+	}
+
+	term_to_remove = term_to_remove[0];
+
+	locals.title_action = "Remove";
+	locals.title_message = "Are you sure you want to delete this academic term?";
+	locals.form_action = `/term/${term_id}?_method=DELETE`;
+	locals.btn_title = "Delete";
+
+	let names = ["Name"];
+	let values = [term_to_remove.term_name];
+
+	let record = [];
+	for (let index = 0; index < names.length; index++) {
+		record.push({"name": names[index], "value": values[index]})
+	}
+
+	locals.record = record;
+	res.render('layout/remove', locals);
+
+});
+
+
+/* 
+	--  DELETE TERM --
+	DELETE /term/:id
+*/
 router.delete('/:id', function (req, res) {
-  console.log("===================DELETED ROUTE=====================");
+	
+	// validating id 
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "This term don't exits");
+		return res.redirect(base_url);
+	}
+	
+	let term_id = req.params.id;
 
-  //TODO: catch error in case of null
-  let trm_id = req.params.id;
-  let table_name = "ACADEMIC_TERM";
-  let where_attr = "term_ID";
+	let data = {"id": term_id, "from": "ACADEMIC_TERM", "where":"term_ID" };
 
-  let data = {"id":trm_id, "from":table_name,"where":where_attr };
+	general_queries.delete_record_by_id(data).then((ok) => {
+		req.flash("success", "Term deleted");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log(err);
+		req.flash("error", "Cannot delete the term");
+		res.redirect(base_url);
+	});
 
-  general_queries.delete_record_by_id(data, function (err, results) {
-
-    //TODO: catch error
-    if (err) {
-      throw err;
-    }
-    res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-    res.redirect("back");
-  });
 });
-
-//========================================== EDIT TERM =====================================
-
-router.get('/:id/edit', function(req, res, next) {
-  let table_name = "ACADEMIC_TERM";
-  let id_term = req.params.id;
-  let where_atr = "term_ID";
-
-  let data = {"from":table_name, "where":where_atr, "id": id_term};
-  general_queries.get_table_info_by_id(data, function(err, user_results){
-
-    //TODO: handle this err;
-      parms.term_ID = id_term;
-      parms.user_results = user_results[0];
-
-      res.render('schoolTerms/editSchoolTerm', parms);
-    // });
-  });
-});
-
-/* EDIT home page. */
-router.put('/:id', function(req, res, next) {
-
-  //TODO: verify values befero enter to DB
-  let name = req.body.data.tname;
-  let term_id = req.params.id;
-  // let dept_id =  req.body.data.dept_id;
-
-  //TIENE QUE IR EN ESTE ORDEN.
-  let data = [name, term_id];
-
-  query.update_term(data, function(err, results){
-
-    //TODO: cath this error
-    if (err) throw err;
-
-    res.redirect(base_url);
-  });
-});
-
-
-
-
-
-
 
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// //Populate parms
-// routes_names.forEach(e=>{
-//   parms[e] = base_url + e;
-// });
-// parms["title"] = 'ABET Assessment';
-//
-// /* GET home page. */
-// router.get('/', function(req, res, next) {
-//   res.render('schoolTerms/schoolTerm', parms);
-// });
-//
-//
-// /* CREATE home page. */
-// router.get('/' + routes_names[0], function(req, res, next) {
-//   res.render('schoolTerms/createSchoolTerm', parms);
-// });
-//
-// /* DELETE home page. */
-// router.get('/' + routes_names[1], function(req, res, next) {
-//   res.render('schoolTerms/deleteSchoolTerm', parms);
-// });
-//
-// /* EDIT home page. */
-// router.get('/' + routes_names[2], function(req, res, next) {
-//   res.render('schoolTerms/editSchoolTerm', parms);
-// });
-//

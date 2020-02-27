@@ -45,14 +45,14 @@ module.exports.course_create_inputs = [
     {
         "title": "Number",
         "placeHolder":"Course Number",
-        "name": "data[crnumber]",
+        "name": "data[number]",
         "value": "",
         "isRequire": true
     },
     {
         "title": "Name",
         "placeHolder":"Course Name",
-        "name": "data[crname]",
+        "name": "data[name]",
         "value": "",
         "isRequire": true
     },
@@ -72,20 +72,20 @@ module.exports.department_create_inputs = [
     {
         "title": "Name",
         "placeHolder": "Department Name",
-        "name": "depName",
+        "name": "name",
         "value": "",
         "isRequire": true
     },
     {
         "title": "Description",
         "placeHolder": "Department Description",
-        "name": "depDesc",
+        "name": "description",
         "value": "",
         "isRequire": true
     }
 ];
 
-
+// create and edit outcome
 module.exports.outcome_create_inputs = [
     {
         "title": "Name",
@@ -102,5 +102,59 @@ module.exports.outcome_create_inputs = [
         "isRequire": true
     },
 ];
+
+// create and edit study program
+module.exports.study_program_create_input = [
+    {
+        "title": "Name",
+        "placeHolder": "Program Name",
+        "name": "std_name",
+        "value": "",
+        "isRequire": true
+    }
+    // {
+    //     "title": "Description",
+    //     "placeHolder": "Program Description",
+    //     "name": "std_description",
+    //     "value": "",
+    //     "isRequire": false
+    // }
+];
+
+
+// create and edit evaluation rubric
+module.exports.evaluation_rubric_input = [
+    {
+        "title": "Name",
+        "placeHolder": "Rubric Name",
+        "name": "name",
+        "value": "",
+        "isRequire": true
+    },
+    {
+        "title": "Description",
+        "placeHolder": "Rubric Description",
+        "name": "description",
+        "value": "",
+        "isRequire": true
+    }
+];
+
+/* 
+    - create and edit academic term
+*/
+
+module.exports.academic_term = [
+    {
+        "title": "Name",
+        "placeHolder": "Academic Name",
+        "name": "name",
+        "value": "",
+        "isRequire": true
+    }
+];
+
+
+
 
 

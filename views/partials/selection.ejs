@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>SelectPure example</title>
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+		integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<script src="javascripts/bundle.min.js"></script>
+
+</head>
+
+<body>
+	<div class="select-wrapper">
+		<h1>PureSelect</h1>
+
+		<h3>Multiselect:</h3>
+		<span class="multi-select"></span>
+	</div>
+
+	
+	<script>
+		let department = <%- JSON.stringify(department) %>;
+	</script>
+
+	<script src="javascripts/multiselect.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/multiselect.css">
+</body>
+
+</html>

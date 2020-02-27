@@ -33,7 +33,7 @@ var sessionStore = new MySQLStore(options);
 // ===== Index Route =====
 var indexRouter = require('./routes/index');
 // ===== Evaluation Section =====
-var evaluationRouter = require('./routes/evaluationRubric');
+var evaluationRubric = require('./routes/evaluationRubric');
 // ===== School Term Section =====
 var schoolTermRouter = require('./routes/schoolTerm');
 // ===== Departments Section =====
@@ -100,18 +100,19 @@ app.use(function(req, res, next){
 // Index route & authorize
 app.use('/', indexRouter);
 app.use('/authorize', authorize);
-// ===== Evaluation Section =====
-app.use('/evaluation', evaluationRouter);
 // ===== School Term Section =====
-app.use('/schoolTerm', schoolTermRouter);
+app.use('/term', schoolTermRouter);
 // ===== Departments Section =====
 app.use('/department', departmentRouter);
 // ===== Study Programs Section =====
-app.use('/studyPrograms', studyProgramsRouter);
+app.use('/studyprograms', studyProgramsRouter);
 // ===== Users Section =====
 app.use('/users', usersRouter);
+
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
+app.use('/outcomes', evaluationRubric);
+
 // ===== Courses Section =====
 app.use('/courses', coursesRouter);
 // ===== Performance Criteria Section =====
