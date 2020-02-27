@@ -62,6 +62,19 @@ router.get('/', async function (req, res) {
 	res.render('outcome/home', locals);
 });
 
+router.get('/:id/getStudyProgram', async function (req, res) {
+
+	if (req.params.id == undefined || isNaN(req.params.id)){
+		req.flash("error", "Cannot find the outcome");
+		return res.redirect(base_url);
+	}
+
+	console.error("ID: ", req.params.id);
+
+	res.json({"PUTO": "PUTO"});
+});
+
+
 /* 
 	-- SHOW CREATE OUTCOMES --
 	GET /outcomes/create  

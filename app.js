@@ -96,7 +96,6 @@ app.use(function(req, res, next){
   next();
 });
 
-
 // Index route & authorize
 app.use('/', indexRouter);
 app.use('/authorize', authorize);
@@ -111,7 +110,7 @@ app.use('/users', usersRouter);
 
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
-app.use('/outcomes', evaluationRubric);
+app.use('/evaluation', evaluationRubric);
 
 // ===== Courses Section =====
 app.use('/courses', coursesRouter);
