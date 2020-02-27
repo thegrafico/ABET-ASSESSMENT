@@ -37,7 +37,8 @@ $(document).ready(function () {
             "phoneNumber": {
                 digits: true,
                 required: false,
-                minlength: 5
+                minlength: 5,
+                maxLength: 11
             }
         },
         // Specify validation error messages

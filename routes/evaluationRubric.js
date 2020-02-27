@@ -9,7 +9,7 @@ var general_queries = require('../helpers/queries/general_queries');
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 var { validate_outcome, validate_evaluation_rubric} = require("../middleware/validate_outcome");
 
-let base_url = "";
+let base_url = "/evaluation";
 //Paramns to routes links
 let locals = {
 	"title": 'ABET Assessment',
@@ -23,25 +23,12 @@ let locals = {
 	-- Administrate OUTCOME Evaluation rubric -- 
 	GET /outcomes/:id/evaluationrubric 
 */
-router.get('/:id/evaluationrubric', validate_outcome, async function (req, res) {
+router.get('/', async function (req, res) {
 
-	let out_id = req.params.id;
-	
-	locals["subtitle"] = "Evaluation Rubric" + " - " + req.body["outcome_name"];
-
-	let rubric_query = {
-		"from": "evaluation_rubric",
-		"where": "outc_ID",
-		"id": out_id,
-	}
-	
 	// getting evaluation rubric from db
-	let eval_rubric = await general_queries.get_table_info_by_id(rubric_query).catch((err) => {
+	let eval_rubric = await general_queries.get_table_info("evaluation_rubric").catch((err) => {
 		console.log("Error getting all evaluation rubric: ", err);
 	});
-
-	locals.base_url = `/outcomes/${out_id}/evaluationrubric`;
-	locals.url_create = locals.base_url + "/create";
 
 	locals.results = [];
 	locals.table_header = ["Name", "Description", ""];
@@ -69,20 +56,9 @@ router.get('/:id/evaluationrubric', validate_outcome, async function (req, res) 
 	-- SHOW EVALUATION --
 	GET evaluation/create
 */
-router.get('/:id/evaluationrubric/create', validate_outcome, async function(req, res) {
+router.get('/create', async function(req, res) {
 	
-	if (req.params.id == undefined || isNaN(req.params.id)){
-		req.flash("error", "Cannot find the outcome evaluation rubric");
-		return res.redirect(base_url);
-	}
-
-	let outcome_query = {
-		"from": "STUDENT_OUTCOME",
-		"where": "outc_ID",
-		"id": req.params.id 
-	};
-	
-	let outcome = await general_queries.get_table_info_by_id(outcome_query).catch((err) =>{
+	let outcome = await general_queries.get_table_info("STUDENT_OUTCOME").catch((err) =>{
 		console.log("Error finding the outcome");
 	});
 
@@ -90,10 +66,15 @@ router.get('/:id/evaluationrubric/create', validate_outcome, async function(req,
 		req.flash("error", "Outcome does not exits");
 		return res.redirect("/outcomes");
 	}
-	
-	locals.have_dropdown = false;
+
+	// store all profiles
+	locals.profiles = [];
+	locals.dropdown_options = [];
+	locals.have_dropdown = true;
+	locals.dropdown_title = "Outcomes";
+	locals.dropdown_name = "outcome";
 	locals.title_action = "Create Evaluation Rubric";
-	locals.url_form_redirect = `/outcomes/${req.params.id}/evaluationrubric`;
+	locals.url_form_redirect = `/evaluation/create`;	
 	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
@@ -104,6 +85,14 @@ router.get('/:id/evaluationrubric/create', validate_outcome, async function(req,
 	// set the input for user
 	locals.inputs = evaluation_rubric_input;
 
+	// for dynamic frontend
+	outcome.forEach( (element) =>{
+		locals.dropdown_options.push({
+			"ID" : element.outc_ID,
+			"NAME": element.outc_name
+		});
+	});
+
 	res.render('layout/create', locals);
 });
 
@@ -111,7 +100,7 @@ router.get('/:id/evaluationrubric/create', validate_outcome, async function(req,
 	-- CREATE EVALUATION RUBRIC --
 	POST /evaluation/creates
 */
-router.post("/:id/evaluationrubric", validate_outcome, function(req, res){
+router.post("create", validate_outcome, function(req, res){
 	
 	// validate req.body
 	let rubric = {
