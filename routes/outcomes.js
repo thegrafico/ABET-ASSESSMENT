@@ -14,7 +14,9 @@ let locals = {
 	"subtitle": "Outcomes",
 	"base_url": base_url,
 	"url_create": "/outcomes/create",
-	"form_id": "outcome_data"
+	"form_id": "outcome_data",
+	"api_get_url": "/outcomes",
+	delete_redirect: null
 };
 
 /* 
@@ -72,7 +74,7 @@ router.get('/:id/getStudyProgram', async function (req, res) {
 	// id of the study program
 	let study_program_id = req.params.id;
 	let get_outcomes_query = { "from": "student_outcome", "where": "prog_ID", "id": study_program_id };
-	
+
 	// fetching data from db
 	let outcomes = await general_queries.get_table_info_by_id(get_outcomes_query).catch((err) => {
 		console.log("Error getting the information: ", err);
@@ -296,65 +298,6 @@ router.put('/:id', function (req, res) {
 });
 
 
-/* 
-	-- SHOW OUTCOME TO remove --
-	GET /outcome/:id/delete
-*/
-router.get('/:id/remove', async function (req, res, next) {
-
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		req.flash("error", "Cannot find the outcome");
-		return res.redirect(base_url);
-	}
-
-	let out_id = req.params.id;
-	let data = {
-		"from": "STUDENT_OUTCOME",
-		"where": "outc_ID",
-		"id": out_id
-	};
-
-	// Get outcome to remove 
-	let outcome_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
-		console.log("Error: ", err);
-	});
-
-	if (outcome_to_remove == undefined || outcome_to_remove.length == 0) {
-		console.log("Cannot find the outcome");
-		req.flash("error", "Cannot find the outcome");
-		return res.redirect(base_url);
-	}
-
-	outcome_to_remove = outcome_to_remove[0];
-
-	locals.title_action = "Remove";
-	locals.title_message = "Are you sure you want to delete this Outcome?";
-	locals.form_action = `/outcomes/${out_id}?_method=DELETE`;
-	locals.btn_title = "Delete";
-
-	let names = ["Name", "Description", "Study Program", "Date created"];
-
-	// change date format 
-	let date = new Date(outcome_to_remove.date_created);
-	date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
-
-	let values = [
-		outcome_to_remove.outc_name,
-		outcome_to_remove.outc_description,
-		outcome_to_remove.prog_ID,
-		date
-	];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++) {
-		record.push({ "name": names[index], "value": values[index] })
-	}
-
-	locals.record = record;
-
-	res.render('layout/remove', locals);
-});
-
 /*	
 	-- REMOVE THE OUTCOME -- 
 	DELETE /outcomes/:id 
@@ -384,5 +327,56 @@ router.delete('/:id', function (req, res, next) {
 		res.redirect(base_url);
 	});
 });
+
+
+/* 
+	-- API  OUTCOME TO remove --
+	GET /outcome/:id/delete
+*/
+router.get('/get/:id', async function (req, res) {
+
+	if (req.params.id == undefined || isNaN(req.params.id)) {
+		return res.end();
+	}
+ 
+	let outcome_query = {
+		"from": "STUDENT_OUTCOME",
+		"join": "study_program",
+		"using": "prog_ID",
+		"where": "outc_ID",
+		"id": req.params.id
+	};
+
+	// Get outcome to remove 
+	let outcome_to_remove = await general_queries.get_table_info_inner_join_by_id(outcome_query).catch((err) => {
+		console.log("Error: ", err);
+	});
+
+	if (outcome_to_remove == undefined || outcome_to_remove.length == 0) {
+		return res.end();
+	}
+
+	outcome_to_remove = outcome_to_remove[0];
+
+	let names = ["Name", "Description", "Study Program", "Date created"];
+
+	// change date format 
+	let date = new Date(outcome_to_remove.date_created);
+	date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+
+	let values = [
+		outcome_to_remove.outc_name,
+		outcome_to_remove.outc_description,
+		outcome_to_remove.prog_name,
+		date
+	];
+
+	let record = [];
+	for (let index = 0; index < names.length; index++) {
+		record.push({ "name": names[index], "value": values[index] })
+	}
+	res.json(record);
+});
+
 
 module.exports = router;

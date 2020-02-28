@@ -111,7 +111,7 @@ app.use('/users', usersRouter);
 // ===== Outcomes Section =====
 app.use('/outcomes', outcomesRouter);
 // ===== Performance Criteria Section =====
-app.use('/performanceCriteria', perfCritRouter);
+app.use('/outcomes', perfCritRouter);
 
 // ===== EVALUATION RUBRIC =====
 app.use('/evaluation', evaluationRubric);

@@ -6,6 +6,7 @@
     TO VALIDATE STUDY PROGRAM: -------> std_data
     TO VALIDATE TERM: ----------------> term_data
     TO VALIDATE RUBRIC: --------------> rubric_data
+    TO VALIDATE CRITERIA: ------------> criteria_data
 */
 
 // Wait for the DOM to be ready
@@ -183,6 +184,30 @@ $(document).ready(function () {
             "description": {
                 required: "Cannot be empty",
                 minlength: "Please define more, a least 8 characters"
+            }
+        },
+        // Make sure the form is submitted to the destination defined
+        // in the "action" attribute of the form when valid
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+
+     /* VALIDATE TERM CREATION */
+     $("#criteria_data").validate({
+        // Specify validation rules
+        rules: {
+            "description": {required:true, minlength: 5},
+            "order": {required:true, digits:true}
+        },
+        messages: {
+            "order": {
+                required: "Cannot be empty",
+                minlength: "Only numbers are available"
+            },
+            "description": {
+                required: "Cannot be empty",
+                minlength: "Please define more, a least 5 characters"
             }
         },
         // Make sure the form is submitted to the destination defined

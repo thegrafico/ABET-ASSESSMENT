@@ -87,6 +87,30 @@ function get_table_info_inner_join(table_info){
 }
 
 /**
+ * get_table_info_inner_join - get a table info
+ * @param  {Object} table_info -> key {"from", "join", "using", "where", "id"}
+ * @return {Promise} resolve with results of database
+ */
+function get_table_info_inner_join_by_id(table_info){
+
+
+	let findDep= `SELECT * FROM ?? INNER JOIN ?? USING (??) WHERE ?? = ?`;
+
+    let data = [table_info.from, table_info.join, table_info.using, table_info.where, table_info.id];
+
+    return new Promise(function(resolve, reject){
+
+        conn.query(findDep, data, function (err, results) {
+
+            if (err)
+                reject(err || "Error getting the table information");
+            else
+                resolve(results);
+        });
+    });
+}
+
+/**
  * delete_record_by_id - Delete the element by id
  * @param  {Object} table_info -> key {"from", "where", "id"}
  * @return {Promise} resolve with true or error
@@ -114,5 +138,6 @@ module.exports.get_table_info_by_id = get_table_info_by_id;
 module.exports.get_table_info_by_id_naturalJoin = get_table_info_by_id_naturalJoin;
 module.exports.delete_record_by_id = delete_record_by_id;
 module.exports.get_table_info_inner_join = get_table_info_inner_join;
+module.exports.get_table_info_inner_join_by_id = get_table_info_inner_join_by_id;
 
 

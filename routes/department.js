@@ -16,7 +16,9 @@ let locals = {
 	"subtitle": 'Departments',
 	"base_url": "/department",
 	"url_create": "/department/create",
-	"form_id": "department_data"
+	"form_id": "department_data",
+	"api_get_url": "/department",
+	delete_redirect: null
 };
 /*
  	-- DEPARTMENT home page-- 
@@ -208,32 +210,24 @@ router.put('/:id', function (req, res, next) {
 /*
 	--SHOW REMOVE DEPARMENT
 	GET /deparment/:id/remove
+	TODO: ONLY ADMIN CAN ENTER HERE
 */
-router.get('/:id/remove', async function (req, res) {
+router.get('/get/:id', async function (req, res) {
 
 	// validating
 	if (req.params.id == undefined || isNaN(req.params.id)){
-		req.flash("error", "Cannot find the department");
-		return res.redirect(base_url);
+		return res.end();
+		// return res.redirect(base_url);
 	}
 
-	let dept_id =  req.params.id;
-
-	// dynamic frontend
-	locals.title_action = "Remove";
-	locals.title_message = "Are you sure you want to delete this department?";
-	locals.form_action = `/department/${dept_id}?_method=DELETE`;
-	locals.btn_title = "Delete";
-
-	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id":dept_id};
+	let tabla_data = {"from": "DEPARTMENT", "where": "dep_ID", "id":req.params.id};
 	
 	let department =  await general_queries.get_table_info_by_id(tabla_data).catch((err) =>{
 		console("ERROR: ", err);
 	});
 
 	if( department == undefined || department.length == 0){
-		console.log("There is not deparment with the id you're looking for");
-		req.flash("error", "Cannot find any department, Please create one");
+		res.json([]);
 		return res.redirect(base_url);
 	}
 
@@ -250,9 +244,8 @@ router.get('/:id/remove', async function (req, res) {
 	let record = [];
 	for (let index = 0; index < names.length; index++)
 		record.push({"name": names[index], "value": values[index]})
-	locals.record = record;
 	
-	res.render('layout/remove', locals);
+	res.json(record);
 });
 
 /* 

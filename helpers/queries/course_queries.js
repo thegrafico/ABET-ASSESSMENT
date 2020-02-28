@@ -3,7 +3,7 @@ var conn = db.mysql_pool;
 
 
 /**
- * get_course_info - Get the course information
+ * get_course_with_std_program - Get all course with respective study program
  * @return {Promise} resolve with all profiles
  */
 function get_course_with_std_program(){
@@ -19,6 +19,7 @@ function get_course_with_std_program(){
             
             if (results.length == 0) return resolve(results);
             
+            // remove repeated course -- only add the prog_name
             let courses = {};
             results.forEach((each_course) => {
                 if ( !(each_course["course_ID"] in courses) ){
@@ -54,7 +55,7 @@ function get_course_info(){
 }
 
 /**
- * get_user_department_by_id - get all user departments
+ * get_study_program_for_course - Get the course study program
  * @param {Number} id id of the course
  * @return {Promise} resolve with all departments
  */
@@ -99,10 +100,10 @@ function remove_program_course(course_id, programs_id){
             to_insert.push([course_id, element]);
         });
 
-        let update_query = `DELETE FROM prog_course WHERE (course_ID, prog_ID) IN (?)`;
+        let delete_query = `DELETE FROM prog_course WHERE (course_ID, prog_ID) IN (?)`;
 
         //Exe query
-        conn.query(update_query, [to_insert], function (err, results) {
+        conn.query(delete_query, [to_insert], function (err, results) {
             if (err)
                 reject(err || "Error updating department");
             else            

@@ -14,7 +14,9 @@ let locals = {
 	"subtitle": "Term",
 	"base_url": base_url,
 	"url_create": "/term/create",
-	"form_id": "term_data"
+	"form_id": "term_data",
+	"api_get_url": "/term",
+	delete_redirect: null
 
 };
 
@@ -202,7 +204,7 @@ router.put('/:id', function(req, res) {
 	-- SHOW TERM TO DELETE --
 	GET /term/:id/remove
 */
-router.get('/:id/remove', async function (req, res) {
+router.get('/get/:id', async function (req, res) {
 	
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)){
@@ -224,11 +226,6 @@ router.get('/:id/remove', async function (req, res) {
 
 	term_to_remove = term_to_remove[0];
 
-	locals.title_action = "Remove";
-	locals.title_message = "Are you sure you want to delete this academic term?";
-	locals.form_action = `/term/${term_id}?_method=DELETE`;
-	locals.btn_title = "Delete";
-
 	let names = ["Name"];
 	let values = [term_to_remove.term_name];
 
@@ -237,9 +234,7 @@ router.get('/:id/remove', async function (req, res) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 
-	locals.record = record;
-	res.render('layout/remove', locals);
-
+	res.json(record);
 });
 
 

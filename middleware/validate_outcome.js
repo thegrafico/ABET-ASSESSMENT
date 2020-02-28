@@ -14,18 +14,20 @@ conn = db.mysql_pool;
  */
 async function validate_outcome(req, res, next){
     	
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.outc_id == undefined || isNaN(req.params.outc_id)){
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
 	}
 
 	let outcome_query = {
-		"from": "STUDENT_OUTCOME",
+		"from": "student_outcome",
+		"join": "study_program",
+		"using": "prog_ID",
 		"where": "outc_ID",
-		"id": req.params.id 
+		"id": req.params.outc_id 
 	};
 	
-	let outcome = await general_queries.get_table_info_by_id(outcome_query).catch((err) =>{
+	let outcome = await general_queries.get_table_info_inner_join_by_id(outcome_query).catch((err) =>{
 		console.log("Error finding the outcome: ", err);
 	});
 
@@ -34,9 +36,33 @@ async function validate_outcome(req, res, next){
 		return res.redirect("/outcomes");
     }
 
-    // getting the name of the outcome
-    req.body.outcome_name = outcome[0].outc_name;
-    
+    req.body.outcome = outcome[0];
+    next();
+}
+
+async function validate_performance_criteria(req, res, next){
+    	
+	if (req.params.perf_id == undefined || isNaN(req.params.perf_id)){
+		req.flash("error", "Cannot find the Performance Criteria");
+		return res.redirect(base_url);
+	}
+
+	let rubric_query = {
+		"from": "perf_criteria",
+		"where": "perC_ID",
+		"id": req.params.perf_id 
+	};
+	
+	let rubric = await general_queries.get_table_info_by_id(rubric_query).catch((err) =>{
+		console.log("Error finding the outcome: ", err);
+	});
+
+	if (rubric == undefined || rubric.length == 0){
+		req.flash("error", "Evaluation Rubric does not exits");
+		return res.redirect("/outcomes");
+    }
+
+    req.body.rubric = rubric[0];
     next();
 }
 
@@ -70,3 +96,6 @@ async function validate_evaluation_rubric(req, res, next){
 // Returns 
 module.exports.validate_outcome = validate_outcome;
 module.exports.validate_evaluation_rubric = validate_evaluation_rubric;
+module.exports.validate_performance_criteria = validate_performance_criteria;
+
+

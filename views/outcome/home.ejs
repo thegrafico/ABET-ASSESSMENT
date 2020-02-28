@@ -3,9 +3,11 @@
 <div class="container-fluid mt-2">
     <h1><%= subtitle %></h1>
     <hr class="my-4">
-    <a href="<%= url_create %> " class="btn inter-green inter-green-btn" role="button">Create New</a>
+    <a href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
     <!-- Middle line -->
 </div>
+
+<button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
 <div class="container-fluid my-2">
 
@@ -23,9 +25,9 @@
                 <% for( let index = 0; index < element["values"].length; index++ ) { %>
                 <!-- IF NOT last position -->
                 <% if((index == (element["values"].length -2) )) { %>
-                    <th> <a href="<%= base_url %>/<%= element["ID"]%>/evaluationrubric"
-                            class="btn btn-secondary">Administrate</a>
-                    </th>
+                <th> <a href="<%= base_url %>/<%= element["ID"]%>/performanceCriteria"
+                        class="btn btn-secondary">Administrate</a>
+                </th>
                 <% }else if (index != (element["values"].length -1) ) { %>
 
                 <th> <%=element["values"][index]%></th>
@@ -38,8 +40,9 @@
                         </button>
                         <div class="dropdown-menu">
                             <a href="<%= base_url %>/<%= element["ID"]%>/edit" class="dropdown-item">Edit</a>
-                            <a href="<%= base_url %>/<%= element["ID"]%>/remove" class="dropdown-item">Delete</a>
-                        </div>
+                            <button class="REMOVE dropdown-item" value="<%=element["ID"]%>" data-toggle="modal"
+                                data-target="#exampleModal">Remove
+                            </button> 
                     </div>
                 </th>
                 <% } %>
@@ -50,5 +53,10 @@
     </table>
     <hr class="my-1">
 </div>
+
+<!-- REMOVE PARTIAL -->
+<%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+<script src="/javascripts/modals.js"></script>
+
 
 <%- include ('../partials/footer') -%>

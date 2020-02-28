@@ -140,6 +140,8 @@ module.exports.evaluation_rubric_input = [
     }
 ];
 
+
+
 /* 
     - create and edit academic term
 */
@@ -154,6 +156,24 @@ module.exports.academic_term = [
     }
 ];
 
+
+// create and edit study program
+module.exports.performance_criteria_create_input = [
+    {
+        "title": "Description",
+        "placeHolder": "Criteria Description",
+        "name": "description",
+        "value": "",
+        "isRequire": true
+    },
+    {
+        "title": "Order",
+        "placeHolder": "Insert the order",
+        "name": "order",
+        "value": "",
+        "isRequire": true
+    }
+];
 
 
 

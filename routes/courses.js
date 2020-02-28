@@ -16,6 +16,9 @@ let locals = {
 	"subtitle": 'Courses',
 	"url_create": "/courses/create",
 	"form_id": "course_data",
+	"api_get_url": "/courses",
+	"delete_redirect": null
+
 };
 
 /*
@@ -306,12 +309,11 @@ router.put('/:id', async function(req, res) {
 	--SHOW REMOVE COURSE--
 	GET cousers/:id/remove
 */
-router.get('/:id/remove', async function (req, res) {
+router.get('/get/:id', async function (req, res) {
 
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)){
-		req.flash("error", "This course don't exits");
-		return res.redirect(base_url);
+		return res.json([]);
 	}
 
 	let course_id = req.params.id;
@@ -326,18 +328,11 @@ router.get('/:id/remove', async function (req, res) {
 
 	// validate course
 	if (course == undefined || course.length == 0){
-		console.log("Course not found");
-		return res.redirect(base_url);
+		return res.json([]);
 	}
 
 	// we only care about the first position
 	course = course[0];
-
-	// == variables for dinamic frondend ==
-	locals.title_action = "Remove";
-	locals.title_message = "Are you sure you want to delete this Course?";
-	locals.form_action = `/courses/${course_id}?_method=DELETE`;
-	locals.btn_title = "Delete";
 
 	let names = ["Study Program", "Number", "Name", "description"];
 	let values = [course.prog_ID, course.course_number, course.course_name, course.course_description];
@@ -346,9 +341,8 @@ router.get('/:id/remove', async function (req, res) {
 	for (let index = 0; index < names.length; index++) {
 		record.push({"name": names[index], "value": values[index]})
 	}
-	// == end ==
-	locals.record = record;
-	res.render('layout/remove', locals);
+
+	res.json(record);
 });
 
 

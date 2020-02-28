@@ -15,7 +15,9 @@ let locals = {
 	"title": 'ABET Assessment',
 	"subtitle": 'Evaluation Rubric',
 	"base_url": base_url,
-	"form_id": "rubric_data"
+	"form_id": "rubric_data",
+	"api_get_url": "/evaluation",
+	delete_redirect: null
 };
 
 
@@ -186,16 +188,10 @@ router.put('/:id/evaluationrubric/:r_id', validate_outcome, validate_evaluation_
 	-- SHOW DELETE EVAluation rubric --
 	GET /evaluation/:id/delete 
 */
-router.get('/:id/evaluationrubric/:r_id/remove', validate_outcome, validate_evaluation_rubric, async function (req, res) {
-
-	let rubric_id = req.params.r_id;
-
-	locals.title_action = "Remove";
-	locals.title_message = "Are you sure you want to delete this Evaluation Rubric?";
-	locals.form_action = `/outcomes/${req.params.id}/evaluationrubric/${rubric_id}?_method=DELETE`;
-	locals.btn_title = "Delete";
+router.get('/get/:r_id', validate_evaluation_rubric, async function (req, res) {
 
 	rubric_to_remove = req.body["rubric"][0];
+
 	let names = ["Name", "Description"];
 	let values = [
 		rubric_to_remove.rubric_name,
@@ -206,21 +202,17 @@ router.get('/:id/evaluationrubric/:r_id/remove', validate_outcome, validate_eval
 	for (let index = 0; index < names.length; index++) {
 		record.push({ "name": names[index], "value": values[index] })
 	}
-
-	locals.record = record;
-	res.render('layout/remove', locals);
+	res.json(record);
 });
 
 /* 
 	-- DELETE evaluation rubric -- 
 	DELETE /evaluation/:id
 */
-router.delete('/:id/evaluationrubric/:r_id', validate_outcome, validate_evaluation_rubric, function (req, res) {
+router.delete('/:r_id', validate_evaluation_rubric, function (req, res) {
 
 	let rubric_id = req.params.r_id;
 	let rubric_for_query = { "from": "evaluation_rubric", "where": "rubric_ID", "id": rubric_id };
-
-	let base_url = `/outcomes/${req.params.id}/evaluationrubric`;
 
 	general_queries.delete_record_by_id(rubric_for_query).then((ok) => {
 		req.flash("success", "Rubric removed");

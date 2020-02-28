@@ -15,7 +15,9 @@ let locals = {
 	"subtitle": "Study Programs",
 	"base_url": base_url,
 	"url_create": "/studyprograms/create",
-	"form_id": "std_data"
+	"form_id": "std_data",
+	"api_get_url": "/studyprograms",
+	delete_redirect: null
 };
 
 /* 
@@ -265,10 +267,10 @@ router.put('/:id', function(req, res) {
 });
 
 /* 
-	-- SHOW REMOVE study program -- 
+	-- API TO GET study program -- 
 	GET /studyprograms/:id/remove 
 */
-router.get('/:id/remove', async function (req, res) {
+router.get('/get/:id', async function (req, res) {
 
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)){
@@ -277,12 +279,6 @@ router.get('/:id/remove', async function (req, res) {
 	}
 
 	let std_program_id = req.params.id;
-
-	// for dynamic design
-	locals.title_action = "Remove";
-	locals.title_message = "Are you sure you want to delete this Study Program?";
-	locals.form_action = `/studyprograms/${std_program_id}?_method=DELETE`;
-	locals.btn_title = "Delete";
 
 	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": std_program_id};
 	
@@ -293,7 +289,6 @@ router.get('/:id/remove', async function (req, res) {
 
 	// validate std program
 	if( std_program_to_remove == undefined || std_program_to_remove.length == 0){
-		console.log("There is not study program with the id you're looking for");
 		req.flash("error", "Cannot find study program, Please create one");
 		return res.redirect(base_url);
 	}
@@ -302,7 +297,6 @@ router.get('/:id/remove', async function (req, res) {
 	let date = new Date(std_program_to_remove.date_created);
 	date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 	
-
 	// header of inputs
 	let names = ["Name", "Department", "Date created"];
 	let values = [ std_program_to_remove.prog_name, std_program_to_remove.dep_ID, date];
@@ -310,9 +304,8 @@ router.get('/:id/remove', async function (req, res) {
 	let record = [];
 	for (let index = 0; index < names.length; index++)
 		record.push({"name": names[index], "value": values[index]})
-	locals.record = record;
 
-	res.render("layout/remove", locals);
+	res.json(record);
 });
 
 /* 

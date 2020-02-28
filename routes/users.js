@@ -16,7 +16,9 @@ var locals = {
 	subtitle: 'Users',
 	url_create: "/users/create",
 	base_url: base_url,
-	form_id: "user_data"
+	form_id: "user_data",
+	"api_get_url": "/users",
+	delete_redirect: null
 };
 
 /*
@@ -26,6 +28,8 @@ var locals = {
 router.get('/', async function (req, res) {
 
 	locals.results = [];
+
+	locals.delete_redirect = "/users"
 
 	// the last header is for position the button
 	locals.table_header = ["Inter ID", "Profile", "Name", "Last Name",
@@ -376,12 +380,10 @@ router.put('/:id', async function (req, res) {
 	res.redirect(base_url);
 });
 
-
-
-/*
- GET users/:id:/remove 
+/* 
+	-- API GET USER BY ID -- 
 */
-router.get('/:id/remove', async function (req, res) {
+router.get('/get/:id', async function (req, res) {
 	
 	if (req.params.id == undefined || isNaN(req.params.id)){
 		req.flash("error", "Cannot find the user");
@@ -390,23 +392,15 @@ router.get('/:id/remove', async function (req, res) {
 
 	let user_id = req.params.id;
 
-	locals.title_action = "Remove";
-	locals.title_message = "Are you sure you want to delete this User?";
-	locals.form_action = `/users/${user_id}?_method=DELETE`;
-	locals.btn_title = "Delete";
-
-  	// get the user data
 	let user_data = await queries.get_user_by_id(user_id).catch((err) =>{
 		console.log(err);
 	});
 
 	// verify is user data is good
 	if (user_data == undefined ||  user_data.length == 0){
-		req.flash("error", "Cannot find the user information");
-		return res.redirect(base_url);
+		return res.json([]);
 	}
-
-	// console.log(user_data);
+	
 	let names = ["User Id", "Inter Id", "Name", "Last Name", "Email", "Phone Number"];
 	let values = [
 		user_id, 
@@ -422,16 +416,14 @@ router.get('/:id/remove', async function (req, res) {
 		record.push({"name": names[index], "value": values[index]})
 	}
 
-	locals.record = record;
-	res.render('layout/remove', locals);
+	res.json(record);
 });
 
 /* 
 	REMOVE users/:id
 */
 router.delete('/:id', function (req, res) {
-	
-	
+
 	if (req.params.id == undefined || isNaN(req.params.id)){
 		req.flash("error", "Cannot find the user");
 		return res.redirect(base_url);
