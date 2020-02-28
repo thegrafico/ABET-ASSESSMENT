@@ -1,0 +1,39 @@
+<%- include ('../partials/header') -%>
+<link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
+
+
+<div class="table-responsive">
+    <div>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Study Programs
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a>HTML</a></li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <table class="table">
+        <thead  class="thead-dark">
+            <tr>
+                <th>Course</th>
+                <th scope="col"> Outcome 1 </th>
+                <th scope="col"> Outcome 2 </th>
+                <th scope="col"> Outcome 3 </th>
+                <th scope="col"> Outcome 4 </th>
+                <th scope="col"> Outcome 5 </th>
+                <th scope="col"> Outcome 6 </th>
+                <th scope="col"> Outcome 7 </th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+</div>
+
+
+<%- include ('../partials/footer') -%>
+
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/javascripts/courseMapping.js"></script>

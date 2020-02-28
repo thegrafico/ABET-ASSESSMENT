@@ -82,10 +82,15 @@ router.get('/chooseCourseTerm', async function(req, res) {
 /* 
 	GET assessment/chooseCourseTerm/:id
 */
-router.get('/chooseCourseTerm/:id', async function(req, res) {
+
+// TODO: Noah R. Almeda
+// Finish Ajax implementation
+
+router.get('/:id/chooseCourseTerm', async function(req, res) {
 
 	// TODO: Validate prog_id 
 	let prog_id = req.params.id;
+	console.log("ID: ", prog_id);
 
 	let study_program = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) =>{
 		// TODO: flash message with error
@@ -124,6 +129,9 @@ router.get('/chooseCourseTerm/:id', async function(req, res) {
 	locals.term = academic_term;
 	locals.rubric = rubric_info;
 	locals.course = course_info;
+
+	console.log("Get Locals: ", locals);
+
 	res.render('assessment/chooseCourseTerm', locals);
 });
 
@@ -194,6 +202,8 @@ router.get('/:id/perfomanceTable', async function(req, res, next) {
 		console.log(err);
 	}); 
 	
+	console.log("Perf Crit", perf_criterias);
+
 	//IF found results from the database
 	if (perf_criterias == undefined || perf_criterias.length == 0) {
 		/* TODO:

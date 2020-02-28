@@ -25,8 +25,8 @@ router.get('/', async function (req, res) {
 	locals.results = [];
 
 	let performance_query = {
-		"from": "student_outcome",
-		"join": "study_program",
+		"from": "STUDENT_OUTCOME",
+		"join": "STUDY_PROGRAM",
 		"using": "prog_ID",
 	}
 
@@ -62,17 +62,17 @@ router.get('/', async function (req, res) {
 	res.render('outcome/home', locals);
 });
 
-router.get('/:id/getStudyProgram', async function (req, res) {
+// router.get('/:id/getStudyProgram', async function (req, res) {
 
-	if (req.params.id == undefined || isNaN(req.params.id)){
-		req.flash("error", "Cannot find the outcome");
-		return res.redirect(base_url);
-	}
+// 	if (req.params.id == undefined || isNaN(req.params.id)){
+// 		req.flash("error", "Cannot find the outcome");
+// 		return res.redirect(base_url);
+// 	}
 
-	console.error("ID: ", req.params.id);
+// 	console.error("ID: ", req.params.id);
 
-	res.json({"PUTO": "PUTO"});
-});
+// 	res.json({"PUTO": "PUTO"});
+// });
 
 
 /* 

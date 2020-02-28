@@ -10,7 +10,7 @@
 
   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
   <!-- Stylesheet for AssessmentIndex page -->
-  <link rel="stylesheet" type="text/css" href="/stylesheets/assessmentIndexStyle.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/stylesheets/assessmentIndexStyle.css"> -->
 
   <!-- Icons -->
   <script src="https://kit.fontawesome.com/6114d6256f.js" crossorigin="anonymous"></script>
@@ -91,13 +91,13 @@
     <!--check if error and display a message-->
     <% if(error && error.length > 0 ){ %>
     <div class="alert alert-danger" role="alert">
-      <%=error%>
+      <%= error %>
     </div>
     <% } %>
     <!--check if success and display a message-->
     <% if(success && success.length > 0 ){ %>
     <div class="alert alert-success" role="alert">
-      <%=success%>
+      <%= success %>
     </div>
     <% } %>
   </div>

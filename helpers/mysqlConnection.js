@@ -3,11 +3,11 @@ var config;
 
 
 // In case you dont have this file, just delete this code and put your credentials in the options object
-try{
-  var credentials = require("./raul_credentials");
-}catch (err){
-  console.log("ERROR IN /helpers/mysqlconnection. Credentials are missing");
-}
+// try{
+//   var credentials = require("./raul_credentials");
+// }catch (err){
+//   console.log("ERROR IN /helpers/mysqlconnection. Credentials are missing");
+// }
 
 /* For local database connection */ 
 // var options = {
