@@ -1,0 +1,108 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<div class="container-fluid mt-2">
+
+    <div class="row">
+
+        <div class="col-12">
+            <h3><%= subtitle %></h3>
+            <hr class="my-4">
+        </div>
+
+        <div class="col-12" style=" margin-bottom: -1%;">
+
+            <div class="row justify-content-md-left">
+
+                <div class="col-2">
+                    <div>
+                        <a href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">Create
+                            New</a>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="study_program" style="width: auto;"> Filter By</label>
+                    <select id="study_program" type="text" name="study_program" required>
+                        <option disabled selected value> -- Study Program -- </option>
+                        <option class="dropdown-item" value=""> NAME </option>
+                        <option class="dropdown-item" value=""> NAME </option>
+                        <option class="dropdown-item" value=""> NAME </option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="study_program" style="width: auto;"> Filter By</label>
+                    <select id="study_program" type="text" name="study_program" required>
+                        <option disabled selected value> -- Outcome -- </option>
+                        <option class="dropdown-item" value=""> NAME </option>
+                        <option class="dropdown-item" value=""> NAME </option>
+                        <option class="dropdown-item" value=""> NAME </option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<button id="url" class="invisible" value="<%= api_get_url %>"></button>
+
+<div class="container-fluid my-2">
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <% for (let header of table_header) { %>
+                <th scope="col"><%= header %></th>
+                <% } %>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (results.length == 0) { %>
+            <div style="text-align: center;">
+                <h1>You don't have Information Created yet.</h1>
+            </div>
+            <% }else { %>
+
+            <% results.forEach(element => { %>
+
+            <tr>
+                <% for( let index = 0; index < element["values"].length; index++ ) { %>
+                <!-- IF NOT last position -->
+                <% if (index != (element["values"].length -1) ) { %>
+                <th> <%=element["values"][index]%></th>
+                <% }else{ %>
+                <th> <%=element["values"][index]%>
+                    <div class="col dropdown">
+                        <button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
+                            data-toggle="dropdown">
+                            Actions
+                        </button>
+                        <div class="dropdown-menu">
+
+                            <a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
+                                EDIT
+                            </a>
+                            <button class="REMOVE dropdown-item" value="<%=element["ID"]%>" data-toggle="modal"
+                                data-target="#exampleModal">Remove
+                            </button>
+                        </div>
+                    </div>
+                </th>
+                <% } %>
+                <% } %>
+            </tr>
+            <% }); %>
+            <% } %>
+        </tbody>
+    </table>
+    <hr class="my-1">
+</div>
+
+
+<!-- REMOVE PARTIAL -->
+<%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+<script src="/javascripts/modals.js"></script>
+
+<%- include ('../partials/footer') -%>

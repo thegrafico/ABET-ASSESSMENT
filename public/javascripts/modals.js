@@ -14,7 +14,7 @@ $(document).ready(() => {
             type: 'GET',
             dataType: 'json',
             success: (data) => {
-                console.log(data);
+                // console.log(data);
                 $(".subtitle").text("Are you sure you want to remove this record?");
 
                 $(".row-elements").empty();

@@ -73,7 +73,7 @@ input, textarea {
   border: 1px solid #ccc;
   padding: 4px;
   font-family: 'Lato';
-  width: 300px;
+  /* width: 300px; */
   margin-top: 10px;
 }
 

@@ -14,17 +14,37 @@ window.addEventListener("pageshow", function (event) {
 </script> -->
 
 <div class="container-fluid mt-2">
-	<h3><%= subtitle %></h3>
-	<hr class="my-4">
-	<a href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">Create New</a>
-	<!-- Middle line -->
+
+	<div class="row">
+
+		<div class="col-12">
+			<h3><%= subtitle %></h3>
+			<hr class="my-4">
+		</div>
+
+		<div class="col-12" style=" margin-bottom: -1%;">
+
+				<div class="row justify-content-md-left">
+
+					<div class="col-2">
+						<div>
+							<a href="<%= base_url %>/create" class="btn inter-green inter-green-btn"
+								role="button">Create
+								New</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
 
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
 <div class="container-fluid my-2">
 
-	<table class="table">
+	<table class="table table-bordered table-striped">
 		<thead class="thead-dark">
 			<tr>
 				<% for (let header of table_header) { %>
@@ -41,32 +61,32 @@ window.addEventListener("pageshow", function (event) {
 
 			<% results.forEach(element => { %>
 
-				<tr>
-					<% for( let index = 0; index < element["values"].length; index++ ) { %>
-						<!-- IF NOT last position -->
-						<% if (index != (element["values"].length -1) ) { %>
-							<th> <%=element["values"][index]%></th>
-						<% }else{ %>
-							<th> <%=element["values"][index]%>
-								<div class="col dropdown">
-									<button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
-										data-toggle="dropdown">
-										Actions
-									</button>
-									<div class="dropdown-menu">
+			<tr>
+				<% for( let index = 0; index < element["values"].length; index++ ) { %>
+				<!-- IF NOT last position -->
+				<% if (index != (element["values"].length -1) ) { %>
+				<th> <%=element["values"][index]%></th>
+				<% }else{ %>
+				<th> <%=element["values"][index]%>
+					<div class="col dropdown">
+						<button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
+							data-toggle="dropdown">
+							Actions
+						</button>
+						<div class="dropdown-menu">
 
-										<a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
-											EDIT
-										</a>
-										<button class="REMOVE dropdown-item" value="<%=element["ID"]%>" data-toggle="modal"
-											data-target="#exampleModal">Remove
-										</button>
-									</div>
-								</div>
-							</th>
-						<% } %>
-					<% } %>
-				</tr>
+							<a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
+								EDIT
+							</a>
+							<button class="REMOVE dropdown-item" value="<%=element["ID"]%>" data-toggle="modal"
+								data-target="#exampleModal">Remove
+							</button>
+						</div>
+					</div>
+				</th>
+				<% } %>
+				<% } %>
+			</tr>
 			<% }); %>
 			<% } %>
 		</tbody>

@@ -4,7 +4,7 @@
 */
 var express = require('express');
 var router = express.Router();
-var query = require('../helpers/queries/evaluation_queries');
+var rubric_query = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 var { validate_outcome, validate_evaluation_rubric } = require("../middleware/validate_outcome");
@@ -28,12 +28,22 @@ let locals = {
 router.get('/', async function (req, res) {
 
 	// getting evaluation rubric from db
-	let eval_rubric = await general_queries.get_table_info("evaluation_rubric").catch((err) => {
+	let eval_rubric = await rubric_query.get_all_evaluations_rubric().catch((err) => {
 		console.log("Error getting all evaluation rubric: ", err);
 	});
 
+	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
+		console.error("Error getting study programs: ", err);
+	});
+
+	let outcomes = await general_queries.get_table_info("student_outcomes").catch((err) =>{
+		console.error("Error getting outcomes: ", err);
+	})
+
+	// console.log(eval_rubric);
+
 	locals.results = [];
-	locals.table_header = ["Name", "Description", ""];
+	locals.table_header = ["Name", "Description", "Study program", "Outcome", ""];
 
 	// Validate data
 	if (eval_rubric != undefined && eval_rubric.length > 0) {
@@ -46,13 +56,15 @@ router.get('/', async function (req, res) {
 				"values": [
 					rubric["rubric_name"],
 					rubric["rubric_description"],
+					rubric["prog_name"],
+					rubric["outc_name"],
 					"" // position the buttons of remove, and edit
 				]
 			});
 		});
 		locals.results = results;
 	}
-	res.render('layout/home', locals);
+	res.render('rubric/home', locals);
 });
 /*
 	-- SHOW EVALUATION --
@@ -110,7 +122,7 @@ router.post("/create", function (req, res) {
 	}
 
 	// create in db
-	query.insert_evaluation_rubric(rubric).then((ok) => {
+	rubric_query.insert_evaluation_rubric(rubric).then((ok) => {
 		req.flash("success", "Evaluation Rubric created");
 		res.redirect(base_url);
 	}).catch((err) => {
@@ -174,7 +186,7 @@ router.put('/:id/evaluationrubric/:r_id', validate_outcome, validate_evaluation_
 
 	let base_url = `/outcomes/${req.params.id}/evaluationrubric`;
 
-	query.update_evaluation_rubric(evaluation_data).then((ok) => {
+	rubric_query.update_evaluation_rubric(evaluation_data).then((ok) => {
 		req.flash("success", "Evaluation Rubric edited");
 		res.redirect(base_url);
 	}).catch((err) => {

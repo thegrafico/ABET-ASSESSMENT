@@ -37,7 +37,17 @@ router.get('/', async function (req, res) {
 		console.log("Error getting the outcomes information: ", err);
 	});
 
-	locals.table_header = ["Name", "Description", "Study Program", "Creation date", "Performance Criteria", ""];
+	// getting all study program
+	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
+		console.log("Error getting studing program", err);
+	});
+
+	locals.study_programs = []; 
+	if (study_programs != undefined && study_programs.length > 0){
+		locals.study_programs =  study_programs;
+	}
+
+	locals.table_header = ["Name", "Study Program", "Description", "Creation date", "Performance Criteria", ""];
 
 	if (stud_outcomes != undefined && stud_outcomes.length > 0) {
 		let results = [];
@@ -51,8 +61,8 @@ router.get('/', async function (req, res) {
 				"ID": outcome["outc_ID"],
 				"values": [
 					outcome["outc_name"],
-					outcome["outc_description"],
 					outcome["prog_name"],
+					outcome["outc_description"],
 					date,
 					"",
 					""

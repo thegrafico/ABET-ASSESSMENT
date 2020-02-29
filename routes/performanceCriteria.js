@@ -190,7 +190,7 @@ router.get("/performanceCriteria/get/:perf_id", async function (req, res) {
 		record.push({ "name": names[index], "value": values[index] })
 	}
 
-	console.log(record);
+	// console.log(record);
 	return res.json(record);
 });
 

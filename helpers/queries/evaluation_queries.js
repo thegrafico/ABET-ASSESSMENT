@@ -2,6 +2,30 @@ var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
 
 
+
+
+/**
+ * get_all_evaluations_rubric -  get all evaluations rubric
+ * @return {Promise} resolve with all data
+ */
+function get_all_evaluations_rubric() {
+
+    return new Promise(function (resolve, reject) {
+
+        let get_query = `SELECT * FROM evaluation_rubric INNER JOIN student_outcome using (outc_ID)
+        INNER JOIN study_program 
+        ON student_outcome.prog_ID = study_program.prog_ID;`;
+
+        conn.query(get_query, function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(results);
+        });
+    });
+}
+
+
 /**
  * insert_evaluation_rubric -  Create new evaluation rubric
  * @param {Object} data -> keys {"name", "description", "outcome_id"} 
@@ -9,7 +33,7 @@ var conn = db.mysql_pool;
  */
 function insert_evaluation_rubric(data) {
 
-    return new Promise(function (resolve, reject){
+    return new Promise(function (resolve, reject) {
 
         let insert_query = `insert into EVALUATION_RUBRIC (rubric_name, rubric_description, outc_ID) values(?, ?, ?);`;
 
@@ -28,12 +52,12 @@ function insert_evaluation_rubric(data) {
  */
 function update_evaluation_rubric(data) {
 
-    return new Promise(function (resolve, reject){
+    return new Promise(function (resolve, reject) {
 
         let update_query = `
         update EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?
         where rubric_ID = ?`;
-        
+
         data = [data.name, data.description, data.rubric_id];
 
         conn.query(update_query, data, function (err, results, fields) {
@@ -51,8 +75,8 @@ function update_evaluation_rubric(data) {
  * @return {Promise} resolve with true
  */
 function insert_evaluation_rubric_INTO_Perfomance_Rubric(data) {
-    
-    return new Promise(function(resolve, reject){
+
+    return new Promise(function (resolve, reject) {
 
         let insert_query = `insert into PERFORMANCE_RUBRIC (rubric_ID, perC_ID) values(?, ?);`;
 
@@ -67,4 +91,5 @@ function insert_evaluation_rubric_INTO_Perfomance_Rubric(data) {
 
 module.exports.insert_evaluation_rubric = insert_evaluation_rubric;
 module.exports.update_evaluation_rubric = update_evaluation_rubric;
+module.exports.get_all_evaluations_rubric = get_all_evaluations_rubric;
 module.exports.insert_evaluation_rubric_INTO_Perfomance_Rubric = insert_evaluation_rubric_INTO_Perfomance_Rubric;
