@@ -27,7 +27,7 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 	locals.base_url = `/outcomes/${req.params.outc_id}/performanceCriteria`;
 
 	let performance_query = {
-		"from": "perf_criteria",
+		"from": "perf_criteria".toUpperCase(),
 		"where": "outc_ID",
 		"id": req.params.outc_id,
 	}

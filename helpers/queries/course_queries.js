@@ -178,7 +178,7 @@ function get_course_with_std_program_plain() {
             
             if (results.length == 0) return resolve(results);
 
-            resolve(results);
+            resolve(resolve);
         });
     });  
 }

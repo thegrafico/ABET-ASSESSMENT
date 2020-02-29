@@ -38,7 +38,7 @@ router.get('/', async function (req, res) {
 	});
 
 	// getting all study program
-	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
+	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		console.log("Error getting studing program", err);
 	});
 
@@ -83,7 +83,7 @@ router.get('/:id/getStudyProgram', async function (req, res) {
 
 	// id of the study program
 	let study_program_id = req.params.id;
-	let get_outcomes_query = { "from": "student_outcome", "where": "prog_ID", "id": study_program_id };
+	let get_outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": study_program_id };
 
 	// fetching data from db
 	let outcomes = await general_queries.get_table_info_by_id(get_outcomes_query).catch((err) => {
@@ -351,7 +351,7 @@ router.get('/get/:id', async function (req, res) {
  
 	let outcome_query = {
 		"from": "STUDENT_OUTCOME",
-		"join": "study_program",
+		"join": "STUDY_PROGRAM",
 		"using": "prog_ID",
 		"where": "outc_ID",
 		"id": req.params.id
