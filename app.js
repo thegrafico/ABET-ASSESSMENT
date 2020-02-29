@@ -52,6 +52,8 @@ var perfCritRouter = require('./routes/performanceCriteria');
 var authorize = require('./routes/authorize');
 // ===== Program/Course/Term Selection =====
 var assessmentRouter = require('./routes/assessment');
+// ===== CourseMapping Route =====
+var courseMapping = require('./routes/courseMapping');
 //================================= ROUTES ===================================
 
 var app = express();
@@ -99,12 +101,16 @@ app.use(function(req, res, next){
 // Index route & authorize
 app.use('/', indexRouter);
 app.use('/authorize', authorize);
+
 // ===== School Term Section =====
 app.use('/term', schoolTermRouter);
+
 // ===== Departments Section =====
 app.use('/department', departmentRouter);
+
 // ===== Study Programs Section =====
 app.use('/studyprograms', studyProgramsRouter);
+
 // ===== Users Section =====
 app.use('/users', usersRouter);
 
@@ -119,6 +125,10 @@ app.use('/evaluation', evaluationRubric);
 app.use('/courses', coursesRouter);
 // ===== Program/Course/Term Selection =====
 app.use('/assessment', assessmentRouter);
+
+// ===== CourseMapping Section =====
+app.use('/courseMapping', courseMapping);
+
 // ====================================================
 
 // 404 ERROR HANDLE

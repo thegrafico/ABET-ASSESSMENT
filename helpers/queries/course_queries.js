@@ -6,12 +6,12 @@ var conn = db.mysql_pool;
  * get_course_with_std_program - Get all course with respective study program
  * @return {Promise} resolve with all profiles
  */
-function get_course_with_std_program(){
-    return new Promise(function(resolve, reject){
+function get_course_with_std_program() {
+    return new Promise(function(resolve, reject) {
 
-        let find_query = `SELECT * FROM course 
-        INNER JOIN  prog_course on course.course_ID = prog_course.course_ID
-        INNER JOIN study_program on prog_course.prog_ID = study_program.prog_ID;`;
+        let find_query = `SELECT * FROM COURSE 
+        INNER JOIN  PROG_COURSE on COURSE.course_ID = PROG_COURSE.course_ID
+        INNER JOIN STUDY_PROGRAM on PROG_COURSE.prog_ID = STUDY_PROGRAM.prog_ID;`;
 
         conn.query(find_query, function (err, results, fields) {
             if (err)
@@ -164,6 +164,26 @@ function update_course(data){
     });
 }
 
+
+function get_course_with_std_program_plain() {
+    return new Promise(function(resolve, reject) {
+
+        let find_query = `SELECT * FROM COURSE 
+        INNER JOIN  PROG_COURSE on COURSE.course_ID = PROG_COURSE.course_ID
+        INNER JOIN STUDY_PROGRAM on PROG_COURSE.prog_ID = STUDY_PROGRAM.prog_ID;`;
+
+        conn.query(find_query, function (err, results, fields) {
+            if (err)
+                return reject(err || "Cannot get the course information");
+            
+            if (results.length == 0) return resolve(results);
+
+            resolve(results);
+        });
+    });  
+}
+
+module.exports.get_course_with_std_program_plain = get_course_with_std_program_plain;
 module.exports.get_course_info = get_course_info;
 module.exports.remove_program_course = remove_program_course;
 module.exports.update_course = update_course;

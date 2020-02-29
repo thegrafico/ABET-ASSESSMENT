@@ -6,9 +6,9 @@
             <!--Term Selection-->
             <div class = "form-group">
                 <label for ="chooseStudyProgram">Choose a study program</label>
-                <select class="form-control" name = "prog_ID" id="chooseStudyProgram" onChange = "window.location.href=this.value">
+                <select class="form-control" name = "prog_ID" id="chooseStudyProgram" >
                     <% for (let val of program) { %> 
-                        <option value = "/assessment/chooseCourseTerm/<%= val.prog_ID %>"><%= val.prog_name %></option>
+                        <option value = "<%= val.prog_ID %>"><%= val.prog_name %></option>
                     <% } %> 
                 </select>
             </div>
@@ -54,5 +54,22 @@
             </div>
         </div>
     </form>
+
+    <script>
+        $(document).ready(() => {
+            $("#chooseStudyProgram").change(function () {
+                var selected = $(this).children("option:selected").val();
+                console.log(selected);
+                $.ajax({
+                    url: `/assessment/${selected}/chooseCourseTerm`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: (data) => {
+                        console.log(data);
+                    }
+                });
+            });
+        });
+    </script>
 
 <%- include ('../partials/footer') -%>

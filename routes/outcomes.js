@@ -27,8 +27,8 @@ router.get('/', async function (req, res) {
 	locals.results = [];
 
 	let performance_query = {
-		"from": "student_outcome",
-		"join": "study_program",
+		"from": "STUDENT_OUTCOME",
+		"join": "STUDY_PROGRAM",
 		"using": "prog_ID",
 	}
 
