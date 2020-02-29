@@ -12,7 +12,6 @@ var authHelper = require('./helpers/auth');
 var flash = require("connect-flash");
 
 
-
 var  {options, db} = require("./helpers/mysqlConnection");
 db = db.mysql_pool;
 

@@ -31,16 +31,22 @@ router.get('/', async function (req, res) {
 	let eval_rubric = await rubric_query.get_all_evaluations_rubric().catch((err) => {
 		console.log("Error getting all evaluation rubric: ", err);
 	});
-
+	
+	// getting all study programs
 	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
 		console.error("Error getting study programs: ", err);
 	});
 
-	let outcomes = await general_queries.get_table_info("student_outcomes").catch((err) =>{
-		console.error("Error getting outcomes: ", err);
-	})
+	locals.study_programs = study_programs || [];
 
-	// console.log(eval_rubric);
+	// getting all outcomes
+	let outcomes = await general_queries.get_table_info("student_outcome").catch((err) =>{
+		console.error("Error getting outcomes: ", err);
+	});
+
+	locals.outcomes = outcomes || [];
+
+
 
 	locals.results = [];
 	locals.table_header = ["Name", "Description", "Study program", "Outcome", ""];
