@@ -21,7 +21,7 @@ router.get('/getCourses', async function (req, res) {
     let courses = await query.get_course_with_std_program_plain().catch((err) =>{
 		console.log("Error getting the courses with std program results: ", err);
 	});
-    console.log(courses);
+    // console.log(courses);
 	res.json(courses);
 });
 

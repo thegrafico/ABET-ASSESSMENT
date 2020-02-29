@@ -7,7 +7,7 @@ $(document).ready(() => {
         dataType: 'json',
         success: (data) => {
             for(let i = 0; 0 < data.length; i++) {
-                let row = `<tr><th scope='row'>${data[i].course_name}</th><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td></tr>`;
+                let row = `<tr><th scope='row'>${data[i].course_name}</th><td><input type='checkbox' checked='checked'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td></tr>`;
                 $("#tableBody").append(row);
             }
         }

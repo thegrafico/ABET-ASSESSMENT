@@ -30,7 +30,7 @@ router.get('/', async function(req, res) {
 
 	let all_std_query = {
 		"from": "DEPARTMENT",
-		"join": "study_program",
+		"join": "STUDY_PROGRAM",
 		"using": "dep_ID",
 	}
 
@@ -170,7 +170,7 @@ router.get('/:id/edit', async function(req, res) {
 	locals.profiles = [];
 	locals.dropdown_options = [];
 	locals.have_dropdown = true;
-	locals.dropdown_title = "Study Programs";
+	locals.dropdown_title = "Department";
 	locals.dropdown_name = "department_id";
 	locals.title_action = "Edit Study Program";
 	locals.url_form_redirect = `/studyprograms/${studyp_id}?_method=PUT`;

@@ -30,15 +30,27 @@
                 </div>
             </div>
         </div>
-        <% inputs.forEach(element => { %>
-          
+
+        <div class="container-fluid">
             <div class="row my-4">
-                <div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-                <div class="col-8">
-                    <input class="form-control" value="<%= element.value %>" type="text"
-                        placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+                <div class="col-2 align-self-center text-right"><strong>Performance Criteria</strong></div>
+                <div class="col-8 ">
+                    <select id="performance" type="text" name="performance" required>
+                        <option disabled selected value> -- Select Performance Criteria -- </option>
+                    </select>
                 </div>
             </div>
+        </div>
+
+        <% inputs.forEach(element => { %>
+
+        <div class="row my-4">
+            <div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+            <div class="col-8">
+                <input class="form-control" value="<%= element.value %>" type="text"
+                    placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+            </div>
+        </div>
         <% }) %>
 
         <div class="row my-4">
@@ -59,17 +71,42 @@
             $('#outcomes').empty().append('<option disabled selected value> -- Select Outcome -- </option>');
 
             // get the selected id of the study program to make the request
-            var selected = $(this).children("option:selected").val();
+            var study_program_id = $(this).children("option:selected").val();
 
             $.ajax({
-                'url': `/outcomes/${selected}/getStudyProgram`,
+                'url': `/outcomes/${study_program_id}/getStudyProgram`,
                 type: 'GET',
                 dataType: 'json',
                 success: (data) => {
-                    
+
                     // populate the options
                     data.forEach(element => {
-                        $('#outcomes').append('<option class="val" value="' + element.outc_ID + '">' + element.outc_name + '</option>');
+                        $('#outcomes').append(`<option value='${element.outc_ID}'>${element.outc_name}</option>`);
+                    });
+                }
+            });
+        });
+
+        // add performance Rubric
+
+        // change the data when user select study program
+        $("#outcomes").change(function () {
+    
+            // clean outcomes data
+            $('#performance').empty().append('<option disabled selected value> -- Select Performance Criteria -- </option>');
+
+            // get the selected id of the outcome to make the request
+            var outcome_id = $(this).children("option:selected").val();
+            console.log("selected: ", outcome_id );
+
+            $.ajax({
+                'url': `/outcomes/get/performances/${outcome_id}`,
+                type: 'GET',
+                dataType: 'json',
+                success: (data) => {
+                    // populate the options
+                    data.forEach(element => {
+                        $('#performance').append(`<option value='${element.name}'>${element.name}</option>`);
                     });
                 }
             });

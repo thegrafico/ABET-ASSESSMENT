@@ -20,8 +20,8 @@ async function validate_outcome(req, res, next){
 	}
 
 	let outcome_query = {
-		"from": "student_outcome",
-		"join": "study_program",
+		"from": "student_outcome".toUpperCase(),
+		"join": "study_program".toUpperCase(),
 		"using": "prog_ID",
 		"where": "outc_ID",
 		"id": req.params.outc_id 
@@ -48,7 +48,7 @@ async function validate_performance_criteria(req, res, next){
 	}
 
 	let rubric_query = {
-		"from": "perf_criteria",
+		"from": "perf_criteria".toUpperCase(),
 		"where": "perC_ID",
 		"id": req.params.perf_id 
 	};
@@ -74,7 +74,7 @@ async function validate_evaluation_rubric(req, res, next){
     }
     
     let rubric_query = {
-		"from": "evaluation_rubric",
+		"from": "evaluation_rubric".toUpperCase(),
 		"where": "rubric_ID",
 		"id": req.params.r_id,
 	};

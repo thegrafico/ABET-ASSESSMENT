@@ -3,7 +3,7 @@
 
 
 <div class="table-responsive">
-    <div>
+    <!-- <div>
         <input class="form-control" id="myInput" type="text" placeholder="Search..">
         <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Study Programs
@@ -12,10 +12,10 @@
               <li><a>HTML</a></li>
             </ul>
         </div>
-    </div>
+    </div> -->
     <br>
     <table class="table">
-        <thead  class="thead-dark">
+        <thead class="thead-dark">
             <tr>
                 <th>Course</th>
                 <th scope="col"> Outcome 1 </th>
@@ -32,8 +32,53 @@
     </table>
 </div>
 
+<button id="clickme" class="btn btn-primary"> CLICK ME</button>
 
-<%- include ('../partials/footer') -%>
+<script>
 
-<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/javascripts/courseMapping.js"></script>
+    $(document).ready(() => {
+        let courses;
+        $.ajax({
+            url: '/courseMapping/getCourses',
+            type: 'GET',
+            dataType: 'json',
+            success: (data) => {
+                for (let i = 0; i < data.length; i++) {
+                    let row = `<tr><th scope='row'>${data[i].course_name}</th><td><input value='${data[i].course_name}' type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td><td><input type='checkbox'></td></tr>`;
+                    $("#tableBody").append(row);
+                }
+            }
+        });
+
+        $('#clickme').click(function () {
+            $("#tableBody input:checkbox:checked").each(function () {
+                console.log($(this).val()) // do your staff with each checkbox
+            });
+        });
+    });
+
+
+</script>
+
+
+<div class="container-fluid">
+    <hr class="mt-5">
+    <p>&copy; 2019 - Universidad Interamericana de Puerto Rico - Bayam&oacute;n Campus</p>
+</div>
+
+<!-- LOADING JQUERY -->
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+<!-- <script type="text/javascript" src="/javascripts/courseMapping.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>

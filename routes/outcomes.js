@@ -38,7 +38,7 @@ router.get('/', async function (req, res) {
 	});
 
 	// getting all study program
-	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
+	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		console.log("Error getting studing program", err);
 	});
 
@@ -74,30 +74,6 @@ router.get('/', async function (req, res) {
 	res.render('outcome/home', locals);
 });
 
-router.get('/:id/getStudyProgram', async function (req, res) {
-
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		req.flash("error", "Cannot find the outcome");
-		return res.redirect(base_url);
-	}
-
-	// id of the study program
-	let study_program_id = req.params.id;
-	let get_outcomes_query = { "from": "student_outcome", "where": "prog_ID", "id": study_program_id };
-
-	// fetching data from db
-	let outcomes = await general_queries.get_table_info_by_id(get_outcomes_query).catch((err) => {
-		console.log("Error getting the information: ", err);
-	});
-
-	// verify
-	if (outcomes == undefined || outcomes.length == 0) {
-		return res.json([]);
-	}
-
-	// send response if it's good
-	res.json(outcomes);
-});
 
 
 /* 
@@ -338,6 +314,34 @@ router.delete('/:id', function (req, res, next) {
 	});
 });
 
+/* 
+	-- API --
+	GET ALL STUDY PROGRAMS FROM OUTCOME
+*/
+router.get('/:id/getStudyProgram', async function (req, res) {
+
+	if (req.params.id == undefined || isNaN(req.params.id)) {
+		req.flash("error", "Cannot find the outcome");
+		return res.redirect(base_url);
+	}
+
+	// id of the study program
+	let study_program_id = req.params.id;
+	let get_outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": study_program_id };
+
+	// fetching data from db
+	let outcomes = await general_queries.get_table_info_by_id(get_outcomes_query).catch((err) => {
+		console.log("Error getting the information: ", err);
+	});
+
+	// verify
+	if (outcomes == undefined || outcomes.length == 0) {
+		return res.json([]);
+	}
+
+	// send response if it's good
+	res.json(outcomes);
+});
 
 /* 
 	-- API  OUTCOME TO remove --
@@ -351,7 +355,7 @@ router.get('/get/:id', async function (req, res) {
  
 	let outcome_query = {
 		"from": "STUDENT_OUTCOME",
-		"join": "study_program",
+		"join": "STUDY_PROGRAM",
 		"using": "prog_ID",
 		"where": "outc_ID",
 		"id": req.params.id
@@ -386,6 +390,28 @@ router.get('/get/:id', async function (req, res) {
 		record.push({ "name": names[index], "value": values[index] })
 	}
 	res.json(record);
+});
+
+router.get("/get/performances/:outcome_id", async function (req, res) {
+
+	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
+		return res.json([]);
+	}
+	let performance_query = { "from": "perf_criteria", "where": "outc_ID", "id": req.params.outcome_id};
+	let outcome_performances = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
+		console.log("Error getting performance: ", err);
+	})
+
+	if (outcome_performances == undefined || outcome_performances.length == 0) {
+		return res.json([]);
+	}
+
+	let record = [];
+	outcome_performances.forEach( element =>{
+		record.push({ "name": element["perC_Desk"], "value": element["perC_ID"] })
+	});
+
+	return res.json(record);
 });
 
 
