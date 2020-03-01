@@ -51,7 +51,12 @@ router.get('/getCourses', async function (req, res) {
  * @returns {Array} order in ascendent
  */
 function transformdt(outcomes) {
+    let test = outcomes[0];
+    test.outc_ID = 1;
+    test.outc_name = 'Outcome 8';
 
+    console.log(outcomes);
+    
     // getting all ids
     let ids = outcomes.map(row => row.prog_ID);
 
@@ -64,18 +69,16 @@ function transformdt(outcomes) {
     ids.sort(function (a, b) { return a - b });
 
     let temp = [];
-    let row_outcomes = [];
     ids.forEach((ID) => {
-        row_outcomes = [];
+        let row_outcomes = [];
 
         // filter only outcomes that belown to specific study program (Still we got the object)
         row_outcomes = outcomes.filter(row => row.prog_ID == ID);
-
-        // get only the outcomes numbers
+        
+        row_outcomes.sort((a, b) => (a.outc_name > b.outc_name) ? 1 : -1)
+        
+        // get only the outcomes names
         row_outcomes = row_outcomes.map(row => row.outc_ID);
-
-        // sort elements in ascendent order
-        row_outcomes.sort(function (a, b) { return a - b });
 
         temp.push({ "prog_ID": ID, "outcomes": row_outcomes });
     });
