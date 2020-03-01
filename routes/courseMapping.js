@@ -15,14 +15,25 @@ let courseMapping = [];
 */
 
 router.get('/', async function (req, res) {
-	res.render('courseMapping/home', locals);
+    res.render('courseMapping/home', locals);
+});
+/* 
+    -- ROUTE -- POST COURSES
+*/
+router.post('/postCourses', async function (req, res) {
+    courseMapping = req.body.data;
+    console.log("Course Mapping POST: ", courseMapping);
+    res.status(200).send();
 });
 
+/* 
+    --API-- GET COURSES
+*/
 router.get('/getCourses', async function (req, res) {
-    let courses = await query.get_course_with_std_program_plain().catch((err) =>{
-		console.log("Error getting the courses with std program results: ", err);
+    let courses = await query.get_course_with_std_program_plain().catch((err) => {
+        console.log("Error getting the courses with std program results: ", err);
     });
-    
+
     let outcomes = await courseMappingQuery.get_outcome_with_study_programs().catch((err) => {
         console.log("Error retrieving outcomes: ", err);
     });
@@ -30,14 +41,47 @@ router.get('/getCourses', async function (req, res) {
     let data = courses;
     data.push(outcomes);
 
-    console.log(data);
-	res.json(data);
+    transformdt(outcomes);
+    res.json(data);
 });
 
-router.post('/postCourses', async function(req, res){
-    courseMapping = req.body.data;
-    console.log("Course Mapping POST: ", courseMapping);
-    res.status(200).send();
-});
+/**
+ * transformdt -> transform the data structure to a new data structure
+ * @param {Array} outcomes array of element to transform
+ * @returns {Array} order in ascendent
+ */
+function transformdt(outcomes) {
+
+    // getting all ids
+    let ids = outcomes.map(row => row.prog_ID);
+
+    // remove duplicates
+    ids = ids.filter(function (item, pos) {
+        return ids.indexOf(item) == pos;
+    })
+
+    // sort elements in ascendent order
+    ids.sort(function (a, b) { return a - b });
+
+    let temp = [];
+    let row_outcomes = [];
+    ids.forEach((ID) => {
+        row_outcomes = [];
+
+        // filter only outcomes that belown to specific study program (Still we got the object)
+        row_outcomes = outcomes.filter(row => row.prog_ID == ID);
+
+        // get only the outcomes numbers
+        row_outcomes = row_outcomes.map(row => row.outc_ID);
+
+        // sort elements in ascendent order
+        row_outcomes.sort(function (a, b) { return a - b });
+
+        temp.push({ "prog_ID": ID, "outcomes": row_outcomes });
+    });
+
+    console.log(temp);
+    return temp;
+}
 
 module.exports = router;
