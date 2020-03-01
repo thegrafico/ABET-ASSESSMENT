@@ -1,7 +1,7 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
 <div class="container-fluid">
-    <h2>Create Evaluation Rubric</h2>
+    <h2>Edit Evaluation Rubric</h2>
     <hr class="my-4">
 
     <form id="<%= form_id %>" action="<%= url_form_redirect %>" method="POST">
@@ -11,9 +11,12 @@
                 <div class="col-2 align-self-center text-right"><strong>Study Programs</strong></div>
                 <div class="col-8">
                     <select id="study_program" type="text" name="study_program" required>
-                        <option disabled selected value> -- Select Study Program -- </option>
                         <% for (let std of std_options) {%>
-                        <option class="dropdown-item" value="<%=std.ID%>"> <%= std.NAME%> </option>
+                            <% if (std.ID == study_program_id) {%>
+                                <option selected value="<%=std.ID%>"><%= std.NAME %></option>
+                            <% }else {%>
+                                <option class="dropdown-item" value="<%=std.ID%>"> <%= std.NAME%> </option>
+                            <% } %>
                         <% } %>
                     </select>
                 </div>
@@ -25,7 +28,14 @@
                 <div class="col-2 align-self-center text-right"><strong>Outcomes</strong></div>
                 <div class="col-8 ">
                     <select id="outcomes" type="text" name="outcome" required>
-                        <option disabled selected value> -- Select Outcome -- </option>
+
+                        <% for (let outc of outcomes) {%>
+                            <% if (outc.ID == outcome_selected) {%>
+                                <option selected value="<%=outc.ID%>"><%= outc.NAME %></option>
+                            <% }else {%>
+                                <option class="dropdown-item" value="<%=outc.ID%>"> <%= outc.NAME%> </option>
+                            <% } %>
+                        <% } %>
                     </select>
                 </div>
             </div>
@@ -38,18 +48,22 @@
                 <span class="multi-select2"></span>
             </div>
             <input id="multiple_performance" type="hidden" name="performances_id" value="">
-
+            
+            <script>
+                let criterias = <%- JSON.stringify(criteria) %>;
+                let criterias_selected = <%- JSON.stringify(criterias_selected) %>;
+            </script>
         </div>
 
 
         <script>
             var multi = new SelectPure(".multi-select2", {
-                options: [],
-                value: [],
+                options: criterias,
+                value: criterias_selected,
                 multiple: true,
                 icon: "fa fa-times",
                 placeholder: "-- Please Select --",
-                onChange: value => {},
+                onChange: value => { },
                 classNames: {
                     select: "select-pure__select",
                     dropdownShown: "select-pure__select--opened",

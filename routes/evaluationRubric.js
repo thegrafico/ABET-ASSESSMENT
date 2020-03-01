@@ -6,10 +6,14 @@ var express = require('express');
 var router = express.Router();
 var rubric_query = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
+var { get_outcome_by_study_program } = require("../helpers/queries/outcomes_queries");
+var roolback_queries = require("../helpers/queries/roolback_queries");
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 var { validate_outcome, validate_evaluation_rubric } = require("../middleware/validate_outcome");
+var { split_and_filter } = require("../helpers/validation");
 
-let base_url = "/evaluation";
+
+const base_url = "/evaluation";
 //Paramns to routes links
 let locals = {
 	"title": 'ABET Assessment',
@@ -31,7 +35,7 @@ router.get('/', async function (req, res) {
 	let eval_rubric = await rubric_query.get_all_evaluations_rubric().catch((err) => {
 		console.log("Error getting all evaluation rubric: ", err);
 	});
-	
+
 	// getting all study programs
 	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
 		console.error("Error getting study programs: ", err);
@@ -40,7 +44,7 @@ router.get('/', async function (req, res) {
 	locals.study_programs = study_programs || [];
 
 	// getting all outcomes
-	let outcomes = await general_queries.get_table_info("student_outcome").catch((err) =>{
+	let outcomes = await general_queries.get_table_info("student_outcome").catch((err) => {
 		console.error("Error getting outcomes: ", err);
 	});
 
@@ -114,21 +118,28 @@ router.get('/create', async function (req, res) {
 	POST /evaluation/creates
 */
 router.post("/create", function (req, res) {
-	
-	if (req.body == undefined || !req.body.name ||  isNaN(req.body.outcome)){
+
+	if (req.body == undefined || !req.body.name || isNaN(req.body.outcome)) {
 		req.flash("error", "Please insert the correct values");
-		res.redirect("back");
+		return res.redirect("back");
 	}
+
+	if (req.body.performances_id == undefined || req.body.performances_id == "") {
+		req.flash("error", "Performance cannot be empty");
+		return res.redirect("back");
+	}
+	let performances_selected = split_and_filter(req.body.performances_id, ",");
 
 	// validate req.body
 	let rubric = {
 		"name": req.body.name,
 		"description": req.body.description,
-		"outcome_id": req.body.outcome
+		"outcome_id": req.body.outcome,
+		"performance": performances_selected
 	}
 
 	// create in db
-	rubric_query.insert_evaluation_rubric(rubric).then((ok) => {
+	roolback_queries.create_evaluation_rubric(rubric).then((ok) => {
 		req.flash("success", "Evaluation Rubric created");
 		res.redirect(base_url);
 	}).catch((err) => {
@@ -142,37 +153,88 @@ router.post("/create", function (req, res) {
 	-- SHOW evaluation rubri to edit --
 	GET /evaluation/:id/edit
 */
-router.get('/:id/evaluationrubric/:r_id/edit', validate_outcome, validate_evaluation_rubric, async function (req, res) {
+router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) {
 
-	let outcome_id = req.params.id;
-	let rubric_id = req.params.r_id;
+	let std_programs = await general_queries.get_table_info("study_program").catch((err) => {
+		console.error("Error getting std_programs", err);
+	});
 
-	// store all profiles[];
-	locals.have_dropdown = false;
-	locals.title_action = "Edit Evaluation Rubric";
-	locals.url_form_redirect = `/outcomes/${outcome_id}/evaluationrubric/${rubric_id}?_method=PUT`;
+	if (std_programs == undefined || std_programs.length == 0) {
+		req.flash("error", "Cannot find any Study Program, Please create one");
+		return res.redirect(base_url);
+	}
+
+	let rubric = await rubric_query.get_evaluation_rubric_by_id(req.params.r_id).catch((err) => {
+		console.error("Error getting the rubric: ", err);
+	});
+
+	if (rubric == undefined) {
+		req.flash("error", "Cannot find the Evaluation Rubric");
+		return res.redirect(base_url);
+	}
+
+	// All Performance Criteria Selected
+	locals.criterias_selected = rubric.perC_ID;
+	// The study Program selected
+	locals.study_program_id = rubric.prog_ID;
+	// the outcome selected
+	locals.outcome_selected = rubric.outc_ID;
+
+	let outcomes = await get_outcome_by_study_program(locals.study_program_id).catch((err) => {
+		console.error("Error getting: ", err);
+	});
+
+	if (outcomes == undefined || outcomes.length == 0) {
+		req.flash("error", "Cannot find any outcomes, Please create one");
+		return res.redirect(base_url);
+	}
+	let criteria_query = { "from": "perf_criteria", "where": "outc_ID", "id": locals.outcome_selected };
+
+	let performance_criteria = await general_queries.get_table_info_by_id(criteria_query).catch((err) => {
+		console.error("ERROR getting performance Criteria: ", err);
+	});
+
+	locals.criteria = [];
+	if (performance_criteria != undefined && performance_criteria.length > 0) {
+		performance_criteria.forEach(element => {
+			locals.criteria.push({ label: element.perC_Desk, value: element.perC_ID.toString() })
+		});
+	}
+
+	locals.std_options = [];
+	locals.outcomes = [];
+	locals.url_form_redirect = `/evaluation/create`;
 	locals.btn_title = "Edit";
 
-	// Only contain one element
-	let rubric_to_edit = req.body.rubric[0];
+	std_programs.forEach((element) => {
+		locals.std_options.push({
+			"ID": element.prog_ID,
+			"NAME": element.prog_name
+		});
+	});
 
-	// input data
-	let rubric_to_input = [
-		rubric_to_edit.rubric_name,
-		rubric_to_edit.rubric_description,
-	];
+	outcomes.forEach((element) => {
+		locals.outcomes.push({
+			"ID": element.outc_ID,
+			"NAME": element.outc_name
+		});
+	});
 
-	// fill out the values with the template 
+	// // set the data user for edit
+	temp_r = [
+		rubric.rubric_name,
+		rubric.rubric_description,
+	]
+
 	let index = 0;
 	evaluation_rubric_input.forEach((record) => {
-		record.value = rubric_to_input[index];
+		record.value = temp_r[index];
 		index++;
 	});
 
-	// Dynamic EJS
+	// set the input for user
 	locals.inputs = evaluation_rubric_input;
-
-	res.render('layout/create', locals);
+	res.render('rubric/edit', locals);
 });
 
 /* 

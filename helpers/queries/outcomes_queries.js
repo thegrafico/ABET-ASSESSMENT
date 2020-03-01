@@ -21,7 +21,6 @@ function insert_outcome(data) {
                 resolve(true);
         });
     });
-
 }
 
 /**
@@ -43,5 +42,27 @@ function update_outcome(data) {
         });
     });
 }
+
+
+/**
+ * get_outcome_by_study_program -  get outcomes by study program
+ * @param {Number} program_id study program id
+ * @return {Promise} resolve with all study programs
+ */
+function get_outcome_by_study_program(program_id) {
+    
+    return new Promise(function(resolve, reject){
+        
+        let get_query = `SELECT * FROM student_outcome WHERE student_outcome.prog_ID = ?`;
+
+        conn.query(get_query, [program_id],function (err, results) {
+            if (err)
+               reject(err);
+            else
+                resolve(results);
+        });
+    });
+}
 module.exports.insert_outcome = insert_outcome;
 module.exports.update_outcome = update_outcome;
+module.exports.get_outcome_by_study_program = get_outcome_by_study_program;

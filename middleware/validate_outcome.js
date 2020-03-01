@@ -7,7 +7,6 @@ var general_queries = require('../helpers/queries/general_queries');
 var { db } = require("../helpers/mysqlConnection"); //pool connection
 conn = db.mysql_pool;
 
-
 /**
  * validate_outcome validate the outcomes
  * @return {Void}
@@ -16,7 +15,7 @@ async function validate_outcome(req, res, next){
     	
 	if (req.params.outc_id == undefined || isNaN(req.params.outc_id)){
 		req.flash("error", "Cannot find the outcome");
-		return res.redirect(base_url);
+		return res.redirect("back");
 	}
 
 	let outcome_query = {
@@ -44,7 +43,7 @@ async function validate_performance_criteria(req, res, next){
     	
 	if (req.params.perf_id == undefined || isNaN(req.params.perf_id)){
 		req.flash("error", "Cannot find the Performance Criteria");
-		return res.redirect(base_url);
+		return res.redirect("back");
 	}
 
 	let rubric_query = {
@@ -70,7 +69,7 @@ async function validate_evaluation_rubric(req, res, next){
     
     if (req.params.r_id == undefined || isNaN(req.params.r_id)){
 		req.flash("error", "Cannot find the outcome evaluation rubric");
-		return res.redirect(base_url);
+		return res.redirect("back");
     }
     
     let rubric_query = {

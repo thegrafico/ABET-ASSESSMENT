@@ -3,6 +3,36 @@ var conn = db.mysql_pool;
 
 
 
+/**
+ * get_evaluation_rubric_by_id -  get evaluation rubric by id
+ * @param {Number} id id of the rubric
+ * @return {Promise} resolve with all data
+ */
+function get_evaluation_rubric_by_id(id) {
+
+    return new Promise(function (resolve, reject) {
+
+        let get_query = `SELECT * FROM evaluation_rubric INNER JOIN student_outcome USING(outc_ID) 
+        INNER JOIN performance_rubric USING(rubric_ID)
+        INNER JOIN perf_criteria on perf_criteria.perC_ID = performance_rubric.perC_ID
+        INNER JOIN study_program on student_outcome.prog_ID = study_program.prog_ID
+        WHERE evaluation_rubric.rubric_ID = ?;`;
+
+        conn.query(get_query, [id], function (err, results) {
+            if (err) return reject(err);
+            if (results.length == 0) return resolve(results);
+
+            let criteria = [];
+
+            results.forEach((each_rubric) => {
+                criteria.push(each_rubric["perC_ID"].toString());
+            });
+            results[0]["perC_ID"] = criteria;
+            resolve(results[0]);
+        });
+    });
+}
+
 
 /**
  * get_all_evaluations_rubric -  get all evaluations rubric
@@ -93,3 +123,4 @@ module.exports.insert_evaluation_rubric = insert_evaluation_rubric;
 module.exports.update_evaluation_rubric = update_evaluation_rubric;
 module.exports.get_all_evaluations_rubric = get_all_evaluations_rubric;
 module.exports.insert_evaluation_rubric_INTO_Perfomance_Rubric = insert_evaluation_rubric_INTO_Perfomance_Rubric;
+module.exports.get_evaluation_rubric_by_id = get_evaluation_rubric_by_id;

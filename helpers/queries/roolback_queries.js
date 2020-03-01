@@ -41,8 +41,8 @@ async function create_user(user, profile_id, departments_id) {
                         }
                     });
 
-                    if (values.length == 0){return connection.rollback(function () { reject("Not department found"); });}
-                    
+                    if (values.length == 0) { return connection.rollback(function () { reject("Not department found"); }); }
+
                     let set_dept_query = `INSERT INTO user_dep (user_ID, dep_ID) values ?;`;
 
                     connection.query(set_dept_query, [values], function (error, results) {
@@ -71,14 +71,14 @@ async function create_user(user, profile_id, departments_id) {
  * @return {Promise} resolve with all profiles
  */
 async function create_course(course) {
-    
+
     // add user promise
     return new Promise(function (resolve, reject) {
         connection.beginTransaction(function (err) {
             if (err) { return reject(err) }
 
             let insert_query = `insert into COURSE (course_number, course_name, course_description) values(?, ?, ?);`;
-           
+
 
             connection.query(insert_query, [course.number, course.name, course.description], function (error, results) {
 
@@ -94,12 +94,12 @@ async function create_course(course) {
                 });
 
                 if (values.length == 0) return reject("Cannot add any study program");
-    
+
                 let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values ?`;
 
                 connection.query(insert_prog_course, [values], function (error, results) {
                     if (error) return connection.rollback(function () { reject(error); });
-                
+
                     connection.commit(function (err) {
                         if (err) {
                             return connection.rollback(function () {
@@ -114,6 +114,54 @@ async function create_course(course) {
     });
 }
 
+
+/**
+ * create_evaluation_rubric create a new evaluation rubric
+ * @param {Object} rubric -> {name, description, outcome_id, performance}
+ * @return {Promise} resolve with true
+ */
+async function create_evaluation_rubric(rubric) {
+    return new Promise(function (resolve, reject) {
+
+        connection.beginTransaction(function (err) {
+            if (err) { return reject(err) }
+
+            // insert rubric
+            let insert_query = `INSERT INTO EVALUATION_RUBRIC (rubric_name, rubric_description, outc_ID) VALUES(?, ?, ?);`;
+
+            connection.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id], function (error, results) {
+
+                if (error) return connection.rollback(function () { reject(error); });
+
+                let rubric_id = results.insertId;
+                
+                let values = [];
+                rubric["performance"].forEach((element) => {
+                        if (element != undefined && element.length != 0 && !isNaN(element)) {
+                            values.push([rubric_id, parseInt(element)])
+                        }
+                    });
+
+                let query_performance_rubric = `INSERT INTO PERFORMANCE_RUBRIC (rubric_ID, perC_ID) VALUES ?`;
+
+                connection.query(query_performance_rubric, [values], function (error, results) {
+                    if (error) return connection.rollback(function () { reject(error); });
+
+                    connection.commit(function (err) {
+                        if (err) {
+                            return connection.rollback(function () {
+                                reject(err);
+                            });
+                        }
+                        resolve(true);
+                    });
+                });
+            });
+        });
+    });
+}
+
+
 module.exports.create_user = create_user;
 module.exports.create_course = create_course;
-
+module.exports.create_evaluation_rubric = create_evaluation_rubric;
