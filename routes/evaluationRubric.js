@@ -50,8 +50,6 @@ router.get('/', async function (req, res) {
 
 	locals.outcomes = outcomes || [];
 
-
-
 	locals.results = [];
 	locals.table_header = ["Name", "Description", "Study program", "Outcome", ""];
 
@@ -203,7 +201,7 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 
 	locals.std_options = [];
 	locals.outcomes = [];
-	locals.url_form_redirect = `/evaluation/create`;
+	locals.url_form_redirect = `/evaluation/${req.params.r_id}?_method=PUT`;
 	locals.btn_title = "Edit";
 
 	std_programs.forEach((element) => {
@@ -241,27 +239,29 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 	-- EDIT Evaluation rubric -- 
 	PUT /evaluation/:id
 */
-router.put('/:id/evaluationrubric/:r_id', validate_outcome, validate_evaluation_rubric, function (req, res) {
+router.put('/:r_id', validate_evaluation_rubric, function (req, res) {
 
 	// validate id
 	let evaluation_id = req.params.r_id;
 
-	let evaluation_data = {
-		"name": req.body.name,
-		"description": req.body.description,
-		"rubric_id": evaluation_id
-	}
+	console.log(req.body);
+	res.redirect("back")
+	// let evaluation_data = {
+	// 	"name": req.body.name,
+	// 	"description": req.body.description,
+	// 	"rubric_id": evaluation_id
+	// }
 
-	let base_url = `/outcomes/${req.params.id}/evaluationrubric`;
+	// let base_url = `/outcomes/${req.params.id}/evaluationrubric`;
 
-	rubric_query.update_evaluation_rubric(evaluation_data).then((ok) => {
-		req.flash("success", "Evaluation Rubric edited");
-		res.redirect(base_url);
-	}).catch((err) => {
-		console.log("Error: ", err);
-		req.flash("error", "Cannot edit the Evaluation Rubric");
-		res.redirect(base_url);
-	});
+	// rubric_query.update_evaluation_rubric(evaluation_data).then((ok) => {
+	// 	req.flash("success", "Evaluation Rubric edited");
+	// 	res.redirect(base_url);
+	// }).catch((err) => {
+	// 	console.log("Error: ", err);
+	// 	req.flash("error", "Cannot edit the Evaluation Rubric");
+	// 	res.redirect(base_url);
+	// });
 });
 
 /* 

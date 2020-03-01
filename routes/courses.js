@@ -122,7 +122,7 @@ router.post('/create', async function(req, res) {
 	let key_types = {
 		"number": 's',
 		"name": 's',
-		"description": 's',
+		// "description": 's',
 		"study_programs": 's',
 	};
 

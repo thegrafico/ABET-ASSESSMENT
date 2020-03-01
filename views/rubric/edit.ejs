@@ -12,11 +12,11 @@
                 <div class="col-8">
                     <select id="study_program" type="text" name="study_program" required>
                         <% for (let std of std_options) {%>
-                            <% if (std.ID == study_program_id) {%>
-                                <option selected value="<%=std.ID%>"><%= std.NAME %></option>
-                            <% }else {%>
-                                <option class="dropdown-item" value="<%=std.ID%>"> <%= std.NAME%> </option>
-                            <% } %>
+                        <% if (std.ID == study_program_id) {%>
+                        <option selected value="<%=std.ID%>"><%= std.NAME %></option>
+                        <% }else {%>
+                        <option class="dropdown-item" value="<%=std.ID%>"> <%= std.NAME%> </option>
+                        <% } %>
                         <% } %>
                     </select>
                 </div>
@@ -30,11 +30,11 @@
                     <select id="outcomes" type="text" name="outcome" required>
 
                         <% for (let outc of outcomes) {%>
-                            <% if (outc.ID == outcome_selected) {%>
-                                <option selected value="<%=outc.ID%>"><%= outc.NAME %></option>
-                            <% }else {%>
-                                <option class="dropdown-item" value="<%=outc.ID%>"> <%= outc.NAME%> </option>
-                            <% } %>
+                        <% if (outc.ID == outcome_selected) {%>
+                        <option selected value="<%=outc.ID%>"><%= outc.NAME %></option>
+                        <% }else {%>
+                        <option class="dropdown-item" value="<%=outc.ID%>"> <%= outc.NAME%> </option>
+                        <% } %>
                         <% } %>
                     </select>
                 </div>
@@ -47,8 +47,8 @@
                 <span class="multi-select"></span>
                 <span class="multi-select2"></span>
             </div>
-            <input id="multiple_performance" type="hidden" name="performances_id" value="">
-            
+            <input id="multiple_performance" type="hidden" name="performances_id" value="<%=criterias_selected%> ">
+
             <script>
                 let criterias = <%- JSON.stringify(criteria) %>;
                 let criterias_selected = <%- JSON.stringify(criterias_selected) %>;
@@ -102,12 +102,29 @@
 <script>
     $(document).ready(() => {
 
+        $('#multi_selection').bind("DOMSubtreeModified", function () {
+            let values = [];
+            $(".fa-times").each(function () {
+
+                $.each(this.attributes, function () {
+
+                    if (this.name.includes("data") || this.name.includes("value")) {
+                        values.push(this.value);
+                    }
+                });
+                $("#multiple_performance").attr("value", values);
+                return;
+            });
+
+        });
+
+
         // change the data when user select study program
         $("#study_program").change(function () {
 
             // clean outcomes data
             $('#outcomes').empty().append('<option disabled selected value> -- Select Outcome -- </option>');
-
+            $("#multi_selection").empty();
             // get the selected id of the study program to make the request
             var study_program_id = $(this).children("option:selected").val();
 
@@ -132,8 +149,8 @@
 
             mult = [];
 
-            // clean outcomes data
-            $('#performance').empty().append('<option disabled selected value> -- Select Performance Criteria -- </option>');
+            // clean performance data
+            $('#performance').empty().append('<option disabled selected value> -- Please Select -- </option>');
 
             // get the selected id of the outcome to make the request
             var outcome_id = $(this).children("option:selected").val();
@@ -161,10 +178,7 @@
                         multiple: true,
                         icon: "fa fa-times",
                         placeholder: "-- Please Select --",
-                        onChange: value => {
-                            console.log(value);
-                            $("#multiple_performance").attr("value", value)
-                        },
+                        onChange: value => { },
                         classNames: {
                             select: "select-pure__select",
                             dropdownShown: "select-pure__select--opened",

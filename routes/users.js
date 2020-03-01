@@ -324,9 +324,9 @@ router.put('/:id', async function (req, res) {
 	}
 
 	req.body.userID = user_id;
-	if (req.body.selected_values == undefined || req.body.selected_values.length == 0 || req.body.selected_values == ""){
+	if (req.body.selected_values == undefined || req.body.selected_values.length == 0 || req.body.selected_values == "")
 		req.body.selected_values = req.body.selected;
-	}
+		
 	let current_department = split_and_filter(req.body.selected, ",");
 	let selected_department = split_and_filter(req.body.selected_values, ",");
 
