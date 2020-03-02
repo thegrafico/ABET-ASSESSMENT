@@ -1,7 +1,7 @@
 $(document).ready(() => {
     let courses;
+    let outcomesList;
     let column = 7;
-    let headerRow = "";
 
     for(let i = 0; i <= column; i++) {
         if(i === 0) {
@@ -19,25 +19,31 @@ $(document).ready(() => {
         dataType: 'json',
         success: (data) => {
             courses = data.slice(0,data.length-1);
-            let outcomes = data[data.length-1];
+            outcomesList = data[data.length-1];
             let row = '';
-            let outcomeObject = [];
             console.log("Courses: ", courses);
-            console.log("Outcomes: ", outcomes);
+            console.log("Outcomes: ", outcomesList);
 
             for (let i = 0; i < courses.length; i++) {
+                let tempArrOutcome = [];
                 for(let j = 0; j <= column; j++) {
                     if(j === 0) {
                         row += '<tr id="outcomeRow' + i + '">';
                         row +=`<th>${courses[i].course_name}</th>`;
+                        for(let e = 0; e < outcomesList.length; e++) {
+                            if(courses[i].prog_ID == outcomesList[e].prog_ID) {
+                                tempArrOutcome = outcomesList[e].outcomes;
+                            }
+                        }
                     }
                     else if(j > 0) {
-                        row += `<td><input value='${courses[i].course_name + "+" + j}' type='checkbox'></td>`;
+                        row += `<td><input value='${tempArrOutcome[j-1]}' type='checkbox'></td>`;
                     }
                 }
                 row += "</tr>";
                 $("#tableBody").append(row);
                 row = '';
+                tempArrOutcome = [];
             }
         }
     });
@@ -52,8 +58,8 @@ $(document).ready(() => {
 
         for(let i = 0; i < column; i++) {
             $(`#outcomeRow${i} input:checkbox:checked`).each(function () {
-                let temp = $(this).val().split('+');
-                tempArr.push(parseInt(temp[1]));
+                let temp = $(this).val();
+                tempArr.push(parseInt(temp));
             });
             arr.push(tempArr);
             tempArr = [];
@@ -68,6 +74,7 @@ $(document).ready(() => {
             let tempObj = {};
             tempObj['course'] = courseInfo[count].course_name;
             tempObj['prog_ID'] = courseInfo[count].prog_ID;
+            tempObj['course_ID'] = courseInfo[count].course_ID;
             tempObj['outcomes'] = entry;
             courseMapInfo.push(tempObj);
             count++;

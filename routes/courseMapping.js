@@ -9,7 +9,7 @@ var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 let locals = {
     title: 'Course Mapping'
 };
-let courseMapping = [];
+const base_url = '/';
 /* 
     GET INDEX ROUTE
 */
@@ -22,20 +22,45 @@ router.get('/getCourses', async function (req, res) {
     let courses = await query.get_course_with_std_program_plain().catch((err) =>{
 		console.log("Error getting the courses with std program results: ", err);
     });
-    
+
     let outcomes = await courseMappingQuery.get_outcome_with_study_programs().catch((err) => {
         console.log("Error retrieving outcomes: ", err);
     });
 
-    let data = courses;
-    data.push(transformdt(outcomes));
-
-	res.json(data);
+    courses.push(transformdt(outcomes));
+	res.json(courses);
 });
 
 router.post('/postCourses', async function(req, res){
+    let courseMapping = [];
     courseMapping = req.body.data;
+
     console.log("Course Mapping POST: ", courseMapping);
+
+    console.log("Outcome Array length: ", courseMapping[0].outcomes.length);
+    console.log("Array check: ", courseMapping[0].outcomes[0]);
+
+    // TODO: Noah R. Almeda
+    // - Need to prevent duplicates
+    // - Error Handling
+    // - If mapping exsist, marked checked
+    // - Unchecked acts as a remove
+
+    for(let i = 0; i < courseMapping.length; i++) {
+        for(let j = 0; j < courseMapping[i].outcomes.length; j++) {
+            courseMappingQuery.insert_course_mapping(courseMapping[i].course_ID, courseMapping[i].outcomes[j]).then((ok) => {
+                console.log("Successfully Inserted: ", courseMapping[i].course, " | " ,courseMapping[i].course_ID, " | ", courseMapping[i].outcomes[j]);
+                // req.flash("success", "Course created");
+                // res.redirect(base_url);
+            }).catch((err) => {
+                console.log("ERROR: ", err);
+                req.flash("error", "Error creating the course, Contact the Admin");
+                return res.redirect(base_url);
+            });
+        }
+    }
+
+
     res.status(200).send();
 });
 
@@ -71,8 +96,6 @@ function transformdt(outcomes) {
 
         temp.push({ "prog_ID": ID, "outcomes": row_outcomes });
     });
-
-    console.log(temp);
     return temp;
 }
 
