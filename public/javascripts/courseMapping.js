@@ -21,7 +21,7 @@ $(document).ready(() => {
             courses = data.slice(0,data.length-1);
             let outcomes = data[data.length-1];
             let row = '';
-
+            let outcomeObject = [];
             console.log("Courses: ", courses);
             console.log("Outcomes: ", outcomes);
 

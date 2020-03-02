@@ -15,48 +15,37 @@ let courseMapping = [];
 */
 
 router.get('/', async function (req, res) {
-    res.render('courseMapping/home', locals);
-});
-/* 
-    -- ROUTE -- POST COURSES
-*/
-router.post('/postCourses', async function (req, res) {
-    courseMapping = req.body.data;
-    console.log("Course Mapping POST: ", courseMapping);
-    res.status(200).send();
+	res.render('courseMapping/home', locals);
 });
 
-/* 
-    --API-- GET COURSES
-*/
 router.get('/getCourses', async function (req, res) {
-    let courses = await query.get_course_with_std_program_plain().catch((err) => {
-        console.log("Error getting the courses with std program results: ", err);
+    let courses = await query.get_course_with_std_program_plain().catch((err) =>{
+		console.log("Error getting the courses with std program results: ", err);
     });
-
+    
     let outcomes = await courseMappingQuery.get_outcome_with_study_programs().catch((err) => {
         console.log("Error retrieving outcomes: ", err);
     });
 
     let data = courses;
-    data.push(outcomes);
+    data.push(transformdt(outcomes));
 
-    transformdt(outcomes);
-    res.json(data);
+	res.json(data);
 });
+
+router.post('/postCourses', async function(req, res){
+    courseMapping = req.body.data;
+    console.log("Course Mapping POST: ", courseMapping);
+    res.status(200).send();
+});
+
 
 /**
  * transformdt -> transform the data structure to a new data structure
  * @param {Array} outcomes array of element to transform
  * @returns {Array} order in ascendent
  */
-function transformdt(outcomes) {
-    let test = outcomes[0];
-    test.outc_ID = 1;
-    test.outc_name = 'Outcome 8';
-
-    console.log(outcomes);
-    
+function transformdt(outcomes) {    
     // getting all ids
     let ids = outcomes.map(row => row.prog_ID);
 
@@ -86,5 +75,6 @@ function transformdt(outcomes) {
     console.log(temp);
     return temp;
 }
+
 
 module.exports = router;
