@@ -107,7 +107,7 @@ router.get('/create', async function (req, res) {
 
 	if (departments == undefined || departments.length == 0) {
 		console.log("There is not department created");
-		req.flash("error", "Please create a department befero creating a user");
+		req.flash("error", "Please create a department before creating a user");
 		return res.redirect(base_url);
 	}
 

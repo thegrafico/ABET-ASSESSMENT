@@ -52,6 +52,7 @@ CREATE TABLE `ASSESSMENT` (
   `term_ID` int(11) NOT NULL,
   `user_ID` int(11) DEFAULT NULL,
   `rubric_ID` int(11) DEFAULT NULL,
+  `course_section` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`assessment_ID`),
   KEY `user_ID` (`user_ID`),
   KEY `course_ID` (`course_ID`),
@@ -59,7 +60,7 @@ CREATE TABLE `ASSESSMENT` (
   CONSTRAINT `ASSESSMENT_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `USER` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ASSESSMENT_ibfk_2` FOREIGN KEY (`course_ID`) REFERENCES `COURSE` (`course_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ASSESSMENT_ibfk_3` FOREIGN KEY (`rubric_ID`) REFERENCES `PERFORMANCE_RUBRIC` (`rubric_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=151 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +69,7 @@ CREATE TABLE `ASSESSMENT` (
 
 LOCK TABLES `ASSESSMENT` WRITE;
 /*!40000 ALTER TABLE `ASSESSMENT` DISABLE KEYS */;
-INSERT INTO `ASSESSMENT` VALUES (48,48,1,5,25),(49,48,1,5,25),(50,48,1,5,25),(51,48,1,5,25),(52,48,1,5,26),(53,51,5,5,26),(54,50,4,5,25),(55,50,2,5,25),(56,48,1,5,24),(57,48,1,5,24),(58,48,1,5,24),(59,48,1,5,24),(60,48,1,5,24),(61,51,1,5,26);
+INSERT INTO `ASSESSMENT` VALUES (94,49,1,10,NULL,NULL);
 /*!40000 ALTER TABLE `ASSESSMENT` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +87,7 @@ CREATE TABLE `COURSE` (
   `course_description` varchar(255) DEFAULT NULL,
   `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`course_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +96,7 @@ CREATE TABLE `COURSE` (
 
 LOCK TABLES `COURSE` WRITE;
 /*!40000 ALTER TABLE `COURSE` DISABLE KEYS */;
-INSERT INTO `COURSE` VALUES (48,'Precalculus','MATH','5 Credit course','2020-02-08 20:59:03'),(49,'Precalculus','MATH','5 Credit course','2020-02-08 20:59:31'),(50,'Intro to Programming','COEN','4 Credit course','2020-02-08 20:59:54'),(51,'Advance Programming','COEN','4 Credit course','2020-02-08 21:00:06'),(52,'Electronic I','ELEN','4 Credit course','2020-02-08 21:00:18'),(53,'Electriv Circuits I','ELEN','4 Credit course','2020-02-08 21:00:36');
+INSERT INTO `COURSE` VALUES (48,'Precalculus','MATH','5 Credit course','2020-02-08 20:59:03'),(49,'Precalculus','MATH','5 Credit course','2020-02-08 20:59:31'),(50,'Intro to Programming','COEN','4 Credit course','2020-02-08 20:59:54'),(51,'Advance Programming','COEN','4 Credit course','2020-02-08 21:00:06'),(52,'Electronic I','ELEN','4 Credit course','2020-02-08 21:00:18'),(61,'Data Science','COEN','Computer Engineer Data sCience Course','2020-02-28 02:52:52');
 /*!40000 ALTER TABLE `COURSE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,7 +122,7 @@ CREATE TABLE `DEPARTMENT` (
 
 LOCK TABLES `DEPARTMENT` WRITE;
 /*!40000 ALTER TABLE `DEPARTMENT` DISABLE KEYS */;
-INSERT INTO `DEPARTMENT` VALUES (14,'Industrial Engineering','Industrial Engineering Department','2020-02-08 20:35:10'),(15,'Mechanical Engineering','Mechanical Engineering Department','2020-02-08 20:35:56'),(16,'Electrical And Computer Engineering','Electrical And Computer Engineering Department','2020-02-08 20:36:38');
+INSERT INTO `DEPARTMENT` VALUES (14,'Industrial Engineering Department','Industrial Engineering Department','2020-02-08 20:35:10'),(15,'Mechanical Engineering Department','Mechanical Engineering Department','2020-02-08 20:35:56'),(16,'Electrical And Computer Engineering Department','Electrical And Computer Engineering Department','2020-02-08 20:36:38');
 /*!40000 ALTER TABLE `DEPARTMENT` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -137,6 +138,8 @@ CREATE TABLE `EVALUATION_RUBRIC` (
   `rubric_name` varchar(255) NOT NULL,
   `rubric_description` varchar(255) DEFAULT NULL,
   `outc_ID` int(11) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `date_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`rubric_ID`),
   KEY `outc_ID` (`outc_ID`),
   CONSTRAINT `EVALUATION_RUBRIC_ibfk_1` FOREIGN KEY (`outc_ID`) REFERENCES `STUDENT_OUTCOME` (`outc_ID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -149,7 +152,6 @@ CREATE TABLE `EVALUATION_RUBRIC` (
 
 LOCK TABLES `EVALUATION_RUBRIC` WRITE;
 /*!40000 ALTER TABLE `EVALUATION_RUBRIC` DISABLE KEYS */;
-INSERT INTO `EVALUATION_RUBRIC` VALUES (24,'Evaluation Rubric A1','Outcome A - Performance Criteria 1, 2, 3',14),(25,'Evaluation Rubric B1','Outcome B - Performance Criteria 1, 2, 3, 4',15),(26,'Evaluation Rubric C1','Outcome C - Performance Criteria 1, 2, 3, 4, 5',16);
 /*!40000 ALTER TABLE `EVALUATION_RUBRIC` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,6 +165,7 @@ DROP TABLE IF EXISTS `OUTCOME_COURSE`;
 CREATE TABLE `OUTCOME_COURSE` (
   `course_ID` int(11) DEFAULT NULL,
   `outc_ID` int(11) DEFAULT NULL,
+  UNIQUE KEY `no_duplicates` (`course_ID`,`outc_ID`),
   KEY `outc_ID` (`outc_ID`),
   KEY `course_ID` (`course_ID`),
   CONSTRAINT `OUTCOME_COURSE_ibfk_1` FOREIGN KEY (`outc_ID`) REFERENCES `STUDENT_OUTCOME` (`outc_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -176,6 +179,7 @@ CREATE TABLE `OUTCOME_COURSE` (
 
 LOCK TABLES `OUTCOME_COURSE` WRITE;
 /*!40000 ALTER TABLE `OUTCOME_COURSE` DISABLE KEYS */;
+INSERT INTO `OUTCOME_COURSE` VALUES (48,17),(48,18),(49,24),(50,18),(50,19),(51,17),(51,18),(51,20),(51,21),(52,27),(61,17),(61,18),(61,19),(61,20),(61,21),(61,22),(61,23),(61,29),(61,30),(61,31);
 /*!40000 ALTER TABLE `OUTCOME_COURSE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -201,7 +205,6 @@ CREATE TABLE `PERFORMANCE_RUBRIC` (
 
 LOCK TABLES `PERFORMANCE_RUBRIC` WRITE;
 /*!40000 ALTER TABLE `PERFORMANCE_RUBRIC` DISABLE KEYS */;
-INSERT INTO `PERFORMANCE_RUBRIC` VALUES (24,57),(24,58),(24,59),(25,62),(25,63),(25,64),(25,65),(26,67),(26,68),(26,69),(26,70),(26,71);
 /*!40000 ALTER TABLE `PERFORMANCE_RUBRIC` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +232,6 @@ CREATE TABLE `PERF_CRITERIA` (
 
 LOCK TABLES `PERF_CRITERIA` WRITE;
 /*!40000 ALTER TABLE `PERF_CRITERIA` DISABLE KEYS */;
-INSERT INTO `PERF_CRITERIA` VALUES (57,'Perfomance Criteria 5 for Outcome A',5,14),(58,'Perfomance Criteria 1 for Outcome A',1,14),(59,'Perfomance Criteria 2 for Outcome A',2,14),(60,'Perfomance Criteria 3 for Outcome A',3,14),(61,'Perfomance Criteria 4 for Outcome A',4,14),(62,'Perfomance Criteria 1 for Outcome B',1,15),(63,'Perfomance Criteria 2 for Outcome B',2,15),(64,'Perfomance Criteria 3 for Outcome B',3,15),(65,'Perfomance Criteria 4 for Outcome B',4,15),(66,'Perfomance Criteria 5 for Outcome B',5,15),(67,'Perfomance Criteria 1 for Outcome C',1,16),(68,'Perfomance Criteria 2 for Outcome C',2,16),(69,'Perfomance Criteria 3 for Outcome C',3,16),(70,'Perfomance Criteria 4 for Outcome C',4,16),(71,'Perfomance Criteria 5 for Outcome C',5,16);
 /*!40000 ALTER TABLE `PERF_CRITERIA` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +282,7 @@ CREATE TABLE `PROG_COURSE` (
 
 LOCK TABLES `PROG_COURSE` WRITE;
 /*!40000 ALTER TABLE `PROG_COURSE` DISABLE KEYS */;
-INSERT INTO `PROG_COURSE` VALUES (48,51),(49,52),(50,51),(51,51),(52,52),(53,52);
+INSERT INTO `PROG_COURSE` VALUES (48,51),(49,52),(50,51),(51,51),(52,52),(61,52),(61,51);
 /*!40000 ALTER TABLE `PROG_COURSE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,7 +308,7 @@ CREATE TABLE `REPORTS` (
   PRIMARY KEY (`report_ID`),
   KEY `assessment_ID` (`assessment_ID`),
   CONSTRAINT `REPORTS_ibfk_1` FOREIGN KEY (`assessment_ID`) REFERENCES `ASSESSMENT` (`assessment_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,7 +317,7 @@ CREATE TABLE `REPORTS` (
 
 LOCK TABLES `REPORTS` WRITE;
 /*!40000 ALTER TABLE `REPORTS` DISABLE KEYS */;
-INSERT INTO `REPORTS` VALUES (1,2,4,4,4,3,'2','Holaq','Ya','seguimos',NULL),(2,4,4,3,5,1,'0','Probando','Ayuda','Nose',NULL),(3,2,2,2,2,2,'2','2','2','2',NULL),(4,4,4,4,4,4,'4','Hiiii this is a test','They suck, they all flunk',' hghcghfghgh',NULL),(5,1,1,1,1,1,'1','jhsdgfkjsdsknbjk','gfxhcgvhbm,.,','lsgflksndfnksdnf',NULL),(6,2,2,2,2,2,'2','This a result course test','this is a course reflection test','\r\nprovide action for course improvement test',NULL),(7,1,1,1,1,1,'1','1','1','1',NULL),(8,1,1,1,1,1,'1','1','1','1',NULL),(9,1,1,1,1,1,'1','1','1','1',NULL),(10,1,1,1,1,1,'1','1','1','1',NULL),(11,1,1,1,1,1,'1','1','1','1',NULL),(12,1,1,1,1,1,'1','1','1','1',NULL),(13,1,1,1,1,1,'1','1','1','1',NULL),(14,1,1,1,1,1,'1','1','1','1',NULL),(15,4,1,5,4,43,'34','324','42','42',NULL),(16,1,1,1,1,1,'1','1','1','1',NULL),(17,1,1,1,1,1,'1','1','1','1',NULL),(18,1,1,1,1,1,'1','1','1','1',NULL),(19,1,1,1,1,1,'1','1','1','1',NULL),(20,1,1,1,1,1,'1','1','1','1',NULL),(21,1,1,1,1,1,'1','1','1','1',NULL),(22,1,1,1,1,1,'1','1','1','1',NULL),(23,1,1,1,1,1,'1','1','1','1',NULL),(24,1,1,1,1,1,'1','1','1','1',NULL),(25,1,1,1,1,1,'1','1','1','1',NULL),(26,1,1,1,1,1,'1','1','1','1',NULL),(27,2,2,2,2,2,'22','2','2','2',NULL),(28,2,2,2,2,2,'22','2','2','2',NULL),(29,2,2,2,2,2,'22','2','2','2',NULL),(30,1,1,1,1,1,'1','1','1','1',NULL),(31,1,1,1,1,1,'1','1','1','1',NULL),(32,1,1,1,1,1,'1','1','1','1',NULL);
+INSERT INTO `REPORTS` VALUES (1,2,4,4,4,3,'2','Holaq','Ya','seguimos',NULL),(2,4,4,3,5,1,'0','Probando','Ayuda','Nose',NULL),(3,2,2,2,2,2,'2','2','2','2',NULL),(4,4,4,4,4,4,'4','Hiiii this is a test','They suck, they all flunk',' hghcghfghgh',NULL),(5,1,1,1,1,1,'1','jhsdgfkjsdsknbjk','gfxhcgvhbm,.,','lsgflksndfnksdnf',NULL),(6,2,2,2,2,2,'2','This a result course test','this is a course reflection test','\r\nprovide action for course improvement test',NULL),(7,1,1,1,1,1,'1','1','1','1',NULL),(8,1,1,1,1,1,'1','1','1','1',NULL),(9,1,1,1,1,1,'1','1','1','1',NULL),(10,1,1,1,1,1,'1','1','1','1',NULL),(11,1,1,1,1,1,'1','1','1','1',NULL),(12,1,1,1,1,1,'1','1','1','1',NULL),(13,1,1,1,1,1,'1','1','1','1',NULL),(14,1,1,1,1,1,'1','1','1','1',NULL),(15,4,1,5,4,43,'34','324','42','42',NULL),(16,1,1,1,1,1,'1','1','1','1',NULL),(17,1,1,1,1,1,'1','1','1','1',NULL),(18,1,1,1,1,1,'1','1','1','1',NULL),(19,1,1,1,1,1,'1','1','1','1',NULL),(20,1,1,1,1,1,'1','1','1','1',NULL),(21,1,1,1,1,1,'1','1','1','1',NULL),(22,1,1,1,1,1,'1','1','1','1',NULL),(23,1,1,1,1,1,'1','1','1','1',NULL),(24,1,1,1,1,1,'1','1','1','1',NULL),(25,1,1,1,1,1,'1','1','1','1',NULL),(26,1,1,1,1,1,'1','1','1','1',NULL),(27,2,2,2,2,2,'22','2','2','2',NULL),(28,2,2,2,2,2,'22','2','2','2',NULL),(29,2,2,2,2,2,'22','2','2','2',NULL),(30,1,1,1,1,1,'1','1','1','1',NULL),(31,1,1,1,1,1,'1','1','1','1',NULL),(32,1,1,1,1,1,'1','1','1','1',NULL),(33,1,1,1,1,1,'1','1','1','1',NULL),(34,1,1,1,1,1,'1','1','1','1',NULL),(35,1,1,1,1,1,'1','1','1','1',NULL),(36,1,1,1,1,1,'1','1','1','1',NULL),(37,1,1,1,1,1,'1','1','1','1',NULL),(38,1,1,1,1,1,'1','1','1','1',NULL),(39,1,1,1,1,1,'1','1','1','1',NULL),(40,1,1,1,1,1,'1','1','1','1',NULL),(41,1,1,1,1,1,'1','1','1','1',NULL),(42,1,1,1,1,1,'1','1','1','1',NULL),(43,1,1,1,1,1,'1','1','1','1',NULL),(44,1,1,1,1,1,'1','1','1','1',NULL),(45,1,1,1,1,1,'1','1','1','1',NULL),(46,1,1,1,1,1,'1','1','1','',NULL),(47,1,1,1,1,1,'1','1','1','1',NULL),(48,1,1,1,1,1,'1','1','1','1',NULL),(49,1,1,1,1,1,'1','1','1','1',NULL),(50,1,1,1,1,1,'1','1','1','1',NULL),(51,1,1,1,1,1,'1','1','1','1',NULL),(52,1,1,1,1,1,'1','1','1','1',NULL),(53,1,1,1,1,1,'1','1','1','1',NULL),(54,1,1,1,1,1,'1','1','1','1',NULL),(55,1,1,1,1,1,'1','1','1','1',NULL),(56,1,1,1,1,1,'1','1','1','1',NULL),(57,1,1,1,1,1,'1','1','1','1',NULL),(58,1,1,1,1,1,'1','1','1','1',NULL),(59,1,1,1,1,1,'1','1','1','1',NULL),(60,1,1,1,1,1,'1','1','1','1',NULL),(61,1,1,1,1,1,'1','1','1','1',NULL),(62,1,1,1,1,1,'1','1','1','1',NULL),(63,1,1,1,1,1,'1','1','1','1',NULL),(64,1,1,1,1,1,'1','1','1','1',NULL),(65,1,1,1,1,1,'1','1','1','1',NULL),(66,1,1,1,1,1,'1','1','1','1',NULL),(67,1,1,1,1,1,'1','1','1','1',NULL),(68,1,1,1,1,1,'1','1','1','1',NULL),(69,1,1,1,1,1,'1','1','1','1',NULL),(70,1,1,1,1,1,'1','1','1','1',NULL),(71,1,1,1,1,1,'1','1','1','1',NULL),(72,1,1,1,1,1,'1','1','1','1',NULL),(73,1,1,1,1,1,'1','1','1','1',NULL),(74,1,1,1,1,1,'1','1','1','1',NULL),(75,1,1,1,1,1,'1','1','1','1',NULL),(76,1,1,1,1,1,'1','1','1','1',NULL),(77,1,1,1,1,1,'1','1','1','1',NULL),(78,1,1,1,1,1,'1','1','1','1',NULL),(79,1,1,1,1,1,'1','1','1','1',NULL),(80,1,1,1,1,1,'1','1','1','1',NULL),(81,1,1,1,1,1,'1','1','1','1',NULL),(82,1,1,1,1,1,'1','1','1','1',NULL),(83,1,1,1,1,1,'1','1','1','1',NULL),(84,1,1,1,1,1,'1','1','1','1',NULL),(85,1,1,1,1,1,'1','1','1','1',NULL),(86,1,1,1,1,1,'1','1','1','1',NULL),(87,1,1,1,1,1,'1','1','1','1',NULL),(88,1,1,1,1,1,'1','1','1','1',NULL),(89,1,1,1,1,1,'1','1','1','1',NULL),(90,1,1,1,1,1,'1','1','1','1',NULL),(91,1,1,1,1,1,'1','1','1','1',NULL),(92,1,1,1,1,1,'1','1','1','1',NULL),(93,1,1,1,1,1,'1','1','1','1',NULL),(94,1,1,1,1,1,'1','1','1','1',NULL),(95,1,1,1,1,1,'1','1','1','1',NULL),(96,1,1,1,1,1,'1','1','1','1',NULL),(97,1,1,1,1,1,'1','1','1','1',NULL),(98,1,1,1,1,1,'1','1','1','1',NULL),(99,1,1,1,1,1,'1','1','1','11',NULL),(100,1,1,1,1,1,'1','1','1','1',NULL),(101,1,1,1,1,1,'1','1','1','1',NULL),(102,1,1,1,1,1,'1','1','1','1',NULL),(103,1,1,1,1,1,'1','1','1','1',NULL),(104,1,1,1,1,1,'1','1','1','1',NULL),(105,1,1,1,1,1,'1','1','1','1',NULL),(106,1,1,1,1,1,'1','1','1','1',NULL),(107,1,1,1,1,1,'1','1','1','1',NULL),(108,2,2,2,2,2,'2','2','2','2',NULL),(109,1,1,1,1,1,'1','1','1','11',NULL),(110,1,1,1,1,1,'1','1','1','1',NULL),(111,1,1,1,1,1,'1','1','1','1',NULL),(112,1,1,1,1,1,'1','1','1','11',NULL),(113,1,1,1,1,1,'1','1','1','1',NULL),(114,1,1,1,1,1,'1','1','1','1',NULL),(115,1,1,11,1,1,'1','1','1','1',NULL),(116,3,5,3,3,3,'33','3','3','3',NULL),(117,1,1,1,1,1,'1','1','1','1',NULL),(118,1,1,1,1,1,'1','1','1','1',NULL),(119,1,1,1,1,1,'1','1','1','1',NULL),(120,1,1,1,1,1,'1','1','1','1',NULL);
 /*!40000 ALTER TABLE `REPORTS` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -335,7 +337,7 @@ CREATE TABLE `STUDENT_OUTCOME` (
   PRIMARY KEY (`outc_ID`),
   KEY `prog_ID` (`prog_ID`),
   CONSTRAINT `STUDENT_OUTCOME_ibfk_1` FOREIGN KEY (`prog_ID`) REFERENCES `STUDY_PROGRAM` (`prog_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -344,7 +346,7 @@ CREATE TABLE `STUDENT_OUTCOME` (
 
 LOCK TABLES `STUDENT_OUTCOME` WRITE;
 /*!40000 ALTER TABLE `STUDENT_OUTCOME` DISABLE KEYS */;
-INSERT INTO `STUDENT_OUTCOME` VALUES (14,'Outcome A','Student Outcome A','2020-02-08 21:25:37',51),(15,'Outcome B','Student Outcome B','2020-02-08 21:25:37',51),(16,'Outcome C','Student Outcome C','2020-02-08 21:26:18',51);
+INSERT INTO `STUDENT_OUTCOME` VALUES (17,'Outcome 1','An ability to identify, formulate, and solve complex engineering problems by applying principles of engineering, science, and mathematics.','2020-02-27 17:33:26',51),(18,'Outcome 2','An ability to apply engineering design to produce solutions that meet specified needs with consideration of public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors.','2020-02-27 18:02:28',51),(19,'Outcome 3','An ability to communicate effectively with a range of audiences.','2020-02-27 18:03:28',51),(20,'Outcome 4','An ability to recognize ethical and professional responsibilities in engineering situations and make informed judgments, which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts.','2020-02-27 18:05:29',51),(21,'Outcome 5','An ability to function effectively on a team whose members together provide leadership, create a collaborative and inclusive environment, establish goals, plan tasks, and meet objectives.','2020-02-27 18:06:55',51),(22,'Outcome 6','An ability to develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions.','2020-02-27 18:07:57',51),(23,'Outcome 7','An ability to acquire and apply new knowledge as needed, using appropriate learning strategies.','2020-02-27 18:08:53',51),(24,'Outcome 1','An ability to identify, formulate, and solve complex engineering problems by applying principles of engineering, science, and mathematics.','2020-02-29 17:20:14',52),(26,'Outcome 2','An ability to apply engineering design to produce solutions that meet specified needs with consideration of public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors.','2020-02-29 17:21:26',52),(27,'Outcome 3','An ability to communicate effectively with a range of audiences.','2020-02-29 17:21:42',52),(28,'Outcome 4','An ability to recognize ethical and professional responsibilities in engineering situations and make informed judgments, which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts.','2020-02-29 17:21:59',52),(29,'Outcome 5','An ability to function effectively on a team whose members together provide leadership, create a collaborative and inclusive environment, establish goals, plan tasks, and meet objectives.','2020-02-29 17:22:49',52),(30,'Outcome 6','An ability to develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions.','2020-02-29 17:23:06',52),(31,'Outcome 7','An ability to acquire and apply new knowledge as needed, using appropriate learning strategies.','2020-02-29 17:23:27',52);
 /*!40000 ALTER TABLE `STUDENT_OUTCOME` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -366,7 +368,7 @@ CREATE TABLE `STUDENT_PERFORMANCE` (
   PRIMARY KEY (`student_ID`),
   KEY `assessment_ID` (`assessment_ID`),
   CONSTRAINT `STUDENT_PERFORMANCE_ibfk_1` FOREIGN KEY (`assessment_ID`) REFERENCES `ASSESSMENT` (`assessment_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -375,7 +377,7 @@ CREATE TABLE `STUDENT_PERFORMANCE` (
 
 LOCK TABLES `STUDENT_PERFORMANCE` WRITE;
 /*!40000 ALTER TABLE `STUDENT_PERFORMANCE` DISABLE KEYS */;
-INSERT INTO `STUDENT_PERFORMANCE` VALUES (1,'1','2','3',NULL,NULL,60),(2,'3','3','4',NULL,NULL,60),(3,'3','2','1',NULL,NULL,60),(4,'1','1','1',NULL,NULL,60);
+INSERT INTO `STUDENT_PERFORMANCE` VALUES (20,NULL,NULL,NULL,NULL,NULL,NULL),(42,NULL,NULL,NULL,NULL,NULL,NULL),(43,NULL,NULL,NULL,NULL,NULL,NULL),(44,NULL,NULL,NULL,NULL,NULL,NULL),(60,NULL,NULL,NULL,NULL,NULL,NULL),(61,NULL,NULL,NULL,NULL,NULL,NULL),(85,NULL,NULL,NULL,NULL,NULL,NULL),(86,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `STUDENT_PERFORMANCE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -403,7 +405,7 @@ CREATE TABLE `STUDY_PROGRAM` (
 
 LOCK TABLES `STUDY_PROGRAM` WRITE;
 /*!40000 ALTER TABLE `STUDY_PROGRAM` DISABLE KEYS */;
-INSERT INTO `STUDY_PROGRAM` VALUES (51,'COEN','2020-02-08 20:39:00',16),(52,'ELEN','2020-02-08 20:39:43',16),(53,'MECN','2020-02-08 20:39:44',15),(54,'INEN','2020-02-08 20:39:44',14);
+INSERT INTO `STUDY_PROGRAM` VALUES (51,'Computer Engineering','2020-02-08 20:39:00',16),(52,'Electrical Engineering','2020-02-08 20:39:43',16),(53,'Mechanical Engineering','2020-02-08 20:39:44',15),(54,'Industrial Engineering','2020-02-08 20:39:44',14);
 /*!40000 ALTER TABLE `STUDY_PROGRAM` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -423,7 +425,7 @@ CREATE TABLE `USER` (
   `phone_number` varchar(255) NOT NULL,
   `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -432,7 +434,7 @@ CREATE TABLE `USER` (
 
 LOCK TABLES `USER` WRITE;
 /*!40000 ALTER TABLE `USER` DISABLE KEYS */;
-INSERT INTO `USER` VALUES (5,'U00000001','Raul','Lopez','rpichardo3780@interbayamon.edu','800-001-0001','2019-09-19 21:29:12'),(7,'U00000002','Kemuel','Perez','kemuel@inter.com','800-001-0003','2019-09-24 15:42:36'),(8,'U00000003','Eliud','Hernandez','unknown@inter.edu','800-001-0000','2019-09-24 16:55:15');
+INSERT INTO `USER` VALUES (5,'U00000001','Raul','Lopez','rpichardo3780@interbayamon.edu','800-001-0001','2019-09-19 21:29:12'),(7,'U00000002','Kemuel','Perez','kemuel@inter.com','800-001-0003','2019-09-24 15:42:36'),(8,'U00000003','Eliud','Hernandez','unknown@inter.edu','800-001-0000','2019-09-24 16:55:15'),(10,'A000000','Noah','Almeda','nalmeda5053@interbayamon.edu','800-00-0000','2020-02-17 02:36:37'),(11,'A00000001','Nicole','Tester','nlopez6437@interbayamon.edu','5000000000','2020-02-24 18:07:31'),(12,'A00000001','Tester','Test1','test','7875211258264928545','2020-02-26 13:24:25'),(13,'A00000001 this ID is repeated 3 times','18 this should fail','19 this should fail','this $hould fail','this should fail','2020-02-26 13:25:48');
 /*!40000 ALTER TABLE `USER` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -485,8 +487,33 @@ CREATE TABLE `USER_PROFILES` (
 
 LOCK TABLES `USER_PROFILES` WRITE;
 /*!40000 ALTER TABLE `USER_PROFILES` DISABLE KEYS */;
-INSERT INTO `USER_PROFILES` VALUES (5,1),(7,1),(8,1);
+INSERT INTO `USER_PROFILES` VALUES (5,1),(7,1),(8,1),(10,1),(11,1),(12,1),(13,1);
 /*!40000 ALTER TABLE `USER_PROFILES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `custom_sessions_table_name`
+--
+
+DROP TABLE IF EXISTS `custom_sessions_table_name`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `custom_sessions_table_name` (
+  `custom_session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `custom_expires_column_name` int(11) unsigned NOT NULL,
+  `custom_data_column_name` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  PRIMARY KEY (`custom_session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `custom_sessions_table_name`
+--
+
+LOCK TABLES `custom_sessions_table_name` WRITE;
+/*!40000 ALTER TABLE `custom_sessions_table_name` DISABLE KEYS */;
+INSERT INTO `custom_sessions_table_name` VALUES ('rSn1ImjCf5z1iAkrv6yvq5D25fOULhXF',1583205608,'{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2020-03-03T03:18:27.026Z\",\"httpOnly\":true,\"path\":\"/\"},\"flash\":{},\"user_name\":\"ALMEDA SANCHEZ NOAH R.\",\"user_email\":\"NALMEDA5053@INTERBAYAMON.EDU\",\"user_profile\":\"admin\",\"user_id\":10}');
+/*!40000 ALTER TABLE `custom_sessions_table_name` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -498,4 +525,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-09 10:05:36
+-- Dump completed on 2020-03-02 22:23:31

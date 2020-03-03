@@ -25,7 +25,27 @@ function insert_course_mapping(course, outcome) {
 	});
 }
 
+/**
+ * get_course_outcomes ->  retrieves all Courses with their respective Outcomes
+ * @return {Object} -> returns object containing all Courses ID with their respective Outcome ID
+ */
+function get_course_outcomes() {
+    return new Promise(function(resolve, reject) {
+        let query = `SELECT *
+                     FROM OUTCOME_COURSE;`;
 
+        conn.query(query,function(err, results) {
+            if(err) return reject(err);
+            resolve(results);
+        });
+    });
+}
+
+
+/**
+ * get_outcome_with_study_programs ->  retrieves all Outcomes with their respective Study Program IDs
+ * @return {Object} -> returns object containing all Outcomes with their respective Study Program IDs
+ */
 function get_outcome_with_study_programs() {
     return new Promise(function(resolve, reject) {
         let query = `SELECT outc_ID, outc_name, STUDY_PROGRAM.prog_ID
@@ -40,4 +60,6 @@ function get_outcome_with_study_programs() {
     });
 }
 
+module.exports.insert_course_mapping = insert_course_mapping;
+module.exports.get_course_outcomes = get_course_outcomes;
 module.exports.get_outcome_with_study_programs = get_outcome_with_study_programs;
