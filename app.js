@@ -52,6 +52,9 @@ var authorize = require('./routes/authorize');
 var assessmentRouter = require('./routes/assessment');
 // ===== CourseMapping Route =====
 var courseMapping = require('./routes/courseMapping');
+
+var apiRoute = require('./routes/api');
+
 //======================================================================================
 
 var app = express();
@@ -116,7 +119,7 @@ app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.is_admin, per
 app.use(`${admin_route}/evaluation`, middleware.is_login, middleware.is_admin, evaluationRubric);
 // ===== Courses Section =====
 app.use(`${admin_route}/courses`, middleware.is_login, middleware.is_admin, coursesRouter);
-
+app.use(`${admin_route}/api`, middleware.is_login, middleware.is_admin, apiRoute);
 // ===== Program/Course/Term Selection =====
 app.use('/assessment', assessmentRouter);
 // ===== CourseMapping Section =====

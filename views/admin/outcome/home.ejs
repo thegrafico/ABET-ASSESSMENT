@@ -2,9 +2,8 @@
 
 <div class="container-fluid mt-2">
     <h1><%= subtitle %></h1>
-    <hr class="my-4">
 
-    <div class="container" style="margin-left: 0%;">
+    <div class="container" style="margin-left: 0%; margin-top: -1%;">
 
         <div class="row justify-content-md-left test">
 
@@ -16,10 +15,10 @@
             </div>
 
             <div class="col-md-8">
-                <span class="glyphicon glyphicon-filter" style="float: left;">Filter</span>
+                <span class="glyphicon glyphicon-filter" style="float: left;"></span>
                 <div>
                     <input name="filter" class="form-control" id="myInput" type="text"
-                        placeholder="Type anything. Ex. The Study Program, Name or Date">
+                        placeholder="Filter by anything. Ex. The Study Program, Date or Outcome Name">
                 </div>
             </div>
 
@@ -45,8 +44,17 @@
 
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
-<div class="container-fluid my-2">
-    <table class="table table-bordered table-striped">
+<style>
+    th:nth-child(4), th:nth-child(1){
+        width: 10%;
+        text-align: center;
+    }
+
+</style>
+
+<div class="container-fluid my-2" style="overflow-y: scroll;height: 400px;width: 100%;">
+    <table class="table table-bordered table-striped table-hover">
+
         <thead class="thead-dark">
             <tr>
                 <% for (let header of table_header) { %>
@@ -86,7 +94,6 @@
             <% }); %>
         </tbody>
     </table>
-    <hr class="my-1">
 </div>
 
 <!-- REMOVE PARTIAL -->

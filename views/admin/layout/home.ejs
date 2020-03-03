@@ -32,6 +32,28 @@ window.addEventListener("pageshow", function (event) {
 							New</a>
 					</div>
 				</div>
+
+				<div class="col-md-8">
+					<span class="glyphicon glyphicon-filter" style="float: left;"></span>
+					<div>
+						<input name="filter" class="form-control" id="myInput" type="text"
+							placeholder="Filter by anything. Ex. Name or Date">
+					</div>
+				</div>
+
+				<script>
+					$(document).ready(function () {
+
+						$("#myInput").on("keyup", function () {
+							let value = $(this).val().toLowerCase();
+							$("#filter tr").filter(function () {
+								console.log(value);
+
+								$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+							});
+						});
+					});
+				</script>
 			</div>
 		</div>
 	</div>
@@ -41,7 +63,7 @@ window.addEventListener("pageshow", function (event) {
 
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
-<div class="container-fluid my-2">
+<div class="container-fluid my-2 " style="overflow-y: scroll;height: 400px;width: 100%;">
 
 	<table class="table table-bordered table-striped">
 		<thead class="thead-dark">
@@ -51,7 +73,7 @@ window.addEventListener("pageshow", function (event) {
 				<% } %>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="filter">
 			<% if (results.length == 0) { %>
 			<div style="text-align: center;">
 				<h1>You don't have Information Created yet.</h1>
