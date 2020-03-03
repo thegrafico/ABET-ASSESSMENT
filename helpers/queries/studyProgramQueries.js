@@ -11,7 +11,7 @@ function insert_into_study_program(data) {
 
     return new Promise(function (resolve, reject) {
 
-        let insert_query = `insert into STUDY_PROGRAM (prog_name, dep_ID) values(?, ?);`;
+        let insert_query = `INSERT INTO STUDY_PROGRAM (prog_name, dep_ID) values(?, ?);`;
         conn.query(insert_query, [data.name, data.department_id], function (err, results, fields) {
             if (err) reject(err);
             else resolve(true);
@@ -29,7 +29,7 @@ function update_study_program(data) {
 
     return new Promise(function (resolve, reject) {
 
-        let update_query = `update STUDY_PROGRAM set prog_name = ?, dep_ID = ? where prog_ID = ?`;
+        let update_query = `UPDATE STUDY_PROGRAM set prog_name = ?, dep_ID = ? where prog_ID = ?`;
         //Exe query
         conn.query(update_query, [data.name, data.department_id, data.program_id], function (err, results) {
             if (err) reject(err);

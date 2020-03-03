@@ -12,11 +12,11 @@ function get_evaluation_rubric_by_id(id) {
 
     return new Promise(function (resolve, reject) {
 
-        let get_query = `SELECT * FROM evaluation_rubric INNER JOIN student_outcome USING(outc_ID) 
-        INNER JOIN performance_rubric USING(rubric_ID)
-        INNER JOIN perf_criteria on perf_criteria.perC_ID = performance_rubric.perC_ID
-        INNER JOIN study_program on student_outcome.prog_ID = study_program.prog_ID
-        WHERE evaluation_rubric.rubric_ID = ?;`;
+        let get_query = `SELECT * FROM EVALUATION_RUBRIC INNER JOIN STUDENT_OUTCOME USING(outc_ID) 
+        INNER JOIN EVALUATION_RUBRIC USING(rubric_ID)
+        INNER JOIN PERF_CRITERIA on PERF_CRITERIA.perC_ID = PERFORMANCE_RUBRIC.perC_ID
+        INNER JOIN STUDY_PROGRAM on STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
+        WHERE EVALUATION_RUBRIC.rubric_ID = ?;`;
 
         conn.query(get_query, [id], function (err, results) {
             if (err) return reject(err);
@@ -42,9 +42,9 @@ function get_all_evaluations_rubric() {
 
     return new Promise(function (resolve, reject) {
 
-        let get_query = `SELECT * FROM evaluation_rubric INNER JOIN student_outcome using (outc_ID)
-        INNER JOIN study_program 
-        ON student_outcome.prog_ID = study_program.prog_ID;`;
+        let get_query = `SELECT * FROM EVALUATION_RUBRIC INNER JOIN STUDENT_OUTCOME using (outc_ID)
+        INNER JOIN STUDY_PROGRAM 
+        ON STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID;`;
 
         conn.query(get_query, function (err, results) {
             if (err)
@@ -65,7 +65,7 @@ function insert_evaluation_rubric(rubric) {
 
     return new Promise(function (resolve, reject) {
 
-        let insert_query = `insert into 
+        let insert_query = `INSERT INTO 
         EVALUATION_RUBRIC (rubric_name, rubric_description, outc_ID, date_created)
         values(?, ?, ?, ?);`;
 
@@ -87,8 +87,8 @@ function update_evaluation_rubric(rubric) {
     return new Promise(function (resolve, reject) {
 
         let update_query = `
-        update EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?, outc_ID = ?, date_modified = ?
-        where rubric_ID = ?`;
+        UPDATE EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?, outc_ID = ?, date_modified = ?
+        WHERE rubric_ID = ?`;
 
         data = [rubric.name, rubric.description, rubric.outcome_id, new Date(), rubric.id];
 
@@ -110,7 +110,7 @@ function insert_perfomance_Rubric(rubric_id, performances_id) {
 
     return new Promise(function (resolve, reject) {
 
-        let insert_query = `insert into PERFORMANCE_RUBRIC (rubric_ID, perC_ID) values ?`;
+        let insert_query = `INSERT INTO PERFORMANCE_RUBRIC (rubric_ID, perC_ID) values ?`;
 
         let values = [];
         performances_id.forEach((element) => {
@@ -147,7 +147,7 @@ function remove_performance(rubric_id, performances_id) {
             to_insert.push([rubric_id, element]);
         });
 
-        let update_query = `DELETE FROM performance_rubric WHERE (rubric_ID, perC_ID) IN (?)`;
+        let update_query = `DELETE FROM PERFORMANCE_RUBRIC WHERE (rubric_ID, perC_ID) IN (?)`;
 
         //Exe query
         conn.query(update_query, [to_insert], function (err, results) {

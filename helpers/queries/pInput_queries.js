@@ -4,7 +4,7 @@ var conn = db.mysql_pool;
 function insert_into_report(data, callback){
 //Este query manda los numeros de cuales son las notas y
 //toda los comentarios que el profesor ingrese.
-  let insert_query = `insert into REPORTS
+  let insert_query = `INSERT INTO REPORTS
   (grade_A, grade_B, grade_C, grade_D, grade_F, UW, evaluation_comments,
     reflexion_comments, actions_comments, assessment_ID)
     values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`

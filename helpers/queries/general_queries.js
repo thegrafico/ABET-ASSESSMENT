@@ -8,7 +8,7 @@ var conn = db.mysql_pool;
 function get_table_info(table_name){
 
     return new Promise(function (resolve, reject){
-        let query_get = `Select * From ??`;
+        let query_get = `SELECT * FROM ??`;
 
         conn.query(query_get, [table_name], function (err, results) {
             if (err) 
@@ -25,7 +25,7 @@ function get_table_info(table_name){
  */
 function get_table_info_by_id(table_info){
 
-	let find_dep_query = `Select * From ?? where ?? = ?;`;
+	let find_dep_query = `SELECT * FROM ?? WHERE ?? = ?;`;
 
     let data = [table_info.from, table_info.where, table_info.id];
 
@@ -47,7 +47,7 @@ function get_table_info_by_id(table_info){
  */
 function get_table_info_by_id_naturalJoin(table_info){
 
-	let findDep = `Select * From ?? natural join ?? where ?? = ?;`;
+	let findDep = `SELECT * FROM ?? NATURAL JOIN ?? WHERE ?? = ?;`;
 
     let data = [table_info.from, table_info.join, table_info.where, table_info.id];
 
@@ -70,7 +70,7 @@ function get_table_info_by_id_naturalJoin(table_info){
  */
 function get_table_info_inner_join(table_info){
 
-	let findDep = `Select * From ?? INNER JOIN ?? USING (??)`;
+	let findDep = `SELECT * FROM ?? INNER JOIN ?? USING (??)`;
 
     let data = [table_info.from, table_info.join, table_info.using];
 

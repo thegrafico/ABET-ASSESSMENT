@@ -32,8 +32,8 @@ function get_rubric_info(id){
 function get_course_info(id){
 
 	return new Promise(function(resolve, reject){
-		let find_query = `Select * FROM ABET.COURSE where
-		course_ID IN (Select course_ID From ABET.PROG_COURSE WHERE PROG_ID = ?);`;
+		let find_query = `SELECT * FROM ABET.COURSE WHERE
+		course_ID IN (SELCT course_ID FROM ABET.PROG_COURSE WHERE PROG_ID = ?);`;
 
 		conn.query(find_query, [id],function (err, results, fields) {
 			if (err)
