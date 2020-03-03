@@ -1,6 +1,7 @@
 $(document).ready(() => {
     let courses;
     let outcomesList;
+    let courseOutcomes;
     let column = 7;
 
     for(let i = 0; i <= column; i++) {
@@ -18,14 +19,19 @@ $(document).ready(() => {
         type: 'GET',
         dataType: 'json',
         success: (data) => {
-            courses = data.slice(0,data.length-1);
+            console.log(data);
+            courses = data.slice(0,data.length-2);
+            courseOutcomes = data.slice(data.length-2, data.length-1);
             outcomesList = data[data.length-1];
             let row = '';
             console.log("Courses: ", courses);
             console.log("Outcomes: ", outcomesList);
+            console.log("Course Outcomes", courseOutcomes);
 
             for (let i = 0; i < courses.length; i++) {
                 let tempArrOutcome = [];
+                let tempOutcomes = [];
+                
                 for(let j = 0; j <= column; j++) {
                     if(j === 0) {
                         row += '<tr id="outcomeRow' + i + '">';
@@ -35,15 +41,37 @@ $(document).ready(() => {
                                 tempArrOutcome = outcomesList[e].outcomes;
                             }
                         }
+                        for(let a = 0; a < courseOutcomes[0].length; a++) {
+                            if(courses[i].course_ID == courseOutcomes[0][a].course_ID) {
+                                console.log("ID Match: ", courses[i].course_ID, " | ", courses[i].course_name);
+                                tempOutcomes = courseOutcomes[0][a].outcomes;
+                                // console.log("Array of Outcomes: ", tempOutcomes, " |  ID: ", courses[i].course_ID, " | ", courses[i].course_name);
+                            }
+                        }
                     }
                     else if(j > 0) {
-                        row += `<td><input value='${tempArrOutcome[j-1]}' type='checkbox'></td>`;
+                        let found = false;
+                        for(let e = 0; e < tempOutcomes.length; e++) {
+                            if(tempArrOutcome[j-1] == tempOutcomes[e]) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(found) {
+                            console.log("Checked", tempOutcomes[j-1]);
+                            row += `<td><input value='${tempArrOutcome[j-1]}' type='checkbox' checked></td>`;
+                            found = false;
+                        } else {
+                            console.log("Not Checked");
+                            row += `<td><input value='${tempArrOutcome[j-1]}' type='checkbox'></td>`;
+                        }
                     }
                 }
                 row += "</tr>";
                 $("#tableBody").append(row);
                 row = '';
                 tempArrOutcome = [];
+                tempOutcomes = [];
             }
         }
     });
