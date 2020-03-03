@@ -32,7 +32,7 @@ async function validate_outcome(req, res, next){
 
 	if (outcome == undefined || outcome.length == 0){
 		req.flash("error", "Outcome does not exits");
-		return res.redirect("/outcomes");
+		return res.redirect("back");
     }
 
     req.body.outcome = outcome[0];
@@ -58,7 +58,7 @@ async function validate_performance_criteria(req, res, next){
 
 	if (rubric == undefined || rubric.length == 0){
 		req.flash("error", "Evaluation Rubric does not exits");
-		return res.redirect("/outcomes");
+		return res.redirect("back");
     }
 
     req.body.rubric = rubric[0];
@@ -68,7 +68,7 @@ async function validate_performance_criteria(req, res, next){
 async function validate_evaluation_rubric(req, res, next){
     
     if (req.params.r_id == undefined || isNaN(req.params.r_id)){
-		req.flash("error", "Cannot find the outcome evaluation rubric");
+		req.flash("error", "Cannot find the outcome for this evaluation rubric");
 		return res.redirect("back");
     }
     
@@ -84,7 +84,7 @@ async function validate_evaluation_rubric(req, res, next){
 
 	if (rubric == undefined || rubric.length == 0){
         req.flash("error", "Evaluation rubric does not exits");
-		return res.redirect(`/outcomes/${req.params.id}/evaluationrubric`);
+		return res.redirect('back');
     }
 
     // getting the name of the outcome

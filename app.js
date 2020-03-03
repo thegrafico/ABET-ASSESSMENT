@@ -10,14 +10,13 @@ var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var authHelper = require('./helpers/auth');
 var flash = require("connect-flash");
-
-
-var  {options, db} = require("./helpers/mysqlConnection");
+const middleware = require("./middleware/validateUser");
+var { options, db } = require("./helpers/mysqlConnection");
 db = db.mysql_pool;
 
 // connect to db
 db.query('SELECT 1', function (error, results, fields) {
-// TODO: Catch error if can't connect to the database
+  // TODO: Catch error if can't connect to the database
   if (error) throw error;
   console.log('Connected to the database');
 });
@@ -28,7 +27,7 @@ var MySQLStore = require('express-mysql-session')(session);
 var sessionStore = new MySQLStore(options);
 
 
-// =============================== ROUTES ===================================
+// =============================== ADMIN ROUTES ===================================
 // ===== Index Route =====
 var indexRouter = require('./routes/index');
 // ===== Evaluation Section =====
@@ -53,7 +52,7 @@ var authorize = require('./routes/authorize');
 var assessmentRouter = require('./routes/assessment');
 // ===== CourseMapping Route =====
 var courseMapping = require('./routes/courseMapping');
-//================================= ROUTES ===================================
+//======================================================================================
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -66,7 +65,7 @@ app.set('view engine', 'ejs');
 app.use(flash());
 app.use(methodOverride("_method"));
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -81,18 +80,18 @@ app.use(session({
 
 
 // ========================== USING ROUTES ==========================
-
+const admin_route = "/admin";
 // Locals variables, or consts variables goes here. 
 // create a global variable - req.locals.name = value
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
 
   res.locals.error = req.flash("error"); //error mesage go red
-	res.locals.success = req.flash("success"); //success message go green
-
+  res.locals.success = req.flash("success"); //success message go green
+  res.locals.admin_route = admin_route;
   //locals variables
 
   res.locals.signOutUrl = "/authorize/signout";
-  res.locals.signInUrl =  authHelper.getAuthUrl();
+  res.locals.signInUrl = authHelper.getAuthUrl();
 
   next();
 });
@@ -102,38 +101,32 @@ app.use('/', indexRouter);
 app.use('/authorize', authorize);
 
 // ===== School Term Section =====
-app.use('/term', schoolTermRouter);
-
+app.use(`${admin_route}/term`, middleware.is_login, middleware.is_admin, schoolTermRouter);
 // ===== Departments Section =====
-app.use('/department', departmentRouter);
-
+app.use(`${admin_route}/department`, middleware.is_login, middleware.is_admin, departmentRouter);
 // ===== Study Programs Section =====
-app.use('/studyprograms', studyProgramsRouter);
-
+app.use(`${admin_route}/studyprograms`, middleware.is_login, middleware.is_admin, studyProgramsRouter);
 // ===== Users Section =====
-app.use('/users', usersRouter);
-
+app.use(`${admin_route}/users`, middleware.is_login, middleware.is_admin, usersRouter);
 // ===== Outcomes Section =====
-app.use('/outcomes', outcomesRouter);
+app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.is_admin, outcomesRouter);
 // ===== Performance Criteria Section =====
-app.use('/outcomes', perfCritRouter);
-
+app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.is_admin, perfCritRouter);
 // ===== EVALUATION RUBRIC =====
-app.use('/evaluation', evaluationRubric);
+app.use(`${admin_route}/evaluation`, middleware.is_login, middleware.is_admin, evaluationRubric);
 // ===== Courses Section =====
-app.use('/courses', coursesRouter);
+app.use(`${admin_route}/courses`, middleware.is_login, middleware.is_admin, coursesRouter);
+
 // ===== Program/Course/Term Selection =====
 app.use('/assessment', assessmentRouter);
-
 // ===== CourseMapping Section =====
 app.use('/courseMapping', courseMapping);
-
 // ====================================================
 
 // 404 ERROR HANDLE
-app.use("*", function(req, res){
-  res.send("THIS PAGE DON'T EXIST");
+app.use("*", function (req, res) {
+  res.render("notFound");
 });
 
 //Run the app
-app.listen(port, function () { console.log(`Server ${port} is online!`);});
+app.listen(port, function () { console.log(`Server ${port} is online!`); });

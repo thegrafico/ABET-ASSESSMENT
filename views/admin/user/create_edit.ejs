@@ -1,0 +1,69 @@
+<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<div class="container-fluid">
+	<h2><%= title_action %> </h2>
+	<hr class="my-4">
+	<form id="<%= form_id %>" action="<%= url_form_redirect %>" method="POST">
+
+		<% if (have_dropdown) { %>
+		<div class="container-fluid">
+
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
+				<div class="col-8">
+					<select id="profiles" type="text" name="<%= dropdown_name %>">
+						<% for (let profile of dropdown_options) {%>
+						<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+						<% } %>
+					</select>
+					<input type="hidden" name="actual_profile" value="<%=user_profile %>">
+				</div>
+			</div>
+
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong>Departmet</strong></div>
+				<div class="col-8">
+					<span class="multi-select"></span>
+					<input id="multiple_values" type="hidden" name="selected_values">
+					<input type="hidden" name="selected" value="<%=user_dept%> ">
+				</div>
+			</div>
+
+			<script>
+				let dropdowm_values = <%- JSON.stringify(department) %>;
+				let dropdown_selected = <%- JSON.stringify(user_dept) %>;
+				let profile = <%- JSON.stringify(user_profile) %>;
+			</script>
+
+			<script src="/javascripts/multiselect.js"></script>
+			<link rel="stylesheet" type="text/css" href="/stylesheets/multiselect.css">
+		</div>
+		<% } %>
+		<% inputs.forEach(element => { %>
+		<% if (element.isRequire) { %>
+		<div class="row my-4">
+			<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+			<div class="col-8">
+				<input class="form-control" value="<%= element.value %>" type="text"
+					placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+			</div>
+		</div>
+		<% }else {%>
+		<div class="row my-4">
+			<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+			<div class="col-8">
+				<input class="form-control" value="<%= element.value %>" type="text"
+					placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+			</div>
+		</div>
+		<% } %>
+		<% }) %>
+
+		<div class="row my-4">
+			<div class="col-2"></div>
+			<div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
+		</div>
+		<p><a href="<%= base_url %> ">Back to List</a></p>
+	</form>
+</div>
+<%- include ('../partials/footer') -%>

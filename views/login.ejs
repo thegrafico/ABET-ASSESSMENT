@@ -1,23 +1,60 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <!-- Bootsrapt CSS Link -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
-        <!-- Icons -->
-        <script src="https://kit.fontawesome.com/6114d6256f.js" crossorigin="anonymous"></script>
-        <div class="wrapper inter-bg">
-    </head>
-    <body class="inter-bg">
-        <div class="container-fluid py-5 d-flex justify-content-center">
-            <div class="card my-5 text-center vertical-center" style="width: 25rem;">
+
+<head>
+    <!-- Bootsrapt CSS Link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/6114d6256f.js" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-image: url('../images/inter.jpg') !important;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .card-body {
+            margin-right: 50%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container feedback">
+        <!--check if error and display a message-->
+        <% if(error && error.length > 0 ){ %>
+        <div class="alert alert-danger" role="alert">
+          <%= error %>
+        </div>
+        <% } %>
+        <!--check if success and display a message-->
+        <% if(success && success.length > 0 ){ %>
+        <div class="alert alert-success" role="alert">
+          <%= success %>
+        </div>
+        <% } %>
+      </div>
+      
+    <div class="container">
+        <div class="row d-flex justify-content-center" style="margin-top: 15%;">
+
+            <div class="align-self-center"
+                style="background-color: rgba(255,255,255,0.8); padding:5%; border-radius: 5%;">
                 <div class="card-header">
-                    <h2>Log In to Assessment</h2>
+                    <h2>Welcome to Inter Assessment</h2>
                 </div>
-                <div class="card-body">
-                    <button href= <%=signInUrl%> class="btn inter-green inter-green-btn">Sign In</button>
+                <div style="text-align:center; padding: 2%;">
+                    <a href=<%=signInUrl%> class="btn inter-green inter-green-btn btn-lg">Log-in</a>
                 </div>
             </div>
+
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

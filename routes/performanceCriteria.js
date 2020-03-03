@@ -3,17 +3,17 @@ var router = express.Router();
 var general_queries = require('../helpers/queries/general_queries');
 var queries = require('../helpers/queries/performanceCriteria_queries');
 const { performance_criteria_create_input } = require("../helpers/layout_template/create");
-
 var { validate_outcome, validate_performance_criteria } = require("../middleware/validate_outcome");
 
 const title = "Evaluating Perfomance Criteria - ";
+
 //Params to routes links
 var locals = {
 	title: 'ABET Assessment',
 	subtitle: 'Perfomance Criteria',
 	url_create: "/perfomanceCriteria/create",
 	"form_id": "criteria_data",
-	"api_get_url": "/outcomes/performanceCriteria",
+	"api_get_url": "/admin/outcomes/performanceCriteria",
 	delete_redirect: null
 
 };
@@ -24,7 +24,7 @@ var locals = {
 router.get('/:outc_id/performanceCriteria', validate_outcome, async function (req, res) {
 
 	locals.subtitle = title + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
-	locals.base_url = `/outcomes/${req.params.outc_id}/performanceCriteria`;
+	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
 	let performance_query = {
 		"from": "perf_criteria".toUpperCase(),
@@ -57,7 +57,7 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 		});
 		locals.results = results;
 	}
-	res.render('layout/home', locals);
+	res.render('admin/layout/home', locals);
 });
 
 /* 
@@ -65,12 +65,13 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 	GET /performanceCriteria/create
 */
 router.get("/:outc_id/performanceCriteria/create", validate_outcome, async function (req, res) {
+
 	let msg = "Create Performance Criteria for: ";
 	locals.title_action = (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
-	locals.url_form_redirect = `/outcomes/${req.params.outc_id}/performanceCriteria/create`;
 	locals.have_dropdown = false;
 	locals.btn_title = "Create";
-	locals.base_url = `/outcomes/${req.params.outc_id}/performanceCriteria`;
+	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
+	locals.url_form_redirect = `/admin/outcomes/${req.params.outc_id}/performanceCriteria/create`;
 
 	// reset value to nothing when creating a new record
 	performance_criteria_create_input.forEach((record) => {
@@ -79,20 +80,20 @@ router.get("/:outc_id/performanceCriteria/create", validate_outcome, async funct
 
 	locals.inputs = performance_criteria_create_input;
 
-	res.render('layout/create', locals);
+	res.render('admin/layout/create', locals);
 });
 
 router.post("/:outc_id/performanceCriteria/create", validate_outcome, async function (req, res) {
 
 	if (req.body.description == undefined || req.body.order == undefined) {
-		req.flash("error", "Invalid information");
+		req.flash("error", "Invalid inserted information");
 		return res.redirect("back");
 	}
 
 	let outcome_id = req.params.outc_id;
 	let description = req.body.description;
 	let order = req.body.order;
-	let base_url = `/outcomes/${req.params.outc_id}/performanceCriteria`;
+	let base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
 	queries.create_performance({ "description": description, "order": order, "outcome_id": outcome_id }).then((ok) => {
 		req.flash("success", "Performance Criteria Created!");
@@ -113,9 +114,9 @@ router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, vali
 	let message = "Edit Performance Criteria for: ";
 	locals.title_action = message + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.have_dropdown = false;
-	locals.url_form_redirect = `/outcomes/${req.params.outc_id}/performanceCriteria/${req.params.perf_id}?_method=PUT`;
+	locals.url_form_redirect = `/admin/outcomes/${req.params.outc_id}/performanceCriteria/${req.params.perf_id}?_method=PUT`;
 	locals.btn_title = "Edit";
-	locals.base_url = `/outcomes/${req.params.outc_id}/performanceCriteria`;
+	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
 	// append the rubric data to the array
 	let performance_rubric = [req.body.rubric.perC_Desk, req.body.rubric.perC_order];
@@ -128,7 +129,7 @@ router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, vali
 	});
 
 	locals.inputs = performance_criteria_create_input;
-	res.render('layout/create', locals);
+	res.render('admin/layout/create', locals);
 });
 
 /* 
@@ -142,7 +143,7 @@ router.put("/:outc_id/performanceCriteria/:perf_id", validate_outcome, validate_
 		req.flash("error", "Error with the data");
 		return res.redirect("back");
 	}
-	let base_url = `/outcomes/${req.params.outc_id}/performanceCriteria`;
+	let base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
 	let new_description = req.body.description;
 	let new_order = req.body.order;
@@ -200,7 +201,6 @@ router.delete("/performanceCriteria/:perf_id", async function (req, res) {
 		req.flash("error", "Error removing the Performance Criteria!");
 		return res.redirect("back");
 	}
-
 	general_queries.delete_record_by_id({ "from": "perf_criteria", "where": "perC_ID", "id": req.params.perf_id }).then((ok) => {
 		req.flash("success", "Performance Criteria removed!");
 		res.redirect("back");

@@ -6,16 +6,16 @@ const { academic_term } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
 
 
-const base_url = '/term';
+const base_url = '/admin/term';
 
 //Paramns to routes links
 let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Term",
 	"base_url": base_url,
-	"url_create": "/term/create",
+	"url_create": `${base_url}/create`,
 	"form_id": "term_data",
-	"api_get_url": "/term",
+	"api_get_url": base_url,
 	delete_redirect: null
 
 };
@@ -24,7 +24,7 @@ let locals = {
 	-- SHOW all terms -- 
 	GET /term
 */
-router.get('/', async function(req, res) {
+router.get('/', async function (req, res) {
 
 	locals.results = [];
 
@@ -33,10 +33,10 @@ router.get('/', async function(req, res) {
 	});
 
 	// Validation
-	if (academic_terms != undefined && academic_terms.length > 0){
-		
+	if (academic_terms != undefined && academic_terms.length > 0) {
+
 		let results = [];
-		academic_terms.forEach(term => {			
+		academic_terms.forEach(term => {
 
 			results.push({
 				"ID": term["term_ID"],
@@ -50,36 +50,36 @@ router.get('/', async function(req, res) {
 	}
 	locals.table_header = ["Name", ""];
 
-	res.render('layout/home', locals);
+	res.render('admin/layout/home', locals);
 });
 
 /* 
 	-- SHOW CREATE TERM --
 	GET /term/create
-*/ 
-router.get('/create', function(req, res) {
-	
+*/
+router.get('/create', function (req, res) {
+
 	// store all profiles
 	locals.have_dropdown = false;
 	locals.title_action = "Create Academic Term";
-	locals.url_form_redirect = "/term/create";
+	locals.url_form_redirect = `${base_url}/create`;
 	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
-	academic_term.forEach((record) =>{
+	academic_term.forEach((record) => {
 		record.value = "";
 	});
 
 	// set the input for user
 	locals.inputs = academic_term;
 
-	res.render("layout/create", locals);
+	res.render("admin/layout/create", locals);
 });
 
-router.post('/create', function(req, res) {
+router.post('/create', function (req, res) {
 
 	// validate body
-	if (req.body == undefined){
+	if (req.body == undefined) {
 		req.flash("error", "Cannot find term data");
 		return res.redirect(base_url);
 	}
@@ -90,17 +90,14 @@ router.post('/create', function(req, res) {
 	}
 
 	// if the values don't mach the type 
-	if (!validate_form(req.body, key_types)){
+	if (!validate_form(req.body, key_types)) {
 		console.log("Error in validation");
-		req.flash("error", "Error in the information of the outcome");
-		return res.redirect(base_url);	
+		req.flash("error", "Input Erros");
+		return res.redirect("back");
 	}
 
-	//TODO: verify values, null, undefined
-	let data = {"name": req.body.name }; 
-
 	//Insert into the DB the data from user
-	query.insert_into_term(data).then((ok) => {
+	query.insert_into_term({ "name": req.body.name }).then((ok) => {
 		req.flash("success", "Term Created");
 		res.redirect(base_url);
 	}).catch((err) => {
@@ -114,24 +111,28 @@ router.post('/create', function(req, res) {
 	-- SHOW Update the term -- 
 	PUT /term/:id/edit 
 */
-router.get('/:id/edit', async function(req, res) {
+router.get('/:id/edit', async function (req, res) {
 
 	// validating id 
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "This term don't exits");
 		return res.redirect(base_url);
 	}
 
-	// Validate id
 	let id_term = req.params.id;
+	locals.url_form_redirect = `${base_url}/${id_term}?_method=PUT`;
+	locals.have_dropdown = false;
+	locals.title_action = "Editing Academic Term";
+	locals.btn_title = "Submit";
+	locals.inputs = academic_term;
 
-	let data = {"from":"ACADEMIC_TERM", "where":"term_ID", "id": id_term};
+	let data = { "from": "ACADEMIC_TERM", "where": "term_ID", "id": id_term };
 
 	let term_to_edit = await general_queries.get_table_info_by_id(data).catch((err) => {
-		console.log("Error getting the term: ", err);
+		console.error("Error getting the term: ", err);
 	});
 
-	if (term_to_edit == undefined || term_to_edit.length == 0){
+	if (term_to_edit == undefined || term_to_edit.length == 0) {
 		req.flash("error", "Cannot find the term");
 		return res.redirect(base_url);
 	}
@@ -144,28 +145,22 @@ router.get('/:id/edit', async function(req, res) {
 	];
 
 	let index = 0;
-	academic_term.forEach((record) =>{
+	academic_term.forEach((record) => {
 		record.value = term[index];
 		index++;
 	});
 
-	locals.url_form_redirect = `/term/${id_term}?_method=PUT`;
-	locals.have_dropdown = false;
-	locals.title_action = "Editing Academic Term";
-	locals.btn_title = "Submit";
-	locals.inputs = academic_term;
-
-	res.render('layout/create', locals);
+	res.render('admin/layout/create', locals);
 });
 
 /* 
 	-- Update the term -- 
 	PUT /term/:id 
 */
-router.put('/:id', function(req, res) {
+router.put('/:id', function (req, res) {
 
 	// validate body
-	if (req.body == undefined || req.params.id == undefined || isNaN(req.params.id)){
+	if (req.body == undefined || req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "Cannot find term data");
 		return res.redirect(base_url);
 	}
@@ -176,13 +171,13 @@ router.put('/:id', function(req, res) {
 	}
 
 	// if the values don't mach the type 
-	if (!validate_form(req.body, key_types)){
+	if (!validate_form(req.body, key_types)) {
 		console.log("Error in validation");
 		req.flash("error", "Error in the information of the outcome");
-		return res.redirect(base_url);	
+		return res.redirect("back");
 	}
 
-	// TODO: verify values befero enter to DB
+	// data for db
 	let data = {
 		"name": req.body.name,
 		"id": req.params.id
@@ -198,28 +193,26 @@ router.put('/:id', function(req, res) {
 	});
 });
 
-
-
 /* 
 	-- SHOW TERM TO DELETE --
 	GET /term/:id/remove
 */
 router.get('/get/:id', async function (req, res) {
-	
+
 	// validating id 
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "This term don't exits");
 		return res.redirect(base_url);
 	}
 
 	let term_id = req.params.id;
-	let data = {"from": "ACADEMIC_TERM", "where": "term_ID", "id": term_id};
-	
-	let term_to_remove = await general_queries.get_table_info_by_id(data).catch((err) =>{
+	let data = { "from": "ACADEMIC_TERM", "where": "term_ID", "id": term_id };
+
+	let term_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("Error getting the term: ", err);
 	});
 
-	if (term_to_remove == undefined || term_to_remove.length == 0){
+	if (term_to_remove == undefined || term_to_remove.length == 0) {
 		req.flash("error", "Cannot find the term");
 		return res.redirect(base_url);
 	}
@@ -231,7 +224,7 @@ router.get('/get/:id', async function (req, res) {
 
 	let record = [];
 	for (let index = 0; index < names.length; index++) {
-		record.push({"name": names[index], "value": values[index]})
+		record.push({ "name": names[index], "value": values[index] })
 	}
 
 	res.json(record);
@@ -243,24 +236,24 @@ router.get('/get/:id', async function (req, res) {
 	DELETE /term/:id
 */
 router.delete('/:id', function (req, res) {
-	
+
 	// validating id 
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "This term don't exits");
 		return res.redirect(base_url);
 	}
-	
+
 	let term_id = req.params.id;
 
-	let data = {"id": term_id, "from": "ACADEMIC_TERM", "where":"term_ID" };
+	let data = { "id": term_id, "from": "ACADEMIC_TERM", "where": "term_ID" };
 
 	general_queries.delete_record_by_id(data).then((ok) => {
 		req.flash("success", "Term deleted");
-		res.redirect(base_url);
+		res.redirect("back");
 	}).catch((err) => {
 		console.log(err);
 		req.flash("error", "Cannot delete the term");
-		res.redirect(base_url);
+		res.redirect("back");
 	});
 
 });

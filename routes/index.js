@@ -2,72 +2,67 @@ var express = require('express');
 var authHelper = require('../helpers/auth');
 var router = express.Router();
 var middleware = require("../middleware/validateUser");
-var { db } = require("../helpers/mysqlConnection"); //pool connection
-var conn = db.mysql_pool;
-/* 
-	- CODE 
-		1: Profesor
-		2: Admin
-		5: testing
-*/
+
 let locals = {
-	title: 'ABET Assessment',
-	active: {
-		home: true
-	}
+	title: 'ABET Assessment'
 };
-
-/* 
- GET INDEX ROUTE
-*/
-router.get('/', async function (req, res) {
-
-	// to verify is user is loggin -> sessions 
-	let sess = req.session;
-
-	//Verify is there is user info
-	if (sess != undefined && sess.userEmail) {
-		locals.user = sess.userName;
-
-		//Compare user email in the DB, then get the data if there is any user. 
-		user_data_profile = await middleware.get_user_role(sess.userEmail).catch((err) =>{
-			console.log("You dont have a profile: ", err);
-			return res.redirect("/");
-		});
-
-		// //Verify is not empty
-		if (user_data_profile){
-			// console.log(user_data_profile);
-			req.session.user_id = user_data_profile.user_ID;
-		}else
-			console.log("This user don't have a profile");
-	}
-
-	res.render('index', locals);
-});
 
 /* 
  GET /login 
 */
-router.get('/login', function (req, res) {
+router.get('/', function (req, res) {
 	locals.title = "Login";
 	res.render('login', locals);
 });
 
 /* 
+ GET ADMIN HOME
+*/
+router.get('/admin', middleware.is_login, middleware.is_admin, async function (req, res) {
+	locals.title = "Admin";
+	res.render('admin/home', locals);
+});
+
+
+/* GET PROFESSOR HOME*/
+router.get('/professor', middleware.is_login, middleware.is_admin, async function (req, res) {
+	locals.title = "Professor";
+	res.render('professor/home', locals);
+});
+
+
+/* 
 * GET AUTH ROUTER - start sessions 
 */
-router.get("/auth", async function(req, res){
-	
+router.get("/auth", async function (req, res) {
+
 	// Getting user information from microsoft account
 	const accessToken = await authHelper.getAccessToken(req.cookies, res);
 	const userName = req.cookies.graph_user_name;
 	const userEmail = req.cookies.graph_user_email;
 
-	req.session.userName = userName;
-	req.session.userEmail = userEmail;
+	if (userEmail == undefined) {
+		req.flash("error", "Cannot find the user email");
+		return res.redirect("/");
+	}
 
-	console.log(req.session.userEmail, req.session.userName);
-	res.redirect("/");
+	let user_information = await middleware.get_user_role(userEmail).catch((err) => {
+		console.error("Error getting user information: ", err);
+	});
+
+	if (user_information == undefined) {
+		req.flash("error", "Cannot find any information about this user");
+		return res.redirect("/");
+	}
+	req.session.user_name = userName;
+	req.session.user_email = userEmail;
+	req.session.user_profile = user_information.profile_Name.toLowerCase();
+	req.session.user_id = user_information.user_ID;
+
+	if (user_information.profile_Name.toLowerCase().includes("admin") || user_information.user_profile == 1) {
+		return res.redirect("/admin");
+	}
+
+	res.redirect("/professor");
 });
 module.exports = router;

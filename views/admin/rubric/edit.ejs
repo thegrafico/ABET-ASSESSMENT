@@ -47,7 +47,8 @@
                 <span class="multi-select"></span>
                 <span class="multi-select2"></span>
             </div>
-            <input id="multiple_performance" type="hidden" name="performances_id" value="<%=criterias_selected%> ">
+            <input id="multiple_performance" type="hidden" name="performances_id" value="<%=criterias_selected%>">
+            <input type="hidden" name="previus_performances_id" value="<%=criterias_selected%> ">
 
             <script>
                 let criterias = <%- JSON.stringify(criteria) %>;
@@ -105,17 +106,15 @@
         $('#multi_selection').bind("DOMSubtreeModified", function () {
             let values = [];
             $(".fa-times").each(function () {
-
                 $.each(this.attributes, function () {
 
                     if (this.name.includes("data") || this.name.includes("value")) {
                         values.push(this.value);
                     }
                 });
-                $("#multiple_performance").attr("value", values);
-                return;
             });
-
+            $("#multiple_performance").attr("value", values);
+            return;
         });
 
 
@@ -129,7 +128,7 @@
             var study_program_id = $(this).children("option:selected").val();
 
             $.ajax({
-                'url': `/outcomes/${study_program_id}/getStudyProgram`,
+                'url': `/admin/outcomes/${study_program_id}/getStudyProgram`,
                 type: 'GET',
                 dataType: 'json',
                 success: (data) => {
@@ -157,7 +156,7 @@
             console.log("selected: ", outcome_id);
 
             $.ajax({
-                'url': `/outcomes/get/performances/${outcome_id}`,
+                'url': `/admin/outcomes/get/performances/${outcome_id}`,
                 type: 'GET',
                 dataType: 'json',
                 success: (data) => {

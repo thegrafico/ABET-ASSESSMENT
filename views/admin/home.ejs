@@ -1,0 +1,26 @@
+<%- include ('partials/header') -%>
+<div class = "container-fluid my-5 sticky-left">
+    <div class = "row">
+        <div class="col-2">
+            <div class="btn-group-vertical">
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="<%= admin_route %>/users">Users</a>
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="<%= admin_route %>/courses">Courses</a>
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="<%= admin_route %>/department">Departments</a>
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="<%= admin_route %>/outcomes">Outcomes</a>
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="<%= admin_route %>/evaluation">Evaluation Rubric</a>
+                <!-- <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="/performanceCriteria">Performance Criteria</a></li> -->
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="<%= admin_route %>/studyprograms">Study Program</a>
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="<%= admin_route %>/term">Terms</a>
+                <a class="btn btn-dark inter-green-btn btn-lg" role="button" href="/courseMapping">Course Mapping</a>
+            </div>
+        </div>
+        <div class="col">
+            <div class="jumbotron px-5">
+                <h1 class="display-4">Welcome to ABET Assessment</h1>
+                <hr class="mb-3">
+                <h3 class="text-right">Administrative Section</h3> 
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ('partials/footer') -%>

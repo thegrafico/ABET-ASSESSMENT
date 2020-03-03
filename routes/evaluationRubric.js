@@ -6,22 +6,23 @@ var express = require('express');
 var router = express.Router();
 var rubric_query = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
-var { get_outcome_by_study_program } = require("../helpers/queries/outcomes_queries");
 var roolback_queries = require("../helpers/queries/roolback_queries");
+var { get_outcome_by_study_program } = require("../helpers/queries/outcomes_queries");
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
-var { validate_outcome, validate_evaluation_rubric } = require("../middleware/validate_outcome");
-var { split_and_filter } = require("../helpers/validation");
+var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
+var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
 
 
-const base_url = "/evaluation";
+
+const base_url = "/admin/evaluation";
 //Paramns to routes links
 let locals = {
 	"title": 'ABET Assessment',
 	"subtitle": 'Evaluation Rubric',
 	"base_url": base_url,
 	"form_id": "rubric_data",
-	"api_get_url": "/evaluation",
-	delete_redirect: null
+	"api_get_url": base_url,
+	"delete_redirect": null
 };
 
 
@@ -72,7 +73,7 @@ router.get('/', async function (req, res) {
 		});
 		locals.results = results;
 	}
-	res.render('rubric/home', locals);
+	res.render('admin/rubric/home', locals);
 });
 /*
 	-- SHOW EVALUATION --
@@ -90,7 +91,7 @@ router.get('/create', async function (req, res) {
 	}
 
 	locals.std_options = [];
-	locals.url_form_redirect = `/evaluation/create`;
+	locals.url_form_redirect = `${base_url}/create`;
 	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
@@ -108,7 +109,7 @@ router.get('/create', async function (req, res) {
 		});
 	});
 
-	res.render('rubric/create', locals);
+	res.render('admin/rubric/create', locals);
 });
 
 /* 
@@ -118,7 +119,7 @@ router.get('/create', async function (req, res) {
 router.post("/create", function (req, res) {
 
 	if (req.body == undefined || !req.body.name || isNaN(req.body.outcome)) {
-		req.flash("error", "Please insert the correct values");
+		req.flash("error", "Invalid inputs");
 		return res.redirect("back");
 	}
 
@@ -153,6 +154,12 @@ router.post("/create", function (req, res) {
 */
 router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) {
 
+	locals.std_options = [];
+	locals.outcomes = [];
+	locals.url_form_redirect = `${base_url}/${req.params.r_id}?_method=PUT`;
+	locals.btn_title = "Edit";
+
+
 	let std_programs = await general_queries.get_table_info("study_program").catch((err) => {
 		console.error("Error getting std_programs", err);
 	});
@@ -182,10 +189,10 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 		console.error("Error getting: ", err);
 	});
 
-	if (outcomes == undefined || outcomes.length == 0) {
-		req.flash("error", "Cannot find any outcomes, Please create one");
-		return res.redirect(base_url);
-	}
+	// if (outcomes == undefined || outcomes.length == 0) {
+	// 	req.flash("error", "Cannot find any outcomes, Please create one");
+	// 	return res.redirect(base_url);
+	// }
 	let criteria_query = { "from": "perf_criteria", "where": "outc_ID", "id": locals.outcome_selected };
 
 	let performance_criteria = await general_queries.get_table_info_by_id(criteria_query).catch((err) => {
@@ -198,11 +205,6 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 			locals.criteria.push({ label: element.perC_Desk, value: element.perC_ID.toString() })
 		});
 	}
-
-	locals.std_options = [];
-	locals.outcomes = [];
-	locals.url_form_redirect = `/evaluation/${req.params.r_id}?_method=PUT`;
-	locals.btn_title = "Edit";
 
 	std_programs.forEach((element) => {
 		locals.std_options.push({
@@ -232,36 +234,70 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 
 	// set the input for user
 	locals.inputs = evaluation_rubric_input;
-	res.render('rubric/edit', locals);
+	res.render('admin/rubric/edit', locals);
 });
 
 /* 
 	-- EDIT Evaluation rubric -- 
 	PUT /evaluation/:id
 */
-router.put('/:r_id', validate_evaluation_rubric, function (req, res) {
+router.put('/:r_id', validate_evaluation_rubric, async function (req, res) {
 
-	// validate id
-	let evaluation_id = req.params.r_id;
+	let keys_types = {
+		"study_program": "n",
+		"outcome": "n",
+		"performances_id": "s",
+		"name": "s",
+	};
 
-	console.log(req.body);
-	res.redirect("back")
-	// let evaluation_data = {
-	// 	"name": req.body.name,
-	// 	"description": req.body.description,
-	// 	"rubric_id": evaluation_id
-	// }
+	// if the values don't mach the type 
+	if (!validate_form(req.body, keys_types)) {
+		req.flash("error", "Error in the information of the rubric");
+		return res.redirect("back");
+	}
 
-	// let base_url = `/outcomes/${req.params.id}/evaluationrubric`;
+	// get the performance rubric to compare is there is a changes
+	let selected_performances = split_and_filter(req.body.performances_id, ",");
+	let previus_performances = split_and_filter(req.body.previus_performances_id, ",");
 
-	// rubric_query.update_evaluation_rubric(evaluation_data).then((ok) => {
-	// 	req.flash("success", "Evaluation Rubric edited");
-	// 	res.redirect(base_url);
-	// }).catch((err) => {
-	// 	console.log("Error: ", err);
-	// 	req.flash("error", "Cannot edit the Evaluation Rubric");
-	// 	res.redirect(base_url);
-	// });
+	// get all the performance to update or remove
+	let performance_for_update = get_data_for_update(previus_performances, selected_performances);
+
+	// verify if there is somenthing to update
+	if (performance_for_update != undefined) {
+
+		// remove element if there is any
+		if (performance_for_update["delete"].length > 0) {
+
+			await rubric_query.remove_performance(req.params.r_id, performance_for_update["delete"]).catch((err) => {
+				console.log("There is an error Updating the Performance: ", err);
+			});
+		}
+
+		// remove element if there is any
+		if (performance_for_update["insert"].length > 0) {
+
+			await rubric_query.insert_perfomance_Rubric(req.params.r_id, performance_for_update["insert"]).catch((err) => {
+				console.log("There is an error Updating the Performance : ", err);
+			});
+		}
+	}
+
+	rubric_data = {
+		"name": req.body.name,
+		"description": req.body.description,
+		"outcome_id": req.body.outcome,
+		"id": req.params.r_id
+	};
+
+	rubric_query.update_evaluation_rubric(rubric_data).then((ok) => {
+		req.flash("success", "Evaluation Rubric edited");
+		res.redirect(base_url);
+	}).catch((err) => {
+		console.log(err);
+		req.flash("error", "Error updating the Evaluation Rubric");
+		res.redirect(base_url);
+	});
 });
 
 /* 

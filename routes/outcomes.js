@@ -6,16 +6,16 @@ const { outcome_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
 
 
-const base_url = '/outcomes';
+const base_url = '/admin/outcomes';
 
 //Paramns to routes links
 let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Outcomes",
 	"base_url": base_url,
-	"url_create": "/outcomes/create",
+	"url_create": `${base_url}/create`,
 	"form_id": "outcome_data",
-	"api_get_url": "/outcomes",
+	"api_get_url": base_url,
 	delete_redirect: null
 };
 
@@ -36,16 +36,6 @@ router.get('/', async function (req, res) {
 	let stud_outcomes = await general_queries.get_table_info_inner_join(performance_query).catch((err) => {
 		console.log("Error getting the outcomes information: ", err);
 	});
-
-	// getting all study program
-	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
-		console.log("Error getting studing program", err);
-	});
-
-	locals.study_programs = []; 
-	if (study_programs != undefined && study_programs.length > 0){
-		locals.study_programs =  study_programs;
-	}
 
 	locals.table_header = ["Name", "Study Program", "Description", "Creation date", "Performance Criteria", ""];
 
@@ -71,7 +61,7 @@ router.get('/', async function (req, res) {
 		});
 		locals.results = results;
 	}
-	res.render('outcome/home', locals);
+	res.render('admin/outcome/home', locals);
 });
 
 
@@ -89,7 +79,7 @@ router.get('/create', async function (req, res) {
 	locals.dropdown_title = "Study Program";
 	locals.dropdown_name = "std_program";
 	locals.title_action = "Create Outcome";
-	locals.url_form_redirect = "/outcomes/create";
+	locals.url_form_redirect = `${base_url}/create`;
 	locals.btn_title = "Create";
 
 	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
@@ -100,14 +90,13 @@ router.get('/create', async function (req, res) {
 	if (study_programs == undefined || study_programs.length == 0) {
 		console.log("Need to create a study program to work with outcomes");
 		req.flash("error", "Cannot find any Study program, Need to create one");
-		return res.redirect("/");
+		return res.redirect("back");
 	}
 
 	// reset value to nothing when creating a new record
 	outcome_create_inputs.forEach((record) => {
 		record.value = "";
 	});
-
 	locals.inputs = outcome_create_inputs;
 
 	// for dynamic frontend
@@ -118,7 +107,7 @@ router.get('/create', async function (req, res) {
 		});
 	});
 
-	res.render('layout/create', locals);
+	res.render('admin/layout/create', locals);
 });
 /*
 	-- CREATE NEW OUTCOMES-- 
@@ -142,17 +131,18 @@ router.post('/create', function (req, res) {
 	// if the values don't mach the type 
 	if (!validate_form(req.body, key_types)) {
 		console.log("Error in validation");
-		req.flash("error", "Error in the information of the outcome");
+		req.flash("error", "Error in the inserted data");
 		return res.redirect(base_url);
 	}
 
-	let data = {
+	// for query
+	const outcome_data_for_query = {
 		"outcome_name": req.body.outcome_name,
 		"outcome_description": req.body.outcome_description,
 		"program_id": req.body.std_program
 	};
 
-	outcome_query.insert_outcome(data).then(() => {
+	outcome_query.insert_outcome(outcome_data_for_query).then(() => {
 		req.flash("success", "Outcome Created");
 		res.redirect(base_url);
 	}).catch((err) => {
@@ -183,7 +173,7 @@ router.get('/:id/edit', async function (req, res) {
 	locals.dropdown_title = "Study Program";
 	locals.dropdown_name = "std_program";
 	locals.title_action = "Edit Outcome";
-	locals.url_form_redirect = `/outcomes/${out_id}?_method=PUT`;
+	locals.url_form_redirect = `${base_url}/${out_id}?_method=PUT`;
 	locals.btn_title = "Edit";
 
 	// data to find the outcome
@@ -213,9 +203,11 @@ router.get('/:id/edit', async function (req, res) {
 	// validate study programs
 	if (study_programs == undefined || study_programs.length == 0) {
 		console.log("Cannot find any study program");
+		req.flash("error", "Cannot find any Study Program")
 		return res.redirect(base_url);
 	}
 
+	// to add the oucome information into the frontend
 	let outcome = [
 		outcome_to_edit.outc_name,
 		outcome_to_edit.outc_description,
@@ -226,7 +218,6 @@ router.get('/:id/edit', async function (req, res) {
 		record.value = outcome[index];
 		index++;
 	});
-
 	locals.inputs = outcome_create_inputs;
 
 	// for dynamic frontend
@@ -237,7 +228,7 @@ router.get('/:id/edit', async function (req, res) {
 		});
 	});
 
-	res.render('layout/create', locals);
+	res.render('admin/layout/create', locals);
 });
 /* 
 	-- Update the outcome -- 
@@ -393,6 +384,8 @@ router.get('/get/:id', async function (req, res) {
 });
 
 router.get("/get/performances/:outcome_id", async function (req, res) {
+
+	console.error("HERE");
 
 	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
 		return res.json([]);
