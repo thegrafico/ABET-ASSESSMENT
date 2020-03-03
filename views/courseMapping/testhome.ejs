@@ -1,0 +1,100 @@
+<%- include ('../admin/partials/header') -%>
+<link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
+
+<div class="container-fluid mt-2">
+
+    <div class="row">
+
+        <div class="col-12">
+            <h3>Course Mapping</h3>
+            <hr class="my-4">
+        </div>
+
+        <div class="col-12" style=" margin-top: -2%;">
+            <div class="row justify-content-md-left">
+                <div class="col-md-8">
+                    <label for="study_program" style="width: auto;"> Select</label>
+                    <select id="study_program" type="text" name="study_program" required>
+                        <option selected disabled value=""> -- Study Program -- </option>
+                        <% study_programs.forEach(element => { %>
+                        <option class="dropdown-item" value="<%= element["prog_ID"] %>"><%=element["prog_name"] %>
+                        </option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="container-fluid my-2 " style="overflow-y: scroll;height: 400px;width: 100%;"> -->
+<div class="container-fluid my-2 " style="font-size: 0.9em;">
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <!-- HEADER -->
+                <th scope="col">COURSE</th>
+                <% for (let i = 0; i < mapping[0]["outcomes"].length; i++) { %>
+                    <th style="text-align: center;" scope="col"><%=  mapping[0]["outcome_names"][i] %> </th>
+                <% } %>
+            </tr>
+        </thead>
+
+        <tbody id="filter">
+            <% for( let i = 0; i < mapping[0]["courses"].length; i++ ) { %>
+            <tr class="rowCheckBox">
+                
+                <!-- COURSES -->
+                <th><%= mapping[0]["courses"][i] %></th>
+   
+                <!-- OUTCOMES CHECKBOX -->
+                <% for (let j = 0; j < mapping[0]["outcomes"].length; j++) { %>
+
+                <th style="text-align: center; padding: 1%;" scope="col">
+                    <input type="checkbox" value="<%= mapping[0]["outcomes"][j] %>,<%= mapping[0]["courses"][i  ]%>"
+                        style="top: .8rem; width: 1.25rem; height: 1.25rem;">
+                </th>
+
+                <% } %>
+            </tr>
+            <% } %>
+        </tbody>
+   
+    </table>
+    <hr class="my-1">
+</div>
+
+<button id="clickme" class="btn btn-primary"> CLICK ME</button>
+
+<script>
+    $(document).ready(function () {
+        var selected = [];
+        $("#clickme").click(function () {
+            $('.rowCheckBox input:checked').each(function () {
+                console.log($(this).val());
+            });
+        });
+    });
+</script>
+
+
+<div class="container-fluid">
+    <hr class="mt-5">
+    <p>&copy; 2019 - Universidad Interamericana de Puerto Rico - Bayam&oacute;n Campus</p>
+</div>
+
+<!-- LOADING JQUERY -->
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>

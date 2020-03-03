@@ -1,47 +1,5 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
-<div class="container-fluid mt-2">
-    <h1><%= subtitle %></h1>
-
-    <div class="container" style="margin-left: 0%; margin-top: -1%;">
-
-        <div class="row justify-content-md-left test">
-
-            <div class="col-md-4">
-                <div style="position: absolute; left: 0; bottom: 0;">
-                    <a href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">Create
-                        New</a>
-                </div>
-            </div>
-
-            <div class="col-md-8">
-                <span class="glyphicon glyphicon-filter" style="float: left;"></span>
-                <div>
-                    <input name="filter" class="form-control" id="myInput" type="text"
-                        placeholder="Filter by anything. Ex. The Study Program, Date or Outcome Name">
-                </div>
-            </div>
-
-            <script>
-                $(document).ready(function () {
-
-                    $(document).ready(function () {
-                        $("#myInput").on("keyup", function () {
-                            var value = $(this).val().toLowerCase();
-                            $("#home-table tr").filter(function () {
-                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                            });
-                        });
-                    });
-                });
-            </script>
-
-        </div>
-    </div>
-
-    <!-- Middle line -->
-</div>
-
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
 <style>

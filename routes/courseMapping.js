@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var middleware = require("../middleware/validateUser");
 var query = require("../helpers/queries/course_queries");
+var general_queries = require("../helpers/queries/general_queries");
 var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 
 let locals = {
@@ -13,7 +14,28 @@ const base_url = '/';
 */
 
 router.get('/', async function (req, res) {
-	res.render('courseMapping/home', locals);
+    res.render('courseMapping/home', locals);
+});
+
+router.get('/test', async function (req, res) {
+
+    let mapping = await courseMappingQuery.get_mapping().catch((err) => {
+        console.error("ERROR: ", err);
+    });
+
+    let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
+        console.error("ERROR: ", err);
+    });
+    locals.study_programs = [];
+
+    if (study_programs != undefined || study_programs.length > 0) {
+        locals.study_programs = study_programs;
+    }
+
+    locals.mapping = transformdt(mapping);
+
+    console.log(locals.mapping);
+    res.render('courseMapping/testhome', locals);
 });
 
 router.get('/getCourses', async function (req, res) {
@@ -21,8 +43,8 @@ router.get('/getCourses', async function (req, res) {
         console.log("Error getting IDs: ", err);
     });
 
-    let courses = await query.get_course_with_std_program_plain().catch((err) =>{
-		console.log("Error getting the courses with std program results: ", err);
+    let courses = await query.get_course_with_std_program_plain().catch((err) => {
+        console.log("Error getting the courses with std program results: ", err);
     });
 
     let outcomes = await courseMappingQuery.get_outcome_with_study_programs().catch((err) => {
@@ -31,10 +53,10 @@ router.get('/getCourses', async function (req, res) {
 
     courses.push(sortOutcomesByCourse(courseOutcome));
     courses.push(transformdt(outcomes));
-	res.json(courses);
+    res.json(courses);
 });
 
-router.post('/postCourses', async function(req, res){
+router.post('/postCourses', async function (req, res) {
     let courseMapping = [];
     courseMapping = req.body.data;
 
@@ -46,11 +68,11 @@ router.post('/postCourses', async function(req, res){
     // - If mapping exsist, marked checked
     // - Unchecked acts as a remove
 
-    for(let i = 0; i < courseMapping.length; i++) {
-        if(undefined !==  courseMapping[i].outcomes && courseMapping[i].outcomes.length) {
-            for(let j = 0; j < courseMapping[i].outcomes.length; j++) {
+    for (let i = 0; i < courseMapping.length; i++) {
+        if (undefined !== courseMapping[i].outcomes && courseMapping[i].outcomes.length) {
+            for (let j = 0; j < courseMapping[i].outcomes.length; j++) {
                 courseMappingQuery.insert_course_mapping(courseMapping[i].course_ID, courseMapping[i].outcomes[j]).then((ok) => {
-                    console.log("Successfully Inserted: ", courseMapping[i].course, " | " ,courseMapping[i].course_ID, " | ", courseMapping[i].outcomes[j]);
+                    console.log("Successfully Inserted: ", courseMapping[i].course, " | ", courseMapping[i].course_ID, " | ", courseMapping[i].outcomes[j]);
                     // req.flash("success", "Course created");
                     // res.redirect(base_url);
                 }).catch((err) => {
@@ -75,7 +97,7 @@ router.post('/postCourses', async function(req, res){
  * @param {Array} outcomes array of element to transform
  * @returns {Array} order in ascendent
  */
-function transformdt(outcomes) {    
+function transformdt(outcomes) {
     // getting all ids
     let ids = outcomes.map(row => row.prog_ID);
 
@@ -90,17 +112,49 @@ function transformdt(outcomes) {
     let temp = [];
     ids.forEach((ID) => {
         let row_outcomes = [];
+        let courses_name = [];
 
         // filter only outcomes that belown to specific study program (Still we got the object)
         row_outcomes = outcomes.filter(row => row.prog_ID == ID);
-        
+
         //sort by name
         row_outcomes.sort((a, b) => (a.outc_name > b.outc_name) ? 1 : -1)
-        
-        // get only the outcomes ids
-        row_outcomes = row_outcomes.map(row => row.outc_ID);
 
-        temp.push({ "prog_ID": ID, "outcomes": row_outcomes });
+        // get only the outcomes ids
+        outcomes_ids = row_outcomes.map(row => row.outc_ID);
+
+        // remove duplicates outcomes
+        outcomes_ids = outcomes_ids.filter(function (item, pos) {
+            return outcomes_ids.indexOf(item) == pos;
+        });
+
+        //get outcome_names
+        outcomes_names = row_outcomes.map(row => [row.outc_name, row.outc_ID]);
+
+        // Getting only the name. Como ya todo está sort, los nombres que me dan aqui estan sort.
+        let names = [];
+        outcomes_ids.forEach(ID => {
+            let i = 0;
+            while (i < outcomes_names.length) {
+                if (outcomes_names[i][1] == ID) {
+                    names.push(outcomes_names[i][0]);
+                    break;
+                }
+                i++;
+            }
+        });
+
+        console.log(names);        
+
+        // get only the name of the courses
+        courses_name = row_outcomes.map(row => row.course_name);
+
+        // remove duplicates outcomes
+        courses_name = courses_name.filter(function (item, pos) {
+            return courses_name.indexOf(item) == pos;
+        });
+
+        temp.push({ "prog_ID": ID, "outcomes": outcomes_ids, "courses": courses_name, "outcome_names": names });
     });
     return temp;
 }
@@ -127,7 +181,7 @@ function sortOutcomesByCourse(courseOutcome) {
 
         // filter only outcomes that belown to specific study program (Still we got the object)
         row_outcomes = courseOutcome.filter(row => row.course_ID == ID);
-        
+
         // get only the outcomes names
         row_outcomes = row_outcomes.map(row => row.outc_ID);
 
