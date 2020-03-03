@@ -31,15 +31,11 @@ router.get('/signout', async function(req, res, next) {
 	if (req.session != undefined){
 		// destroy the session
 		await req.session.destroy(function(err) {
-			if (err) throw err;
-
+			if (err) return res.redirect("/login");
 			console.log("Sessions deleted");
 		});
 	}
-	
 	res.redirect("/");
-	// TODO: Redirect to LOGIN
-    // res.status(200).send("NEED TO LOGIN TO CONTINUE");
 });
 
   

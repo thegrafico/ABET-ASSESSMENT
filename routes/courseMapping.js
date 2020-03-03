@@ -1,15 +1,14 @@
 var express = require('express');
-var authHelper = require('../helpers/auth');
 var router = express.Router();
 var middleware = require("../middleware/validateUser");
-var { db } = require("../helpers/mysqlConnection"); //pool connection
-var conn = db.mysql_pool;
 var query = require("../helpers/queries/course_queries");
 var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
+
 let locals = {
     title: 'Course Mapping'
 };
 let courseMapping = [];
+
 /* 
     GET INDEX ROUTE
 */
@@ -51,11 +50,6 @@ router.get('/getCourses', async function (req, res) {
  * @returns {Array} order in ascendent
  */
 function transformdt(outcomes) {
-    let test = outcomes[0];
-    test.outc_ID = 1;
-    test.outc_name = 'Outcome 8';
-
-    console.log(outcomes);
     
     // getting all ids
     let ids = outcomes.map(row => row.prog_ID);
@@ -75,15 +69,15 @@ function transformdt(outcomes) {
         // filter only outcomes that belown to specific study program (Still we got the object)
         row_outcomes = outcomes.filter(row => row.prog_ID == ID);
         
+        //sort by name
         row_outcomes.sort((a, b) => (a.outc_name > b.outc_name) ? 1 : -1)
         
-        // get only the outcomes names
+        // get only the outcomes ids
         row_outcomes = row_outcomes.map(row => row.outc_ID);
 
         temp.push({ "prog_ID": ID, "outcomes": row_outcomes });
     });
 
-    console.log(temp);
     return temp;
 }
 

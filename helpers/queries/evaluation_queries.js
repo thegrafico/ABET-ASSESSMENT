@@ -58,16 +58,18 @@ function get_all_evaluations_rubric() {
 
 /**
  * insert_evaluation_rubric -  Create new evaluation rubric
- * @param {Object} data -> keys {"name", "description", "outcome_id"} 
+ * @param {Object} rubric -> keys {"name", "description", "outcome_id"} 
  * @return {Promise} resolve with true
  */
-function insert_evaluation_rubric(data) {
+function insert_evaluation_rubric(rubric) {
 
     return new Promise(function (resolve, reject) {
 
-        let insert_query = `insert into EVALUATION_RUBRIC (rubric_name, rubric_description, outc_ID) values(?, ?, ?);`;
+        let insert_query = `insert into 
+        EVALUATION_RUBRIC (rubric_name, rubric_description, outc_ID, date_created)
+        values(?, ?, ?, ?);`;
 
-        conn.query(insert_query, [data.name, data.description, data.outcome_id], function (err, results) {
+        conn.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id, new Date()], function (err, results) {
             if (err)
                 reject(err);
             else
@@ -80,17 +82,17 @@ function insert_evaluation_rubric(data) {
  * @param {Object} data -> keys {"name", "description", "rubric_id"} 
  * @return {Promise} resolve with true
  */
-function update_evaluation_rubric(data) {
+function update_evaluation_rubric(rubric) {
 
     return new Promise(function (resolve, reject) {
 
         let update_query = `
-        update EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?
+        update EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?, outc_ID = ?, date_modified = ?
         where rubric_ID = ?`;
 
-        data = [data.name, data.description, data.rubric_id];
+        data = [rubric.name, rubric.description, rubric.outcome_id, new Date(), rubric.id];
 
-        conn.query(update_query, data, function (err, results, fields) {
+        conn.query(update_query, data, function (err, results) {
             if (err)
                 reject(err);
             else
@@ -104,13 +106,51 @@ function update_evaluation_rubric(data) {
  * @param {Object} data -> keys {"rubric_id", "perfomance_id"} 
  * @return {Promise} resolve with true
  */
-function insert_evaluation_rubric_INTO_Perfomance_Rubric(data) {
+function insert_perfomance_Rubric(rubric_id, performances_id) {
 
     return new Promise(function (resolve, reject) {
 
-        let insert_query = `insert into PERFORMANCE_RUBRIC (rubric_ID, perC_ID) values(?, ?);`;
+        let insert_query = `insert into PERFORMANCE_RUBRIC (rubric_ID, perC_ID) values ?`;
 
-        conn.query(insert_query, [data.rubric_id, data.perfomance_id], function (err, results, fields) {
+        let values = [];
+        performances_id.forEach((element) => {
+            if (element != undefined && element.length != 0 && !isNaN(element)) {
+                values.push([rubric_id, parseInt(element)])
+            }
+        });
+
+        conn.query(insert_query, [values], function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(true);
+        });
+    });
+}
+
+/**
+ * update_deparment ->  update department data
+ * @param {Number} user_id id of the user
+ * @param {Array} department_ids all id of the department
+ * @return {Promise} resolve with user data
+ */
+function remove_performance(rubric_id, performances_id) {
+
+    return new Promise(function (resolve, reject) {
+
+        if (performances_id == undefined || performances_id.length == 0) {
+            return reject("Cannot find any department to remove");
+        }
+
+        let to_insert = [];
+        performances_id.forEach((element) => {
+            to_insert.push([rubric_id, element]);
+        });
+
+        let update_query = `DELETE FROM performance_rubric WHERE (rubric_ID, perC_ID) IN (?)`;
+
+        //Exe query
+        conn.query(update_query, [to_insert], function (err, results) {
             if (err)
                 reject(err);
             else
@@ -122,5 +162,8 @@ function insert_evaluation_rubric_INTO_Perfomance_Rubric(data) {
 module.exports.insert_evaluation_rubric = insert_evaluation_rubric;
 module.exports.update_evaluation_rubric = update_evaluation_rubric;
 module.exports.get_all_evaluations_rubric = get_all_evaluations_rubric;
-module.exports.insert_evaluation_rubric_INTO_Perfomance_Rubric = insert_evaluation_rubric_INTO_Perfomance_Rubric;
+module.exports.insert_perfomance_Rubric = insert_perfomance_Rubric;
 module.exports.get_evaluation_rubric_by_id = get_evaluation_rubric_by_id;
+module.exports.remove_performance = remove_performance;
+
+

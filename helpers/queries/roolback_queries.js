@@ -24,7 +24,7 @@ async function create_user(user, profile_id, departments_id) {
             let queryAddUser = `insert into USER (inter_ID, first_name, last_name, email, phone_number)
              values( ?, ?, ?, ?, ?);`;
 
-            connection.query(queryAddUser, [user.id, user.name, user.lastname, user.email, user.phoneNumber], function (error, results) {
+            connection.query(queryAddUser, [user.id, user.name, user.lastname, user.email.toLowerCase(), user.phoneNumber], function (error, results) {
 
                 if (error) return connection.rollback(function () { reject(error); });
 
@@ -77,8 +77,9 @@ async function create_course(course) {
         connection.beginTransaction(function (err) {
             if (err) { return reject(err) }
 
-            let insert_query = `insert into COURSE (course_number, course_name, course_description) values(?, ?, ?);`;
-
+            let insert_query = `insert into COURSE 
+            (course_number, course_name, course_description) 
+            values(?, ?, ?);`;
 
             connection.query(insert_query, [course.number, course.name, course.description], function (error, results) {
 
@@ -127,20 +128,22 @@ async function create_evaluation_rubric(rubric) {
             if (err) { return reject(err) }
 
             // insert rubric
-            let insert_query = `INSERT INTO EVALUATION_RUBRIC (rubric_name, rubric_description, outc_ID) VALUES(?, ?, ?);`;
+            let insert_query = `INSERT INTO EVALUATION_RUBRIC 
+            (rubric_name, rubric_description, outc_ID) 
+            VALUES(?, ?, ?);`;
 
-            connection.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id], function (error, results) {
+            connection.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id, new Date()], function (error, results) {
 
                 if (error) return connection.rollback(function () { reject(error); });
 
                 let rubric_id = results.insertId;
-                
+
                 let values = [];
                 rubric["performance"].forEach((element) => {
-                        if (element != undefined && element.length != 0 && !isNaN(element)) {
-                            values.push([rubric_id, parseInt(element)])
-                        }
-                    });
+                    if (element != undefined && element.length != 0 && !isNaN(element)) {
+                        values.push([rubric_id, parseInt(element)])
+                    }
+                });
 
                 let query_performance_rubric = `INSERT INTO PERFORMANCE_RUBRIC (rubric_ID, perC_ID) VALUES ?`;
 

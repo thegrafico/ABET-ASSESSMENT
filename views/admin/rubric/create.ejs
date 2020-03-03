@@ -98,7 +98,7 @@
             var study_program_id = $(this).children("option:selected").val();
 
             $.ajax({
-                'url': `/outcomes/${study_program_id}/getStudyProgram`,
+                'url': `/admin/outcomes/${study_program_id}/getStudyProgram`,
                 type: 'GET',
                 dataType: 'json',
                 success: (data) => {
@@ -126,7 +126,7 @@
             console.log("selected: ", outcome_id);
 
             $.ajax({
-                'url': `/outcomes/get/performances/${outcome_id}`,
+                'url': `/admin/outcomes/get/performances/${outcome_id}`,
                 type: 'GET',
                 dataType: 'json',
                 success: (data) => {

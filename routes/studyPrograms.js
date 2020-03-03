@@ -6,17 +6,17 @@ const { study_program_create_input } = require("../helpers/layout_template/creat
 var { validate_form } = require("../helpers/validation");
 
 
-const base_url = '/studyprograms'
-// let routes_names = ['create', 'delete', 'edit', 'details']
+// for redirtect
+const base_url = '/admin/studyprograms';
 
 //Paramns to routes links
 let locals = {
 	"title": "ABET Assessment",
 	"subtitle": "Study Programs",
 	"base_url": base_url,
-	"url_create": "/studyprograms/create",
+	"url_create": `${base_url}/create`,
 	"form_id": "std_data",
-	"api_get_url": "/studyprograms",
+	"api_get_url": base_url,
 	delete_redirect: null
 };
 
@@ -61,7 +61,7 @@ router.get('/', async function(req, res) {
 		});
 		locals.results = results;
 	}
-	res.render('layout/home', locals);
+	res.render('admin/layout/home', locals);
 });
 
 
@@ -88,7 +88,7 @@ router.get('/create', async function(req, res) {
 	locals.dropdown_title = "Departments";
 	locals.dropdown_name = "department_id";
 	locals.title_action = "Create Study Program";
-	locals.url_form_redirect = "/studyprograms/create";
+	locals.url_form_redirect = `${base_url}/create`;
 	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
@@ -107,7 +107,7 @@ router.get('/create', async function(req, res) {
 		});
 	});
 
-	res.render('layout/create', locals);
+	res.render('admin/layout/create', locals);
 });
 
 /* 	
@@ -173,7 +173,7 @@ router.get('/:id/edit', async function(req, res) {
 	locals.dropdown_title = "Department";
 	locals.dropdown_name = "department_id";
 	locals.title_action = "Edit Study Program";
-	locals.url_form_redirect = `/studyprograms/${studyp_id}?_method=PUT`;
+	locals.url_form_redirect = `${base_url}/${studyp_id}?_method=PUT`;
 	locals.btn_title = "Edit";
 	
 
@@ -220,7 +220,7 @@ router.get('/:id/edit', async function(req, res) {
 		});
 	});
 
-	res.render('layout/create', locals);
+	res.render('admin/layout/create', locals);
 });
 
 /* 
@@ -244,8 +244,8 @@ router.put('/:id', function(req, res) {
 	// if the values don't mach the type 
 	if (!validate_form(req.body, key_types)){
 		console.log("Error in validation");
-		req.flash("error", "Error in the information of the Study program");
-		return res.redirect(base_url);	
+		req.flash("error", "Error in inputs");
+		return res.redirect("back");	
 	}
 
 	// TODO: validate id
@@ -256,6 +256,7 @@ router.put('/:id', function(req, res) {
 		"program_id": stdp_id,
 		"department_id": req.body.department_id
 	};
+
 	query.update_study_program(data).then((ok) => {
 		req.flash("success", "Study Program edited");
 		return res.redirect(base_url);
@@ -275,7 +276,7 @@ router.get('/get/:id', async function (req, res) {
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)){
 		req.flash("error", "This Study program does not exits");
-		return res.redirect(base_url);
+		return res.redirect("back");
 	}
 
 	let std_program_id = req.params.id;

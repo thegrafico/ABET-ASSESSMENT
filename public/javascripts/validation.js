@@ -1,4 +1,5 @@
 /* 
+    -- FORM ID -- SHOULD BE ====> 
     TO VALIDATE USER:-----------------> user_data
     TO VALIDATE COURSE:---------------> course_data
     TO VALIDATE DEPARTMENT:-----------> department_data
@@ -12,6 +13,8 @@
 // Wait for the DOM to be ready
 $(document).ready(function () {
 
+    console.log("Validation Loaded");
+
     jQuery.validator.addMethod("lettersonly", function (value, element) {
         return this.optional(element) || /^[a-z\s]+$/i.test(value);
     }, "Only alphabetical characters");
@@ -19,6 +22,7 @@ $(document).ready(function () {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
     $("#user_data").validate({
+  
         // Specify validation rules
         rules: {
             // The key name on the left side is the name attribute
@@ -36,10 +40,10 @@ $(document).ready(function () {
                 email: true
             },
             "phoneNumber": {
-                digits: true,
                 required: false,
+                digits: true,
                 minlength: 5,
-                maxLength: 11
+                maxlength: 11
             }
         },
         // Specify validation error messages
@@ -73,6 +77,7 @@ $(document).ready(function () {
         rules: {
             "data[number]": "required",
             "data[name]": "required",
+            "data[description]": "required"
         },
         messages: {
             "data[number]": {
@@ -80,6 +85,10 @@ $(document).ready(function () {
                 minlength: "Have to be greater than 3"
             },
             "data[name]": {
+                required: "Cannot be empty",
+                minlength: "Have to be greater than 3"
+            },
+            "data[description]": {
                 required: "Cannot be empty",
                 minlength: "Have to be greater than 3"
             }
@@ -96,12 +105,16 @@ $(document).ready(function () {
         // Specify validation rules
         rules: {
             "name": { required: true, lettersonly: true },
-            "description": { required: false },
+            "description": { required: true, minlength: 3 },
         },
         messages: {
             "name": {
                 required: "Cannot be empty",
                 lettersonly: "Only letters"
+            },
+            "description": {
+                required: "Cannot be empty",
+                minlength: "Greater than 3 characters"
             },
         },
         // Make sure the form is submitted to the destination defined
