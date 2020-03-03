@@ -43,9 +43,7 @@ $(document).ready(() => {
                         }
                         for(let a = 0; a < courseOutcomes[0].length; a++) {
                             if(courses[i].course_ID == courseOutcomes[0][a].course_ID) {
-                                console.log("ID Match: ", courses[i].course_ID, " | ", courses[i].course_name);
                                 tempOutcomes = courseOutcomes[0][a].outcomes;
-                                // console.log("Array of Outcomes: ", tempOutcomes, " |  ID: ", courses[i].course_ID, " | ", courses[i].course_name);
                             }
                         }
                     }
@@ -58,11 +56,9 @@ $(document).ready(() => {
                             }
                         }
                         if(found) {
-                            console.log("Checked", tempOutcomes[j-1]);
                             row += `<td><input value='${tempArrOutcome[j-1]}' type='checkbox' checked></td>`;
                             found = false;
                         } else {
-                            console.log("Not Checked");
                             row += `<td><input value='${tempArrOutcome[j-1]}' type='checkbox'></td>`;
                         }
                     }

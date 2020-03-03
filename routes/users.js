@@ -108,7 +108,7 @@ router.get('/create', async function (req, res) {
 
 	if (departments == undefined || departments.length == 0){
 		console.log("There is not department created");
-		req.flash("error", "Please create a department befero creating a user");
+		req.flash("error", "Please create a department before creating a user");
 		return res.redirect(base_url);
 	}
 	
@@ -161,7 +161,7 @@ router.post('/create', async function (req, res) {
 		"selected_values": "s"
 	};
 
-	// if the values don't mach the type 
+	// if the values don't match the type 
 	if (!validate_form(req.body, keys_types)){
 		req.flash("error", "Error in the information of the user");
 		return res.redirect("back");	
