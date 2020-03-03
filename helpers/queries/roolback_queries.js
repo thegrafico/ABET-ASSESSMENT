@@ -21,7 +21,7 @@ async function create_user(user, profile_id, departments_id) {
             if (err) { return reject(err) }
 
             // query
-            let queryAddUser = `insert into USER (inter_ID, first_name, last_name, email, phone_number)
+            let queryAddUser = `INSERT INTO USER (inter_ID, first_name, last_name, email, phone_number)
              values( ?, ?, ?, ?, ?);`;
 
             connection.query(queryAddUser, [user.id, user.name, user.lastname, user.email.toLowerCase(), user.phoneNumber], function (error, results) {
@@ -29,7 +29,7 @@ async function create_user(user, profile_id, departments_id) {
                 if (error) return connection.rollback(function () { reject(error); });
 
                 let user_id = results.insertId;
-                let querySetProfile = `insert into USER_PROFILES values(?, ?)`;
+                let querySetProfile = `INSERT INTO USER_PROFILES values(?, ?)`;
 
                 connection.query(querySetProfile, [user_id, profile_id], function (error, results) {
                     if (error) return connection.rollback(function () { reject(error); });
@@ -43,7 +43,7 @@ async function create_user(user, profile_id, departments_id) {
 
                     if (values.length == 0) { return connection.rollback(function () { reject("Not department found"); }); }
 
-                    let set_dept_query = `INSERT INTO user_dep (user_ID, dep_ID) values ?;`;
+                    let set_dept_query = `INSERT INTO USER_DEP (user_ID, dep_ID) values ?;`;
 
                     connection.query(set_dept_query, [values], function (error, results) {
 
@@ -77,7 +77,7 @@ async function create_course(course) {
         connection.beginTransaction(function (err) {
             if (err) { return reject(err) }
 
-            let insert_query = `insert into COURSE 
+            let insert_query = `INSERT INTO COURSE 
             (course_number, course_name, course_description) 
             values(?, ?, ?);`;
 
@@ -96,7 +96,7 @@ async function create_course(course) {
 
                 if (values.length == 0) return reject("Cannot add any study program");
 
-                let insert_prog_course = `insert into PROG_COURSE (course_ID, prog_ID) values ?`;
+                let insert_prog_course = `INSERT INTO PROG_COURSE (course_ID, prog_ID) values ?`;
 
                 connection.query(insert_prog_course, [values], function (error, results) {
                     if (error) return connection.rollback(function () { reject(error); });

@@ -83,7 +83,7 @@ function remove_program_course(course_id, programs_id) {
             to_insert.push([course_id, element]);
         });
 
-        let delete_query = `DELETE FROM prog_course WHERE (course_ID, prog_ID) IN (?)`;
+        let delete_query = `DELETE FROM PROG_COURSE WHERE (course_ID, prog_ID) IN (?)`;
 
         //Exe query
         conn.query(delete_query, [to_insert], function (err, results) {
@@ -115,7 +115,7 @@ function insert_program_course(course_id, programs_id) {
             to_insert.push([course_id, element]);
         });
 
-        let set_dept_query = `INSERT INTO prog_course (course_ID, prog_ID) values ?;`;
+        let set_dept_query = `INSERT INTO PROG_COURSE (course_ID, prog_ID) values ?;`;
 
         //Exe query
         conn.query(set_dept_query, [to_insert], function (err, results) {
@@ -135,7 +135,7 @@ function update_course(data) {
     // promise updating course
     return new Promise(function (resolve, reject) {
 
-        let update_query = `update COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID = ?`;
+        let update_query = `UPDATE COURSE set course_name= ?, course_description = ?, course_number = ? where course_ID = ?`;
 
         // Update course
         conn.query(update_query, [data.name, data.description, data.number, data.id], function (err, results) {

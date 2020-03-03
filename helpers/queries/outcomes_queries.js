@@ -11,7 +11,7 @@ function insert_outcome(data) {
     
     return new Promise(function(resolve, reject){
         
-        let insert_query = `insert into STUDENT_OUTCOME (outc_name, outc_description, prog_ID) values(?, ?, ?);`;
+        let insert_query = `INSERT INTO STUDENT_OUTCOME (outc_name, outc_description, prog_ID) values(?, ?, ?);`;
 
         conn.query(insert_query, [data.outcome_name, data.outcome_description, data.program_id], 
             function (err, results) {
@@ -32,7 +32,7 @@ function update_outcome(data) {
 
     return new Promise(function(resolve, reject){
 
-        let update_query = `update STUDENT_OUTCOME set outc_name = ?, 
+        let update_query = `UPDATE STUDENT_OUTCOME set outc_name = ?, 
         outc_description = ?, prog_ID = ? where outc_ID = ?; `;
 
         conn.query(update_query, [data.outc_name, data.outc_description, data.prog_ID, data.outc_ID],

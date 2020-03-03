@@ -45,7 +45,7 @@ function create_performance(rubric) {
 		if (rubric == undefined) return reject("Empty parameters");
 
 		// variable that defines the query
-		let insert_query = `insert into perf_criteria (perC_Desk, perC_order, outc_ID) values(?, ?, ?);`;
+		let insert_query = `INSERT INTO PERF_CRITERIA (perC_Desk, perC_order, outc_ID) values(?, ?, ?);`;
 
 		// query to insert new a Performance Criteria
 		conn.query(insert_query, [rubric.description, rubric.order, rubric.outcome_id], function (err, results, fields) {
@@ -86,7 +86,7 @@ function update_performance(rubric) {
 
 		if (rubric == undefined) return reject("Error in the parameter");
 
-		let update_query = `update perf_criteria set perC_Desk = ?, perC_order = ? where perC_ID = ?`;
+		let update_query = `UPDATE PERF_CRITERIA set perC_Desk = ?, perC_order = ? where perC_ID = ?`;
 
 		conn.query(update_query, [rubric.description, rubric.order, rubric.id], function (err, results, fields) {
 			if (err) return reject(err);

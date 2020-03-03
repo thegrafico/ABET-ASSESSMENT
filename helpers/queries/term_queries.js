@@ -10,7 +10,7 @@ function insert_into_term(data){
 
     return new Promise(function (resolve, reject){
 
-        let insert_term_query = `insert into ACADEMIC_TERM (term_name) values(?);`;
+        let insert_term_query = `INSERT INTO ACADEMIC_TERM (term_name) values(?);`;
 
         conn.query(insert_term_query, data.name, function (err, results) {
             if (err)
@@ -29,7 +29,7 @@ function insert_into_term(data){
 function update_term(data){
     return new Promise(function(resolve, reject){
 
-        let update_query = `update ACADEMIC_TERM set term_name= ? where term_ID = ?`;
+        let update_query = `UPDATE ACADEMIC_TERM set term_name= ? WHERE term_ID = ?`;
         //Exe query
         conn.query(update_query, [data.name, data.id], function (err, results) {
             if (err)

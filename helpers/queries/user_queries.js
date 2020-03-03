@@ -40,7 +40,7 @@ function get_user_by_id(id) {
     return new Promise(function (resolve, reject) {
 
         // Get all user information, including department and profile
-        let query_user_info = `SELECT * FROM user NATURAL JOIN user_profiles WHERE user.user_ID = ?`;
+        let query_user_info = `SELECT * FROM USER NATURAL JOIN USER_PROFILES WHERE USER.user_ID = ?`;
 
         conn.query(query_user_info, [id], function (err, results) {
             
@@ -62,7 +62,7 @@ function get_user_department_by_id(id) {
     return new Promise(function (resolve, reject) {
 
         // Get all user information, including department and profile
-        let query_user_info = `SELECT dep_ID FROM user_dep WHERE user_ID = ?`;
+        let query_user_info = `SELECT dep_ID FROM USER_DEP WHERE user_ID = ?`;
 
         conn.query(query_user_info, [id], function (err, results) {
             
@@ -170,7 +170,7 @@ function set_user_profile(user_id, profile_id) {
 
     return new Promise(function (resolve, reject) {
 
-        let querySetProfile = `insert into USER_PROFILES values(?, ?)`;
+        let querySetProfile = `INSERT INTO USER_PROFILES values(?, ?)`;
         conn.query(querySetProfile, [user_id, profile_id], function (error, results) {
             if (error)
                 reject(false);
@@ -197,7 +197,7 @@ function set_user_to_department(user_id, dept_id) {
             }
         });
 
-        let query = "insert into USER_DEP (user_ID, dep_ID) VALUES ?";
+        let query = "INSERT INTO USER_DEP (user_ID, dep_ID) VALUES ?";
         conn.query(query, [values], function (error, results) {
             if (error)
                 reject(error);

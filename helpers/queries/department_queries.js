@@ -10,7 +10,7 @@ function insert_into_deparment(data){
 
     return new Promise(function(resolve, reject){
         // query for department insert
-        let insert_query = `insert into DEPARTMENT (dep_name, dep_description) values(?, ?);`;
+        let insert_query = `INSERT INTO DEPARTMENT (dep_name, dep_description) values(?, ?);`;
 
         conn.query(insert_query, data, function (err, results) {
             if (err) {
@@ -30,7 +30,7 @@ function update_deparment(data){
     
     return new Promise(function(resolve, reject){
 
-        let update_query = `update DEPARTMENT set dep_name= ?, dep_description= ? where dep_ID= ?`;
+        let update_query = `UPDATE DEPARTMENT set dep_name= ?, dep_description= ? where dep_ID= ?`;
 
         //Exe query
         conn.query(update_query, data, function (err, results) {
@@ -64,7 +64,7 @@ function remove_user_department(user_id, department_ids){
             to_insert.push([user_id, element]);
         });
 
-        let update_query = `DELETE FROM user_dep WHERE (user_ID, dep_ID) IN (?)`;
+        let update_query = `DELETE FROM USER_DEP WHERE (user_ID, dep_ID) IN (?)`;
 
         //Exe query
         conn.query(update_query, [to_insert], function (err, results) {
@@ -96,7 +96,7 @@ function insert_user_department(user_id, department_ids){
             to_insert.push([user_id, element]);
         });
 
-        let set_dept_query = `INSERT INTO user_dep (user_ID, dep_ID) values ?;`;
+        let set_dept_query = `INSERT INTO USER_DEP (user_ID, dep_ID) values ?;`;
 
         //Exe query
         conn.query(set_dept_query, [to_insert], function (err, results) {
