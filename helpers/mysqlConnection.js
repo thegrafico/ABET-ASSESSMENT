@@ -30,7 +30,7 @@ var options = {
 };
 
 
-// /* For online database connection */ 
+/* For online database connection */ 
 // var options = {
 //   host     : '70.45.219.43',
 //   user     : 'root',

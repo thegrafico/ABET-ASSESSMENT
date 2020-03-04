@@ -18,6 +18,10 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/test', async function (req, res) {
+    
+    locals.selected_program = 0;
+    if (req.query.progID != undefined)
+        locals.selected_program = parseInt(req.query.progID);
 
     let mapping = await courseMappingQuery.get_mapping().catch((err) => {
         console.error("ERROR: ", err);
@@ -34,7 +38,11 @@ router.get('/test', async function (req, res) {
 
     locals.mapping = transformdt(mapping);
 
-    console.log(locals.mapping);
+    // console.log(locals.mapping);
+    // console.log(locals.mapping[0].outcomes);
+    // console.log(locals.mapping[0].courses);
+
+
     res.render('courseMapping/testhome', locals);
 });
 
@@ -91,6 +99,41 @@ router.post('/postCourses', async function (req, res) {
     res.status(200).send();
 });
 
+router.post('/addMapping', async function (req, res) {
+
+    if (req.body == undefined || req.body.data == undefined) {
+        return res.end();
+    }
+    let data = req.body.data;
+
+    if (data.length == 0) {
+        return res.end();
+    }
+
+    console.log(data);
+
+    data.forEach(async row => {
+        if (row.update != undefined && row.update.insert != undefined && row.update.insert.length > 0) {
+            await courseMappingQuery.insert_mapping(row.course_id, row["update"]["insert"]).catch((err) => {
+                console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
+            });
+
+            console.log("MAPPING ADDED SOME VALUES");
+        }
+
+        if (row.update != undefined && row.update.delete != undefined && row.update.delete.length > 0) {
+            await courseMappingQuery.remove_mapping(row.course_id, row["update"]["delete"]).catch((err) => {
+                console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
+            });
+
+            console.log("MAPPING REMOVED SOME VALUES");
+        }
+    });
+
+    res.end('{"success" : "Updated Successfully", "status" : 200}');
+
+});
+
 
 /**
  * transformdt -> transform the data structure to a new data structure
@@ -100,6 +143,7 @@ router.post('/postCourses', async function (req, res) {
 function transformdt(outcomes) {
     // getting all ids
     let ids = outcomes.map(row => row.prog_ID);
+
 
     // remove duplicates
     ids = ids.filter(function (item, pos) {
@@ -113,7 +157,6 @@ function transformdt(outcomes) {
     ids.forEach((ID) => {
         let row_outcomes = [];
         let courses_name = [];
-
         // filter only outcomes that belown to specific study program (Still we got the object)
         row_outcomes = outcomes.filter(row => row.prog_ID == ID);
 
@@ -144,8 +187,6 @@ function transformdt(outcomes) {
             }
         });
 
-        console.log(names);        
-
         // get only the name of the courses
         courses_name = row_outcomes.map(row => row.course_name);
 
@@ -154,7 +195,27 @@ function transformdt(outcomes) {
             return courses_name.indexOf(item) == pos;
         });
 
-        temp.push({ "prog_ID": ID, "outcomes": outcomes_ids, "courses": courses_name, "outcome_names": names });
+        // get course name and id in two dimentional array
+        let courses_id_name = row_outcomes.map(row => [row.course_ID, row.course_name]);
+
+        // Getting only the name. Como ya todo está sort, los nombres que me dan aqui estan sort.
+        let courses_id = [];
+        courses_name.forEach(NAME => {
+            let i = 0;
+            while (i < courses_id_name.length) {
+                if (courses_id_name[i][1] == NAME) {
+                    courses_id.push(courses_id_name[i][0]);
+                    break;
+                }
+                i++;
+            }
+        });
+
+        temp.push({
+            "prog_ID": ID,
+            "outcomes": { "id": outcomes_ids, "names": names },
+            "courses": { "names": courses_name, "ids": courses_id },
+        });
     });
     return temp;
 }
