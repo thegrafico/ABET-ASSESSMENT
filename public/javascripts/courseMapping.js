@@ -19,14 +19,10 @@ $(document).ready(() => {
         type: 'GET',
         dataType: 'json',
         success: (data) => {
-            console.log(data);
             courses = data.slice(0,data.length-2);
             courseOutcomes = data.slice(data.length-2, data.length-1);
             outcomesList = data[data.length-1];
             let row = '';
-            console.log("Courses: ", courses);
-            console.log("Outcomes: ", outcomesList);
-            console.log("Course Outcomes", courseOutcomes);
 
             for (let i = 0; i < courses.length; i++) {
                 let tempArrOutcome = [];
@@ -89,8 +85,6 @@ $(document).ready(() => {
             tempArr = [];
         }
 
-        console.log(arr);
-
         let courseMapInfo = [];
         count = 0;
 
@@ -103,7 +97,9 @@ $(document).ready(() => {
             courseMapInfo.push(tempObj);
             count++;
         });
-        console.log(courseMapInfo);
+        console.log("Course Outcomes: ", courseOutcomes);
+
+        console.log("Course Map Info: ", courseMapInfo);
         $.ajax({
             type: "POST",
             url: '/courseMapping/postCourses',
@@ -114,3 +110,29 @@ $(document).ready(() => {
           });
     });
 });
+
+
+/**
+ * validate_form 
+ * @param {Array} current current department the user have
+ * @param {Array} selected_for_update actual department the user should have
+ * @return {Object} Object of array for "delete" and "insert"
+ */
+function get_data_for_update(current, selected_for_update) {
+
+	// if (current == undefined  || selected_for_update == undefined || selected_for_update.length == 0){
+	// 	return undefined;
+	// }
+
+	for (let i = 0; i < current.length; i++) {
+		for (let j = 0; j < selected_for_update.length; j++) {
+			if (current[i] == selected_for_update[j]) {
+				current.splice(i, 1);
+				selected_for_update.splice(j, 1);
+				i--;
+				j--;
+			}
+		}
+	}
+	return { "delete": current || [], "insert": selected_for_update || [] }
+}

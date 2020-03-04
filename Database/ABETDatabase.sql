@@ -165,7 +165,7 @@ DROP TABLE IF EXISTS `OUTCOME_COURSE`;
 CREATE TABLE `OUTCOME_COURSE` (
   `course_ID` int(11) DEFAULT NULL,
   `outc_ID` int(11) DEFAULT NULL,
-  UNIQUE KEY `no_duplicates` (`course_ID`,`outc_ID`),
+  UNIQUE KEY `no_duplicates_outcome_course` (`course_ID`,`outc_ID`),
   KEY `outc_ID` (`outc_ID`),
   KEY `course_ID` (`course_ID`),
   CONSTRAINT `OUTCOME_COURSE_ibfk_1` FOREIGN KEY (`outc_ID`) REFERENCES `STUDENT_OUTCOME` (`outc_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -191,12 +191,14 @@ DROP TABLE IF EXISTS `PERFORMANCE_RUBRIC`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `PERFORMANCE_RUBRIC` (
-  `rubric_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `rubric_ID` int(11) NOT NULL,
   `perC_ID` int(11) NOT NULL,
-  PRIMARY KEY (`rubric_ID`,`perC_ID`),
-  KEY `PERFORMANCE_RUBRIC_ibfk_1` (`perC_ID`),
-  CONSTRAINT `PERFORMANCE_RUBRIC_ibfk_1` FOREIGN KEY (`perC_ID`) REFERENCES `PERF_CRITERIA` (`perC_ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+  UNIQUE KEY `no_duplicates_perf_rubric` (`rubric_ID`, `perC_ID`),
+  key `rubric_ID` (`rubric_ID`),
+  key `perC_ID` (`perC_ID`),
+  CONSTRAINT `PERFORMANCE_RUBRIC_ibfk_1` FOREIGN KEY (`rubric_ID`) REFERENCES `EVALUATION_RUBRIC` (`rubric_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `PERFORMANCE_RUBRIC_ibfk_2` FOREIGN KEY (`perC_ID`) REFERENCES `PERF_CRITERIA` (`perC_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -269,6 +271,7 @@ DROP TABLE IF EXISTS `PROG_COURSE`;
 CREATE TABLE `PROG_COURSE` (
   `course_ID` int(11) DEFAULT NULL,
   `prog_ID` int(11) DEFAULT NULL,
+  UNIQUE KEY `no_duplicates_prog_course` (`course_ID`, `prog_ID`),
   KEY `course_ID` (`course_ID`),
   KEY `prog_ID` (`prog_ID`),
   CONSTRAINT `PROG_COURSE_ibfk_1` FOREIGN KEY (`course_ID`) REFERENCES `COURSE` (`course_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -418,7 +421,7 @@ DROP TABLE IF EXISTS `USER`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `USER` (
   `user_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `inter_ID` varchar(255) DEFAULT NULL,
+  `inter_ID` varchar(255) DEFAULT NULL UNIQUE,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
@@ -448,6 +451,7 @@ DROP TABLE IF EXISTS `USER_DEP`;
 CREATE TABLE `USER_DEP` (
   `user_ID` int(11) DEFAULT NULL,
   `dep_ID` int(11) DEFAULT NULL,
+  UNIQUE KEY `no_duplicates_user_dep` (`user_ID`, `dep_ID`),
   KEY `user_ID` (`user_ID`),
   KEY `dep_ID` (`dep_ID`),
   CONSTRAINT `USER_DEP_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `USER` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE,

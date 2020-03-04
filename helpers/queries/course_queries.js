@@ -10,7 +10,7 @@ function get_course_with_std_program() {
     return new Promise(function (resolve, reject) {
 
         let find_query = `SELECT COURSE.course_ID, course_name, course_number, course_description, COURSE.date_created, 
-        prog_course.prog_ID, study_program.prog_name, dep_ID FROM COURSE 
+        PROG_COURSE.prog_ID, STUDY_PROGRAM.prog_name, dep_ID FROM COURSE 
         INNER JOIN  PROG_COURSE on COURSE.course_ID = PROG_COURSE.course_ID
         INNER JOIN STUDY_PROGRAM on PROG_COURSE.prog_ID = STUDY_PROGRAM.prog_ID;`;
 
@@ -47,7 +47,7 @@ function get_study_program_for_course(id) {
     return new Promise(function (resolve, reject) {
 
         // Get all user information, including department and profile
-        let query_user_info = `SELECT prog_ID FROM prog_course WHERE course_ID = ?`;
+        let query_user_info = `SELECT prog_ID FROM PROG_COURSE WHERE course_ID = ?`;
 
         conn.query(query_user_info, [id], function (err, results) {
 
