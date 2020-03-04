@@ -5,19 +5,18 @@ var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 
+
+const base_url = '/admin/courseMapping';
 let locals = {
-    title: 'Course Mapping'
+    title: 'Course Mapping',
+    base_url: base_url
 };
-const base_url = '/';
 /* 
     GET INDEX ROUTE
 */
 
-router.get('/', async function (req, res) {
-    res.render('courseMapping/home', locals);
-});
 
-router.get('/test', async function (req, res) {
+router.get('/', async function (req, res) {
     
     locals.selected_program = 0;
     if (req.query.progID != undefined)
@@ -42,61 +41,7 @@ router.get('/test', async function (req, res) {
     // console.log(locals.mapping[0].outcomes);
     // console.log(locals.mapping[0].courses);
 
-
-    res.render('courseMapping/testhome', locals);
-});
-
-router.get('/getCourses', async function (req, res) {
-    let courseOutcome = await courseMappingQuery.get_course_outcomes().catch((err) => {
-        console.log("Error getting IDs: ", err);
-    });
-
-    let courses = await query.get_course_with_std_program_plain().catch((err) => {
-        console.log("Error getting the courses with std program results: ", err);
-    });
-
-    let outcomes = await courseMappingQuery.get_outcome_with_study_programs().catch((err) => {
-        console.log("Error retrieving outcomes: ", err);
-    });
-
-    courses.push(sortOutcomesByCourse(courseOutcome));
-    courses.push(transformdt(outcomes));
-    res.json(courses);
-});
-
-router.post('/postCourses', async function (req, res) {
-    let courseMapping = [];
-    courseMapping = req.body.data;
-
-    console.log("Course Mapping POST: ", courseMapping);
-
-    // TODO: Noah R. Almeda
-    // - Need to prevent duplicates (Done, this is done by a database constraint)
-    // - Error Handling
-    // - If mapping exsist, marked checked
-    // - Unchecked acts as a remove
-
-    for (let i = 0; i < courseMapping.length; i++) {
-        if (undefined !== courseMapping[i].outcomes && courseMapping[i].outcomes.length) {
-            for (let j = 0; j < courseMapping[i].outcomes.length; j++) {
-                courseMappingQuery.insert_course_mapping(courseMapping[i].course_ID, courseMapping[i].outcomes[j]).then((ok) => {
-                    console.log("Successfully Inserted: ", courseMapping[i].course, " | ", courseMapping[i].course_ID, " | ", courseMapping[i].outcomes[j]);
-                    // req.flash("success", "Course created");
-                    // res.redirect(base_url);
-                }).catch((err) => {
-                    console.log("ERROR: ", err);
-                    req.flash("error", "Course already already has those outcomes assigned.");
-                    return res.redirect(base_url);
-                });
-            }
-        }
-        else {
-            continue;
-        }
-    }
-
-
-    res.status(200).send();
+    res.render('courseMapping/home', locals);
 });
 
 router.post('/addMapping', async function (req, res) {
@@ -110,10 +55,10 @@ router.post('/addMapping', async function (req, res) {
         return res.end();
     }
 
-    console.log(data);
-
+    let was_update = false;
     data.forEach(async row => {
         if (row.update != undefined && row.update.insert != undefined && row.update.insert.length > 0) {
+            was_update = true;
             await courseMappingQuery.insert_mapping(row.course_id, row["update"]["insert"]).catch((err) => {
                 console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
             });
@@ -122,6 +67,7 @@ router.post('/addMapping', async function (req, res) {
         }
 
         if (row.update != undefined && row.update.delete != undefined && row.update.delete.length > 0) {
+            was_update = true;
             await courseMappingQuery.remove_mapping(row.course_id, row["update"]["delete"]).catch((err) => {
                 console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
             });
@@ -130,8 +76,11 @@ router.post('/addMapping', async function (req, res) {
         }
     });
 
-    res.end('{"success" : "Updated Successfully", "status" : 200}');
-
+    if (was_update){
+        res.end('{"success" : "Updated Successfully", "status" : 200, "wasUpdated": true}');
+    }else{
+        res.end('{"success" : "Data keep the same", "status" : 200, "wasUpdated": false}');
+    }
 });
 
 
@@ -219,36 +168,4 @@ function transformdt(outcomes) {
     });
     return temp;
 }
-
-/**
- * sortOutcomesByCourse -> transform the data structure to a new data structure
- * @param {Array} outcomes array of element to transform
- * @returns {Array} order in ascendent
- */
-function sortOutcomesByCourse(courseOutcome) {
-    let ids = courseOutcome.map(row => row.course_ID);
-
-    // remove duplicates
-    ids = ids.filter(function (item, pos) {
-        return ids.indexOf(item) == pos;
-    })
-
-    // sort elements in ascendent order
-    ids.sort(function (a, b) { return a - b });
-
-    let temp = [];
-    ids.forEach((ID) => {
-        let row_outcomes = [];
-
-        // filter only outcomes that belown to specific study program (Still we got the object)
-        row_outcomes = courseOutcome.filter(row => row.course_ID == ID);
-
-        // get only the outcomes names
-        row_outcomes = row_outcomes.map(row => row.outc_ID);
-
-        temp.push({ "course_ID": ID, "outcomes": row_outcomes });
-    });
-    return temp;
-}
-
 module.exports = router;

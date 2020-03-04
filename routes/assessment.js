@@ -11,7 +11,6 @@ let locals ={};
 let assessmentID;
 
 var base_url = '/assessment/chooseCourseTerm';
-
 locals.title = 'ABET Assessment';
 
 /*

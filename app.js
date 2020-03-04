@@ -123,7 +123,7 @@ app.use(`${admin_route}/api`, middleware.is_login, middleware.is_admin, apiRoute
 // ===== Program/Course/Term Selection =====
 app.use('/assessment', assessmentRouter);
 // ===== CourseMapping Section =====
-app.use('/courseMapping', courseMapping);
+app.use(`${admin_route}/courseMapping`, middleware.is_login, middleware.is_admin, courseMapping);
 // ====================================================
 
 // 404 ERROR HANDLE
