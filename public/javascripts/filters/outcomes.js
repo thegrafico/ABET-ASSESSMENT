@@ -6,6 +6,7 @@ $(document).ready(function () {
     $("#number").text(tr_visibles.length);
 
     $("#departments").change(function () {
+
         let dept_ID = $(this).val();
 
         // show table
@@ -14,6 +15,20 @@ $(document).ready(function () {
         // Clean inputs
         $('#study_program').empty().append('<option selected value="">-- Study Program --</option>');
         $("#study_program").trigger("change");
+
+
+        // if the user wants to know all departmenst
+        if (dept_ID != undefined && dept_ID.trim().length == 0) {
+            $("#home-table tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf("") > -1);
+            });
+
+            // get all visible elements
+            tr_visibles = $("#home-table tr:visible");
+            $("#number").text(tr_visibles.length);
+
+            return;
+        }
 
         // REQUEST -> get all study programs by a department
         $.ajax({
@@ -44,7 +59,7 @@ $(document).ready(function () {
                     $("#dept_selected").val(names.join(","));
 
                     // filter by department
-                    filter_by_department(names, true);
+                    filter_by_department(names);
 
                     // update the number of quantity
                     tr_visibles = $("#home-table tr:visible");
@@ -79,14 +94,16 @@ function filter_by_department(study_programs) {
 
         $(this).toggle(names.some(n => tr_text.indexOf(n.toLowerCase()) > 0));
     });
+
+    $("#number").text( $("#home-table tr:visible").length);
+
 }
 
 /**
  * Filter by filter_by_study_program - filter table by study program selected
- * @param {Object} study_programs all sutdy program from a department
  * @return VOID
 */
-function filter_by_study_program(study_programs) {
+function filter_by_study_program() {
     $("#study_program").change(function () {
 
         let value = $(this).val().toLowerCase();

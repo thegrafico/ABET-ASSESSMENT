@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var middleware = require("../middleware/validateUser");
-var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 
@@ -11,12 +9,15 @@ let locals = {
     title: 'Course Mapping',
     base_url: base_url
 };
+
 /* 
     GET INDEX ROUTE
 */
-
-
 router.get('/', async function (req, res) {
+
+    locals.breadcrumb = [
+		{ "name": "Course Mapping", "url": "."},
+	];
     
     locals.selected_program = 0;
     if (req.query.progID != undefined)
@@ -41,7 +42,7 @@ router.get('/', async function (req, res) {
     // console.log(locals.mapping[0].outcomes);
     // console.log(locals.mapping[0].courses);
 
-    res.render('courseMapping/home', locals);
+    res.render('admin/courseMapping/home', locals);
 });
 
 router.post('/addMapping', async function (req, res) {

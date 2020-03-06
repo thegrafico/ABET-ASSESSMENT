@@ -19,6 +19,8 @@ let locals = {
 	"api_get_url": base_url,
 	delete_redirect: null,
 	dropdown_option_selected: null,
+	filter:true,
+	filter_title: "-- Department --",
 };
 
 /* 
@@ -43,6 +45,16 @@ router.get('/', async function(req, res) {
 	let study_programs = await general_queries.get_table_info_inner_join(all_std_query).catch((err) => {
 		console.log("ERROR: ", err)
 	});
+
+	// Departments
+	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+		console.error("ERROR GETTING DEPARTMENTS: ", err);
+	});
+
+	if (departments != undefined && departments.length > 0){
+
+		locals.filter_value = departments.map( each => each.dep_name);
+	}
 
 	locals.table_header = ["Name", "Department", "Date", ""];
 

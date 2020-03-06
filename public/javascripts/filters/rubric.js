@@ -16,6 +16,17 @@ $(document).ready(function () {
 
         // get program id
         let progID = $(this).val().split(",");
+        
+        // if the user wants to view all rubric
+        if (progID == undefined ||  progID.length == 1) {
+            $("#home-table tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf("") > -1);
+            });
+
+            tr_visibles = $("#home-table tr:visible");
+            $("#number").text(tr_visibles.length);
+            return;
+        }
 
         // make request to get outcomes by study program
         $.ajax({
@@ -58,5 +69,7 @@ $(document).ready(function () {
         tr_visibles.filter(function () {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
+
+        $("#number").text( $("#home-table tr:visible").length);
     });
 });
