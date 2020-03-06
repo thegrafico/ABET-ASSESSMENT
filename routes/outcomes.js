@@ -378,7 +378,9 @@ router.get('/get/:id', async function (req, res) {
 
 	let record = [];
 	for (let index = 0; index < names.length; index++) {
-		record.push({ "name": names[index], "value": values[index] })
+		record.push({ "name": names[index],
+					  "value": values[index] 
+					});
 	}
 	res.json(record);
 });
@@ -390,7 +392,12 @@ router.get("/get/performances/:outcome_id", async function (req, res) {
 	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
 		return res.json([]);
 	}
-	let performance_query = { "from": "perf_criteria", "where": "outc_ID", "id": req.params.outcome_id};
+
+	let performance_query = { "from": "PERF_CRITERIA", 
+							  "where": "outc_ID", 
+							  "id": req.params.outcome_id
+							};
+
 	let outcome_performances = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})

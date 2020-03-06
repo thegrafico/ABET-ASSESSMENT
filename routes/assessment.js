@@ -61,7 +61,8 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	if (course_term == undefined || course_term.length == 0){
 		// TODO: flash message with error
 		console.log("Can't get course term");
-		return res.redirect("/");
+		req.flash("error", "No course term found");
+		return res.redirect("/admin"); 								// TEMP redirect for test reasons
 	}
 	// assign
 	locals.rubric = course_term;
@@ -360,7 +361,7 @@ router.post('/perfomanceTable', async function(req, res) {
 });
 
 
-router.get('/assessmentIndex', function(req, res, next) {
+router.get('professor/assessmentIndex', function(req, res, next) {
 	res.render('assessment/assessmentIndex', { title: 'ABET Assessment' });
 });
 

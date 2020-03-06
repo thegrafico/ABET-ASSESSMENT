@@ -25,9 +25,9 @@ router.get('/admin', middleware.is_login, middleware.is_admin, async function (r
 
 
 /* GET PROFESSOR HOME*/
-router.get('/professor', middleware.is_login, middleware.is_admin, async function (req, res) {
+router.get('/professor', middleware.is_login, async function (req, res) {
 	locals.title = "Professor";
-	res.render('professor/home', locals);
+	res.render('professor/assessmentIndex', locals);
 });
 
 
