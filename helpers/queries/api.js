@@ -12,9 +12,9 @@ async function get_performance_from_rubric(rubric_id) {
         if (rubric_id == undefined || isNaN(rubric_id)) return reject("Error with the rubric id parameter");
 
         let performance_query = `SELECT perC_Desk 
-        FROM evaluation_rubric INNER JOIN performance_rubric USING(rubric_ID)
-        INNER JOIN perf_criteria ON performance_rubric.perC_ID = perf_criteria.perC_ID
-        WHERE evaluation_rubric.rubric_ID = ?`;
+        FROM EVALUATION_RUBRIC INNER JOIN PERFORMANCE_RUBRIC USING(rubric_ID)
+        INNER JOIN PERF_CRITERIA ON PERFORMANCE_RUBRIC.perC_ID = PERF_CRITERIA.perC_ID
+        WHERE EVALUATION_RUBRIC.rubric_ID = ?`;
 
         conn.query(performance_query, [rubric_id], function (err, results, fields) {
             if (err)

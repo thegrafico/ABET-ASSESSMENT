@@ -84,17 +84,28 @@
     </div>
   </nav>
 
-  <div class="container feedback">
+  <div class="container feedback" style="z-index: 999;">
     <!--check if error and display a message-->
     <% if(error && error.length > 0 ){ %>
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger feedbackAlert" role="alert">
       <%= error %>
     </div>
     <% } %>
     <!--check if success and display a message-->
     <% if(success && success.length > 0 ){ %>
-    <div class="alert alert-success" role="alert">
+    <div class="alert alert-success feedbackAlert" role="alert">
       <%= success %>
     </div>
     <% } %>
   </div>
+
+  <div id='loader'>
+    <img class="rounded mx-auto d-block" src='/images/loading.gif' style="border-radius: 5%;" width='64px'
+      height='64px'>
+  </div>
+
+  <script>
+    setTimeout(function(){
+      $(".feedbackAlert").hide();
+    }, 3000)
+  </script>

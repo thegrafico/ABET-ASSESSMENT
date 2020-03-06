@@ -17,8 +17,8 @@ var options = {
   database : "ABET",   //HERE GO THE DATABASE THAT WE ARE GONNA USED
   connectionLimit : 15,
   clearExpired: true,
-  checkExpirationInterval: 900000, // 15 minutes
-  expiration: 8640000, // 2 hours
+  checkExpirationInterval: 1900000, 
+  expiration: 3600000, 
   schema: {
       tableName: 'custom_sessions_table_name',
       columnNames: {
@@ -38,8 +38,8 @@ var options = {
 //   database : 'ABET', 
 //   connectionLimit : 15,
 //   clearExpired: true,
-//   checkExpirationInterval: 900000, // 15 minutes
-//   expiration: 8640000, // 2 hours
+//   checkExpirationInterval: 1900000, // 15 minutes
+//   expiration: 3600000, // 1 hours
 //   schema: {
 //       tableName: 'custom_sessions_table_name',
 //       columnNames: {

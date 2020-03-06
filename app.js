@@ -91,11 +91,15 @@ app.use(function (req, res, next) {
   res.locals.error = req.flash("error"); //error mesage go red
   res.locals.success = req.flash("success"); //success message go green
   res.locals.admin_route = admin_route;
-  //locals variables
+  res.locals.homeURL = admin_route;
+
 
   res.locals.signOutUrl = "/authorize/signout";
   res.locals.signInUrl = authHelper.getAuthUrl();
-
+  res.locals.filter = false;
+  res.locals.filter_title = false;
+  res.locals.filter_value = [];
+  res.locals.breadcrumb = [];
   next();
 });
 

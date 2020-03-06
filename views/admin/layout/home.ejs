@@ -1,69 +1,76 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
-<!-- <script>
 
-	//RELOAD PAGE WHEN USER CLICK BACK BUTTON
-window.addEventListener("pageshow", function (event) {
-		var historyTraversal = event.persisted ||
-				(typeof window.performance != "undefined" &&
-						window.performance.navigation.type === 2);
-		if (historyTraversal) {
-				// Handle page restore.
-				window.location.reload();
-		}
-});
-</script> -->
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
-<div class="container-fluid mt-2">
+			<% if (index == breadcrumb.length -1) { %>
+				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+			<% }else { %>
+				<li class="breadcrumb-item">
+					<a href="<%= breadcrumb[index].url %>">
+						<%= breadcrumb[index].name %>
+					</a>
+				</li>
+			<% } %>
+
+		<% } %>
+	</ol>
+</nav>
+
+<!-- FILTERING HEADER -->
+<div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
 
 	<div class="row">
 
 		<div class="col-12">
-			<h3><%= subtitle %></h3>
-			<hr class="my-4">
-		</div>
 
-		<div class="col-12" style=" margin-bottom: -1%;">
+			<div class="d-flex flex-row bd-highlight">
 
-			<div class="row justify-content-md-left">
+				<div class="p-2 bd-highlight">
+					<h3>Filters: </h3>
+				</div>
 
-				<div class="col-2">
-					<div>
-						<a href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">Create
-							New</a>
+				<% if (filter) { %>
+
+
+				<div class="p-2 bd-highlight" style="max-width: 40%;">
+
+					<div class="form-group">
+						<select class="form-control" id="filterBy" type="text">
+							<option selected value=""> <%= filter_title %></option>
+							<% filter_value.forEach(element => { %>
+							<option value="<%=element%>"> <%= element %></option>
+							<% }) %>
+						</select>
+
+						<input type="hidden" id="dept_selected" value="">
 					</div>
 				</div>
 
-				<div class="col-md-8">
-					<span class="glyphicon glyphicon-filter" style="float: left;"></span>
-					<div>
-						<input name="filter" class="form-control" id="myInput" type="text"
-							placeholder="Filter by anything. Ex. Name or Date">
+				<% } %>
+
+				<div class="p-2 bd-highlight" style="width: 30%;">
+
+					<div class="form-group">
+						<div>
+							<input name="filter" class="form-control" id="myInput" style="margin-top: 0;" type="text"
+								placeholder="Type what you're Looking for. Ex. Name or Date" back>
+						</div>
 					</div>
 				</div>
 
-				<script>
-					$(document).ready(function () {
-
-						$("#myInput").on("keyup", function () {
-							let value = $(this).val().toLowerCase();
-							$("#filter tr").filter(function () {
-								console.log(value);
-
-								$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-							});
-						});
-					});
-				</script>
+				<div class="p-2 bd-highlight" style=" margin-left:3%;">
+					<h4>Quantity: <span id="number"></span> </h4>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-</div>
-
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
-
-<div class="container-fluid my-2 " style="overflow-y: scroll;height: 400px;width: 100%;">
+<div class="container-fluid my-2" id="divTable">
 
 	<table class="table table-bordered table-striped">
 		<thead class="thead-dark">
@@ -112,12 +119,21 @@ window.addEventListener("pageshow", function (event) {
 			<% } %>
 		</tbody>
 	</table>
-	<hr class="my-1">
 </div>
 
+<div class="container">
 
+	<div class="col-4" style="margin-left: 30%;">
+		<a style="width: 100%;" href="<%= base_url %>/create" class="btn inter-green inter-green-btn"
+			role="button">Create
+			New
+		</a>
+	</div>
+</div>
 <!-- REMOVE PARTIAL -->
 <%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+<script src="/javascripts/filters/home.js"></script>
 <script src="/javascripts/modals.js"></script>
+<script src="/javascripts/filters/filter_key_up.js"></script>
 
 <%- include ('../partials/footer') -%>

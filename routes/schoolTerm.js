@@ -26,6 +26,10 @@ let locals = {
 */
 router.get('/', async function (req, res) {
 
+	locals.breadcrumb = [
+		{"name": "Term", "url": base_url},
+	];
+
 	locals.results = [];
 
 	let academic_terms = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
@@ -58,6 +62,11 @@ router.get('/', async function (req, res) {
 	GET /term/create
 */
 router.get('/create', function (req, res) {
+
+	locals.breadcrumb = [
+		{"name": "Term", "url": base_url},
+		{"name": "Create", "url": locals.url_create }
+	];
 
 	// store all profiles
 	locals.have_dropdown = false;
@@ -118,6 +127,11 @@ router.get('/:id/edit', async function (req, res) {
 		req.flash("error", "This term don't exits");
 		return res.redirect(base_url);
 	}
+
+	locals.breadcrumb = [
+		{"name": "Term", "url": base_url},
+		{"name": "Edit", "url": "."}
+	];
 
 	let id_term = req.params.id;
 	locals.url_form_redirect = `${base_url}/${id_term}?_method=PUT`;

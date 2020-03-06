@@ -7,7 +7,6 @@ var queries = require('../helpers/queries/user_queries');
 var general_queries = require("../helpers/queries/general_queries");
 var department_query = require("../helpers/queries/department_queries");
 var roolback_queries = require("../helpers/queries/roolback_queries");
-const middleware = require("../middleware/validateUser");
 const { user_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
 
@@ -19,7 +18,9 @@ var locals = {
 	base_url: base_url,
 	form_id: "user_data",
 	api_get_url: base_url,
-	delete_redirect: null
+	delete_redirect: null,
+	filter:true,
+	filter_title: "-- Department --"
 };
 
 /*
@@ -28,13 +29,15 @@ var locals = {
 */
 router.get('/', async function (req, res) {
 
+	locals.breadcrumb = [{"name": "Users", "url": base_url}];
+
 	locals.results = [];
 
 	locals.delete_redirect = "/users"
 
 	// the last header is for position the button
 	locals.table_header = ["Inter ID", "Profile", "Name", "Last Name",
-		"Email", "Phone Number", "Date Created", ""
+		"Email", "Phone Number", "Department", ""
 	];
 
 	// Get all user from the database (callback)
@@ -42,15 +45,21 @@ router.get('/', async function (req, res) {
 		console.log("THERE IS AN ERROR: ", err);
 	});
 
+	// Departments
+	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+		console.error("ERROR GETTING DEPARTMENTS: ", err);
+	});
+
+	if (departments != undefined && departments.length > 0){
+
+		locals.filter_value = departments.map( each => each.dep_name);
+	}
+
 	let results = [];
 	// IF found results from the database
 	if (list_of_users != undefined && list_of_users.length > 0) {
 
 		list_of_users.forEach(user => {
-
-			// change date format 
-			let date = new Date(user.date_created);
-			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
 			results.push({
 				"ID": user["user_ID"],
@@ -61,7 +70,7 @@ router.get('/', async function (req, res) {
 					user["last_name"],
 					user["email"],
 					user["phone_number"],
-					date,
+					user["dep_name"].join(", "),
 					"" // position the buttons of remove, and edit
 				]
 			});
@@ -76,6 +85,11 @@ router.get('/', async function (req, res) {
  	GET /users/create
 */
 router.get('/create', async function (req, res) {
+
+	locals.breadcrumb = [
+		{"name": "Users", "url": base_url},
+		{"name": "Create", "url": locals.url_create }
+	];
 
 	// store all profiles
 	locals.profiles = [];
@@ -146,7 +160,12 @@ router.post('/create', async function (req, res) {
 
 	if (req.body == undefined) {
 		req.flash("error", "Cannot find the data to create user");
-		return res.redirect(base_url);
+		return res.redirect("back");
+	}
+
+	if (req.body.selected_values == undefined || req.body.selected_values.length  < 2){
+		req.flash("error", "Department Cannot be empty");
+		return res.redirect("back");
 	}
 
 	// key with expected types (string, number);
@@ -204,6 +223,11 @@ router.get('/:id/edit',  async function (req, res) {
 		req.flash("error", "This user don't exits");
 		return res.redirect(base_url);
 	}
+
+	locals.breadcrumb = [
+		{"name": "Users", "url": base_url, "active": false},
+		{"name": "Edit", "url": ".", "active": true}
+	];
 
 	let user_id = req.params.id;
 	locals.profiles = [];
@@ -305,6 +329,12 @@ router.put('/:id', async function (req, res) {
 		req.flash("error", "Cannot find the user");
 		return res.redirect(base_url);
 	}
+
+	if (req.body.selected_values == ","){
+		req.flash("error", "Department Cannot be empty");
+		return res.redirect("back");
+	}
+
 	let user_id = parseInt(req.params.id);
 	
 	// key with expected types (string, number);

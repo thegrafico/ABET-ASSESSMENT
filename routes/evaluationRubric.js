@@ -38,14 +38,14 @@ router.get('/', async function (req, res) {
 	});
 
 	// getting all study programs
-	let study_programs = await general_queries.get_table_info("study_program").catch((err) => {
+	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		console.error("Error getting study programs: ", err);
 	});
 
 	locals.study_programs = study_programs || [];
 
 	// getting all outcomes
-	let outcomes = await general_queries.get_table_info("student_outcome").catch((err) => {
+	let outcomes = await general_queries.get_table_info("STUDENT_OUTCOME").catch((err) => {
 		console.error("Error getting outcomes: ", err);
 	});
 
@@ -81,7 +81,7 @@ router.get('/', async function (req, res) {
 */
 router.get('/create', async function (req, res) {
 
-	let std_programs = await general_queries.get_table_info("study_program").catch((err) => {
+	let std_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		console.error("Error getting std_programs", err);
 	});
 
@@ -160,7 +160,7 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 	locals.btn_title = "Edit";
 
 
-	let std_programs = await general_queries.get_table_info("study_program").catch((err) => {
+	let std_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		console.error("Error getting std_programs", err);
 	});
 
@@ -193,7 +193,7 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 	// 	req.flash("error", "Cannot find any outcomes, Please create one");
 	// 	return res.redirect(base_url);
 	// }
-	let criteria_query = { "from": "perf_criteria", "where": "outc_ID", "id": locals.outcome_selected };
+	let criteria_query = { "from": "PERF_CRITERIA", "where": "outc_ID", "id": locals.outcome_selected };
 
 	let performance_criteria = await general_queries.get_table_info_by_id(criteria_query).catch((err) => {
 		console.error("ERROR getting performance Criteria: ", err);
@@ -328,7 +328,7 @@ router.get('/get/:r_id', validate_evaluation_rubric, async function (req, res) {
 router.delete('/:r_id', validate_evaluation_rubric, function (req, res) {
 
 	let rubric_id = req.params.r_id;
-	let rubric_for_query = { "from": "evaluation_rubric", "where": "rubric_ID", "id": rubric_id };
+	let rubric_for_query = { "from": "EVALUATION_RUBRIC", "where": "rubric_ID", "id": rubric_id };
 
 	general_queries.delete_record_by_id(rubric_for_query).then((ok) => {
 		req.flash("success", "Rubric removed");

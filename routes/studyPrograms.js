@@ -17,7 +17,8 @@ let locals = {
 	"url_create": `${base_url}/create`,
 	"form_id": "std_data",
 	"api_get_url": base_url,
-	delete_redirect: null
+	delete_redirect: null,
+	dropdown_option_selected: null,
 };
 
 /* 
@@ -220,6 +221,8 @@ router.get('/:id/edit', async function(req, res) {
 		});
 	});
 
+	locals.dropdown_option_selected = std_program_to_edit.dep_ID;
+
 	res.render('admin/layout/create', locals);
 });
 
@@ -268,7 +271,7 @@ router.put('/:id', function(req, res) {
 });
 
 /* 
-	-- API TO GET study program -- 
+	-- API TO GET study program by ID-- 
 	GET /studyprograms/:id/remove 
 */
 router.get('/get/:id', async function (req, res) {
@@ -308,6 +311,8 @@ router.get('/get/:id', async function (req, res) {
 
 	res.json(record);
 });
+
+
 
 /* 
 	-- REMOVE study program -- 

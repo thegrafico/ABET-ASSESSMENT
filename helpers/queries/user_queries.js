@@ -13,18 +13,34 @@ var conn = db.mysql_pool;
 async function get_user_list() {
     return new Promise(function (resolve, reject) {
 
-        //         SELECT * FROM user
-        // INNER JOIN (SELECT * FROM profile NATURAL JOIN user_profiles) as user_prof 
-        // ON user.user_ID = user_prof.user_ID
-        // INNER JOIN (SELECT * FROM department NATURAL JOIN user_dep) as dep
-        // ON user.user_ID = dep.user_ID;
-        let userList = `Select * From USER natural join USER_PROFILES natural join PROFILE`;
+        let userList = `SELECT *
+        FROM USER INNER JOIN USER_DEP USING (user_ID)
+        INNER JOIN DEPARTMENT ON USER_DEP.dep_ID = DEPARTMENT.dep_ID
+        INNER JOIN USER_PROFILES ON USER.user_ID = USER_PROFILES.user_ID
+        INNER JOIN PROFILE ON USER_PROFILES.profile_ID = PROFILE.profile_ID
+        ORDER BY last_name ASC`;
 
-        conn.query(userList, function (err, results, fields) {
-            if (err)
-                reject(err || "error getting users");
-            else
-                resolve(results);
+        conn.query(userList, function (err, results) {
+            if (err) return reject(err);
+
+            if (results.length == 0) return resolve(results);
+
+            let users_id = results.map(user => user.user_ID);
+
+            // remove duplicates
+            users_id = users_id.filter(function (item, pos) {
+                return users_id.indexOf(item) == pos;
+            });
+
+            let users = [];
+            users_id.forEach(ID => {
+                let temp_user = results.filter(e => e.user_ID == ID);
+                let dept = temp_user.map(e => e.dep_name);
+                temp_user[0].dep_name = dept 
+                users.push(temp_user[0])
+            });
+
+            resolve(users);
         });
     });
 }
@@ -43,9 +59,9 @@ function get_user_by_id(id) {
         let query_user_info = `SELECT * FROM USER NATURAL JOIN USER_PROFILES WHERE USER.user_ID = ?`;
 
         conn.query(query_user_info, [id], function (err, results) {
-            
-            if (err){ return reject(err);}
-    
+
+            if (err) { return reject(err); }
+
             resolve(results[0]);
         });
     });
@@ -65,12 +81,12 @@ function get_user_department_by_id(id) {
         let query_user_info = `SELECT dep_ID FROM USER_DEP WHERE user_ID = ?`;
 
         conn.query(query_user_info, [id], function (err, results) {
-            
-            if (err){ return reject(err);}
-            
-            let dept = [];            
-            
-            results.forEach((record) =>{
+
+            if (err) { return reject(err); }
+
+            let dept = [];
+
+            results.forEach((record) => {
                 dept.push(record["dep_ID"].toString());
             });
 
@@ -105,7 +121,7 @@ function update_user(data) {
 
 
     return new Promise(function (resolve, reject) {
-    
+
         let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber, data.userID];
 
         let updateUser = `UPDATE USER SET inter_ID = ?, first_name= ?, last_name= ?, email= ?, phone_number= ? WHERE user_ID = ? `;
@@ -125,9 +141,9 @@ function update_user(data) {
  * @param {Number} profile_id id of the profile  
  * @return {Promise} resolve with true
  */
-function update_user_profile(user_id, profile_id){
-  
-    return  new Promise(function (resolve, reject) {
+function update_user_profile(user_id, profile_id) {
+
+    return new Promise(function (resolve, reject) {
         let update_profile_query = "UPDATE USER_PROFILES SET profile_ID = ? WHERE user_ID = ?";
         conn.query(update_profile_query, [profile_id, user_id], function (err, results) {
             if (err)

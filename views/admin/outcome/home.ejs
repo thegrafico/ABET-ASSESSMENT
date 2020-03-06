@@ -1,4 +1,22 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+
+			<% if (index == breadcrumb.length -1) { %>
+				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+			<% }else { %>
+				<li class="breadcrumb-item">
+					<a href="<%= breadcrumb[index].url %>">
+						<%= breadcrumb[index].name %>
+					</a>
+				</li>
+			<% } %>
+
+		<% } %>
+	</ol>
+</nav>
 
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
@@ -8,50 +26,74 @@
         width: 10%;
         text-align: center;
     }
+
+    th:nth-child(2) {
+        width: 10%;
+    }
 </style>
 
-<div class="container-fluid mt-2">
-    <h1><%= subtitle %></h1>
 
-    <div class="container" style="margin-left: 0%; margin-top: -1%;">
 
-        <div class="row justify-content-md-left test">
+<!-- FILTERING HEADER -->
+<div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
 
-            <div class="col-md-4">
-                <div style="position: absolute; left: 0; bottom: 0;">
-                    <a href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">Create
-                        New</a>
-                </div>
-            </div>
+    <div class="row" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
 
-            <div class="col-md-8">
-                <span class="glyphicon glyphicon-filter" style="float: left;"></span>
-                <div>
-                    <input name="filter" class="form-control" id="myInput" type="text"
-                        placeholder="Filter by anything. Ex. The Study Program, Date or Outcome Name">
-                </div>
-            </div>
-
-            <script>
-                $(document).ready(function () {
-                    $(document).ready(function () {
-                        $("#myInput").on("keyup", function () {
-                            var value = $(this).val().toLowerCase();
-                            $("#home-table tr").filter(function () {
-                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                            });
-                        });
-                    });
-                });	
-            </script>
-
+        <div class="col-10" style="margin-top: -1%;">
+            <h4><%= subtitle %></h4>
         </div>
     </div>
 
-    <!-- Middle line -->
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="d-flex flex-row bd-highlight">
+
+                <div class="p-2 bd-highlight">
+                    <h3>Filters: </h3>
+                </div>
+
+                <div class="p-2 bd-highlight">
+
+                    <div class="form-group">
+                        <select class="form-control" id="departments" type="text">
+                            <option selected disabled value=""> -- Department -- </option>
+                            <% departments.forEach(dep => { %>
+                            <option value="<%= dep["value"] %>"><%= dep["name"] %></option>
+                            <% }) %>
+                        </select>
+
+                        <input type="hidden" id="dept_selected" value="">
+                    </div>
+                </div>
+                <div class="p-2 bd-highlight">
+                    <div class="form-group">
+                        <select class="form-control" id="study_program" disabled type="text">
+                            <option selected value=""> -- Study Program -- </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-2 bd-highlight" style="width: 30%;">
+
+                    <div class="form-group">
+                        <div>
+                            <input name="filter" class="form-control" id="myInput" style="margin-top: 0;" type="text"
+                                placeholder="Filter by anything. Ex. Name or Date" back>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-2 bd-highlight" style=" margin-left:3%;">
+                    <h4>Quantity: <span id="number"></span> </h4>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="container-fluid my-2" style="overflow-y: scroll;height: 400px;width: 100%;">
+<div class="container-fluid my-2" id="divTable">
     <table class="table table-bordered table-striped table-hover">
 
         <thead class="thead-dark">
@@ -61,14 +103,21 @@
                 <% } %>
             </tr>
         </thead>
+        <!-- <tbody id="home-table" class="invisible"> -->
         <tbody id="home-table">
             <% results.forEach(element => { %>
             <tr>
                 <% for( let index = 0; index < element["values"].length; index++ ) { %>
                 <!-- IF NOT last position -->
                 <% if((index == (element["values"].length -2) )) { %>
-                <th> <a href="<%= base_url %>/<%= element["ID"]%>/performanceCriteria"
-                        class="btn btn-secondary">Administrate</a>
+                <th>
+                    <a href="<%= base_url %>/<%= element["ID"]%>/performanceCriteria" class="btn btn-secondary">
+                        <% if (!element["hasPerformance"]) { %>
+                        Create
+                        <% }else{ %>
+                        Administrate
+                        <% }%>
+                    </a>
                 </th>
                 <% }else if (index != (element["values"].length -1) ) { %>
 
@@ -95,9 +144,18 @@
     </table>
 </div>
 
+
+<div class="container">
+	<div class="col-4" style="margin-left: 30%;">
+		<a style="width: 100%;" href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">
+            Create Outcome
+        </a>
+	</div>
+</div>
+
+
 <!-- REMOVE PARTIAL -->
 <%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
 <script src="/javascripts/modals.js"></script>
-
-
+<script src="/javascripts/filters/outcomes.js"></script>
 <%- include ('../partials/footer') -%>
