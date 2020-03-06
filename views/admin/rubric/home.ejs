@@ -1,100 +1,78 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
-<div class="container-fluid mt-2">
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+
+			<% if (index == breadcrumb.length -1) { %>
+				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+			<% }else { %>
+				<li class="breadcrumb-item">
+					<a href="<%= breadcrumb[index].url %>">
+						<%= breadcrumb[index].name %>
+					</a>
+				</li>
+			<% } %>
+
+		<% } %>
+	</ol>
+</nav>
+<!-- FILTERING HEADER -->
+<div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+
+    <div class="row" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+
+        <div class="col-10">
+            <h4><%= subtitle %></h4>
+        </div>
+    </div>
 
     <div class="row">
 
         <div class="col-12">
-            <h3><%= subtitle %></h3>
-            <hr class="my-4">
-        </div>
 
-        <div class="col-12" style=" margin-bottom: -1%;">
+            <div class="d-flex flex-row bd-highlight">
 
-            <div class="row justify-content-md-left">
+                <div class="p-2 bd-highlight">
+                    <h3>Filters: </h3>
+                </div>
 
-                <div class="col-2">
-                    <div>
-                        <a href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">Create
-                            New</a>
+                <div class="p-2 bd-highlight">
+
+                    <div class="form-group">
+                        <select id="study_program" class="form-control" type="text" name="study_program" required>
+                            <option selected value=""> -- Study Program -- </option>
+                            <% study_programs.forEach(element => { %>
+                            <option class="dropdown-item" value="<%=element["prog_ID"]%>,<%=element["prog_name"]%>">
+                                <%=element["prog_name"]%>
+                            </option>
+                            <% }) %>
+                        </select>
+
+                        <input type="hidden" id="dept_selected" value="">
+                    </div>
+                </div>
+                <div class="p-2 bd-highlight">
+                    <div class="form-group">
+                        <select id="outcomes" class="form-control" disabled type="text" name="outcomes" required>
+                            <option selected disabled value=""> -- Outcome -- </option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <label for="study_program" style="width: auto;"> Filter By</label>
-                    <select id="study_program" type="text" name="study_program" required>
-                        <option selected value=""> -- Study Program -- </option>
-                        <% study_programs.forEach(element => { %>
-                        <option class="dropdown-item" value="<%=element["prog_name"]%>">
-                            <%=element["prog_name"]%>
-                        </option>
-                        <% }) %>
-                    </select>
+
+                <div class="p-2 bd-highlight" style=" margin-left:3%;">
+                    <h4>Quantity: <span id="number"></span> </h4>
                 </div>
-                <div class="col-md-3">
-                    <label for="outcomes" style="width: auto;"> Filter By</label>
-                    <select id="outcomes" type="text" name="outcomes" required>
-                        <option selected value=""> -- Outcome -- </option>
-                        <% outcomes.forEach(element => { %>
-                        <option class="dropdown-item" value="<%=element["outc_name"]%>">
-                            <%=element["outc_name"]%>
-                        </option>
-                        <% }) %>
-                    </select>
-                </div>
-
-                <script>
-
-                    // when page is fully loaded
-                    $(document).ready(function () {
-                        // state variable
-                        var value = null;
-                        
-                        // when one study program
-                        $("#study_program").change(function () {
-                            value = $(this).val().toLowerCase();
-                            $("#home-table tr").filter(function () {
-                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                            });
-
-                            value = $("#outcomes").val().toLowerCase();
-                            $("#home-table tr").filter(function () {
-
-                                if ($(this).is(':visible')) {
-                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                                }
-                            });
-
-                        });
-
-                        $("#outcomes").change(function () {
-                            value = $(this).val().toLowerCase();
-                            $("#home-table tr").filter(function () {
-                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                            });
-
-                            value = $("#study_program").val().toLowerCase();
-                            $("#home-table tr").filter(function () {
-
-                                if ($(this).is(':visible')) {
-                                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                                }
-                            });
-
-                        });
-                    });
-                </script>
-
             </div>
         </div>
     </div>
 </div>
 
-</div>
-
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
-<div class="container-fluid my-2">
+<div class="container-fluid my-2" id="divTable">
 
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
@@ -126,7 +104,9 @@
                             Actions
                         </button>
                         <div class="dropdown-menu">
-
+                            <button class="VIEW dropdown-item" value="<%=element["ID"]%>" data-toggle="modal"
+                                data-target="#view_performances">View Performances
+                            </button>
                             <a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
                                 EDIT
                             </a>
@@ -143,12 +123,26 @@
             <% } %>
         </tbody>
     </table>
-    <hr class="my-1">
+</div>
+
+<div class="container">
+
+	<div class="col-4" style="margin-left: 30%;">
+		<a style="width: 100%;" href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">
+            Create New
+        </a>
+	</div>
 </div>
 
 
 <!-- REMOVE PARTIAL -->
 <%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+<%- include ('../partials/modal_view', {delete_redirect: delete_redirect || ""}) -%>
+
+<script src="/javascripts/modals/viewRubric.js"></script>
+
+<script src="/javascripts/filters/rubric.js"></script>
 <script src="/javascripts/modals.js"></script>
+
 
 <%- include ('../partials/footer') -%>

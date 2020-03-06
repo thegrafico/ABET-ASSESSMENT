@@ -52,6 +52,9 @@ var authorize = require('./routes/authorize');
 var assessmentRouter = require('./routes/assessment');
 // ===== CourseMapping Route =====
 var courseMapping = require('./routes/courseMapping');
+
+var apiRoute = require('./routes/api');
+
 //======================================================================================
 
 var app = express();
@@ -88,11 +91,15 @@ app.use(function (req, res, next) {
   res.locals.error = req.flash("error"); //error mesage go red
   res.locals.success = req.flash("success"); //success message go green
   res.locals.admin_route = admin_route;
-  //locals variables
+  res.locals.homeURL = admin_route;
+
 
   res.locals.signOutUrl = "/authorize/signout";
   res.locals.signInUrl = authHelper.getAuthUrl();
-
+  res.locals.filter = false;
+  res.locals.filter_title = false;
+  res.locals.filter_value = [];
+  res.locals.breadcrumb = [];
   next();
 });
 
@@ -116,11 +123,11 @@ app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.is_admin, per
 app.use(`${admin_route}/evaluation`, middleware.is_login, middleware.is_admin, evaluationRubric);
 // ===== Courses Section =====
 app.use(`${admin_route}/courses`, middleware.is_login, middleware.is_admin, coursesRouter);
-
+app.use(`${admin_route}/api`, middleware.is_login, middleware.is_admin, apiRoute);
 // ===== Program/Course/Term Selection =====
 app.use('/assessment', assessmentRouter);
 // ===== CourseMapping Section =====
-app.use('/courseMapping', courseMapping);
+app.use(`${admin_route}/courseMapping`, middleware.is_login, middleware.is_admin, courseMapping);
 // ====================================================
 
 // 404 ERROR HANDLE

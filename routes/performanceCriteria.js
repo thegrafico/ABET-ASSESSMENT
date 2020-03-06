@@ -6,7 +6,7 @@ const { performance_criteria_create_input } = require("../helpers/layout_templat
 var { validate_outcome, validate_performance_criteria } = require("../middleware/validate_outcome");
 
 const title = "Evaluating Perfomance Criteria - ";
-
+const base_url = "/admin/outcomes";
 //Params to routes links
 var locals = {
 	title: 'ABET Assessment',
@@ -22,6 +22,11 @@ var locals = {
 	GET home page.
 */
 router.get('/:outc_id/performanceCriteria', validate_outcome, async function (req, res) {
+
+	locals.breadcrumb = [
+		{"name": "Outcomes", "url": base_url},
+		{"name": "Performance Criteria", "url": '.'}
+	];
 
 	locals.subtitle = title + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
@@ -66,7 +71,12 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 */
 router.get("/:outc_id/performanceCriteria/create", validate_outcome, async function (req, res) {
 
-	let msg = "Create Performance Criteria for: ";
+	locals.breadcrumb = [
+		{"name": "Outcomes", "url": base_url},
+		{"name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria`},
+		{"name": "Create", "url": '.'}
+	];
+
 	locals.title_action = (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.have_dropdown = false;
 	locals.btn_title = "Create";
@@ -111,6 +121,13 @@ router.post("/:outc_id/performanceCriteria/create", validate_outcome, async func
 */
 router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, validate_performance_criteria, async function (req, res) {
 
+
+	locals.breadcrumb = [
+		{"name": "Outcomes", "url": base_url},
+		{"name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria`},
+		{"name": "Edit", "url": '.'}
+	];
+	
 	let message = "Edit Performance Criteria for: ";
 	locals.title_action = message + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.have_dropdown = false;

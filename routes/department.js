@@ -26,6 +26,10 @@ let locals = {
 */
 router.get('/', async function (req, res) {
 
+	locals.breadcrumb = [
+		{"name": "Department", "url": base_url},
+	];
+
 
 	//Getting the  DEPARTMENT information from db
 	let all_deparment = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
@@ -64,6 +68,11 @@ router.get('/', async function (req, res) {
 	GET /deparment/create
 */
 router.get('/create', function (req, res) {
+
+	locals.breadcrumb = [
+		{"name": "Department", "url": base_url},
+		{"name": "Create", "url": "."}
+	];
 
 	locals.have_dropdown = false;
 	locals.title_action = "Create Department";
@@ -125,6 +134,11 @@ router.post('/create', function (req, res) {
 	GET /deparment/:id/edit
 */
 router.get('/:id/edit', async function (req, res) {
+
+	locals.breadcrumb = [
+		{"name": "Department", "url": base_url},
+		{"name": "Edit", "url": "."}
+	];
 
 	// validating
 	if (req.params.id == undefined || isNaN(req.params.id)) {
@@ -268,6 +282,43 @@ router.delete('/:id', function (req, res, next) {
 		req.flash("error", "Cannot remove the department");
 		res.redirect("/");
 	});
+});
+
+
+
+/* 
+	-- API TO GET ALL study program by Department ID -- 
+	GET /studyprograms//remove 
+	TODO: send a resposes to user is data is not found
+*/
+router.get('/get/studyPrograms/:departmentId', async function (req, res) {
+
+	// validating id 
+	if (req.params.departmentId == undefined || isNaN(req.params.departmentId)){
+		return res.end();
+	}
+
+	let dept_ID = req.params.departmentId;
+
+	let data = {"from":"STUDY_PROGRAM", "where":"dep_ID", "id": dept_ID};
+	
+	// get std program
+	let study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
+		console.log("ERROR: ", err);
+	});
+
+	// validate std program
+	if( study_programs == undefined || study_programs.length == 0){
+		return res.end();
+	}
+	
+	let record = [];
+	
+	study_programs.forEach(row => {
+		record.push({"name": row["prog_name"], "value": row["prog_ID"]});
+	});
+		
+	res.json(record);
 });
 
 module.exports = router;

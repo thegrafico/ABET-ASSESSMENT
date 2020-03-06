@@ -17,7 +17,9 @@ let locals = {
 	"url_create": `${base_url}/create`,
 	"form_id": "course_data",
 	"api_get_url": base_url,
-	"delete_redirect": null
+	"delete_redirect": null,
+	filter:true,
+	"filter_title": "-- Study Program --"
 };
 
 /*
@@ -27,14 +29,21 @@ let locals = {
 */
 router.get('/', async function (req, res) {
 
+	locals.breadcrumb = [
+		{"name": "Courses", "url": base_url},
+	];
+
 	locals.table_header = ["Course Name", "Course Number", "Study Program", "Date Created", ""];
 	locals.results = [];
 
 	let courses = await query.get_course_with_std_program().catch((err) => {
 		console.log("Error getting the courses with std program results: ", err);
 	});
+	console.log(courses);
 	let results = [];
 	if (courses != undefined && Object.keys(courses).length > 0) {
+
+		let std_program = [];
 
 		for (let key in courses) {
 
@@ -52,7 +61,15 @@ router.get('/', async function (req, res) {
 					""
 				]
 			});
+
+			std_program.push(courses[key]["prog_name"]);
 		}
+
+		// remove duplicates
+		locals.filter_value = std_program.filter(function (item, pos) {
+			return std_program.indexOf(item) == pos;
+		});
+
 		locals.results = results;
 	}
 	res.render('admin/layout/home', locals);
@@ -64,6 +81,11 @@ router.get('/', async function (req, res) {
  	GET /courses/create 
 */
 router.get('/create', async function (req, res, next) {
+
+	locals.breadcrumb = [
+		{"name": "Courses", "url": base_url},
+		{"name": "Create", "url": locals.url_create }
+	];
 
 	locals.have_dropdown = true;
 	locals.dropdown_options = [];
@@ -157,6 +179,11 @@ router.get('/:id/edit', async function (req, res) {
 		req.flash("error", "This course does not exits");
 		return res.redirect(base_url);
 	}
+
+	locals.breadcrumb = [
+		{"name": "Courses", "url": base_url},
+		{"name": "Edit", "url": "."}
+	];
 
 	// Dynamic frontend vars
 	let id_course = req.params.id;

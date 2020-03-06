@@ -16,13 +16,18 @@ let locals = {
 	"url_create": `${base_url}/create`,
 	"form_id": "outcome_data",
 	"api_get_url": base_url,
-	delete_redirect: null
+	delete_redirect: null,
+	dropdown_option_selected : null,
 };
 
 /* 
 	GET home page. 
 */
 router.get('/', async function (req, res) {
+
+	locals.breadcrumb = [
+		{"name": "Outcomes", "url": base_url},
+	];
 
 	locals.results = [];
 
@@ -37,11 +42,41 @@ router.get('/', async function (req, res) {
 		console.log("Error getting the outcomes information: ", err);
 	});
 
+	// getting departments for filter
+	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+		console.error("THERE IS AN ERROR GETTING DEPARTMENTS: ", err);
+	});
+
+	// get all evaluation rubric
+	let evaluation_rubric = await general_queries.get_table_info("PERF_CRITERIA").catch((err) => {
+		console.error("ERROR GETTING EVALUATION RUBRIC: ", err);
+	});
+
+	// Evaluating rubric
+	let outcome_ids_by_rubric = undefined;
+	if (evaluation_rubric != undefined && evaluation_rubric.length > 0){
+		outcome_ids_by_rubric = evaluation_rubric.map( outc => parseInt(outc["outc_ID"]));	
+	}
+	
+	locals.departments = [];
+	if (departments != undefined && departments.length > 0){
+		departments.forEach(e =>{
+			locals.departments.push({"name": e.dep_name, "value": e.dep_ID});
+		});
+	}
+
 	locals.table_header = ["Name", "Study Program", "Description", "Creation date", "Performance Criteria", ""];
 
 	if (stud_outcomes != undefined && stud_outcomes.length > 0) {
 		let results = [];
 		stud_outcomes.forEach(outcome => {
+			let hasPerformance = false; 
+
+			if (outcome_ids_by_rubric != undefined){
+				if (outcome_ids_by_rubric.includes( parseInt(outcome["outc_ID"]) )){
+					hasPerformance = true;
+				}
+			}
 
 			// change date format 
 			let date = new Date(outcome.date_created);
@@ -49,6 +84,7 @@ router.get('/', async function (req, res) {
 
 			results.push({
 				"ID": outcome["outc_ID"],
+				hasPerformance,
 				"values": [
 					outcome["outc_name"],
 					outcome["prog_name"],
@@ -64,13 +100,17 @@ router.get('/', async function (req, res) {
 	res.render('admin/outcome/home', locals);
 });
 
-
-
 /* 
 	-- SHOW CREATE OUTCOMES --
 	GET /outcomes/create  
 */
 router.get('/create', async function (req, res) {
+
+	
+	locals.breadcrumb = [
+		{"name": "Outcomes", "url": base_url},
+		{"name": "Create", "url": locals.url_create }
+	];
 
 	// store all profiles
 	locals.profiles = [];
@@ -164,6 +204,12 @@ router.get('/:id/edit', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
+	
+	locals.breadcrumb = [
+		{"name": "Outcomes", "url": base_url},
+		{"name": "Edit", "url": "."}
+	];
+
 	let out_id = req.params.id;
 
 	// store all profiles
@@ -228,6 +274,7 @@ router.get('/:id/edit', async function (req, res) {
 		});
 	});
 
+	locals.dropdown_option_selected = outcome_to_edit.prog_ID;
 	res.render('admin/layout/create', locals);
 });
 /* 
@@ -335,7 +382,8 @@ router.get('/:id/getStudyProgram', async function (req, res) {
 });
 
 /* 
-	-- API  OUTCOME TO remove --
+	-- API --
+	GET OUTCOMES TO REMOVE
 	GET /outcome/:id/delete
 */
 router.get('/get/:id', async function (req, res) {
@@ -385,19 +433,25 @@ router.get('/get/:id', async function (req, res) {
 	res.json(record);
 });
 
+/**
+ * -- API -- 
+ * GET THE PERFORMANCE RUBRIC BY OUTCOME ID
+ */
 router.get("/get/performances/:outcome_id", async function (req, res) {
-
-	console.error("HERE");
 
 	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
 		return res.json([]);
 	}
+<<<<<<< HEAD
 
 	let performance_query = { "from": "PERF_CRITERIA", 
 							  "where": "outc_ID", 
 							  "id": req.params.outcome_id
 							};
 
+=======
+	let performance_query = { "from": "PERF_CRITERIA", "where": "outc_ID", "id": req.params.outcome_id};
+>>>>>>> origin/master
 	let outcome_performances = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})
@@ -409,6 +463,34 @@ router.get("/get/performances/:outcome_id", async function (req, res) {
 	let record = [];
 	outcome_performances.forEach( element =>{
 		record.push({ "name": element["perC_Desk"], "value": element["perC_ID"] })
+	});
+
+	return res.json(record);
+});
+
+/**
+ * -- API -- 
+ * GET THE OUTCOMES BY STUDY PROGRAM
+ */
+router.get("/get/outcomes/:programID", async function (req, res) {
+	
+	if (req.params.programID == undefined || isNaN(req.params.programID)) {
+		return res.json([]);
+	}
+
+	let outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": req.params.programID};
+	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
+		console.log("Error getting performance: ", err);
+	})
+
+
+	if (outcomes == undefined || outcomes.length == 0) {
+		return res.json([]);
+	}
+	
+	let record = [];
+	outcomes.forEach( element =>{
+		record.push({ "name": element["outc_name"], "value": element["outc_ID"] })
 	});
 
 	return res.json(record);

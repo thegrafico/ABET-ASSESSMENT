@@ -1,88 +1,100 @@
+/*
+	ROUTE - /users
+*/
 var express = require('express');
 var router = express.Router();
-var middleware = require("../middleware/validateUser");
-var query = require("../helpers/queries/course_queries");
-var general_queries = require("../helpers/queries/general_queries");
-var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
+const api_queries = require("../helpers/queries/api");
+const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 
 
-const base_url = '/admin/courseMapping';
-let locals = {
-    title: 'Course Mapping',
-    base_url: base_url
-};
-/* 
-    GET INDEX ROUTE
+/*
+	-- GET all performance criteria from rubric -- 
+	GET /users
 */
+router.get('/evaluationRubric/get/performances/:rubric_id', async function (req, res) {
+
+	// validate if rubric_id is good
+	if (req.params.rubric_id == undefined || isNaN(req.params.rubric_id)) {
+		return res.end();
+	}
+
+	let performances = await api_queries.get_performance_from_rubric(req.params.rubric_id).catch((err) => {
+		console.error(err);
+	});
+
+	// verify is user data is good
+	if (performances == undefined || performances.length == 0) {
+		return res.json([]);
+	}
+
+	res.json(performances);
+});
 
 
-router.get('/', async function (req, res) {
-    
-    locals.selected_program = 0;
-    if (req.query.progID != undefined)
-        locals.selected_program = parseInt(req.query.progID);
+/**
+ *  GET course_mapping data
+ */
+router.get('/courseMapping/get/:programId', async function (req, res) {
 
-    let mapping = await courseMappingQuery.get_mapping().catch((err) => {
+	// validate ID
+	if (req.params.programId == undefined || isNaN(req.params.programId)) {
+		return res.end();
+	}
+
+	let mapping = await courseMappingQuery.get_mapping_by_study_program(req.params.programId).catch((err) => {
+		console.error("ERROR: ", err);
+    });
+
+    // getting the outcome mapping
+    let outcome_course = await courseMappingQuery.get_course_mapping(req.params.programId).catch((err) =>{
         console.error("ERROR: ", err);
     });
 
-    let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
-        console.error("ERROR: ", err);
-    });
-    locals.study_programs = [];
+    mapping = transformdt(mapping);
+    current_mapping = current_course_mapping(outcome_course)
+    outcome_course = transform_outcome_courses(outcome_course);
 
-    if (study_programs != undefined || study_programs.length > 0) {
-        locals.study_programs = study_programs;
-    }
+    // console.log(outcome_course);
+    // console.log(mapping);
 
-    locals.mapping = transformdt(mapping);
-
-    // console.log(locals.mapping);
-    // console.log(locals.mapping[0].outcomes);
-    // console.log(locals.mapping[0].courses);
-
-    res.render('courseMapping/home', locals);
+	res.json({mapping, outcome_course, current_mapping});
 });
 
-router.post('/addMapping', async function (req, res) {
 
-    if (req.body == undefined || req.body.data == undefined) {
-        return res.end();
-    }
-    let data = req.body.data;
+/**
+ * transform_outcome_courses -> transform the data structure to a new data structure
+ * @param {Array} outcome_course array of element to transform
+ * @returns {Array} array of object
+ */
+function transform_outcome_courses(outcome_course) {
+    let temp = [];
+    outcome_course.forEach(e => {
+        temp.push(`${e["outc_ID"]},${e["course_ID"]}`);
+    });
+    return temp;
+}
 
-    if (data.length == 0) {
-        return res.end();
-    }
+function current_course_mapping(outcome_course) {
+    let courses_id = outcome_course.map(e => e.course_ID);
 
-    let was_update = false;
-    data.forEach(async row => {
-        if (row.update != undefined && row.update.insert != undefined && row.update.insert.length > 0) {
-            was_update = true;
-            await courseMappingQuery.insert_mapping(row.course_id, row["update"]["insert"]).catch((err) => {
-                console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
-            });
-
-            console.log("MAPPING ADDED SOME VALUES");
-        }
-
-        if (row.update != undefined && row.update.delete != undefined && row.update.delete.length > 0) {
-            was_update = true;
-            await courseMappingQuery.remove_mapping(row.course_id, row["update"]["delete"]).catch((err) => {
-                console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
-            });
-
-            console.log("MAPPING REMOVED SOME VALUES");
-        }
+    // remove duplicates
+    courses_id = courses_id.filter(function (item, pos) {
+        return courses_id.indexOf(item) == pos;
     });
 
-    if (was_update){
-        res.end('{"success" : "Updated Successfully", "status" : 200, "wasUpdated": true}');
-    }else{
-        res.end('{"success" : "Data keep the same", "status" : 200, "wasUpdated": false}');
-    }
-});
-
+    let temp = [];
+    let arr = [];
+    courses_id.forEach(ID => {
+        temp  = [];
+        for (let i = 0; i < outcome_course.length; i++) {
+            if (ID == outcome_course[i]["course_ID"]){
+                temp.push(outcome_course[i]["outc_ID"]);
+            }
+        }
+        arr.push({"course_id": ID, "outcomes": temp});
+    });
+    return arr;
+}
 
 /**
  * transformdt -> transform the data structure to a new data structure
@@ -93,13 +105,12 @@ function transformdt(outcomes) {
     // getting all ids
     let ids = outcomes.map(row => row.prog_ID);
 
-
     // remove duplicates
     ids = ids.filter(function (item, pos) {
         return ids.indexOf(item) == pos;
     })
 
-    // sort elements in ascendent order
+    // sort elements in ascendent order NUMBERS
     ids.sort(function (a, b) { return a - b });
 
     let temp = [];
@@ -162,10 +173,16 @@ function transformdt(outcomes) {
 
         temp.push({
             "prog_ID": ID,
-            "outcomes": { "id": outcomes_ids, "names": names },
-            "courses": { "names": courses_name, "ids": courses_id },
+            "outcomes": {"ids": outcomes_ids, "names":names },
+            "courses": {"names": courses_name, "ids":courses_id},
         });
     });
     return temp;
 }
+
+
 module.exports = router;
+
+
+
+

@@ -10,8 +10,20 @@ a {
 /* Beginning of custom classes: */
 
 .inter-green {
-  background-color: #00833e !important; 
+  background-color: #00833e !important;
   color: #FFF !important;
+}
+
+#loader {
+  display: none;
+  position: absolute;
+  left: calc(50% - 32px);
+  top: calc(40% - 32px);
+  z-index: 999;
+}
+
+table {
+  font-size: 0.85em;
 }
 
 .inter-green-btn:hover {
@@ -50,7 +62,7 @@ a {
   cursor: pointer;
 }
 
-.feedback{
+.feedback {
   position: absolute;
   top: 10%;
   left: 15%;
@@ -59,7 +71,8 @@ a {
 
 /* FORM VALIDATION */
 
-form, p {
+form,
+p {
   margin: 20px;
 }
 
@@ -68,7 +81,8 @@ p.note {
   color: red;
 }
 
-input, textarea {
+input,
+textarea {
   border-radius: 5px;
   border: 1px solid #ccc;
   padding: 4px;
@@ -89,16 +103,25 @@ label span {
 }
 
 label.error {
-    color: red;
-    font-size: 1rem;
-    display: block;
-    margin-top: 5px;
+  color: red;
+  font-size: 1rem;
+  display: block;
+  margin-top: 5px;
 }
 
-input.error, textarea.error {
-    border: 1px dashed red;
-    font-weight: 300;
-    color: red;
+input.error,
+textarea.error {
+  border: 1px dashed red;
+  font-weight: 300;
+  color: red;
+}
+
+#divTable {
+  overflow-y: scroll;
+  height: 350px;
+  width: 98%;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 /* END FORM VALIDATION */

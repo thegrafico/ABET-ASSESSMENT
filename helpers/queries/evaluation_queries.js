@@ -13,7 +13,7 @@ function get_evaluation_rubric_by_id(id) {
     return new Promise(function (resolve, reject) {
 
         let get_query = `SELECT * FROM EVALUATION_RUBRIC INNER JOIN STUDENT_OUTCOME USING(outc_ID) 
-        INNER JOIN EVALUATION_RUBRIC USING(rubric_ID)
+        INNER JOIN PERFORMANCE_RUBRIC  USING(rubric_ID)
         INNER JOIN PERF_CRITERIA on PERF_CRITERIA.perC_ID = PERFORMANCE_RUBRIC.perC_ID
         INNER JOIN STUDY_PROGRAM on STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
         WHERE EVALUATION_RUBRIC.rubric_ID = ?;`;
