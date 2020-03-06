@@ -25,12 +25,16 @@ let locals = {
 	"delete_redirect": null
 };
 
-
 /*	
 	-- Administrate OUTCOME Evaluation rubric -- 
 	GET /outcomes/:id/evaluationrubric 
 */
 router.get('/', async function (req, res) {
+
+	// Breadcrum for web
+	locals.breadcrumb = [
+		{"name": "Evaluation Rubric", "url": base_url},
+	];
 
 	// getting evaluation rubric from db
 	let eval_rubric = await rubric_query.get_all_evaluations_rubric().catch((err) => {
@@ -80,6 +84,12 @@ router.get('/', async function (req, res) {
 	GET evaluation/create
 */
 router.get('/create', async function (req, res) {
+
+	// Breadcrum for web
+	locals.breadcrumb = [
+		{"name": "Evaluation Rubric", "url": base_url},
+		{"name": "Create", "url": "."},
+	];
 
 	let std_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
 		console.error("Error getting std_programs", err);
@@ -153,6 +163,12 @@ router.post("/create", function (req, res) {
 	GET /evaluation/:id/edit
 */
 router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) {
+
+	// Breadcrum for web
+	locals.breadcrumb = [
+		{"name": "Evaluation Rubric", "url": base_url},
+		{"name": "Edit", "url": "."},
+	];
 
 	locals.std_options = [];
 	locals.outcomes = [];

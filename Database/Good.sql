@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 06, 2020 at 01:04 AM
+-- Generation Time: Mar 06, 2020 at 02:10 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -53,6 +53,159 @@ INSERT INTO `ACADEMIC_TERM` (`term_ID`, `term_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `COURSE`
+--
+
+DROP TABLE IF EXISTS `COURSE`;
+CREATE TABLE IF NOT EXISTS `COURSE` (
+  `course_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `course_name` varchar(25) NOT NULL,
+  `course_number` varchar(255) NOT NULL,
+  `course_description` varchar(255) DEFAULT NULL,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`course_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `COURSE`
+--
+
+INSERT INTO `COURSE` (`course_ID`, `course_name`, `course_number`, `course_description`, `date_created`) VALUES
+(48, 'Precalculus', 'MATH', '5 Credit course', '2020-02-08 20:59:03'),
+(49, 'Precalculus', 'MATH', '5 Credit course', '2020-02-08 20:59:31'),
+(50, 'Intro to Programming', 'COEN', '4 Credit course', '2020-02-08 20:59:54'),
+(51, 'Advance Programming', 'COEN', '4 Credit course', '2020-02-08 21:00:06'),
+(52, 'Electronic I', 'ELEN', '4 Credit course', '2020-02-08 21:00:18'),
+(61, 'Data Science', 'COEN', 'Computer Engineer Data sCience Course', '2020-02-28 02:52:52'),
+(62, 'dasdas', 'COEN 2020', 'dasdasdasdas', '2020-03-05 17:57:58');
+
+-- -----------------------------------------------
+
+--
+-- Table structure for table `DEPARTMENT`
+--
+
+DROP TABLE IF EXISTS `DEPARTMENT`;
+CREATE TABLE IF NOT EXISTS `DEPARTMENT` (
+  `dep_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `dep_name` varchar(255) NOT NULL,
+  `dep_description` varchar(255) DEFAULT NULL,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`dep_ID`),
+  UNIQUE KEY `dep_name` (`dep_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `DEPARTMENT`
+--
+INSERT INTO `DEPARTMENT` (`dep_ID`, `dep_name`, `dep_description`, `date_created`) VALUES
+(14, 'Industrial Engineering Department', 'Industrial Engineering Department', '2020-02-08 20:35:10'),
+(15, 'Mechanical Engineering Department', 'Mechanical Engineering Department', '2020-02-08 20:35:56'),
+(16, 'Electrical And Computer Engineering Department', 'Electrical And Computer Engineering Department', '2020-02-08 20:36:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `USER`
+--
+
+DROP TABLE IF EXISTS `USER`;
+CREATE TABLE IF NOT EXISTS `USER` (
+  `user_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `inter_ID` varchar(255) DEFAULT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) NOT NULL,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_ID`),
+  UNIQUE KEY `inter_ID` (`inter_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `USER`
+--
+
+INSERT INTO `USER` (`user_ID`, `inter_ID`, `first_name`, `last_name`, `email`, `phone_number`, `date_created`) VALUES
+(5, 'U00000001', 'Raul', 'Pichardo', 'rpichardo3780@interbayamon.edu', '8000010001', '2019-09-19 21:29:12'),
+(7, 'U00000002', 'Kemuel', 'Perez', 'kemuel@inter.com', '8000010003', '2019-09-24 15:42:36'),
+(8, 'U00000003', 'Eliud', 'Hernandez', 'unknown@inter.edu', '8000010000', '2019-09-24 16:55:15'),
+(10, 'A000000', 'Noah', 'Almeda', 'nalmeda5053@interbayamon.edu', '800000000', '2020-02-17 02:36:37'),
+(14, 'G00473780', 'Raul', 'Pichardo', 'inter@inter.com', '7873776957', '2020-03-05 13:40:45');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `STUDY_PROGRAM`
+--
+
+DROP TABLE IF EXISTS `STUDY_PROGRAM`;
+CREATE TABLE IF NOT EXISTS `STUDY_PROGRAM` (
+  `prog_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `prog_name` varchar(255) NOT NULL,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dep_ID` int(11) NOT NULL,
+  PRIMARY KEY (`prog_ID`),
+  UNIQUE KEY `prog_name` (`prog_name`),
+  KEY `dep_ID` (`dep_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `STUDY_PROGRAM`
+--
+
+INSERT INTO `STUDY_PROGRAM` (`prog_ID`, `prog_name`, `date_created`, `dep_ID`) VALUES
+(51, 'Computer Engineering', '2020-02-08 20:39:00', 16),
+(52, 'Electrical Engineering', '2020-02-08 20:39:43', 16),
+(53, 'Mechanical Engineering', '2020-02-08 20:39:44', 15),
+(54, 'Industrial Engineering', '2020-02-08 20:39:44', 14),
+(55, 'NEW INDUSTRIAL ENG', '2020-03-05 11:38:31', 14);
+
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `STUDENT_OUTCOME`
+--
+
+DROP TABLE IF EXISTS `STUDENT_OUTCOME`;
+CREATE TABLE IF NOT EXISTS `STUDENT_OUTCOME` (
+  `outc_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `outc_name` varchar(255) NOT NULL,
+  `outc_description` varchar(255) DEFAULT NULL,
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+  `prog_ID` int(11) NOT NULL,
+  PRIMARY KEY (`outc_ID`),
+  UNIQUE KEY `outc_name` (`outc_name`,`prog_ID`),
+  KEY `prog_ID` (`prog_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `STUDENT_OUTCOME`
+--
+
+INSERT INTO `STUDENT_OUTCOME` (`outc_ID`, `outc_name`, `outc_description`, `date_created`, `prog_ID`) VALUES
+(17, 'Outcome 1', 'An ability to identify, formulate, and solve complex engineering problems by applying principles of engineering, science, and mathematics.', '2020-02-27 17:33:26', 51),
+(18, 'Outcome 2', 'An ability to apply engineering design to produce solutions that meet specified needs with consideration of public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors.', '2020-02-27 18:02:28', 51),
+(19, 'Outcome 3', 'An ability to communicate effectively with a range of audiences.', '2020-02-27 18:03:28', 51),
+(20, 'Outcome 4', 'An ability to recognize ethical and professional responsibilities in engineering situations and make informed judgments, which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts.', '2020-02-27 18:05:29', 51),
+(21, 'Outcome 5', 'An ability to function effectively on a team whose members together provide leadership, create a collaborative and inclusive environment, establish goals, plan tasks, and meet objectives.', '2020-02-27 18:06:55', 51),
+(22, 'Outcome 6', 'An ability to develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions.', '2020-02-27 18:07:57', 51),
+(23, 'Outcome 7', 'An ability to acquire and apply new knowledge as needed, using appropriate learning strategies.', '2020-02-27 18:08:53', 51),
+(24, 'Outcome 1', 'An ability to identify, formulate, and solve complex engineering problems by applying principles of engineering, science, and mathematics.', '2020-02-29 17:20:14', 52),
+(26, 'Outcome 2', 'An ability to apply engineering design to produce solutions that meet specified needs with consideration of public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors.', '2020-02-29 17:21:26', 52),
+(27, 'Outcome 3', 'An ability to communicate effectively with a range of audiences.', '2020-02-29 17:21:42', 52),
+(28, 'Outcome 4', 'An ability to recognize ethical and professional responsibilities in engineering situations and make informed judgments, which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts.', '2020-02-29 17:21:59', 52),
+(29, 'Outcome 5', 'An ability to function effectively on a team whose members together provide leadership, create a collaborative and inclusive environment, establish goals, plan tasks, and meet objectives.', '2020-02-29 17:22:49', 52),
+(30, 'Outcome 6', 'An ability to develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions.', '2020-02-29 17:23:06', 52),
+(31, 'Outcome 7', 'An ability to acquire and apply new knowledge as needed, using appropriate learning strategies.', '2020-02-29 17:23:27', 52),
+(32, 'OUTCOME 1', 'Student should be able to read and speck', '2020-03-05 11:25:54', 54),
+(33, 'OUTCOME 2', 'OUTCOME FOR THIS NEW', '2020-03-05 11:40:34', 55);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `ASSESSMENT`
 --
 
@@ -70,66 +223,12 @@ CREATE TABLE IF NOT EXISTS `ASSESSMENT` (
   KEY `rubric_ID` (`rubric_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=151 DEFAULT CHARSET=latin1;
 
+
 --
 -- Dumping data for table `ASSESSMENT`
 --
-
 INSERT INTO `ASSESSMENT` (`assessment_ID`, `course_ID`, `term_ID`, `user_ID`, `rubric_ID`, `course_section`) VALUES
 (94, 49, 1, 10, NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `COURSE`
---
-
-DROP TABLE IF EXISTS `COURSE`;
-CREATE TABLE IF NOT EXISTS `COURSE` (
-  `course_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `course_name` varchar(25) NOT NULL,
-  `course_number` varchar(255) NOT NULL,
-  `course_description` varchar(255) DEFAULT NULL,
-  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`course_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `COURSE`
---
-
-INSERT INTO `COURSE` (`course_ID`, `course_name`, `course_number`, `course_description`, `date_created`) VALUES
-(48, 'Precalculus', 'MATH', '5 Credit course', '2020-02-08 20:59:03'),
-(49, 'Precalculus', 'MATH', '5 Credit course', '2020-02-08 20:59:31'),
-(50, 'Intro to Programming', 'COEN', '4 Credit course', '2020-02-08 20:59:54'),
-(51, 'Advance Programming', 'COEN', '4 Credit course', '2020-02-08 21:00:06'),
-(52, 'Electronic I', 'ELEN', '4 Credit course', '2020-02-08 21:00:18'),
-(61, 'Data Science', 'COEN', 'Computer Engineer Data sCience Course', '2020-02-28 02:52:52'),
-(62, 'dasdas', 'COEN 2020', 'dasdasdasdas', '2020-03-05 17:57:58');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `DEPARTMENT`
---
-
-DROP TABLE IF EXISTS `DEPARTMENT`;
-CREATE TABLE IF NOT EXISTS `DEPARTMENT` (
-  `dep_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `dep_name` varchar(255) NOT NULL,
-  `dep_description` varchar(255) DEFAULT NULL,
-  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`dep_ID`),
-  UNIQUE KEY `dep_name` (`dep_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `DEPARTMENT`
---
-
-INSERT INTO `DEPARTMENT` (`dep_ID`, `dep_name`, `dep_description`, `date_created`) VALUES
-(14, 'Industrial Engineering Department', 'Industrial Engineering Department', '2020-02-08 20:35:10'),
-(15, 'Mechanical Engineering Department', 'Mechanical Engineering Department', '2020-02-08 20:35:56'),
-(16, 'Electrical And Computer Engineering Department', 'Electrical And Computer Engineering Department', '2020-02-08 20:36:38');
 
 -- --------------------------------------------------------
 
@@ -147,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `EVALUATION_RUBRIC` (
   `date_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`rubric_ID`),
   KEY `outc_ID` (`outc_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `EVALUATION_RUBRIC`
@@ -184,29 +283,6 @@ INSERT INTO `OUTCOME_COURSE` (`course_ID`, `outc_ID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `PERFORMANCE_RUBRIC`
---
-
-DROP TABLE IF EXISTS `PERFORMANCE_RUBRIC`;
-CREATE TABLE IF NOT EXISTS `PERFORMANCE_RUBRIC` (
-  `rubric_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `perC_ID` int(11) NOT NULL,
-  PRIMARY KEY (`rubric_ID`,`perC_ID`),
-  KEY `PERFORMANCE_RUBRIC_ibfk_1` (`perC_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `PERFORMANCE_RUBRIC`
---
-
-INSERT INTO `PERFORMANCE_RUBRIC` (`rubric_ID`, `perC_ID`) VALUES
-(27, 72),
-(27, 73),
-(28, 75);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `PERF_CRITERIA`
 --
 
@@ -218,7 +294,8 @@ CREATE TABLE IF NOT EXISTS `PERF_CRITERIA` (
   `outc_ID` int(11) NOT NULL,
   PRIMARY KEY (`perC_ID`),
   KEY `outc_ID` (`outc_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=latin1;
+
 
 --
 -- Dumping data for table `PERF_CRITERIA`
@@ -244,6 +321,30 @@ INSERT INTO `PERF_CRITERIA` (`perC_ID`, `perC_Desk`, `perC_order`, `outc_ID`) VA
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `PERFORMANCE_RUBRIC`
+--
+
+DROP TABLE IF EXISTS `PERFORMANCE_RUBRIC`;
+CREATE TABLE IF NOT EXISTS `PERFORMANCE_RUBRIC` (
+  `rubric_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `perC_ID` int(11) NOT NULL,
+  PRIMARY KEY (`rubric_ID`,`perC_ID`),
+  KEY `PERFORMANCE_RUBRIC_ibfk_1` (`perC_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+
+
+--
+-- Dumping data for table `PERFORMANCE_RUBRIC`
+--
+
+INSERT INTO `PERFORMANCE_RUBRIC` (`rubric_ID`, `perC_ID`) VALUES
+(27, 72),
+(27, 73),
+(28, 75);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `PROFILE`
 --
 
@@ -253,6 +354,7 @@ CREATE TABLE IF NOT EXISTS `PROFILE` (
   `profile_Name` varchar(255) NOT NULL,
   PRIMARY KEY (`profile_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
 
 --
 -- Dumping data for table `PROFILE`
@@ -444,44 +546,7 @@ INSERT INTO `REPORTS` (`report_ID`, `grade_A`, `grade_B`, `grade_C`, `grade_D`, 
 (119, 1, 1, 1, 1, 1, '1', '1', '1', '1', NULL),
 (120, 1, 1, 1, 1, 1, '1', '1', '1', '1', NULL);
 
--- --------------------------------------------------------
 
---
--- Table structure for table `STUDENT_OUTCOME`
---
-
-DROP TABLE IF EXISTS `STUDENT_OUTCOME`;
-CREATE TABLE IF NOT EXISTS `STUDENT_OUTCOME` (
-  `outc_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `outc_name` varchar(255) NOT NULL,
-  `outc_description` varchar(255) DEFAULT NULL,
-  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
-  `prog_ID` int(11) NOT NULL,
-  PRIMARY KEY (`outc_ID`),
-  KEY `prog_ID` (`prog_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `STUDENT_OUTCOME`
---
-
-INSERT INTO `STUDENT_OUTCOME` (`outc_ID`, `outc_name`, `outc_description`, `date_created`, `prog_ID`) VALUES
-(17, 'Outcome 1', 'An ability to identify, formulate, and solve complex engineering problems by applying principles of engineering, science, and mathematics.', '2020-02-27 17:33:26', 51),
-(18, 'Outcome 2', 'An ability to apply engineering design to produce solutions that meet specified needs with consideration of public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors.', '2020-02-27 18:02:28', 51),
-(19, 'Outcome 3', 'An ability to communicate effectively with a range of audiences.', '2020-02-27 18:03:28', 51),
-(20, 'Outcome 4', 'An ability to recognize ethical and professional responsibilities in engineering situations and make informed judgments, which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts.', '2020-02-27 18:05:29', 51),
-(21, 'Outcome 5', 'An ability to function effectively on a team whose members together provide leadership, create a collaborative and inclusive environment, establish goals, plan tasks, and meet objectives.', '2020-02-27 18:06:55', 51),
-(22, 'Outcome 6', 'An ability to develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions.', '2020-02-27 18:07:57', 51),
-(23, 'Outcome 7', 'An ability to acquire and apply new knowledge as needed, using appropriate learning strategies.', '2020-02-27 18:08:53', 51),
-(24, 'Outcome 1', 'An ability to identify, formulate, and solve complex engineering problems by applying principles of engineering, science, and mathematics.', '2020-02-29 17:20:14', 52),
-(26, 'Outcome 2', 'An ability to apply engineering design to produce solutions that meet specified needs with consideration of public health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors.', '2020-02-29 17:21:26', 52),
-(27, 'Outcome 3', 'An ability to communicate effectively with a range of audiences.', '2020-02-29 17:21:42', 52),
-(28, 'Outcome 4', 'An ability to recognize ethical and professional responsibilities in engineering situations and make informed judgments, which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts.', '2020-02-29 17:21:59', 52),
-(29, 'Outcome 5', 'An ability to function effectively on a team whose members together provide leadership, create a collaborative and inclusive environment, establish goals, plan tasks, and meet objectives.', '2020-02-29 17:22:49', 52),
-(30, 'Outcome 6', 'An ability to develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions.', '2020-02-29 17:23:06', 52),
-(31, 'Outcome 7', 'An ability to acquire and apply new knowledge as needed, using appropriate learning strategies.', '2020-02-29 17:23:27', 52),
-(32, 'OUTCOME 1', 'Student should be able to read and speck', '2020-03-05 11:25:54', 54),
-(33, 'OUTCOME 2', 'OUTCOME FOR THIS NEW', '2020-03-05 11:40:34', 55);
 
 -- --------------------------------------------------------
 
@@ -519,65 +584,6 @@ INSERT INTO `STUDENT_PERFORMANCE` (`student_ID`, `pc_1`, `pc_2`, `pc_3`, `pc_4`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `STUDY_PROGRAM`
---
-
-DROP TABLE IF EXISTS `STUDY_PROGRAM`;
-CREATE TABLE IF NOT EXISTS `STUDY_PROGRAM` (
-  `prog_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `prog_name` varchar(255) NOT NULL,
-  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
-  `dep_ID` int(11) NOT NULL,
-  PRIMARY KEY (`prog_ID`),
-  UNIQUE KEY `prog_name` (`prog_name`),
-  KEY `dep_ID` (`dep_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `STUDY_PROGRAM`
---
-
-INSERT INTO `STUDY_PROGRAM` (`prog_ID`, `prog_name`, `date_created`, `dep_ID`) VALUES
-(51, 'Computer Engineering', '2020-02-08 20:39:00', 16),
-(52, 'Electrical Engineering', '2020-02-08 20:39:43', 16),
-(53, 'Mechanical Engineering', '2020-02-08 20:39:44', 15),
-(54, 'Industrial Engineering', '2020-02-08 20:39:44', 14),
-(55, 'NEW INDUSTRIAL ENG', '2020-03-05 11:38:31', 14);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `USER`
---
-
-DROP TABLE IF EXISTS `USER`;
-CREATE TABLE IF NOT EXISTS `USER` (
-  `user_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `inter_ID` varchar(255) DEFAULT NULL,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `phone_number` varchar(255) NOT NULL,
-  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_ID`),
-  UNIQUE KEY `inter_ID` (`inter_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `USER`
---
-
-INSERT INTO `USER` (`user_ID`, `inter_ID`, `first_name`, `last_name`, `email`, `phone_number`, `date_created`) VALUES
-(5, 'U00000001', 'Raul', 'Pichardo', 'rpichardo3780@interbayamon.edu', '8000010001', '2019-09-19 21:29:12'),
-(7, 'U00000002', 'Kemuel', 'Perez', 'kemuel@inter.com', '8000010003', '2019-09-24 15:42:36'),
-(8, 'U00000003', 'Eliud', 'Hernandez', 'unknown@inter.edu', '8000010000', '2019-09-24 16:55:15'),
-(10, 'A000000', 'Noah', 'Almeda', 'nalmeda5053@interbayamon.edu', '800000000', '2020-02-17 02:36:37'),
-(11, 'G0047378', 'Nicole', 'Tester', 'nlopez6437@interbayamon.edu', '5000000000', '2020-02-24 18:07:31'),
-(14, 'G00473780', 'Raul', 'Pichardo', 'inter@inter.com', '7873776957', '2020-03-05 13:40:45');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `USER_DEP`
 --
 
@@ -588,6 +594,7 @@ CREATE TABLE IF NOT EXISTS `USER_DEP` (
   KEY `user_ID` (`user_ID`),
   KEY `dep_ID` (`dep_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 --
 -- Dumping data for table `USER_DEP`
@@ -600,8 +607,6 @@ INSERT INTO `USER_DEP` (`user_ID`, `dep_ID`) VALUES
 (8, 14),
 (8, 15),
 (10, 14),
-(11, 14),
-(11, 15),
 (5, 16);
 
 -- --------------------------------------------------------

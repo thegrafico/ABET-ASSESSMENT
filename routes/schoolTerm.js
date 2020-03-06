@@ -27,7 +27,7 @@ let locals = {
 router.get('/', async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Term", "url": base_url},
+		{ "name": "Term", "url": base_url },
 	];
 
 	locals.results = [];
@@ -64,8 +64,8 @@ router.get('/', async function (req, res) {
 router.get('/create', function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Term", "url": base_url},
-		{"name": "Create", "url": locals.url_create }
+		{ "name": "Term", "url": base_url },
+		{ "name": "Create", "url": locals.url_create }
 	];
 
 	// store all profiles
@@ -111,7 +111,10 @@ router.post('/create', function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log(err);
-		req.flash("error", "Cannot Create the term");
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "Term already exist");
+		else
+			req.flash("error", "Error Creating the Term");
 		res.redirect(base_url);
 	});
 });
@@ -129,8 +132,8 @@ router.get('/:id/edit', async function (req, res) {
 	}
 
 	locals.breadcrumb = [
-		{"name": "Term", "url": base_url},
-		{"name": "Edit", "url": "."}
+		{ "name": "Term", "url": base_url },
+		{ "name": "Edit", "url": "." }
 	];
 
 	let id_term = req.params.id;
@@ -202,7 +205,11 @@ router.put('/:id', function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log(err);
-		req.flash("error", "Cannot edit the term");
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "Term already exist");
+		else
+			req.flash("error", "Error Editing the Term");
+
 		res.redirect(base_url);
 	});
 });

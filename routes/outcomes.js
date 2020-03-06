@@ -17,7 +17,7 @@ let locals = {
 	"form_id": "outcome_data",
 	"api_get_url": base_url,
 	delete_redirect: null,
-	dropdown_option_selected : null,
+	dropdown_option_selected: null,
 };
 
 /* 
@@ -26,7 +26,7 @@ let locals = {
 router.get('/', async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Outcomes", "url": base_url},
+		{ "name": "Outcomes", "url": base_url },
 	];
 
 	locals.results = [];
@@ -54,14 +54,14 @@ router.get('/', async function (req, res) {
 
 	// Evaluating rubric
 	let outcome_ids_by_rubric = undefined;
-	if (evaluation_rubric != undefined && evaluation_rubric.length > 0){
-		outcome_ids_by_rubric = evaluation_rubric.map( outc => parseInt(outc["outc_ID"]));	
+	if (evaluation_rubric != undefined && evaluation_rubric.length > 0) {
+		outcome_ids_by_rubric = evaluation_rubric.map(outc => parseInt(outc["outc_ID"]));
 	}
-	
+
 	locals.departments = [];
-	if (departments != undefined && departments.length > 0){
-		departments.forEach(e =>{
-			locals.departments.push({"name": e.dep_name, "value": e.dep_ID});
+	if (departments != undefined && departments.length > 0) {
+		departments.forEach(e => {
+			locals.departments.push({ "name": e.dep_name, "value": e.dep_ID });
 		});
 	}
 
@@ -70,10 +70,10 @@ router.get('/', async function (req, res) {
 	if (stud_outcomes != undefined && stud_outcomes.length > 0) {
 		let results = [];
 		stud_outcomes.forEach(outcome => {
-			let hasPerformance = false; 
+			let hasPerformance = false;
 
-			if (outcome_ids_by_rubric != undefined){
-				if (outcome_ids_by_rubric.includes( parseInt(outcome["outc_ID"]) )){
+			if (outcome_ids_by_rubric != undefined) {
+				if (outcome_ids_by_rubric.includes(parseInt(outcome["outc_ID"]))) {
 					hasPerformance = true;
 				}
 			}
@@ -106,10 +106,10 @@ router.get('/', async function (req, res) {
 */
 router.get('/create', async function (req, res) {
 
-	
+
 	locals.breadcrumb = [
-		{"name": "Outcomes", "url": base_url},
-		{"name": "Create", "url": locals.url_create }
+		{ "name": "Outcomes", "url": base_url },
+		{ "name": "Create", "url": locals.url_create }
 	];
 
 	// store all profiles
@@ -186,8 +186,11 @@ router.post('/create', function (req, res) {
 		req.flash("success", "Outcome Created");
 		res.redirect(base_url);
 	}).catch((err) => {
-		console.log("error: ", err);
-		req.flash("error", "Cannot create outcome");
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "Duplicate Outcome");
+		else
+			req.flash("error", "Cannot edit the outcome");
+
 		res.redirect(base_url);
 	});
 });
@@ -204,10 +207,10 @@ router.get('/:id/edit', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
-	
+
 	locals.breadcrumb = [
-		{"name": "Outcomes", "url": base_url},
-		{"name": "Edit", "url": "."}
+		{ "name": "Outcomes", "url": base_url },
+		{ "name": "Edit", "url": "." }
 	];
 
 	let out_id = req.params.id;
@@ -315,8 +318,12 @@ router.put('/:id', function (req, res) {
 		req.flash("success", "Outcome edited");
 		res.redirect(base_url);
 	}).catch((err) => {
+		
 		console.log("Error editing the outcome: ", err);
-		req.flash("error", "Cannot edit the outcome");
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "Duplicate Outcome");
+		else
+			req.flash("error", "Cannot edit the outcome");
 		res.redirect(base_url);
 	});
 });
@@ -391,7 +398,7 @@ router.get('/get/:id', async function (req, res) {
 	if (req.params.id == undefined || isNaN(req.params.id)) {
 		return res.end();
 	}
- 
+
 	let outcome_query = {
 		"from": "STUDENT_OUTCOME",
 		"join": "STUDY_PROGRAM",
@@ -440,7 +447,7 @@ router.get("/get/performances/:outcome_id", async function (req, res) {
 	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
 		return res.json([]);
 	}
-	let performance_query = { "from": "PERF_CRITERIA", "where": "outc_ID", "id": req.params.outcome_id};
+	let performance_query = { "from": "PERF_CRITERIA", "where": "outc_ID", "id": req.params.outcome_id };
 	let outcome_performances = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})
@@ -450,7 +457,7 @@ router.get("/get/performances/:outcome_id", async function (req, res) {
 	}
 
 	let record = [];
-	outcome_performances.forEach( element =>{
+	outcome_performances.forEach(element => {
 		record.push({ "name": element["perC_Desk"], "value": element["perC_ID"] })
 	});
 
@@ -462,12 +469,12 @@ router.get("/get/performances/:outcome_id", async function (req, res) {
  * GET THE OUTCOMES BY STUDY PROGRAM
  */
 router.get("/get/outcomes/:programID", async function (req, res) {
-	
+
 	if (req.params.programID == undefined || isNaN(req.params.programID)) {
 		return res.json([]);
 	}
 
-	let outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": req.params.programID};
+	let outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": req.params.programID };
 	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})
@@ -476,9 +483,9 @@ router.get("/get/outcomes/:programID", async function (req, res) {
 	if (outcomes == undefined || outcomes.length == 0) {
 		return res.json([]);
 	}
-	
+
 	let record = [];
-	outcomes.forEach( element =>{
+	outcomes.forEach(element => {
 		record.push({ "name": element["outc_name"], "value": element["outc_ID"] })
 	});
 

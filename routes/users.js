@@ -115,10 +115,12 @@ router.get('/create', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
+	// get all deparments
 	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
 		console.log("Cannot get deparment information: ", err);
 	});
 
+	// verify is found any department
 	if (departments == undefined || departments.length == 0) {
 		console.log("There is not department created");
 		req.flash("error", "Please create a department before creating a user");
@@ -208,7 +210,7 @@ router.post('/create', async function (req, res) {
 		else
 			req.flash("error", "Error Creating the User");
 
-		res.redirect(base_url);
+		res.redirect("back");
 	});
 });
 
@@ -224,6 +226,7 @@ router.get('/:id/edit',  async function (req, res) {
 		return res.redirect(base_url);
 	}
 
+	// Breadcrum for web
 	locals.breadcrumb = [
 		{"name": "Users", "url": base_url, "active": false},
 		{"name": "Edit", "url": ".", "active": true}

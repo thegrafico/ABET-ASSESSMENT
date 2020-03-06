@@ -39,7 +39,6 @@ router.get('/', async function (req, res) {
 	let courses = await query.get_course_with_std_program().catch((err) => {
 		console.log("Error getting the courses with std program results: ", err);
 	});
-	console.log(courses);
 	let results = [];
 	if (courses != undefined && Object.keys(courses).length > 0) {
 

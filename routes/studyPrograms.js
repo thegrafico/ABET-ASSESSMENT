@@ -27,8 +27,13 @@ let locals = {
 */
 router.get('/', async function(req, res) {
 
-	locals.results = [];
+	// Breadcrum for web
+	locals.breadcrumb = [
+		{"name": "Study Programs", "url": base_url},
+		// {"name": "Edit", "url": ".", "active": true}
+	];
 
+	locals.results = [];
 	let all_std_query = {
 		"from": "DEPARTMENT",
 		"join": "STUDY_PROGRAM",
@@ -71,6 +76,12 @@ router.get('/', async function(req, res) {
 	GET /studyprograms/create 
 */
 router.get('/create', async function(req, res) {
+
+	// Breadcrum for web
+	locals.breadcrumb = [
+		{"name": "Study Programs", "url": base_url},
+		{"name": "Create", "url": "."}
+	];
 
 	let deparments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
 		console.log("Error getting deparments: ", err);
@@ -147,7 +158,12 @@ router.post('/create', function(req, res) {
 		req.flash("success", "Study program created");
 		res.redirect(base_url);
 	}).catch((err) =>{
-		req.flash("error", "Cannot create the study program");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "Study Program already exist");
+		else
+			req.flash("error", "Cannot create the study program");
+			
 		res.redirect(base_url);
 	});
 });
@@ -157,6 +173,13 @@ router.post('/create', function(req, res) {
 	GET /studyprograms/:id/id 
 */
 router.get('/:id/edit', async function(req, res) {
+
+	
+	// Breadcrum for web
+	locals.breadcrumb = [
+		{"name": "Study Programs", "url": base_url},
+		{"name": "Edit", "url": "."}
+	];
 
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)){
@@ -264,8 +287,12 @@ router.put('/:id', function(req, res) {
 		req.flash("success", "Study Program edited");
 		return res.redirect(base_url);
 	}).catch((err) => {
-		console.log("Error: ", err);
-		req.flash("error", "Cannot edit study program");
+		
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "Study Program already exist");
+		else
+			req.flash("error", "Cannot Edit the study program");
+			
 		return res.redirect(base_url);
 	});
 });

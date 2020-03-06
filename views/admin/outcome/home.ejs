@@ -36,14 +36,6 @@
 
 <!-- FILTERING HEADER -->
 <div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
-
-    <div class="row" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
-
-        <div class="col-10" style="margin-top: -1%;">
-            <h4><%= subtitle %></h4>
-        </div>
-    </div>
-
     <div class="row">
 
         <div class="col-12">
@@ -58,7 +50,7 @@
 
                     <div class="form-group">
                         <select class="form-control" id="departments" type="text">
-                            <option selected disabled value=""> -- Department -- </option>
+                            <option selected value=""> -- Department -- </option>
                             <% departments.forEach(dep => { %>
                             <option value="<%= dep["value"] %>"><%= dep["name"] %></option>
                             <% }) %>
