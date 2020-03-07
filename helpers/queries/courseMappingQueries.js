@@ -65,7 +65,7 @@ function remove_mapping(course_id, mapping) {
         if (mapping == undefined) return reject("Empty parameters");
 
         // variable that defines the query
-        let delete_query = `DELETE FROM outcome_course WHERE (course_ID, outc_ID) IN (?)`;
+        let delete_query = `DELETE FROM OUTCOME_COURSE WHERE (course_ID, outc_ID) IN (?)`;
 
         let data = [];
         mapping.forEach(element => {
@@ -101,12 +101,12 @@ function get_course_outcomes() {
 
 function get_mapping() {
     return new Promise(function (resolve, reject) {
-        let query = `SELECT prog_course.course_ID, prog_course.prog_ID, course.course_name, 
-        study_program.prog_name, student_outcome.outc_name, student_outcome.outc_ID, study_program.dep_ID
-        FROM prog_course
-        INNER JOIN course ON prog_course.course_ID = course.course_ID
-        INNER JOIN study_program ON prog_course.prog_ID = study_program.prog_ID
-        INNER JOIN student_outcome ON study_program.prog_ID = student_outcome.prog_ID`;
+        let query = `SELECT PROG_COURSE.course_ID, PROG_COURSE.prog_ID, COURSE.course_name, 
+        STUDY_PROGRAM.prog_name, STUDENT_OUTCOME.outc_name, STUDENT_OUTCOME.outc_ID, STUDY_PROGRAM.dep_ID
+        FROM PROG_COURSE
+        INNER JOIN COURSE ON PROG_COURSE.course_ID = COURSE.course_ID
+        INNER JOIN STUDY_PROGRAM ON PROG_COURSE.prog_ID = STUDY_PROGRAM.prog_ID
+        INNER JOIN STUDENT_OUTCOME ON STUDY_PROGRAM.prog_ID = STUDENT_OUTCOME.prog_ID`;
 
         conn.query(query, function (err, results) {
             if (err) return reject(err);
@@ -119,13 +119,13 @@ function get_mapping() {
 
 function get_mapping_by_study_program(program_id) {
     return new Promise(function (resolve, reject) {
-        let query = `SELECT prog_course.course_ID, prog_course.prog_ID, course.course_name, 
-        study_program.prog_name, student_outcome.outc_name, student_outcome.outc_ID, study_program.dep_ID
-        FROM prog_course
-        INNER JOIN course ON prog_course.course_ID = course.course_ID
-        INNER JOIN study_program ON prog_course.prog_ID = study_program.prog_ID
-        INNER JOIN student_outcome ON study_program.prog_ID = student_outcome.prog_ID
-        WHERE study_program.prog_ID = ?`;
+        let query = `SELECT PROG_COURSE.course_ID, PROG_COURSE.prog_ID, COURSE.course_name, 
+        STUDY_PROGRAM.prog_name, STUDENT_OUTCOME.outc_name, STUDENT_OUTCOME.outc_ID, STUDY_PROGRAM.dep_ID
+        FROM PROG_COURSE
+        INNER JOIN COURSE ON PROG_COURSE.course_ID = COURSE.course_ID
+        INNER JOIN STUDY_PROGRAM ON PROG_COURSE.prog_ID = STUDY_PROGRAM.prog_ID
+        INNER JOIN STUDENT_OUTCOME ON STUDY_PROGRAM.prog_ID = STUDENT_OUTCOME.prog_ID
+        WHERE STUDY_PROGRAM.prog_ID = ?`;
 
         conn.query(query, [program_id], function (err, results) {
             if (err) return reject(err);
@@ -183,10 +183,10 @@ function get_course_mapping(program_id) {
             return reject("Error with the Program ID");
         }
 
-        let query = `SELECT course_ID, outcome_course.outc_ID FROM
-        outcome_course INNER JOIN student_outcome On outcome_course.outc_ID = student_outcome.outc_ID
-        INNER JOIN study_program on student_outcome.prog_ID = study_program.prog_ID
-        WHERE study_program.prog_ID = ?`;
+        let query = `SELECT course_ID, OUTCOME_COURSE.outc_ID FROM
+        OUTCOME_COURSE INNER JOIN STUDENT_OUTCOME On OUTCOME_COURSE.outc_ID = STUDENT_OUTCOME.outc_ID
+        INNER JOIN STUDY_PROGRAM on STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
+        WHERE STUDY_PROGRAM.prog_ID = ?`;
 
         conn.query(query, [program_id], function (err, results) {
             if (err) return reject(err);

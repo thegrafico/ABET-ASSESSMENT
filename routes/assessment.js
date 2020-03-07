@@ -16,7 +16,21 @@ locals.title = 'ABET Assessment';
 /*
   GET /assessment/chooseCourseTerm
 */
-router.get('/chooseCourseTerm', async function(req, res) {
+
+/*
+	Get professor/assessmentIndex
+	- Loads page
+*/
+
+router.get('professor/assessmentIndex', function(req, res, next) {
+	res.render('assessment/assessmentIndex', { title: 'ABET Assessment' });
+});
+
+/*
+	Get professor/assessmentIndex
+	- Modal
+*/ 
+router.get('/professor/modalInfo', async function(req, res) {
 	console.log('You are in chooseCourseTerm');
 
 	locals.program = [];
@@ -75,8 +89,10 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	console.log("COURSE INFO: ", course_info);
 
 	locals.course = course_info;
+
 	// console.group('ChooseTerm Load: ', locals);
-	res.render('assessment/chooseCourseTerm', locals);
+	// res.render('assessment/assessmentIndex', locals);
+	res.json(locals);
 });
 
 /* 
@@ -357,11 +373,6 @@ router.post('/perfomanceTable', async function(req, res) {
 
 	// TODO: flash message = Your report was generated
 	res.redirect(base_url);
-});
-
-
-router.get('professor/assessmentIndex', function(req, res, next) {
-	res.render('assessment/assessmentIndex', { title: 'ABET Assessment' });
 });
 
 module.exports = router;

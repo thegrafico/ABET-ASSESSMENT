@@ -442,16 +442,12 @@ router.get("/get/performances/:outcome_id", async function (req, res) {
 	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
 		return res.json([]);
 	}
-<<<<<<< HEAD
 
 	let performance_query = { "from": "PERF_CRITERIA", 
 							  "where": "outc_ID", 
 							  "id": req.params.outcome_id
 							};
 
-=======
-	let performance_query = { "from": "PERF_CRITERIA", "where": "outc_ID", "id": req.params.outcome_id};
->>>>>>> origin/master
 	let outcome_performances = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})

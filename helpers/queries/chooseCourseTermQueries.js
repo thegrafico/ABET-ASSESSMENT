@@ -33,7 +33,7 @@ function get_course_info(id){
 
 	return new Promise(function(resolve, reject){
 		let find_query = `SELECT * FROM ABET.COURSE WHERE
-		course_ID IN (SELCT course_ID FROM ABET.PROG_COURSE WHERE PROG_ID = ?);`;
+		course_ID IN (SELECT course_ID FROM ABET.PROG_COURSE WHERE PROG_ID = ?);`;
 
 		conn.query(find_query, [id],function (err, results, fields) {
 			if (err)
@@ -55,7 +55,7 @@ function insert_assessment(data){
 	return new Promise(function(resolve, reject){
 
 		let find_query = `INSERT INTO ABET.ASSESSMENT (course_ID, term_ID, user_ID, rubric_ID)
-		VALUES (?, ?, ?, ?)`;
+		VALUES (?, ?, ?, ?);`;
 
 		conn.query(find_query, data,function(err,results,fields){
 			if (err)
