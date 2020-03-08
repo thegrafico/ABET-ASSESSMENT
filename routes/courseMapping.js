@@ -27,11 +27,23 @@ router.get('/', async function (req, res) {
         console.error("ERROR: ", err);
     });
 
+    let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+        console.error("ERROR GETTING DEPARTMENTS: ", err);
+    });
+
+    if (departments == undefined || departments.length == 0){
+        req.flash("error", "Cannot find Any Department");
+        return res.redirect("back")
+    }
+
+    locals.departments = departments;
+    
     let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
         console.error("ERROR: ", err);
     });
-    locals.study_programs = [];
 
+
+    locals.study_programs = [];
     if (study_programs != undefined || study_programs.length > 0) {
         locals.study_programs = study_programs;
     }

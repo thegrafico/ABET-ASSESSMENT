@@ -6,7 +6,7 @@ var conn = db.mysql_pool;
  * @param {Number} id -> id of the rubric 
  * @return {Promise} resolve with all rubric info
  */
-function get_rubric_info(id){
+function get_rubric_info_by_id(id){
   
 	return new Promise(function(resolve, reject){
 		
@@ -17,7 +17,7 @@ function get_rubric_info(id){
 		// exe query
 		conn.query(find_query, [id], function (err, results, fields) {
 			if (err)
-				reject(err || "Error getting rubric info");
+				reject(err);
 			else
 				resolve(results);
 		});
@@ -29,11 +29,11 @@ function get_rubric_info(id){
  * @param {Number} id -> program id  
  * @return {Promise} resolve with all course info
  */
-function get_course_info(id){
+function get_course_info_by_id(id){
 
 	return new Promise(function(resolve, reject){
 		let find_query = `SELECT * FROM ABET.COURSE WHERE
-		course_ID IN (SELCT course_ID FROM ABET.PROG_COURSE WHERE PROG_ID = ?);`;
+		course_ID IN (SELECT course_ID FROM ABET.PROG_COURSE WHERE PROG_ID = ?);`;
 
 		conn.query(find_query, [id],function (err, results, fields) {
 			if (err)
@@ -66,6 +66,6 @@ function insert_assessment(data){
 	});
 }
 
-module.exports.get_rubric_info = get_rubric_info;
-module.exports.get_course_info = get_course_info;
+module.exports.get_rubric_info_by_id = get_rubric_info_by_id;
+module.exports.get_course_info_by_id = get_course_info_by_id;
 module.exports.insert_assessment = insert_assessment;

@@ -124,4 +124,13 @@ textarea.error {
   border-bottom: 1px solid black;
 }
 
+ol > li {
+  font-size: 1.5em;
+}
+
+ /* Style to change separator  */
+ /* .breadcrumb-item + .breadcrumb-item::before {
+  content: ">>";
+} */
+
 /* END FORM VALIDATION */

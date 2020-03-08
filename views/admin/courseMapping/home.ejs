@@ -1,4 +1,6 @@
 <%- include ('../partials/header') -%>
+<script src="/javascripts/ajaxRequest.js"></script>
+
 <link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -28,14 +30,17 @@
             <div class="d-flex flex-row bd-highlight">
 
                 <div class="p-2 bd-highlight">
-                    <h3>Filters: </h3>
+                    <h3>Mapping: </h3>
                 </div>
 
                 <div class="p-2 bd-highlight">
 
                     <div class="form-group">
                         <select class="form-control" id="departments" type="text">
-                            <option selected value=""> -- Department -- </option>
+                            <option selected disabled value=""> -- Department -- </option>
+                            <% departments.forEach(dept => { %>
+                            <option value="<%= dept["dep_ID"] %>"><%= dept["dep_name"] %></option>
+                            <% }) %>
                         </select>
 
                         <input type="hidden" id="dept_selected" value="">
@@ -43,40 +48,21 @@
                 </div>
                 <div class="p-2 bd-highlight">
                     <div class="form-group">
-                        <select id="study_program" class="form-control" type="text" name="study_program" required>
-                            <% if (selected_program == 0) { %>
-                            <option selected disabled value=""> -- Study Program -- </option>
-                            <% } %>
-                            <% study_programs.forEach(element => { %>
-                            <% if (selected_program == element["prog_ID"]) { %>
-                            <option class="dropdown-item" selected value="<%= element["prog_ID"] %>">
-                                <%=element["prog_name"] %>
+                        <select id="study_program" disabled class="form-control" type="text" name="study_program">
+                            <option selected disabled value="">
+                                -- Study Program --
                             </option>
-                            <%=element["prog_name"] %>
-                            <% } else {%>
-                            <option class="dropdown-item" value="<%= element["prog_ID"] %>">
-                                <%=element["prog_name"] %>
-                            </option>
-                            <% } %>
-                            <% }) %>
                         </select>
                     </div>
-                </div>
-
-                <div class="p-2 bd-highlight" style=" margin-left:3%;">
-                    <h4>Quantity: <span id="number"></span> </h4>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
 <div id="tableDiv">
 
 </div>
-
-
 
 <!-- <div class="container-fluid my-2 " style="overflow-y: scroll;height: 400px;width: 100%;"> -->
 <div class="container-fluid my-2 " style="font-size: 0.9em;">
@@ -91,7 +77,6 @@
         </tbody>
 
     </table>
-    <hr class="my-1">
 </div>
 
 <div class="container">
@@ -106,6 +91,77 @@
     $(document).ready(function () {
         var previus_val = undefined;
         let pair = undefined;
+
+        let dept_val = $("#departments").val();
+        if (dept_val == undefined || dept_val.length == 0) {
+            $("#tableDiv").append(`<h3 style="text-align: center;">Please, Select a Department and Study Program</h3>`);
+        }
+
+        // Department was change
+        $("#departments").change(async function () {
+
+            // Get the department ID
+            let dept_id = $(this).val();
+
+            //clean the body
+            $("#filter").empty();
+            $("#tableDiv").empty();
+            $(".thead-dark").empty();
+            $("#clickme").addClass("invisible");
+
+
+            // Clean Study Program
+            $('#study_program').empty().append(` <option selected disabled value=""> -- Study Program --</option>`);
+            $("#tableDiv").empty().append(`<h3 style="text-align: center;">Please, Select a Study Program</h3>`);
+
+            // get the data from the request
+            let study_programs = await make_request(`/admin/department/get/studyPrograms/${dept_id}`).catch((err) => {
+                console.log(err);
+            });
+
+            console.log(study_programs);
+
+            // if cannot get the study programs, Show a message to the user
+            if (study_programs == undefined || study_programs.length == 0) {
+                $("#tableDiv").empty().append(`<h3 style="text-align: center;">
+                    Cannot find Any Study Program, Contact The Admin</h3>`);
+                return;
+            }
+
+            // enable the study programs options
+            $('#study_program').prop("disabled", false);
+
+            // fill out the selection option
+            study_programs.forEach(element => {
+                $('#study_program').append(`<option value='${element.value}'>${element.name}</option>`);
+            });
+        });
+
+        // When Study program changes
+        $("#study_program").change(function () {
+
+            let id = $(this).val();
+            console.log(id);
+            $.ajax({
+                'url': `/admin/api/courseMapping/get/${id}`,
+                type: 'GET',
+                dataType: 'json',
+                success: (data) => {
+
+                    // console.log(data);
+                    previus_val = data.current_mapping;
+                    let mapping = data.mapping[0];
+
+                    let selected_mapping = data.outcome_course;
+
+                    // create the header table
+                    create_header(mapping);
+
+                    //create the body of table
+                    create_body(mapping, selected_mapping);
+                }
+            });
+        });
 
         $("#clickme").click(function () {
 
@@ -166,9 +222,9 @@
                 update_data.push({ "course_id": e.course_id, "update": to_update });
             });
 
-            console.log("PREVIUS VALUE: ", previus_val);
-            console.log("CURRENT VALUE:", arr);
-            console.log("NEW VALUES: ", update_data);
+            // console.log("PREVIUS VALUE: ", previus_val);
+            // console.log("CURRENT VALUE:", arr);
+            // console.log("NEW VALUES: ", update_data);
 
             $.ajax({
                 type: "POST",
@@ -215,30 +271,7 @@
             });
         });
 
-        $("#study_program").change(function () {
-            $("#clickme").removeClass("invisible");
 
-            let id = $(this).val();
-            $.ajax({
-                'url': `/admin/api/courseMapping/get/${id}`,
-                type: 'GET',
-                dataType: 'json',
-                success: (data) => {
-
-                    // console.log(data);
-                    previus_val = data.current_mapping;
-                    let mapping = data.mapping[0];
-
-                    let selected_mapping = data.outcome_course;
-
-                    // create the header table
-                    create_header(mapping);
-
-                    //create the body of table
-                    create_body(mapping, selected_mapping);
-                }
-            });
-        });
     });
 
 
@@ -283,7 +316,7 @@
         let outcomes = mapping["outcomes"];
 
         //clean the body
-        $("#filter").empty();
+        // $("#filter").empty();
 
         // Create a loop to iter for the courses names
         for (let i = 0; i < courses["names"].length; i++) {
@@ -317,12 +350,16 @@
      * @param {Object} mapping -> all data for outcome 
      */
     function create_header(mapping) {
-        $(".thead-dark").empty()
+        $("#tableDiv").empty();
+        $(".thead-dark").empty();
 
         if (mapping == undefined || mapping["outcomes"] == undefined || mapping["outcomes"].length == 0) {
             $("#tableDiv").append(`<h3 style="text-align: center;">THERE IS NOT OUTCOME FOR THIS STUDY PROGRAM</h3>`);
+            $("#clickme").addClass("invisible");
             return;
         }
+        $("#clickme").removeClass("invisible");
+
         let outcomes = mapping["outcomes"];
 
         $(".thead-dark").append("<tr>");

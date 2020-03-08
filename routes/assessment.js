@@ -17,7 +17,6 @@ locals.title = 'ABET Assessment';
   GET /assessment/chooseCourseTerm
 */
 router.get('/chooseCourseTerm', async function(req, res) {
-	console.log('You are in chooseCourseTerm');
 
 	locals.program = [];
 	locals.term = [];
@@ -25,54 +24,56 @@ router.get('/chooseCourseTerm', async function(req, res) {
 	locals.course = [];
 	
 	// get data from table
-	let table_info = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
-		// TODO: flash message with error
-		console.log(err);
+	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
+		console.error("ERROR GETTING STUDY PROGRAMS: ", err);
 	});
 
-	// validate table
-	if (table_info == undefined && table_info.length == 0){
-		// TODO: flash message with empty value
-		console.log("Not values for study program");
+	// Validate Study Program
+	if (study_programs == undefined || study_programs.length == 0){
+		req.flash("error", "Cannot find any study program");
+		return res.redirect("back");
 	}
 
 	// assign value of table info
-	locals.program = table_info;
-
+	locals.program = study_programs;
 	// get program Id for choose course term
-	prog_id = table_info[0].prog_ID;
+	prog_id = study_programs[0].prog_ID;
 
 	let academic_term = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) =>{
-		// TODO: flash message with error
-		console.log("Error getting academic term: ", err);
+		console.error("Error getting academic term: ", err);
 	});
 
-	//copy the result to locals.terms
-	locals.term = academic_term;
-
-	// type (array of object)
-	let course_term = await chooseCourseTermQuery.get_rubric_info(prog_id).catch((err) => {
-		// TODO: flash message with error
-		console.log(err);
-	});
-
-	// validation
-	if (course_term == undefined || course_term.length == 0){
-		// TODO: flash message with error
-		console.log("Can't get course term");
-		return res.redirect("/");
+	// Validate Academic Term
+	if (academic_term == undefined || academic_term.length == 0){
+		req.flash("error", "Cannot find any Academic Term");
+		return res.redirect("back");
 	}
-	// assign
-	locals.rubric = course_term;
+	
+	// type (array of object)
+	let course_term = await chooseCourseTermQuery.get_rubric_info_by_id(prog_id).catch((err) => {
+		console.error("ERROR GETTING THE COURSES: ", err);
+	});
+
+	// Validate Academic Term
+	if (course_term == undefined || course_term.length == 0){
+		req.flash("error", "Cannot find any Course");
+		return res.redirect("back");
+	}
 
 	// type( \array of object)
-	let course_info = await chooseCourseTermQuery.get_course_info(prog_id).catch((err) =>{
-		// TODO: flash message
-		console.log(err);
+	let course_info = await chooseCourseTermQuery.get_course_info_by_id(prog_id).catch((err) =>{
+		console.error("ERROR GETTING COURSE INFORMATION: ", err);
 	});
 
-	console.log("COURSE INFO: ", course_info);
+	// Validate Academic Term
+	if (course_info == undefined || course_info.length == 0){
+		req.flash("error", "Cannot find any Course");
+		return res.redirect("back");
+	}
 
+	// assign
+	locals.term = academic_term;
+	locals.rubric = course_term;
 	locals.course = course_info;
 	// console.group('ChooseTerm Load: ', locals);
 	res.render('assessment/chooseCourseTerm', locals);
@@ -359,7 +360,7 @@ router.post('/perfomanceTable', async function(req, res) {
 });
 
 
-router.get('/assessmentIndex', function(req, res, next) {
+router.get('professor/assessmentIndex', function(req, res, next) {
 	res.render('assessment/assessmentIndex', { title: 'ABET Assessment' });
 });
 

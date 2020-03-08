@@ -1,0 +1,55 @@
+<%- include ('../admin/partials/header') -%>
+
+<!-- <nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/professor">Home</a></li>
+	</ol>
+</nav> -->
+<div class="container reportTabs row">
+	<div class="btn-group btn-group-toggle" data-toggle="buttons">
+		<label class="btn btn-secondary active">
+			<input type="radio" name="options" id="option1" checked> In Progress
+		</label>
+		<label class="btn btn-secondary">
+			<input type="radio" name="options" id="option2"> Completed
+		</label>
+		<label class="btn btn-secondary">
+			<input type="radio" name="options" id="option3"> Archived
+		</label>
+	</div>
+	<div class="">
+		<button type="button" class="btn btn-success" id="createNew">Create New</button>
+	</div>
+</div>
+<div class="container assessmentContainer">
+	<div class="row search">
+			<input class="reportSearch" placeholder="Search" type="text" name="reportSearch">
+			<div>Filter</div>
+	</div>
+	<div class="container assessmentReports">
+		<div class="row row-cols-4">
+			<div class="card">
+				<img src="../images/paper.png" class="card-img-top" alt="...">
+				<div class="card-body">
+					<h5 class="card-title">{Assessment Name}</h5>
+					<p class="card-text">{Course Name}</p>
+					<p class="card-text">{Term}</p>
+					<p class="card-text">{Rubric Name}</p>
+					<p class="card-text">{Date Created}</p>
+				</div>
+			</div>
+			<div class="card">
+				<img src="../images/paper.png" class="card-img-top" alt="...">
+				<div class="card-body">
+					<h5 class="card-title">{Assessment Name}</h5>
+					<p class="card-text">{Course Name}</p>
+					<p class="card-text">{Term}</p>
+					<p class="card-text">{Rubric Name}</p>
+					<p class="card-text">{Date Created}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+		
+<%- include ('../admin/partials/footer') -%>

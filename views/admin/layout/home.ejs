@@ -1,23 +1,28 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
-<nav aria-label="breadcrumb">
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
-		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+
+
+<div class="font-up-bold text-uppercase">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+			<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
 			<% if (index == breadcrumb.length -1) { %>
-				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+			<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
 			<% }else { %>
-				<li class="breadcrumb-item">
-					<a href="<%= breadcrumb[index].url %>">
-						<%= breadcrumb[index].name %>
-					</a>
-				</li>
+			<li class="breadcrumb-item">
+				<a href="<%= breadcrumb[index].url %>">
+					<%= breadcrumb[index].name %>
+				</a>
+			</li>
 			<% } %>
 
-		<% } %>
-	</ol>
-</nav>
+			<% } %>
+		</ol>
+	</nav>
+
+</div>
 
 <!-- FILTERING HEADER -->
 <div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
