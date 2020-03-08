@@ -55,7 +55,7 @@ function insert_assessment(data){
 	return new Promise(function(resolve, reject){
 
 		let find_query = `INSERT INTO ABET.ASSESSMENT (course_ID, term_ID, user_ID, rubric_ID)
-		VALUES (?, ?, ?, ?)`;
+		VALUES (?, ?, ?, ?);`;
 
 		conn.query(find_query, data,function(err,results,fields){
 			if (err)

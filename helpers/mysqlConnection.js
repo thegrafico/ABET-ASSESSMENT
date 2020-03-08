@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var config;
 
 
-//In case you dont have this file, just delete this code and put your credentials in the options object
+ /*In case you dont have this file, just delete this code and put your credentials in the options object*/
 try{
   var credentials = require("./raul_credentials");
 }catch (err){

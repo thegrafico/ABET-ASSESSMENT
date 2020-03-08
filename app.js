@@ -105,8 +105,10 @@ app.use(function (req, res, next) {
 
 // Index route & authorize
 app.use('/', indexRouter);
+// ===== PROFESSOR =====
+app.use('/professor', assessmentRouter);
+// ===== LOGIN AND SIGN OUT =====
 app.use('/authorize', authorize);
-
 // ===== School Term Section =====
 app.use(`${admin_route}/term`, middleware.is_login, middleware.is_admin, schoolTermRouter);
 // ===== Departments Section =====
@@ -124,8 +126,7 @@ app.use(`${admin_route}/evaluation`, middleware.is_login, middleware.is_admin, e
 // ===== Courses Section =====
 app.use(`${admin_route}/courses`, middleware.is_login, middleware.is_admin, coursesRouter);
 app.use(`${admin_route}/api`, middleware.is_login, middleware.is_admin, apiRoute);
-// ===== Program/Course/Term Selection =====
-app.use('/assessment', assessmentRouter);
+
 // ===== CourseMapping Section =====
 app.use(`${admin_route}/courseMapping`, middleware.is_login, middleware.is_admin, courseMapping);
 // ====================================================
