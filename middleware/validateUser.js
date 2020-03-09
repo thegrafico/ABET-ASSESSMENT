@@ -31,7 +31,6 @@ async function get_user_role(email) {
     });
 }
 
-
 /**
  * is_admin Middleware to verify is user is admin
  */

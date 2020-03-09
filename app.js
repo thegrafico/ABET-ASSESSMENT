@@ -49,10 +49,10 @@ var perfCritRouter = require('./routes/performanceCriteria');
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
 // ===== Program/Course/Term Selection =====
-var assessmentRouter = require('./routes/assessment');
+var assessmentRouter = require('./routes/professor/assessment');
 // ===== CourseMapping Route =====
 var courseMapping = require('./routes/courseMapping');
-
+// ===== API =====
 var apiRoute = require('./routes/api');
 
 //======================================================================================
@@ -72,6 +72,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// to store sessions
 app.use(session({
   key: 'sjadhkasdhkjasdhwqudhasjbqkugdabsjdkbwkaudgbjkkfvrrt192ejamnx',
   secret: 'thegrafico is a cool guy',
@@ -105,10 +106,10 @@ app.use(function (req, res, next) {
 
 // Index route & authorize
 app.use('/', indexRouter);
-// ===== PROFESSOR =====
-app.use('/professor', assessmentRouter);
 // ===== LOGIN AND SIGN OUT =====
 app.use('/authorize', authorize);
+// ===== PROFESSOR =====
+app.use('/professor', middleware.is_login, assessmentRouter);
 // ===== School Term Section =====
 app.use(`${admin_route}/term`, middleware.is_login, middleware.is_admin, schoolTermRouter);
 // ===== Departments Section =====

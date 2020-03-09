@@ -4,6 +4,7 @@
 var express = require('express');
 var router = express.Router();
 const api_queries = require("../helpers/queries/api");
+const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 
 
@@ -28,6 +29,55 @@ router.get('/evaluationRubric/get/performances/:rubric_id', async function (req,
 	}
 
 	res.json(performances);
+});
+
+/*
+	-- GET all performance criteria from rubric -- 
+	GET /users
+*/
+router.get('/get/coursesbystudyprogram/:std_id', async function (req, res) {
+
+
+	// validate if rubric_id is good
+	if (req.params.std_id == undefined || isNaN(req.params.std_id)) {
+		return res.json({error: true, message: "Invalid Study Program ID"});
+	}
+
+	let courses = await api_queries.get_courses_by_study_program_id(req.params.std_id).catch((err) => {
+		console.error(err);
+    });
+    
+	// verify is user data is good
+	if (courses == undefined || courses.length == 0) {
+		return res.json({error: true, message: "Cannot find any course"});
+	}
+
+	res.json({error: false, message:"Success", data: courses});
+});
+
+/*
+	-- GET all rubric by outcome id -- 
+    GET /admin/api/get/rubricByOutcome/id
+*/
+router.get('/get/rubricByOutcome/:outcome_id', async function (req, res) {
+
+	// validate if rubric_id is good
+	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
+		return res.json({error: true, message: "Invalid Study Program ID"});
+	}
+
+    let rubric_query = {"from": "EVALUATION_RUBRIC", "where": "outc_ID", "id": req.params.outcome_id};
+    
+    let rubrics = await general_queries.get_table_info_by_id(rubric_query).catch((err) => {
+		console.error(err);
+    });
+
+	// verify is user data is good
+	if (rubrics == undefined || rubrics.length == 0) {
+		return res.json({error: true, message: "Cannot find any rubric"});
+	}
+
+	res.json({error: false, message:"Success", data: rubrics});
 });
 
 

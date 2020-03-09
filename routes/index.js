@@ -23,14 +23,6 @@ router.get('/admin', middleware.is_login, middleware.is_admin, async function (r
 	res.render('admin/home', locals);
 });
 
-
-/* GET PROFESSOR HOME*/
-router.get('/professor', middleware.is_login, async function (req, res) {
-	locals.title = "Professor";
-	res.render('professor/assessmentIndex', locals);
-});
-
-
 /* 
 * GET AUTH ROUTER - start sessions 
 */

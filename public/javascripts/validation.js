@@ -206,6 +206,39 @@ $(document).ready(function () {
         }
     });
 
+    /* VALIDATING THE ASSESSMENT*/
+    $("#create_assessment").validate({
+        
+        // Specify validation rules
+        rules: {
+    
+            "name": "required",
+            "department_id": "required",
+            "study_program": "required",
+            "outcome": "required",
+            "rubric": "required",
+            "term": "required",
+            "course": "required"
+        },
+        // Specify validation error messages
+        messages: {
+            
+            "name": "Cannot be empty",
+            "department_id": "Select a Department",
+            "study_program": "Select a Study Program",
+            "outcome": "Select an Outcome",
+            "rubric": "Select a Rubric",
+            "term": "Select a Term",
+            "course": "Select a Course"
+        },
+        // Make sure the form is submitted to the destination defined
+        // in the "action" attribute of the form when valid
+        submitHandler: function (form) {
+            console.log("HERE");
+            form.submit();
+        }
+    });
+
      /* VALIDATE TERM CREATION */
      $("#criteria_data").validate({
         // Specify validation rules
