@@ -22,6 +22,14 @@ a {
   z-index: 999;
 }
 
+#loader-modal {
+  display: none;
+  position: absolute;
+  left: calc(50% - 32px);
+  top: calc(40% - 32px);
+  z-index: 999;
+}
+
 table {
   font-size: 0.85em;
 }
@@ -124,12 +132,12 @@ textarea.error {
   border-bottom: 1px solid black;
 }
 
-ol > li {
+ol>li {
   font-size: 1.5em;
 }
 
- /* Style to change separator  */
- /* .breadcrumb-item + .breadcrumb-item::before {
+/* Style to change separator  */
+/* .breadcrumb-item + .breadcrumb-item::before {
   content: ">>";
 } */
 

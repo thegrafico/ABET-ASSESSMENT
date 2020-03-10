@@ -1,0 +1,46 @@
+.label_message {
+    width: 100%;
+}
+
+.feedback_span {
+    color: red;
+    font-size: 0.8em;
+}
+
+.row {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.col-6 {
+    margin-bottom: 5%;
+}
+
+.fa-window-close-o,
+.fa-trash-o {
+    /* border: 1px solid red; */
+    position: absolute;
+    padding: 5%;
+    font-size: 2.0em;
+    right: 0;
+    text-align: center;
+    /* border:1px solid red; */
+}
+
+.fa-pencil-square-o {
+    /* border: 1px solid red; */
+    position: absolute;
+    /* border:1px solid red; */
+
+    padding: 5%;
+    font-size: 2.0em;
+    text-align: center;
+}
+
+.fa-trash-o:hover,
+.fa-window-close-o:hover,
+.fa-pencil-square-o:hover {
+    cursor: pointer;
+    border-radius: 5%;
+    background-color: rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,111 @@
+<!-- MODAL CREATE -->
+<div class="modal fade bd-example-modal-lg" id="createModal" tabindex="-1" role="dialog">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="create_assessment" action="/professor/assessment/create" method="POST">
+                <div class="container">
+                    <h1 class="my-4" id="modalTitle">Create New Assessment</h1>
+                    <hr class="my-2 mx-4">
+
+                    <div id='loader-modal'>
+                        <img class="rounded mx-auto d-block" src='/images/loading.gif' style="border-radius: 5%;"
+                            width='32px' height='32px'>
+                    </div>
+
+                    <!--Term Selection-->
+                    <div class="form-group">
+                        <label for="chooseStudyProgram" class="label_message">
+                            Assessment Name:
+                        </label>
+                        <input value="" type="text" name="name" id="assessment_name" class="form-control"
+                            placeholder="Assesment Name">
+                    </div>
+
+                    <!-- SELECT OUTCOME -->
+                    <div class="form-group">
+                        <label for="chooseRubric" class="label_message">
+                            Choose Department
+                            <span class="invisible feedback_span" id="department_message"></span>
+                        </label>
+                        <select class="form-control" name="department_id" id="chooseDepartment">
+                            <option class="dropdown-item" disabled selected value=""> -- Select Department -- </option>
+                            <% departments.forEach(dpt => { %>
+                            <option class="dropdown-item" value="<%=dpt["dep_ID"] %>"><%=dpt["dep_name"] %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <!--Term Selection-->
+                    <div class="form-group">
+                        <label for="chooseStudyProgram" class="label_message">
+                            Choose Study Program
+                            <span class="invisible feedback_span" id="std_message"></span>
+                        </label>
+                        <select class="form-control" name="study_program" id="chooseStudyProgram">
+                            <option class="dropdown-item" disabled selected value="">
+                                -- Select Study Program --
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- SELECT OUTCOME -->
+                    <div class="form-group">
+                        <label for="chooseRubric" class="label_message">
+                            Choose Outcome
+                            <span class="invisible feedback_span" id="outcome_message"></span>
+                        </label>
+                        <select class="form-control" name="outcome" id="chooseOutcome">
+                            <option class="dropdown-item" disabled selected value=""> -- Select Outcome -- </option>
+                        </select>
+                    </div>
+
+                    <!-- Course Selection -->
+                    <div class="form-group">
+                        <label class="label_message" for="chooseCourse">
+                            Choose Course
+                            <span class="invisible feedback_span" id="course_message"></span>
+                        </label>
+                        <select class="form-control" name="course" id="chooseCourse">
+                            <option class="dropdown-item" disabled selected value=""> -- Select Course -- </option>
+                        </select>
+
+                    </div>
+
+                    <!-- Evaluation Rubric Selection -->
+                    <div class="form-group">
+                        <label for="chooseRubric" class="label_message">
+                            Choose Rubric
+                            <span class="invisible feedback_span" id="rubric_message"></span>
+                        </label>
+                        <select class="form-control" name="rubric" id="chooseRubric">
+                            <option class="dropdown-item" disabled selected value=""> -- Select Rubric -- </option>
+                        </select>
+                    </div>
+
+                    <!--Term Selection-->
+                    <div class="form-group">
+                        <label for="chooseTerm" class="label_message">Choose Term</label>
+                        <select class="form-control" name="term" id="chooseTerm">
+                            <option class="dropdown-item" disabled selected value=""> -- Select Study Term -- </option>
+                            <% academic_term.forEach(term => { %>
+                            <option class="dropdown-item" value="<%=term["term_ID"]%>">
+                                <%= term["term_name"]%>
+                            </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                </div>
+                <!--Nav Buttons-->
+                <div class="container">
+                    <hr class="my-2">
+                    <div style="width: 80%; margin-left: 10%; border-radius: 4%;">
+                        <button style="width: 100%; padding: 5px; font-size: 1.5em;" id="submitBtn" class="btn btn-success"
+                            type="submit">Create Assessment</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

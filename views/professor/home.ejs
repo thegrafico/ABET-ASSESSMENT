@@ -1,30 +1,8 @@
 <%- include ('../admin/partials/header') -%>
 <script src="/javascripts/ajaxRequest.js"></script>
+<link rel="stylesheet" href="/stylesheets/professor_assessment.css">
 
-<style>
-    .label_message {
-        width: 100%;
-    }
 
-    .feedback_span {
-        color: red;
-        font-size: 0.8em;
-    }
-
-    .row {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .col-6{
-        margin-bottom: 5%;
-    }
-</style>
-<!-- <nav aria-label="breadcrumb">
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="/professor">Home</a></li>
-	</ol>
-</nav> -->
 <div class="container reportTabs row">
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary active">
@@ -38,8 +16,7 @@
         </label>
     </div>
     <div class="">
-        <button type="button" class="btn btn-success" id="createNew" data-toggle="modal"
-            data-target=".bd-example-modal-lg">
+        <button type="button" class="btn btn-success" id="createNew">
             Create New
         </button>
     </div>
@@ -53,135 +30,52 @@
     <div class="container assessmentReports">
         <div class="row">
 
-        <% for( let i = 0; i < assessments.length; i++) { %>
-                <div class="col-6">
-                    <div class="card" style="width: 80%; margin: auto;">
-                        <div style="margin-left: 15%;" >
+            <!-- TODO: GET THE VALUE FOR EDIT VIA AN API -->
+            <% for( let i = 0; i < assessments.length; i++) { %>
+
+            <div class="col-6">
+                <div class="card" style="width: 80%; margin: auto;">
+                    <i class="editBtn fa fa-pencil-square-o">
+                        <input type="hidden" name="id" value="<%=assessments[i].assessment_ID%>">
+                        <input type="hidden" name="name" value="<%=assessments[i].name%>">
+                        <input type="hidden" name="department" value="<%=assessments[i].dep_ID%>">
+                        <input type="hidden" name="studyprogram" value="<%=assessments[i].prog_ID%>">
+                        <input type="hidden" name="outcome" value="<%=assessments[i].outc_ID%>">
+                        <input type="hidden" name="course" value="<%=assessments[i].course_ID%>">
+                        <input type="hidden" name="rubric" value="<%=assessments[i].rubric_ID%>">
+                        <input type="hidden" name="rubric" value="<%=assessments[i].term_ID%>">
+                    </i>
+                    <!-- <i class="fa fa-window-close-o"></i> -->
+                    <i class="trashBtn fa fa-trash-o" value="<%=assessments[i].assessment_ID%>">
+                        <input type="hidden" value="<%=assessments[i].assessment_ID%>">
+                        <input type="hidden" value="<%=assessments[i].name%>">
+                    </i>
+                    <div style="margin-left: 15%;">
                         <img src="../images/paper.png" class="card-img-top" alt="Assessment">
-                        </div>
-                        <div class="card-body" style=" width: 80%; margin-left: 5%; text-align: center; font-size: 0.9em;">
-                            <h5 class="card-title"> <%=assessments[i].name %></h5>
-                            <p class="card-text"><%=assessments[i].course_name %></p>
-                            <p class="card-text"><%=assessments[i].term_name %></p>
-                            <p class="card-text"><%=assessments[i].rubric_name %></p>
-                            <p class="card-text">Created at <%=assessments[i].creation_date %></p>
-                        </div>
+                    </div>
+                    <div class="card-body" style=" width: 80%; margin-left: 5%; text-align: center; font-size: 0.9em;">
+                        <h5 class="card-title"> <%=assessments[i].name %></h5>
+                        <p class="card-text"><%=assessments[i].course_name %></p>
+                        <p class="card-text"><%=assessments[i].term_name %></p>
+                        <p class="card-text"><%=assessments[i].rubric_name %></p>
+                        <p class="card-text">Created at <%=assessments[i].creation_date %></p>
                     </div>
                 </div>
-        <% } %>
-    </div>
-
-    </div>
-</div>
-
-<!-- MODAL CREATE -->
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <form id="create_assessment" action="/professor/assessment/create" method="POST">
-                <div class="container">
-                    <h1 class="my-4">Create New Assessment</h1>
-                    <hr class="my-2 mx-4">
-
-                    <!--Term Selection-->
-                    <div class="form-group">
-                        <label for="chooseStudyProgram" class="label_message">
-                            Assessment Name:
-                        </label>
-                        <input type="text" name="name" id="assessment_name" class="form-control"
-                            placeholder="Assesment Name">
-                    </div>
-
-                    <!-- SELECT OUTCOME -->
-                    <div class="form-group">
-                        <label for="chooseRubric" class="label_message">
-                            Choose Department
-                            <span class="invisible feedback_span" id="department_message"></span>
-                        </label>
-                        <select class="form-control" name="department_id" id="chooseDepartment">
-                            <option class="dropdown-item" disabled selected value=""> -- Select Department -- </option>
-                            <% departments.forEach(dpt => { %>
-                            <option class="dropdown-item" value="<%=dpt["dep_ID"] %>"><%=dpt["dep_name"] %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-
-                    <!--Term Selection-->
-                    <div class="form-group">
-                        <label for="chooseStudyProgram" class="label_message">
-                            Choose Study Program
-                            <span class="invisible feedback_span" id="std_message"></span>
-                        </label>
-                        <select class="form-control" name="study_program" id="chooseStudyProgram">
-                            <option class="dropdown-item" disabled selected value="">
-                                -- Select Study Program --
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- SELECT OUTCOME -->
-                    <div class="form-group">
-                        <label for="chooseRubric" class="label_message">
-                            Choose Outcome
-                            <span class="invisible feedback_span" id="outcome_message"></span>
-                        </label>
-                        <select class="form-control" name="outcome" id="chooseOutcome">
-                            <option class="dropdown-item" disabled selected value=""> -- Select Outcome -- </option>
-                        </select>
-                    </div>
-
-                    <!-- Course Selection -->
-                    <div class="form-group">
-                        <label class="label_message" for="chooseCourse">
-                            Choose Course
-                            <span class="invisible feedback_span" id="course_message"></span>
-                        </label>
-                        <select class="form-control" name="course" id="chooseCourse">
-                            <option class="dropdown-item" disabled selected value=""> -- Select Course -- </option>
-                        </select>
-
-                    </div>
-
-                    <!-- Evaluation Rubric Selection -->
-                    <div class="form-group">
-                        <label for="chooseRubric" class="label_message">
-                            Choose Rubric
-                            <span class="invisible feedback_span" id="rubric_message"></span>
-                        </label>
-                        <select class="form-control" name="rubric" id="chooseRubric">
-                            <option class="dropdown-item" disabled selected value=""> -- Select Rubric -- </option>
-                        </select>
-                    </div>
-
-                    <!--Term Selection-->
-                    <div class="form-group">
-                        <label for="chooseTerm" class="label_message">Choose Term</label>
-                        <select class="form-control" name="term" id="chooseTerm">
-                            <option class="dropdown-item" disabled selected value=""> -- Select Study Term -- </option>
-                            <% academic_term.forEach(term => { %>
-                            <option class="dropdown-item" value="<%=term["term_ID"]%>">
-                                <%= term["term_name"]%>
-                            </option>
-                            <% }) %>
-                        </select>
-                    </div>
-
-                </div>
-                <!--Nav Buttons-->
-                <div class="container">
-                    <hr class="my-2">
-                    <div style="width: 80%; margin-left: 10%; border-radius: 4%;">
-                        <input type="submit" value="Create Assessment" class="btn btn-success"
-                            style="width: 100%; padding: 5px; font-size: 1.5em;">
-
-                    </div>
-                </div>
-            </form>
+            </div>
+            <% } %>
         </div>
     </div>
 </div>
 
+
+<!-- MODAL CREATE -->
+<%- include ('./modal/create_assessment', {departments, academic_term}) -%>
+
+<!-- MODAL DELETE -->
+<%- include ('./modal/delete_assessment') -%>
+
 <!-- LOGIC FOR MODAL -->
 <script src="/javascripts/modals/assessment_create.js"></script>
 
+<!-- FOOTER -->
 <%- include ('../admin/partials/footer') -%>

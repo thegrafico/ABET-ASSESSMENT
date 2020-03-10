@@ -27,7 +27,7 @@ let locals = {
 router.get('/', async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Department", "url": base_url},
+		{ "name": "Department", "url": base_url },
 	];
 
 
@@ -70,8 +70,8 @@ router.get('/', async function (req, res) {
 router.get('/create', function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Department", "url": base_url},
-		{"name": "Create", "url": "."}
+		{ "name": "Department", "url": base_url },
+		{ "name": "Create", "url": "." }
 	];
 
 	locals.have_dropdown = false;
@@ -136,8 +136,8 @@ router.post('/create', function (req, res) {
 router.get('/:id/edit', async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Department", "url": base_url},
-		{"name": "Edit", "url": "."}
+		{ "name": "Department", "url": base_url },
+		{ "name": "Edit", "url": "." }
 	];
 
 	// validating
@@ -294,31 +294,35 @@ router.delete('/:id', function (req, res, next) {
 router.get('/get/studyPrograms/:departmentId', async function (req, res) {
 
 	// validating id 
-	if (req.params.departmentId == undefined || isNaN(req.params.departmentId)){
+	if (req.params.departmentId == undefined || isNaN(req.params.departmentId)) {
 		return res.end();
 	}
 
 	let dept_ID = req.params.departmentId;
 
-	let data = {"from":"STUDY_PROGRAM", "where":"dep_ID", "id": dept_ID};
-	
+	let data = { "from": "STUDY_PROGRAM", "where": "dep_ID", "id": dept_ID };
+
 	// get std program
 	let study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("ERROR: ", err);
 	});
 
 	// validate std program
-	if( study_programs == undefined || study_programs.length == 0){
+	if (study_programs == undefined || study_programs.length == 0) {
 		return res.end();
 	}
-	
+
 	let record = [];
-	
+
 	study_programs.forEach(row => {
-		record.push({"name": row["prog_name"], "value": row["prog_ID"]});
+		record.push({ "name": row["prog_name"], "value": row["prog_ID"] });
 	});
-		
+
+	// setTimeout(function(){
 	res.json(record);
+
+	// },3000);
+
 });
 
 module.exports = router;

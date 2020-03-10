@@ -42,17 +42,20 @@ router.get('/', async function (req, res) {
 	});
 
 	let assessments = await assessment_query.get_assessment_by_user_id(user_id).catch((err) => {
-		console.error("Error getting user assessment: ", err);	
+		console.error("Error getting user assessment: ", err);
 	});
 
+	// Change the date of all assessment
 	assessments.map(row => {
-		row.creation_date =`${row.creation_date.getMonth() + 1}/${row.creation_date.getDate()}/${row.creation_date.getFullYear()}`; 
+		row.creation_date = `${row.creation_date.getMonth() + 1}/${row.creation_date.getDate()}/${row.creation_date.getFullYear()}`;
 	});
 
 	// assign value of table info
 	locals.departments = departments || [];
 	locals.academic_term = academic_term || [];
 	locals.assessments = assessments || [];
+
+	// console.log(assessments);
 
 	res.render('professor/home', locals);
 });
@@ -90,8 +93,71 @@ router.post("/assessment/create", async function (req, res) {
 		req.flash("success", "Assessment created!");
 		res.redirect("back");
 	}).catch((err) => {
-		console.log("ERROR: ", err)
-		req.flash("error", "Error creating assessment");
+		console.log("ERROR: ", err);
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "An Assessment with the same information does already exits");
+		else
+			req.flash("error", "Error creating assessment");
+
+		res.redirect("back");
+	});
+
+});
+
+
+/* 
+	- UPDATE AN ASSESSMENT - 
+*/
+router.put('/assessment/:id', function (req, res) {
+
+	if (req.params.id == undefined || isNaN(req.params.id)) {
+		req.flash("error", "Cannot find the assessment");
+		return res.redirect("back");
+	}
+	// getting the user id
+	let user_id = req.session.user_id;
+	let assessment_id = req.params.id;
+
+	assessment_query.update_assessment_by_id(user_id, assessment_id, req.body).then((ok) => {
+		req.flash("success", "Assessment Updated!");
+		res.redirect("back");
+	}).catch((err) => {
+		console.log("ERROR: ", err);
+
+		console.log("ERROR: ", err);
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "An Assessment with the same information does already exits");
+		else
+			req.flash("error", "Cannot Update the assessment");
+
+		res.redirect("back");
+	});
+
+});
+
+/* 
+	- DELETE - DELETE assessment
+	TODO: Delete only if the assessment belong to the user
+*/
+router.delete('/assessment/:id', async function (req, res) {
+
+	if (req.params.id == undefined || isNaN(req.params.id)) {
+		req.flash("error", "Cannot find the assessment");
+		return res.redirect("back");
+	}
+
+	// getting the user id
+	let user_id = req.session.user_id;
+	let assessment_id = req.params.id;
+
+	assessment_query.remove_assessment_by_id(user_id, assessment_id).then((ok) => {
+		req.flash("success", "Assessment Removed!");
+		res.redirect("back");
+	}).catch((err) => {
+		console.log("ERROR: ", err);
+
+		req.flash("error", "Cannot remove the assessment");
+
 		res.redirect("back");
 	});
 

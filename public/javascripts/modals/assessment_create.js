@@ -1,6 +1,7 @@
 
 $(document).ready(function () {
 
+    const tag_name = "#assessment_name";
     const tag_department = "#chooseDepartment";
     const tag_study_program = "#chooseStudyProgram";
     const tag_outcome = "#chooseOutcome";
@@ -10,32 +11,115 @@ $(document).ready(function () {
     const tags = [tag_study_program, tag_outcome, tag_course, tag_rubric];
     const default_message = ["Study Program", "Outcome", "Course", "Rubric"];
 
-    tags.forEach(e => {
-        $(e).prop("disabled", true);
+    /**
+     * When Create assessment
+    */
+
+    $("#createNew").click(function () {
+
+        // Change the tittle
+        $("#modalTitle").text("Create Assessment");
+        $("#submitBtn").text("Create Assessment");
+
+        // show the mdodal
+        $('#createModal').modal('toggle');
+
+        // change the action of form
+        $("#create_assessment").attr("action", `/professor/assessment/create`);
+
     });
 
-    // WHEN DEPARTMENT CHANGES
-    $(tag_department).change(async function () {
+    /**
+     * MODAL FOR DELETE
+     * when user click the trash button 
+    * */
+    $(".trashBtn").click(function () {
+        // show the mdodal
+        $('#deleteModal').modal('toggle');
 
-        // hide span errors
-        hide_span("#std_message");
-        hide_span("#outcome_message");
-        hide_span("#rubric_message");
-        hide_span("#course_message");
 
-        // department id
-        let dept_id = $(this).val();
+        // get the id of the assessment
+        let assessment_id = $(this).find('input:first').attr('value');
+        let assessment_name = $(this).find('input:nth-child(2)').attr('value');
 
-        // get study program 
-        let study_programs = await make_request(`/admin/department/get/studyPrograms/${dept_id}`).catch((err) => {
-            console.log("Error getting study programs: ", err);
+        // change the text of the modal
+        $("#modal-text").text(`${assessment_name}?`);
+
+        // change the action of form
+        $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
+    });
+
+    /**
+    * MODAL FOR EDIT
+    * WHEN USER CLICK EDIT BUTTON
+    */
+    $(".editBtn").click(async function () {
+
+        // show loading icon
+        $("#loader-modal").show();
+
+        // Change the title and button text
+        $("#modalTitle").text("Edit Assessment");
+        $("#submitBtn").text("Edit Assessment");
+
+        // show the mdodal
+        $('#createModal').modal('toggle');
+
+        // Get all information from assessment to edit
+        let assessment_id = $(this).find('input:first').attr('value');
+        let assessment_name = $(this).find('input:nth-child(2)').attr('value');
+        let dept = $(this).find('input:nth-child(3)').attr('value');
+        let std = $(this).find('input:nth-child(4)').attr('value');
+        let outc = $(this).find('input:nth-child(5)').attr('value');
+        let course = $(this).find('input:nth-child(6)').attr('value');
+        let rubric = $(this).find('input:nth-child(7)').attr('value');
+        let term = $(this).find('input:nth-child(8)').attr('value');
+
+        // Change the name
+        $(tag_name).val(assessment_name);
+        // Change the term
+        $(tag_term).val(term);
+        // Change the department
+        $(tag_department).val(dept);
+
+
+        // Update the department and setup the value
+        await update_departmet(dept).catch((err) => {
+            console.log(error);
         });
 
-        // if cannot find any study program, show a error message
-        if (study_programs == undefined || study_programs.length == 0) {
-            show_span("#std_message", "*Cannot find any Study Program for this department");
-            return;
+        // disable all options - after set department
+        for (let i = 0; i < tags.length; i++) {
+            $(tags[i]).prop("disabled", false);
         }
+
+
+        // Change study program, and update all study program
+        $(tag_study_program).val(std);
+        await update_study_program(std).catch((err) => {
+            console.log(error);
+        });
+
+        // select outcome, and update all outcomes
+        $(tag_outcome).val(outc);
+        await update_outcome(outc).catch((err) => {
+            console.log(err);
+        });
+
+        // Select course and rubric
+        $(tag_course).val(course);
+        $(tag_rubric).val(rubric);
+
+        // hide loading icon
+        $("#loader-modal").hide();
+
+        // Change the action of the form to update
+        $("#create_assessment").attr("action", `/professor/assessment/${assessment_id}?_method=PUT`);
+    });
+
+    // ===============================CREATE MODAL=====================================
+    // CLEAN MODAL WHEN OPEN
+    $("#createModal").on('hidden.bs.modal', function () {
 
         // clean all options when user change from department
         for (let i = 0; i < tags.length; i++) {
@@ -43,93 +127,72 @@ $(document).ready(function () {
             clean_select(tags[i], default_message[i]);
         }
 
-        fill_select_option(study_programs, "name", "value", tag_study_program, "Study Program");
+        // Clean department
+        $(tag_department).val(function () {
+            return this.defaultValue;
+        });
 
-        // Hide the message is there are study program
-        hide_span("#std_message");
-        $(tag_study_program).prop("disabled", false);
+        // reset name
+        $(tag_name).val(function () {
+            return this.defaultValue;
+        });
 
+        // reset term
+        $(tag_term).val(function () {
+            return this.defaultValue;
+        });
+
+    });
+
+    tags.forEach(e => {
+        $(e).prop("disabled", true);
+    });
+
+    // WHEN DEPARTMENT CHANGES
+    $(tag_department).change(async function () {
+        // department id
+        let dept_id = $(this).val();
+
+        $("#loader-modal").show();
+        await update_departmet(dept_id).then((ok) => {
+            console.log(ok);
+            $("#loader-modal").hide();
+        }).catch((err) => {
+            console.log(err);
+            $("#loader-modal").hide();
+        });
     });
 
 
     // WHEN THE USER CHANGE THE STUDY PROGRAM -> UPDATE STUDY PROGRAM AND COURSES
     $(tag_study_program).change(async function () {
-
-        // clean all options when user change from department
-        $(tag_outcome).prop("disabled", false);
-        $(tag_course).prop("disabled", false);
-
         // get the study program id
         let std_id = $(this).val();
 
-        // get all outcomes by study program
-        let outcomes = await make_request(`/admin/outcomes/get/outcomes/${std_id}`).catch((err) => {
-            console.log("CANNOT GET THE OUTCOMES: ", err);
+        $("#loader-modal").show();
+        await update_study_program(std_id).then((ok) => {
+            console.log(ok);
+            $("#loader-modal").hide();
+        }).catch((err) => {
+            console.log(err);
+            $("#loader-modal").hide();
         });
-
-        // TODO: better message of description
-        if (outcomes == undefined || outcomes.length == 0) {
-            show_span("#std_message", `*This study Program does not have any Outcome`);
-            return;
-        }
-
-        // hide span errors
-        hide_span("#std_message");
-        hide_span("#outcome_message");
-        hide_span("#course_message");
-
-        // fill the select option
-        fill_select_option(outcomes, "name", "value", tag_outcome, "Outcome");
-
-        // clean rubric
-        clean_select(tag_rubric, "Rubric");
-
-
-        // TODO: Los cursos que aparecen deberian ser los que estan en course mapping??
-        let courses = await make_request(`/admin/api/get/coursesbystudyprogram/${std_id}`).catch((err) => {
-            console.log("There is an error: ", err);
-        });
-
-        // TODO: better message
-        if (courses["data"] == undefined || courses["data"].length == 0) {
-            show_span("#course_message", `*This study program does not have any courses`);
-            return;
-        }
-
-        // FILL Course
-        fill_select_option(courses["data"], "course_name", "course_ID", tag_course, "Course");
 
     });
 
     // WHE USER CHANGES THE OUTCOME -> UPDATE RUBRIC
-    $("#chooseOutcome").change(async function () {
-
+    $(tag_outcome).change(async function () {
         // get outcome ID
         let outc_id = $(this).val();
 
-
-
-        // get rubric
-        let rubrics = await make_request(`/admin/api/get/rubricByOutcome/${outc_id}`).catch((err) => {
-            console.log("There is an error getting the rubrics: ", err);
+        $("#loader-modal").show();
+        await update_outcome(outc_id).then((ok) => {
+            console.log(ok);
+            $("#loader-modal").hide();
+        }).catch((err) => {
+            console.log(err);
+            $("#loader-modal").hide();
         });
-
-        // validate rubric
-        if (rubrics == undefined || rubrics["data"] == undefined) {
-            show_span("#rubric_message", `*Cannot find any Rubric for the Outcome selected`);
-            return;
-        }
-
-        $(tag_rubric).prop("disabled", false);
-
-        // hide message is rubric is found
-        hide_span("#rubric_message");
-
-        console.log(rubrics);
-
-        // fill the select option with the rubric
-        fill_select_option(rubrics["data"], "rubric_name", "rubric_ID", "#chooseRubric", "Rubric");
-
     });
 
     /**
@@ -185,4 +248,134 @@ $(document).ready(function () {
         $(element).addClass("invisible");
         $(element).text(message);
     }
+
+
+    /**
+     * Update department by id
+     * @param {Number} dept_id id of the department
+     * @returns {Promise} with true
+     */
+    async function update_departmet(dept_id) {
+
+        return new Promise(async (resolve, reject) => {
+
+            // hide span errors
+            hide_span("#std_message");
+            hide_span("#outcome_message");
+            hide_span("#rubric_message");
+            hide_span("#course_message");
+
+
+            // get study program 
+            let study_programs = await make_request(`/admin/department/get/studyPrograms/${dept_id}`).catch((err) => {
+                console.log("Error getting study programs: ", err);
+            });
+
+            // if cannot find any study program, show a error message
+            if (study_programs == undefined || study_programs.length == 0) {
+                show_span("#std_message", "*Cannot find any Study Program for this department");
+                return reject("Cannot find any Study Program for this department");
+            }
+
+            // clean all options when user change from department
+            for (let i = 0; i < tags.length; i++) {
+                $(tags[i]).prop("disabled", true);
+                clean_select(tags[i], default_message[i]);
+            }
+
+            fill_select_option(study_programs, "name", "value", tag_study_program, "Study Program");
+
+            // Hide the message is there are study program
+            hide_span("#std_message");
+            $(tag_study_program).prop("disabled", false);
+
+            resolve(true);
+        });
+    }
+    /**
+     * update_study_program by id
+     * @param {Number} std_id id of the study program
+     * @returns {Promise} with true
+     */
+    async function update_study_program(std_id) {
+        return new Promise(async function (resolve, reject) {
+
+            // clean all options when user change from department
+            $(tag_outcome).prop("disabled", false);
+            $(tag_course).prop("disabled", false);
+
+
+            // get all outcomes by study program
+            let outcomes = await make_request(`/admin/outcomes/get/outcomes/${std_id}`).catch((err) => {
+                console.log("CANNOT GET THE OUTCOMES: ", err);
+            });
+
+            // TODO: better message of description
+            if (outcomes == undefined || outcomes.length == 0) {
+                show_span("#std_message", `*This study Program does not have any Outcome`);
+                return reject("Cannot find any outcome");
+            }
+
+            // hide span errors
+            hide_span("#std_message");
+            hide_span("#outcome_message");
+            hide_span("#course_message");
+
+            // fill the select option
+            fill_select_option(outcomes, "name", "value", tag_outcome, "Outcome");
+
+            // clean rubric
+            clean_select(tag_rubric, "Rubric");
+
+            // TODO: Los cursos que aparecen deberian ser los que estan en course mapping??
+            let courses = await make_request(`/admin/api/get/coursesbystudyprogram/${std_id}`).catch((err) => {
+                console.log("There is an error: ", err);
+            });
+
+            // TODO: better message
+            if (courses["data"] == undefined || courses["data"].length == 0) {
+                show_span("#course_message", `*This study program does not have any courses`);
+                return reject("Cannot find any course");
+            }
+
+            // FILL Course
+            fill_select_option(courses["data"], "course_name", "course_ID", tag_course, "Course");
+
+            resolve(true);
+        });
+    }
+
+
+    /**
+     * Update outcome by id
+     * @param {Number} outc_id id
+     * @returns {Promise} with true
+     */
+    async function update_outcome(outc_id) {
+        return new Promise(async function (resolve, reject) {
+
+            // get rubric
+            let rubrics = await make_request(`/admin/api/get/rubricByOutcome/${outc_id}`).catch((err) => {
+                console.log("There is an error getting the rubrics: ", err);
+            });
+
+            // validate rubric
+            if (rubrics == undefined || rubrics["data"] == undefined) {
+                show_span("#rubric_message", `*Cannot find any Rubric for the Outcome selected`);
+                return reject("Cannot find the outcome");
+            }
+
+            $(tag_rubric).prop("disabled", false);
+
+            // hide message is rubric is found
+            hide_span("#rubric_message");
+
+            // console.log(rubrics);
+
+            // fill the select option with the rubric
+            fill_select_option(rubrics["data"], "rubric_name", "rubric_ID", "#chooseRubric", "Rubric");
+
+            resolve(true);
+        });
+    };
 });
