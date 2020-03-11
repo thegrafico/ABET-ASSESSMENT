@@ -248,17 +248,27 @@
                             msgTitle = "Success";
                             msgBody = "";
 
-                            create_list("#removedElements", response["deleted"], "#delQ");
-                            create_list("#addedElements", response["added"], "#addQ");
+                            if (response["deleted"].length > 0){
+                                create_list("#removedElements", "Removed: ", response["deleted"]);
+                            }else{
+                                clean_list("#removedElements");
+                            }
+
+                            if (response["added"].length > 0){
+                                create_list("#addedElements", "Added:", response["added"]);
+                            }else{
+                                clean_list("#addedElements");
+                            }
 
                         } else {
                             msgTitle = "Feedback";
                             msgBody = "You did not change any value!";
+                            clean_list("#removedElements");
+                            clean_list("#addedElements");
                         }
 
                         $("#modalTitle").text(msgTitle);
                         $("#modalMessage").text(msgBody)
-
                         $('#view_performances').modal('toggle');
                     }
                 },
@@ -273,14 +283,19 @@
 
     });
 
-    function create_list(tag, elements, counter_tag) {
-        // $(tag).text(`---Courses:${elements.length}, outcomes: ${5}`);
-        
-        $(tag).empty();
+    function create_list(tag, title, elements) {
+        $(tag).empty().append(`<h4>${title}</h4>`);
+        $(tag).append("<ul>");
         elements.forEach(row => {
             let outcomes = row["outcome"].join(", ");
             $(tag).append(`<li><strong> ${row["course"]}:</strong> ${outcomes} </li>`);
         });
+
+        $(tag).append("</ul>");
+    }
+
+    function clean_list(tag) {
+        $(tag).empty();
     }
 
     /**
