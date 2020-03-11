@@ -14,8 +14,8 @@ var locals = {
 	url_create: "/perfomanceCriteria/create",
 	"form_id": "criteria_data",
 	"api_get_url": "/admin/outcomes/performanceCriteria",
-	delete_redirect: null
-
+	delete_redirect: null,
+	feedback_message: "Number of Performance Criteria: ",
 };
 
 /*

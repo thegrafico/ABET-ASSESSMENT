@@ -22,7 +22,9 @@ let locals = {
 	"base_url": base_url,
 	"form_id": "rubric_data",
 	"api_get_url": base_url,
-	"delete_redirect": null
+	"delete_redirect": null,
+	feedback_message: "Number of Evaluation Rubrics: ",
+
 };
 
 /*	

@@ -18,6 +18,8 @@ let locals = {
 	"api_get_url": base_url,
 	delete_redirect: null,
 	dropdown_option_selected: null,
+	feedback_message: "Number of Outcomes: ",
+
 };
 
 /* 

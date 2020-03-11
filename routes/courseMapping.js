@@ -16,9 +16,9 @@ let locals = {
 router.get('/', async function (req, res) {
 
     locals.breadcrumb = [
-		{ "name": "Course Mapping", "url": "."},
-	];
-    
+        { "name": "Course Mapping", "url": "." },
+    ];
+
     locals.selected_program = 0;
     if (req.query.progID != undefined)
         locals.selected_program = parseInt(req.query.progID);
@@ -31,13 +31,13 @@ router.get('/', async function (req, res) {
         console.error("ERROR GETTING DEPARTMENTS: ", err);
     });
 
-    if (departments == undefined || departments.length == 0){
+    if (departments == undefined || departments.length == 0) {
         req.flash("error", "Cannot find Any Department");
         return res.redirect("back")
     }
 
     locals.departments = departments;
-    
+
     let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
         console.error("ERROR: ", err);
     });
@@ -57,44 +57,113 @@ router.get('/', async function (req, res) {
     res.render('admin/courseMapping/home', locals);
 });
 
+/* 
+*/
+
 router.post('/addMapping', async function (req, res) {
 
-    if (req.body == undefined || req.body.data == undefined) {
+    if (req.body == undefined || req.body.data == undefined || req.body.data.length == 0) {
         return res.end();
     }
+
+    // set data
     let data = req.body.data;
 
-    if (data.length == 0) {
-        return res.end();
-    }
+    let mapping_insert = [];
+    let mapping_remove = [];
+    let can_insert = false, can_remove = false;
+    data.forEach(row => {
 
-    let was_update = false;
-    data.forEach(async row => {
+        // SETUP ELEMENTS FOR INSERT
         if (row.update != undefined && row.update.insert != undefined && row.update.insert.length > 0) {
-            was_update = true;
-            await courseMappingQuery.insert_mapping(row.course_id, row["update"]["insert"]).catch((err) => {
-                console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
+            can_insert = true;
+            row["update"]["insert"].forEach(e => {
+                mapping_insert.push([row.course_id, e]);
             });
-
-            console.log("MAPPING ADDED SOME VALUES");
         }
 
+        // SETUP ELEMENTS FOR REMOVE
         if (row.update != undefined && row.update.delete != undefined && row.update.delete.length > 0) {
-            was_update = true;
-            await courseMappingQuery.remove_mapping(row.course_id, row["update"]["delete"]).catch((err) => {
-                console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
+            can_remove = true;
+            row["update"]["delete"].forEach(e => {
+                mapping_remove.push([row.course_id, e]);
             });
-
-            console.log("MAPPING REMOVED SOME VALUES");
         }
     });
 
-    if (was_update){
-        res.end('{"success" : "Updated Successfully", "status" : 200, "wasUpdated": true}');
-    }else{
+    let removed_elements = [];
+    let update_elements = [];
+
+    // Remove the elements from mapping
+    if (can_remove) {
+
+        // Course with removed outcomes
+        removed_elements = await generate_dt(mapping_remove);
+
+        let error = undefined;
+        await courseMappingQuery.remove_mapping(mapping_remove).catch((err) => {
+            console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
+            error = err;
+        });
+    }
+
+    if (can_insert) {
+
+        // Course with removed outcomes
+        let error = undefined
+        await courseMappingQuery.insert_mapping(mapping_insert).catch((err) => {
+            console.error("THERE IS AN ERROR INSERTING MAPPING: ", err);
+            error = err;
+        });
+
+        // Course with removed outcomes
+        update_elements = await generate_dt(mapping_insert);
+
+    }
+
+    if (can_insert || can_remove) {
+        res.json({ "success": "Updated Successfully", "status": 200, "wasUpdated": true,
+        "deleted": removed_elements, "added": update_elements});
+    } else {
         res.end('{"success" : "Data keep the same", "status" : 200, "wasUpdated": false}');
     }
 });
+
+/**
+ * generate_dt -> Create a new data structure
+ * @param {Object} data -> Object with all data
+ * @param {String} key -> key to compare 
+ * @param {String} keyValue -> Key to return 
+ * @returns {Object} -> Return a new data structure ["courses", "outcomes"]
+ */
+async function generate_dt(mapping) {
+
+    // all data
+    let data = await courseMappingQuery.get_mapping_name([mapping]).catch((err) => {
+        console.log(err);
+    });
+
+    // getting all ids
+    let names = data.map(row => row.course_name);
+
+    // remove duplicates
+    names = names.filter(function (item, pos) {
+        return names.indexOf(item) == pos;
+    });
+
+    let course_mapping = []
+    names.forEach(course_name => {
+        let outcomes = [];
+
+        data.forEach(e => {
+            if (course_name == e["course_name"]) {
+                outcomes.push(e["outc_name"]);
+            }
+        });
+        course_mapping.push({ "course": course_name, "outcome": outcomes })
+    });
+    return course_mapping;
+}
 
 
 /**
@@ -105,7 +174,6 @@ router.post('/addMapping', async function (req, res) {
 function transformdt(outcomes) {
     // getting all ids
     let ids = outcomes.map(row => row.prog_ID);
-
 
     // remove duplicates
     ids = ids.filter(function (item, pos) {

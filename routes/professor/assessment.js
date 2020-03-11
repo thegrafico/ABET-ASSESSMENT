@@ -22,7 +22,6 @@ let locals = {
 	- Get /professor
 	- HOME PAGE page
 	TODO: verify where to redirect when error
-
 */
 router.get('/', async function (req, res) {
 
@@ -101,7 +100,61 @@ router.post("/assessment/create", async function (req, res) {
 
 		res.redirect("back");
 	});
+});
 
+
+/*
+	- Get /professor/assessment/id
+	// TODO: VERIFY IF EXITS
+*/
+router.get('/assessment/:id', async function (req, res) {
+
+	// Validate ID
+	if (req.params.id == undefined || isNaN(req.params.id)) {
+		req.flash("error", "Invalid Assessment");
+		return res.redirect("back");
+	}
+
+	// GET ALL performance criterias
+	let perf_criterias = await queries.get_perf_criterias(req.params.id).catch((err) => {
+		console.log("Error: ", err);
+	});
+
+	
+
+	locals.colNums = perf_criterias.length;
+	locals.perfCrit = perf_criterias.map(e => e.perC_order); 
+
+	// // the user id is stored in session, thats why user need to be login
+	// let user_id = req.session.user_id;
+
+	// // Get all departments
+	// let departments = await queries.get_department_by_user_id(user_id).catch((err) => {
+	// 	console.error("Error getting department: ", err);
+	// });
+
+	// // Getting the term
+	// let academic_term = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
+	// 	console.error("Error getting academic term: ", err);
+	// });
+
+	// let assessments = await assessment_query.get_assessment_by_user_id(user_id).catch((err) => {
+	// 	console.error("Error getting user assessment: ", err);
+	// });
+
+	// // Change the date of all assessment
+	// assessments.map(row => {
+	// 	row.creation_date = `${row.creation_date.getMonth() + 1}/${row.creation_date.getDate()}/${row.creation_date.getFullYear()}`;
+	// });
+
+	// // assign value of table info
+	// locals.departments = departments || [];
+	// locals.academic_term = academic_term || [];
+	// locals.assessments = assessments || [];
+
+	// console.log(assessments);
+
+	res.render('assessment/perfomanceTable', locals);
 });
 
 
@@ -132,7 +185,6 @@ router.put('/assessment/:id', function (req, res) {
 
 		res.redirect("back");
 	});
-
 });
 
 /* 
@@ -161,77 +213,6 @@ router.delete('/assessment/:id', async function (req, res) {
 		res.redirect("back");
 	});
 
-});
-
-
-/*
-	Get professor/assessmentIndex
-	- Modal
-*/
-router.get('/professor/modalInfo', async function (req, res) {
-	console.log('You are in chooseCourseTerm');
-
-	locals.program = [];
-	locals.term = [];
-	locals.rubric = [];
-	locals.course = [];
-
-	// get data from table
-	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
-		console.error("ERROR GETTING STUDY PROGRAMS: ", err);
-	});
-
-	// Validate Study Program
-	if (study_programs == undefined || study_programs.length == 0) {
-		req.flash("error", "Cannot find any study program");
-		return res.redirect("back");
-	}
-
-	// assign value of table info
-	locals.program = study_programs;
-	// get program Id for choose course term
-	prog_id = study_programs[0].prog_ID;
-
-	let academic_term = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
-		console.error("Error getting academic term: ", err);
-	});
-
-	// Validate Academic Term
-	if (academic_term == undefined || academic_term.length == 0) {
-		req.flash("error", "Cannot find any Academic Term");
-		return res.redirect("back");
-	}
-
-	// type (array of object)
-	let course_term = await chooseCourseTermQuery.get_rubric_info_by_id(prog_id).catch((err) => {
-		console.error("ERROR GETTING THE COURSES: ", err);
-	});
-
-	// Validate Academic Term
-	if (course_term == undefined || course_term.length == 0) {
-		req.flash("error", "Cannot find any Course");
-		return res.redirect("back");
-	}
-
-	// type( \array of object)
-	let course_info = await chooseCourseTermQuery.get_course_info_by_id(prog_id).catch((err) => {
-		console.error("ERROR GETTING COURSE INFORMATION: ", err);
-	});
-
-	// Validate Academic Term
-	if (course_info == undefined || course_info.length == 0) {
-		req.flash("error", "Cannot find any Course");
-		return res.redirect("back");
-	}
-
-	// assign
-	locals.term = academic_term;
-	locals.rubric = course_term;
-	locals.course = course_info;
-
-	// console.group('ChooseTerm Load: ', locals);
-	// res.render('assessment/assessmentIndex', locals);
-	res.json(locals);
 });
 
 /* 

@@ -34,12 +34,18 @@
 }
 
 .perfomanceTable {
-	width: 2000px;
-	height: 600px;
 	border: 1px solid #aaaaaa;
+	height: 100%;
 	box-shadow: 2.5px 2.5px 2.5px #aaaaaa;
 	border-radius: 15px;
 	overflow-y: auto;
+}
+
+.barChart{
+	box-shadow: 2.5px 2.5px 2.5px #aaaaaa;
+	border-radius: 15px;
+	text-align: center;
+	height: 100%
 }
 
 .assessmentReports {

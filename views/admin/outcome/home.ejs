@@ -1,21 +1,21 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 <nav aria-label="breadcrumb">
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
-		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+        <% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
-			<% if (index == breadcrumb.length -1) { %>
-				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
-			<% }else { %>
-				<li class="breadcrumb-item">
-					<a href="<%= breadcrumb[index].url %>">
-						<%= breadcrumb[index].name %>
-					</a>
-				</li>
-			<% } %>
+        <% if (index == breadcrumb.length -1) { %>
+        <li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+        <% }else { %>
+        <li class="breadcrumb-item">
+            <a href="<%= breadcrumb[index].url %>">
+                <%= breadcrumb[index].name %>
+            </a>
+        </li>
+        <% } %>
 
-		<% } %>
-	</ol>
+        <% } %>
+    </ol>
 </nav>
 
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
@@ -75,8 +75,8 @@
                     </div>
                 </div>
 
-                <div class="p-2 bd-highlight" style=" margin-left:3%;">
-                    <h4>Quantity: <span id="number"></span> </h4>
+                <div class="p-2 bd-highlight">
+                    <h4><%= feedback_message %>  <span id="number"></span> </h4>
                 </div>
             </div>
         </div>
@@ -101,13 +101,17 @@
                 <!-- IF NOT last position -->
                 <% if((index == (element["values"].length -2) )) { %>
                 <th>
-                    <a href="<%= base_url %>/<%= element["ID"]%>/performanceCriteria" class="btn btn-secondary">
-                        <% if (!element["hasPerformance"]) { %>
+                    <% if (!element["hasPerformance"]) { %>
+                    <a href="<%= base_url %>/<%= element["ID"]%>/performanceCriteria"
+                        class="btn btn-secondary bg-warning text-dark">
                         Create
-                        <% }else{ %>
-                        Administrate
-                        <% }%>
                     </a>
+                    <% }else{ %>
+                    <a href="<%= base_url %>/<%= element["ID"]%>/performanceCriteria"
+                        class="bg-info text-white btn btn-secondary">
+                        Administrate
+                    </a>
+                    <% }%>
                 </th>
                 <% }else if (index != (element["values"].length -1) ) { %>
 
@@ -136,11 +140,11 @@
 
 
 <div class="container">
-	<div class="col-4" style="margin-left: 30%;">
-		<a style="width: 100%;" href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">
+    <div class="col-4" style="margin-left: 30%;">
+        <a style="width: 100%;" href="<%= base_url %>/create" class="btn inter-green inter-green-btn" role="button">
             Create Outcome
         </a>
-	</div>
+    </div>
 </div>
 
 

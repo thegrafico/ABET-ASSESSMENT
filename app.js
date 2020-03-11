@@ -101,6 +101,7 @@ app.use(function (req, res, next) {
   res.locals.filter_title = false;
   res.locals.filter_value = [];
   res.locals.breadcrumb = [];
+  res.locals.feedback_message = "";
   next();
 });
 
