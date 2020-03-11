@@ -22,6 +22,8 @@
 
 <input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
 <input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">
+<input type="hidden" id="outcomeName" name="outcomeName" value="<%= outc_name %> ">
+
 <div class="container-fluid" style="margin-top: 10px; margin-bottom: 100px;">
 	<div class="row" style="padding: 2%;">
 
@@ -55,7 +57,7 @@
 			</div>
 		</div>
 		<div class="col-6 barChart">
-			<h3>% Student with 3 or more in outcome {x}</h3>
+			<h3>% Student with 3 or more in <%= outc_name %></h3>
 			<canvas id="myChart" width="350" height="200" role="img"></canvas>
 		</div>
 	</div>

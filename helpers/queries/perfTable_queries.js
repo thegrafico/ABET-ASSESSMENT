@@ -10,18 +10,21 @@ var conn = db.mysql_pool;
 function get_perf_criterias(assessmentID) {
 	return new Promise(function (resolve, reject) {
 		let findPerfCrit = `SELECT *
-                      FROM PERF_CRITERIA, (SELECT perC_ID
-                                           FROM PERFORMANCE_RUBRIC,(SELECT rubric_ID
-                                                                    FROM EVALUATION_RUBRIC
-                                                                    WHERE rubric_ID = (
-                                                                        SELECT rubric_ID
-																	    FROM ASSESSMENT
-																	    WHERE assessment_ID = ?
-                                                                    )
-                                                                  ) as result
-                                           WHERE PERFORMANCE_RUBRIC.rubric_ID = result.rubric_ID
-                                           ) as resultTwo
-					  WHERE PERF_CRITERIA.perC_ID = resultTwo.perC_ID`;
+							FROM (
+									SELECT STUDENT_OUTCOME.outc_ID, outc_name, perC_order, perC_ID, perC_Desk
+									FROM STUDENT_OUTCOME, PERF_CRITERIA
+									WHERE STUDENT_OUTCOME.outc_ID = PERF_CRITERIA.outc_ID) as OutcomeResults, (
+																												SELECT perC_ID
+																												FROM PERFORMANCE_RUBRIC, (
+																																			SELECT rubric_ID
+																																			FROM EVALUATION_RUBRIC
+																																			WHERE rubric_ID = (
+																																								SELECT rubric_ID
+																																								FROM ASSESSMENT
+																																								WHERE assessment_ID = ?
+																																			)) as result
+																												WHERE PERFORMANCE_RUBRIC.rubric_ID = result.rubric_ID) as resultTwo
+							WHERE OutcomeResults.perC_ID = resultTwo.perC_ID;`;
 		conn.query(findPerfCrit, [assessmentID], function (err, results) {
 			if (err)
 				reject(err || "Error retreiving performance criterias.");

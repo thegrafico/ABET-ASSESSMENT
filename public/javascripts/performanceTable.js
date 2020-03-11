@@ -3,10 +3,13 @@ let ctx = canvas.getContext('2d');
 let amountOfColumns = $('#amountOfCol').val();
 let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
+let outcomeName = $('#outcomeName').val();
+outcomeName = outcomeName.split(' ');
 let labels = [];
 let row = 1;
 let graph;
 let avgPerRow = [];
+let data = [];
 
 // Loads empty chart when page is load
 window.onload = createChart();
@@ -23,6 +26,7 @@ $(document).ready(function () {
 	});
 	// Find and remove selected table rows
 	$('#delRow').click(function () {
+		updateIndex();
 		delRow();
 	});
 });
@@ -30,9 +34,9 @@ $(document).ready(function () {
 
 // This function creates a row with the amount of columns which depends of the amount of performance Criterias
 function generateRow(r) {
-	var markup = "<tr><th name='index' scope='row'> " + r + " </th>";
+	var markup = `<tr><th id='indexRow' name='index' scope='row'> ${r} </th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
-		markup = markup.concat("<td><input type='number' name='rowValue' min = '0' max = '4' size = '25' oninput='createChart()' value='0'></td>");
+		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0' max = '4' size = '25' oninput='createChart()' value='0'></td>`);
 	}
 	markup = markup.concat(`<td id="avg${r-1}">${avgPerRow[r-1]}</td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
 	$("#tableBody").append(markup);
@@ -52,7 +56,6 @@ function addRow() {
 	row++;
 }
 
-let leftRows = 0;
 // Deletes selected rows
 function delRow() {
 	$("#tableBody").find('input[name="record"]').each(function () {
@@ -65,25 +68,33 @@ function delRow() {
 	});
 }
 
+// TODO:
+// - Add Target line to graph
+// - Update info when deleting row
+
+
 function updateIndex() {
-	alert("Bitch");
-	let reindex = 1;
-	$("#tableBody").find('th[name="index"]').each(() => {
-		$(this).text(reindex);
-		reindex++;
-	});
+	alert("Deleted");
+	// $("th.indexRow").each(function(index) {
+	// 	// $(this).text(index);
+	// 	console.log(`${index} : '${$(this).val()}'`);
+	// });
+	// $("#tableBody").find('td').each(() => {
+	// 	$(this).val(data);
+	// });
 }
 
 // Creates chart depending the users input
 function createChart() {
 	let formData = [];
-	let data = [];
 
 	// Creates labels for the x-axis of the chart
 	for (let i = 0; i < performanceCriteria.length; i++) {
 		performanceCriteria[i] = parseInt(performanceCriteria[i]);
-		labels[i] = "Criteria " + performanceCriteria[i];
+		labels[i] = "PC " + performanceCriteria[i];
 	}
+
+	labels[performanceCriteria.length] = outcomeName[0] + ' ' + outcomeName[1] + ' Average';
 
 	$("#performanceTable, input[type=number]").each(function (index) {
 		let input = $(this); 
@@ -116,6 +127,7 @@ function createChart() {
 		percTable[col] = ((count / amountRows) * 100);
 		count = 0;
 	}
+	
 	for(let row = 0; row < amountRows; row++) {
 		for(let inner = 0; inner < amountOfColumns; inner++) {
 			rowSum += parseInt(data[row][inner]);
@@ -128,6 +140,18 @@ function createChart() {
 		$('#avg' + row).text(avgPerRow[row]);
 		rowSum = 0;
 	}
+
+	let outcomeAVGCount = 0; 
+	for(let i = 0; i < avgPerRow.length; i++) {
+		if(avgPerRow[i] >= 3) {
+			outcomeAVGCount++;
+		}
+	}
+	let outcomeAVG = (outcomeAVGCount / amountRows) * 100;
+
+	let graphData = percTable;
+	graphData.push(outcomeAVG);
+
 	console.log("Average per Row: ", avgPerRow);
 	let myChart = new Chart(canvas, {
 		type: 'bar',
@@ -135,8 +159,8 @@ function createChart() {
 			labels: labels,
 			datasets: [
 				{
-					label: '% of Student with 3 or more in outcome {n}',
-					data: percTable,
+					label: '% of Student with 3 or more in ' + outcomeName[0] + ' ' + outcomeName[1],
+					data: graphData,
 					backgroundColor: 'rgba(58, 166, 87, 0.2)', // Need to make where now matter the amount of PC it can make amou
 				},
 			]

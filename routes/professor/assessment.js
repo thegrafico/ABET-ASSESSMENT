@@ -125,6 +125,7 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 
 	locals.colNums = perf_criterias.length;
 	locals.perfCrit = perf_criterias.map(e => e.perC_order);
+	locals.outc_name = perf_criterias[0].outc_name;
 
 	// // the user id is stored in session, thats why user need to be login
 	// let user_id = req.session.user_id;
