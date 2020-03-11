@@ -3,18 +3,25 @@ var config;
 
 
  /*In case you dont have this file, just delete this code and put your credentials in the options object*/
+// try{
+//   var credentials = require("./raul_credentials");
+// }catch (err){
+//   console.log("ERROR IN /helpers/mysqlconnection. Credentials are missing");
+// }
+
 try{
-  var credentials = require("./raul_credentials");
+  var credentials = require("./noah_credentials");
 }catch (err){
   console.log("ERROR IN /helpers/mysqlconnection. Credentials are missing");
 }
 
 /* For local database connection */ 
 var options = {
-  host     : credentials.host,          //THIS IS THE SAME FOR YOUR
-  user     : credentials.user,               //THIS IS THE SAME FOR YOUR
+  host     : credentials.host,              //THIS IS THE SAME FOR YOUR
+  user     : credentials.user,             //THIS IS THE SAME FOR YOUR
   password : credentials.password,         //HERE GO YOUR PASSWORD TO ENTER IN YOUR DB
-  database : "ABET",   //HERE GO THE DATABASE THAT WE ARE GONNA USED
+  database : "ABET",                       //HERE GO THE DATABASE THAT WE ARE GONNA USED
+  port: 3306,
   connectionLimit : 15,
   clearExpired: true,
   checkExpirationInterval: 1900000, 
