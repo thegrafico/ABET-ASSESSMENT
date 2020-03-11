@@ -5,6 +5,7 @@ var chooseCourseTermQuery = require('../../helpers/queries/chooseCourseTermQueri
 var pInput_queries = require('../../helpers/queries/pInput_queries');
 var queries = require('../../helpers/queries/perfTable_queries');
 var reportTemplate = require('../../helpers/reportTemplate');
+var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
 var { validate_form } = require("../../helpers/validation");
 
@@ -12,7 +13,7 @@ var docx = require('docx');
 var fs = require('fs');
 
 /* GLOBAL LOCALS */
-const base_url = '/assessment/chooseCourseTerm';
+const base_url = '/professor';
 let locals = {
 	base_url: base_url,
 	title: 'ABET Assessment'
@@ -107,22 +108,23 @@ router.post("/assessment/create", async function (req, res) {
 	- Get /professor/assessment/id
 	// TODO: VERIFY IF EXITS
 */
-router.get('/assessment/:assessmentID/performanceTable', async function (req, res) {
+router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment ,async function (req, res) {
 
-	// Validate ID
-	if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
-		req.flash("error", "Invalid Assessment");
-		return res.redirect("back");
-	}
+
+	locals.id = req.params.assessmentID; 
+	locals.homeURL = base_url;
+	locals.breadcrumb = [
+		{ "name": req.body.assessment.name, "url": "." }
+	];
 
 	// GET ALL performance criterias
-	let perf_criterias = await queries.get_perf_criterias(req.params.id).catch((err) => {
+	let perf_criterias = await queries.get_perf_criterias(locals.id).catch((err) => {
 		console.log("Error: ", err);
 	});
 	console.log("Perf_Cirterias Results: ", perf_criterias);
 
 	locals.colNums = perf_criterias.length;
-	locals.perfCrit = perf_criterias.map(e => e.perC_order); 
+	locals.perfCrit = perf_criterias.map(e => e.perC_order);
 
 	// // the user id is stored in session, thats why user need to be login
 	// let user_id = req.session.user_id;
@@ -160,15 +162,15 @@ router.get('/assessment/:assessmentID/performanceTable', async function (req, re
 /* 
 	- UPDATE AN ASSESSMENT - 
 */
-router.put('/assessment/:id', function (req, res) {
+router.put('/assessment/:assessmentID', function (req, res) {
 
-	if (req.params.id == undefined || isNaN(req.params.id)) {
+	if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
 		req.flash("error", "Cannot find the assessment");
 		return res.redirect("back");
 	}
 	// getting the user id
 	let user_id = req.session.user_id;
-	let assessment_id = req.params.id;
+	let assessment_id = req.params.assessmentID;
 
 	assessment_query.update_assessment_by_id(user_id, assessment_id, req.body).then((ok) => {
 		req.flash("success", "Assessment Updated!");
@@ -190,16 +192,16 @@ router.put('/assessment/:id', function (req, res) {
 	- DELETE - DELETE assessment
 	TODO: Delete only if the assessment belong to the user
 */
-router.delete('/assessment/:id', async function (req, res) {
+router.delete('/assessment/:assessmentID', async function (req, res) {
 
-	if (req.params.id == undefined || isNaN(req.params.id)) {
+	if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
 		req.flash("error", "Cannot find the assessment");
 		return res.redirect("back");
 	}
 
 	// getting the user id
 	let user_id = req.session.user_id;
-	let assessment_id = req.params.id;
+	let assessment_id = req.params.assessmentID;
 
 	assessment_query.remove_assessment_by_id(user_id, assessment_id).then((ok) => {
 		req.flash("success", "Assessment Removed!");
@@ -214,96 +216,16 @@ router.delete('/assessment/:id', async function (req, res) {
 
 });
 
-/* 
-	GET assessment/chooseCourseTerm/:id
-*/
-
-router.get('/:id/chooseCourseTerm', async function (req, res) {
-
-	// TODO: Validate prog_id 
-	let prog_id = req.params.id;
-	console.log("ID: ", prog_id);
-
-	let study_program = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
-		// TODO: flash message with error
-		console.log("Error getting study program");
-	});
-
-	if (study_program == undefined || study_program.length == 0) {
-		console.log("Study program is empty");
-		// TODO: Flash message
-		return res.redirect("/");
-	}
-
-	// WHAT THE FUCK IS 'o'
-	let index = study_program.indexOf(study_program.find(o => o.prog_ID == prog_id));
-
-	// why index != 0
-	if (index != 0 && index != -1) {
-		let temp = study_program[index];
-		study_program[index] = study_program[0];
-		study_program[0] = temp;
-	}
-
-	let academic_term = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
-		console.log("Error getting the Academic term: ", err);
-	});
-
-	let rubric_info = await chooseCourseTermQuery.get_rubric_info(prog_id).catch((err) => {
-		console.log("Error getting the rubric info: ", err);
-	});
-
-	let course_info = await chooseCourseTermQuery.get_course_info(prog_id).catch((err) => {
-		console.log("Error getting course info: ", err);
-	});
-
-	locals.program = study_program;
-	locals.term = academic_term;
-	locals.rubric = rubric_info;
-	locals.course = course_info;
-
-	console.log("Get Locals: ", locals);
-
-	res.render('assessment/chooseCourseTerm', locals);
-});
-
-/* 
-	POST assessment/chooseCourseTerm
-*/
-router.post('/chooseCourseTerm', async function (req, res) {
-
-	let sess = req.session;
-
-	if (sess == undefined || sess.user_id == undefined) {
-		return res.status(200).send("Need to login");
-	}
-
-	// TODO: Validate -- splits the URL for the prog_ID and saves it
-	req.body.prog_ID = req.body.prog_ID.split("/")[req.body.prog_ID.split("/").length - 1];
-
-	// the 1 needs to be replaced with a real user id
-	let data = [req.body.course_ID, req.body.term_ID, sess.user_id, req.body.rubric_ID]
-
-	let assessment_was_added = chooseCourseTermQuery.insert_assessment(data);
-
-	assessment_was_added.then((id) => {
-		res.redirect('/assessment/' + id + '/professorInput');
-	}).catch((reason) => {
-		console.log("Cannot add assessment: ", reason);
-		res.redirect(base_url);
-	});
-});
-
-// <------ Professor Input GET request ------>
-
-router.get('/:id/professorInput', function (req, res, next) {
+/**
+ *  GET - Professor Input
+ * 	GET - /professor/assessment/:id/professorInput
+ */
+router.get('/assessment/:assessmentID/professorInput', async function (req, res) {
 	res.render('assessment/professorInput', { title: 'ABET Assessment' });
 });
 
-
 // <------ Professor Input POST request ------>
-
-router.post('/:id/professorInput', function (req, res, next) {
+router.post('/assessment/:id/professorInput', function (req, res, next) {
 	let data = [
 		req.body.A, req.body.B, req.body.C, req.body.D, req.body.F,
 		req.body.UW, req.body.rCourse, req.body.cReflection, req.body.cImprovement, null
