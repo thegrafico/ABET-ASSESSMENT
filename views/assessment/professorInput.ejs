@@ -1,109 +1,134 @@
-<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+<%- include ('../admin/partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
-    <form class="professorInput" action="professorInput" method="post">
-        <div class="container-fluid my-3 mx-3">
-            <h1>Course Evaluation</h1>
-            <hr class="my-4">
-        </div>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+        <% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+
+        <% if (index == breadcrumb.length -1) { %>
+        <li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+        <% }else { %>
+        <li class="breadcrumb-item">
+            <a href="<%= breadcrumb[index].url %>">
+                <%= breadcrumb[index].name %>
+            </a>
+        </li>
+        <% } %>
+
+        <% } %>
+    </ol>
+</nav>
+
+
+<div class="container my-4 mx-5">
+    <form id="course_evaluation" class="professorInput" action="<%=form_action%>" method="POST">
+        <h3 class="mb-4">Grade Distribution</h3>
+        <table class="table table-sm" style="text-align: center;">
+            <!--Grade Scale-->
+            <thead class="thead-light">
+                <tr>
+                    <% grades.forEach(element => { %>
+                    <th scope="col-auto"><%= element["name"] %> </th>
+                    <% }) %>
+                    <th scope="col-auto"><strong> Total</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <% grades.forEach(element => { %>
+                    <td scope="col-auto">
+                        <div class="form-group">
+                            <input type="text" name="<%= element["name"]%>" id="<%= element["name"]%>"
+                                value="<%= element["value"] %>" placeholder="Insert">
+                        </div>
+                    </td>
+                    <% }) %>
+
+                    <td scope="col-auto">
+                        <div class="form-group">
+                            <input style="text-align: center;" type="number" value="<%=total_value%>" name="total"
+                                placeholder="0" disabled>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script>
+            $(document).ready(function () {
+
+                let A = "#A", B = "#B", C = "#C", D = "#D", F = "#F", W = "#W";
+                let total = "#total";
+                let notas = [A, B, C, D, F, W];
+                let grades = undefined;
+                const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+
+                $("#course_evaluation :input").change(function () {
+                    let sum = notas.reduce(reducer);
+                    grades = 0;
+                    notas.forEach(n => {
+                        let val = $(n).val();
+
+                        if (val == undefined || val == '' || val.length == 0) {
+                            val = 0;
+                        }
+
+                        grades += parseInt(val);
+
+                    });
+
+                    $(total).val(grades);
+                });
+            });
+        </script>
+
+
         <div class="container my-4 mx-5">
-            <div class="container">
-                <h3 class = "mb-4">Grade Distribution</h3>
-                <table class="table table-sm">
-                <!--Grade Scale-->
-                <thead class = "thead-light">
-                    <tr>
-                        <th scope="col-auto" required>A</th>
-                        <th scope="col-auto" required>B</th>
-                        <th scope="col-auto" required>C</th>
-                        <th scope="col-auto" required>D</th>
-                        <th scope="col-auto" required>F</th>
-                        <th scope="col-auto" required>UW</th>
-                        <th scope="col-auto">Total</th>
-                    </tr>
-                <!--Inputs-->
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope = "col-auto">
-                            <div class="form-group">
-                                <input type="text" name= "A" id = "A">
-                            </div>
-                        </td>
-                        <td scope = "col-auto">
-                            <div class="form-group">
-                            <input type="text" name ="B" id ="B">
-                            </div>
-                        </td>
-                        <td scope = "col-auto">
-                            <div class="form-group">
-                            <input type="text" name = "C" id ="C">
-                            </div>
-                        </td>
-                        <td scope = "col-auto">
-                            <div class="form-group">
-                            <input type="text" name ="D" id ="D">
-                            </div>
-                        </td>
-                        <td scope = "col-auto">
-                            <div class="form-group">
-                                <input type="text" name ="F" id ="F">
-                            </div>
-                        </td>
-                        <td scope = "col-auto">
-                            <div class="form-group">
-                            <input type="text" name ="UW" id ="UW">
-                            </div>
-                        </td>
-                        <td scope = "col-auto">
-                            <div class="form-group">
-                            <input type="text">
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            </div>
-        </div>
-        <div class="container my-4 mx-5">
-            <h3 class = "mb-4">Result of the Course</h3>
+            <h3 class="mb-4">Result of the Course: </h3>
             <hr>
             <div class="form-group">
-                    <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
-                    <textarea class="form-control" name = "rCourse" id="rCourse" rows="3"></textarea>
+                <textarea class="form-control" name="course[results]" id="rCourse" rows="3"
+                    placeholder="Insert the results of the Course"><%=course_results%></textarea>
             </div>
 
         </div>
 
         <div class="container my-4 mx-5">
-            <h3 class = "mb-4">Course Reflection</h3>
+            <h3 class="mb-4">Modification Made to Course: </h3>
+            <hr>
+            <div class="form-group">
+                <textarea class="form-control" name="course[modification]" id="cReflection" rows="3"
+                    placeholder="Insert Modifications"><%=course_modification%></textarea>
+            </div>
+        </div>
+
+        <div class="container my-4 mx-5">
+            <h3 class="mb-4">Course Reflection: </h3>
+            <hr>
+            <div class="form-group">
+                <textarea class="form-control" name="course[reflection]" id="cReflection" rows="3"
+                    placeholder="Insert Course Reflection"><%=course_reflection%></textarea>
+            </div>
+        </div>
+        <div class="container my-4 mx-5">
+            <h3 class="mb-4">Proposed Action for Course Improvement: </h3>
             <hr>
             <div class="form-group">
                 <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
-                <textarea class="form-control" name= "cReflection" id="cReflection" rows="3"></textarea>
-            </div>
-        </div>
-        <div class="container my-4 mx-5">
-            <h3 class = "mb-4">Proposed Action for Course Improvement</h3>
-            <hr>
-            <div class="form-group">
-                <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
-                <textarea class="form-control" name="cImprovement" id="cImprovement" rows="3"></textarea>
+                <textarea class="form-control" name="course[improvement]" id="cImprovement" rows="3"
+                    placeholder="Insert Proposed Action"><%=course_actions%></textarea>
             </div>
         </div>
 
-
-        <div class="container text-right pt-2">
-            <hr class= "my-2">
-            <div class="row">
-                <div class="col">
-                    <div class="btn-group" role="group" aria-label="Next-Save-Cont">
-                    <!-- <input type="text" name="id"> -->
-                        <button type="Submit" name="id" class="btn btn-secondary" href="professorInput.hbs">Next</button>
-                        <!-- <button type="Submit" name="id" class="btn btn-secondary">Save Evaluation</button> -->
-                        <button type="Submit" class="btn btn-secondary" disabled>Finish</button>
-                    </div>
-                </div>
+        <div class="container">
+            <hr class="my-2">
+            <div class="row submitBtn">
+                <input type="submit" name="save" class="btn btn-secondary" value="Save and finish later">
+                <input id="finish_professor_input" name="finish" class="btn btn-secondary" type="submit" value="Finish">
             </div>
         </div>
     </form>
-<%- include ('../partials/footer') -%>
+</div>
+
+<%- include ('../admin/partials/footer') -%>

@@ -46,7 +46,7 @@ module.exports.get_assessment_by_user_id = (user_id) => {
             return reject("Invalid Parameters");
         }
 
-        let query = `SELECT ASSESSMENT.assessment_ID,ASSESSMENT.name, COURSE.course_name, ACADEMIC_TERM.term_name, 
+        let query = `SELECT ASSESSMENT.assessment_ID, ASSESSMENT.status, ASSESSMENT.name, COURSE.course_name, ACADEMIC_TERM.term_name, 
         EVALUATION_RUBRIC.rubric_name, ASSESSMENT.creation_date, EVALUATION_RUBRIC.outc_ID,
         STUDENT_OUTCOME.prog_ID, STUDY_PROGRAM.dep_ID, COURSE.course_ID, ASSESSMENT.term_ID, ASSESSMENT.rubric_ID
         FROM ASSESSMENT INNER JOIN COURSE USING(course_ID)

@@ -84,7 +84,7 @@ function get_study_program_by_user_id(id) {
  */
 function get_department_by_user_id(user_id) {
 	return new Promise(function (resolve, reject) {
-		if (user_id == undefined || isNaN(user_id)){
+		if (user_id == undefined || isNaN(user_id)) {
 			return reject("Invalid user id");
 		}
 
@@ -101,8 +101,68 @@ function get_department_by_user_id(user_id) {
 	});
 }
 
+/**
+ * insert_professor_input - Create a new report with the course information
+ * @param {Object} grades - all grades {"A", "B", "C", "D", "F", "UW"}
+ * @param {Object} course_info - course information {results, modification, reflection, improvement}
+ * @return {Promise} Resolve with true
+ */
+function insert_professor_input(id, grades, course_info) {
+	return new Promise(function (resolve, reject) {
+
+		let insert_query = `INSERT INTO REPORTS 
+		(grade_A, grade_B, grade_C, grade_D, grade_F, UW, 
+		course_results, course_reflection, course_actions, course_modification, assessment_ID)
+		values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+		let data = [
+			grades.A,
+			grades.B,
+			grades.C,
+			grades.D,
+			grades.F,
+			grades.UW,
+			course_info.results,
+			course_info.reflection,
+			course_info.improvement,
+			course_info.modification,
+			id
+		];
+
+		conn.query(insert_query, data, function (err, results) {
+			if (err)
+				reject(err);
+			else
+				resolve(true);
+		});
+	});
+}
+
+/**
+ * update_status -Update the status of the course
+ * @param {Number} id - id of the assessment
+ * @param {String} status - status of the assessment
+ * @return {Promise} Resolve with true
+ */
+function update_status(id, status) {
+	return new Promise(function (resolve, reject) {
+
+		let update_query = `UPDATE ASSESSMENT SET status = ? WHERE assessment_ID = ?`;
+
+		conn.query(update_query, [status, id], function (err, results) {
+			if (err)
+				reject(err);
+			else
+				resolve(true);
+		});
+	});
+}
+
+module.exports.update_status = update_status;
 module.exports.get_perf_criterias = get_perf_criterias;
 module.exports.insertData = insertData;
 module.exports.get_study_program_by_user_id = get_study_program_by_user_id;
 module.exports.get_department_by_user_id = get_department_by_user_id;
+module.exports.insert_professor_input = insert_professor_input;
+
 

@@ -8,6 +8,7 @@
     TO VALIDATE TERM: ----------------> term_data
     TO VALIDATE RUBRIC: --------------> rubric_data
     TO VALIDATE CRITERIA: ------------> criteria_data
+    TO VALIDATE COURSE EVALUATION: ---> course_evaluation
 */
 
 // Wait for the DOM to be ready
@@ -22,7 +23,7 @@ $(document).ready(function () {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
     $("#user_data").validate({
-  
+
         // Specify validation rules
         rules: {
             // The key name on the left side is the name attribute
@@ -144,8 +145,8 @@ $(document).ready(function () {
         }
     });
 
-     /* VALIDATE STUDY PROGRAM CREATION */
-     $("#std_data").validate({
+    /* VALIDATE STUDY PROGRAM CREATION */
+    $("#std_data").validate({
         // Specify validation rules
         rules: {
             "department_id": "required",
@@ -162,11 +163,11 @@ $(document).ready(function () {
         }
     });
 
-     /* VALIDATE TERM CREATION */
-     $("#term_data").validate({
+    /* VALIDATE TERM CREATION */
+    $("#term_data").validate({
         // Specify validation rules
         rules: {
-            "name": {required:true, minlength: 4},
+            "name": { required: true, minlength: 4 },
         },
         messages: {
             "name": {
@@ -181,12 +182,12 @@ $(document).ready(function () {
         }
     });
 
-     /* VALIDATE TERM CREATION */
-     $("#rubric_data").validate({
+    /* VALIDATE TERM CREATION */
+    $("#rubric_data").validate({
         // Specify validation rules
         rules: {
-            "name": {required:true, minlength: 3},
-            "description": {required:true, minlength: 8},
+            "name": { required: true, minlength: 3 },
+            "description": { required: true, minlength: 8 },
 
         },
         messages: {
@@ -208,10 +209,10 @@ $(document).ready(function () {
 
     /* VALIDATING THE ASSESSMENT*/
     $("#create_assessment").validate({
-        
+
         // Specify validation rules
         rules: {
-    
+
             "name": "required",
             "department_id": "required",
             "study_program": "required",
@@ -222,7 +223,7 @@ $(document).ready(function () {
         },
         // Specify validation error messages
         messages: {
-            
+
             "name": "Cannot be empty",
             "department_id": "Select a Department",
             "study_program": "Select a Study Program",
@@ -239,12 +240,12 @@ $(document).ready(function () {
         }
     });
 
-     /* VALIDATE TERM CREATION */
-     $("#criteria_data").validate({
+    /* VALIDATE TERM CREATION */
+    $("#criteria_data").validate({
         // Specify validation rules
         rules: {
-            "description": {required:true, minlength: 5},
-            "order": {required:true, digits:true}
+            "description": { required: true, minlength: 5 },
+            "order": { required: true, digits: true }
         },
         messages: {
             "order": {
@@ -262,4 +263,91 @@ $(document).ready(function () {
             form.submit();
         }
     });
+
+    /* 
+       COURSE EVALUATION - ASSESSMENT
+    */
+    $("#course_evaluation").validate({
+
+        // Specify validation rules
+        rules: {
+            // The key name on the left side is the name attribute
+            // of an input field. Validation rules are defined
+            // on the right side
+            "A": {
+                required: true,
+                digits: true,
+                maxlength: 3
+            },
+            "B": {
+                required: true,
+                digits: true,
+                maxlength: 3
+            },
+            "C": {
+                required: true,
+                digits: true,
+                maxlength: 3
+            },
+            "D": {
+                required: true,
+                digits: true,
+                maxlength: 3
+            },
+            "F": {
+                required: true,
+                digits: true,
+                maxlength: 3
+            },
+            "W": {
+                required: true,
+                digits: true,
+                maxlength: 3
+            },
+            "course[results]": "required",
+            "course[modification]": "required",
+            "course[reflection]": "required",
+            "course[improvement]": "required",
+        },
+        // Specify validation error messages
+        messages: {
+            "A": {
+                required: "Cannot be empty",
+                maxlength: "Cannot be that bigger",
+                digits: "Only positive numbers"
+            },
+            "B": {
+                required: "Cannot be empty",
+                maxlength: "Cannot be that bigger",
+                digits: "Only positive numbers"
+
+            },
+            "C": {
+                required: "Cannot be empty",
+                maxlength: "Cannot be that bigger",
+                digits: "Only positive numbers"
+            },
+            "D": {
+                required: "Cannot be empty",
+                maxlength: "Cannot be that bigger",
+                digits: "Only positive numbers"
+            },
+            "F": {
+                required: "Cannot be empty",
+                maxlength: "Cannot be that bigger",
+                digits: "Only positive numbers"
+            },
+            "W": {
+                required: "Cannot be empty",
+                maxlength: "Cannot be that bigger",
+                digits: "Only positive numbers"
+            },
+        },
+        // Make sure the form is submitted to the destination defined
+        // in the "action" attribute of the form when valid
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+
 });

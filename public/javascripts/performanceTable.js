@@ -45,6 +45,7 @@ function generateCols() {
 		$("#header").append(col);
 	}
 }
+console.log(`${index}, '${$(this).val}'`)
 
 // Creates a new row
 function addRow() {

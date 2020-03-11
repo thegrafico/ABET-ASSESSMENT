@@ -1,0 +1,54 @@
+<div class="container assessmentContainer">
+    <div class="row search">
+        <input class="reportSearch" placeholder="Search" type="text" name="reportSearch">
+    </div>
+
+    <!-- <i class="fa fa-ellipsis-h"></i> -->
+    <div class="container assessmentReports">
+        <div class="row">
+
+            <% for( let i = 0; i < assessment_archive.length; i++) { %>
+
+            <div class="col-6">
+                <div class="card" style="width: 80%; margin: auto;">
+                    <!-- <div class="form-group div_select" style="position: absolute;">
+                        <i class="fa fa-ellipsis-h"></i>
+                        <select class="select_ form-group">
+                            <option selected value=""></option>
+                            <option>1</option>
+                            <option>2</option>
+                        </select>
+                    </div> -->
+                    <!-- <i class="fa fa-window-close-o"></i> -->
+                    <!-- <i class="editBtn fa fa-pencil-square-o">
+                        <input type="hidden" name="id" value="<%=assessment_archive[i].assessment_ID%>">
+                        <input type="hidden" name="name" value="<%=assessment_archive[i].name%>">
+                        <input type="hidden" name="department" value="<%=assessment_archive[i].dep_ID%>">
+                        <input type="hidden" name="studyprogram" value="<%=assessment_archive[i].prog_ID%>">
+                        <input type="hidden" name="outcome" value="<%=assessment_archive[i].outc_ID%>">
+                        <input type="hidden" name="course" value="<%=assessment_archive[i].course_ID%>">
+                        <input type="hidden" name="rubric" value="<%=assessment_archive[i].rubric_ID%>">
+                        <input type="hidden" name="rubric" value="<%=assessment_archive[i].term_ID%>">
+                    </i> -->
+                    <!-- <i class="trashBtn fa fa-trash-o" value="<%=assessment_archive[i].assessment_ID%>">
+                        <input type="hidden" value="<%=assessment_archive[i].assessment_ID%>">
+                        <input type="hidden" value="<%=assessment_archive[i].name%>">
+                    </i> -->
+                    <div style="margin-left: 15%;">
+                        <img src="../images/paper.png" class="card-img-top" alt="Assessment">
+                    </div>
+                    <div class="card-body" style=" width: 80%; margin-left: 5%; text-align: center; font-size: 0.9em;">
+                        <h5 class="card-title">
+                            <%=assessment_archive[i].name %>
+                        </h5>
+                        <p class="card-text"><%=assessment_archive[i].course_name %></p>
+                        <p class="card-text"><%=assessment_archive[i].term_name %></p>
+                        <p class="card-text"><%=assessment_archive[i].rubric_name %></p>
+                        <p class="card-text">Created at <%=assessment_archive[i].creation_date %></p>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>

@@ -59,8 +59,8 @@ $(document).ready(function () {
         $("#loader-modal").show();
 
         // Change the title and button text
-        $("#modalTitle").text("Edit Assessment");
-        $("#submitBtn").text("Edit Assessment");
+        $("#modalTitle").text("Edit Assessment information");
+        $("#submitBtn").text("Edit Assessment Information");
 
         // show the mdodal
         $('#createModal').modal('toggle');
