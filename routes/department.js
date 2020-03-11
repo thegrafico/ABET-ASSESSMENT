@@ -18,7 +18,9 @@ let locals = {
 	"url_create": `${base_url}create`,
 	"form_id": "department_data",
 	"api_get_url": base_url,
-	"delete_redirect": null
+	"delete_redirect": null,
+	feedback_message: "Number of Departments: "
+
 };
 /*
  	-- DEPARTMENT home page-- 

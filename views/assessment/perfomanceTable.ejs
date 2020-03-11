@@ -1,38 +1,50 @@
+<%- include ('../admin/partials/header') -%>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<%- include ('../partials/header') -%>
-	<input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
-	<input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">
-	<div class="container">
-		<div class="row">
-			<div class="col-8 perfomanceTable">
+
+<input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
+<input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">
+<div class="container-fluid" style="margin-top: 10px; margin-bottom: 100px;">
+	<div class="row" style="padding: 2%;">
+
+		<div class="col-6" style="height: 450px;">
+			<h4 style="text-align: center;">Insert Criteria Values for each Student</h4>
+			<div class="perfomanceTable">
 				<form id="performanceTable" action="/assessment/perfomanceTable" method="POST">
-				<table id="table" class="table">
-					<thead>
-						<tr id="header">
-							<th scope="col">Student</th>
-						</tr>
-					</thead>
-					<tbody id="tableBody">
-					</tbody>
-				</table>
-				<tr>
-					<td><button type="submit" value = "Submit" class="btn btn-outline-secondary" id="submit">Submit</button></td>
-				</tr>
-				<input type="hidden" id="graph" name="graph" value="">
+					<table id="table" class="table">
+						<thead>
+							<tr id="header">
+								<th scope="col">Student</th>
+							</tr>
+						</thead>
+						<tbody id="tableBody">
+						</tbody>
+					</table>
+
+					<input type="hidden" id="graph" name="graph" value="">
 				</form>
 			</div>
-			<div class="col-4 barChart">
-				<canvas id="myChart" width="350" height="200" role="img"></canvas>
-				<div class="row">
+			<div>
+
+				<div style="float: left; width: 80%;">
 					<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
-					<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
+					<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">	
 				</div>
+				
+				<input style="width: 15%;" type="submit" class="btn inter-green inter-green-btn" id="delRow" value="Submit">
+
 			</div>
 		</div>
+		<div class="col-6 barChart">
+			<h3>% Student with 3 or more in outcome {x}</h3>
+			<canvas id="myChart" width="350" height="200" role="img"></canvas>
+		</div>
 	</div>
-<%- include ('../partials/footer') -%>
+</div>
+
 <!-- jQuery script -->
-<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+	crossorigin="anonymous"></script>
 <script type="text/javascript" src="/javascripts/performanceTable.js"></script>
 
 
+<%- include ('../admin/partials/footer') -%>

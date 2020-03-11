@@ -5,7 +5,7 @@ let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
 let labels = [];
 let row = 1;
-let graph; 
+let graph;
 
 // Loads empty chart when page is load
 window.onload = createChart();
@@ -13,11 +13,16 @@ window.onload = createChart();
 $(document).ready(function () {
 	generateCols();
 	generateRow(row);
+	for (let i = 0; i < 9; i++) {
+		addRow();
+
+	}
 	$('#addRow').click(function () {
 		addRow();
+
 	});
 	// Find and remove selected table rows
-	$('#delRow').click(function(){
+	$('#delRow').click(function () {
 		delRow();
 	});
 });
@@ -26,7 +31,7 @@ $(document).ready(function () {
 // This function creates a row with the amount of columns which depends of the amount of performance Criterias
 function generateRow(r) {
 	var markup = "<tr><th scope='row'> " + r + " </th>";
-	for(let i = 1; i <= amountOfColumns; i++) {
+	for (let i = 1; i <= amountOfColumns; i++) {
 		markup = markup.concat("<td><input type='number' name='rowValue' min = '0' max = '4' size = '25' oninput='createChart()'></td>");
 	}
 	markup = markup.concat("<td><input type='checkbox' name='record'></td></tr>");
@@ -35,7 +40,7 @@ function generateRow(r) {
 
 // Creates header row of the table
 function generateCols() {
-	for(let i = 1; i <= amountOfColumns; i++) {
+	for (let i = 1; i <= amountOfColumns; i++) {
 		var col = "<th> Criteria " + performanceCriteria[i - 1] + "</th>";
 		$("#header").append(col);
 	}
@@ -49,9 +54,9 @@ function addRow() {
 
 // Deletes selected rows
 function delRow() {
-	$("#tableBody").find('input[name="record"]').each(function(){
-		if($(this).is(":checked")){
-				$(this).parents("tr").remove();
+	$("#tableBody").find('input[name="record"]').each(function () {
+		if ($(this).is(":checked")) {
+			$(this).parents("tr").remove();
 		}
 	});
 }
@@ -62,22 +67,22 @@ function createChart() {
 	let data = [];
 
 	// Creates labels for the x-axis of the chart
-	for(let i = 0; i < performanceCriteria.length; i++) {
+	for (let i = 0; i < performanceCriteria.length; i++) {
 		performanceCriteria[i] = parseInt(performanceCriteria[i]);
 		labels[i] = "Criteria " + performanceCriteria[i];
 	}
 
-	$("#performanceTable, input[type=number]").each(function(index) {
+	$("#performanceTable, input[type=number]").each(function (index) {
 		let input = $(this); // This is the jquery object of the input, do what you will
 		formData[index] = input.val();
 	});
 
-	let amountRows = ((formData.length - 1)/amountOfColumns);
+	let amountRows = ((formData.length - 1) / amountOfColumns);
 	let temp = [];
 	let e = 1;
-	
-	for(let i = 0; i < amountRows; i++) {
-		for(let j = 0; j < amountOfColumns; j++) {
+
+	for (let i = 0; i < amountRows; i++) {
+		for (let j = 0; j < amountOfColumns; j++) {
 			temp[j] = formData[e];
 			e++;
 		}
@@ -85,15 +90,15 @@ function createChart() {
 		temp = [];
 	}
 	let count = 0;
-	let percTable = []; 
+	let percTable = [];
 
-	for(let col = 0; col < amountOfColumns; col++) {
-		for(let row = 0; row < amountRows; row++) {
-			if(data[row][col] >= 3) {
+	for (let col = 0; col < amountOfColumns; col++) {
+		for (let row = 0; row < amountRows; row++) {
+			if (data[row][col] >= 3) {
 				count++;
 			}
 		}
-		percTable[col] = ((count/amountRows) * 100);
+		percTable[col] = ((count / amountRows) * 100);
 		count = 0;
 	}
 	let myChart = new Chart(canvas, {
@@ -118,7 +123,7 @@ function createChart() {
 		}
 	});
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('input[name="graph"]').val(graph);
 	});
 }

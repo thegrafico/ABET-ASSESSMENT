@@ -54,9 +54,8 @@
                     </div>
                 </div>
 
-
                 <div class="p-2 bd-highlight" style=" margin-left:3%;">
-                    <h4>Quantity: <span id="number"></span> </h4>
+                    <h4><%= feedback_message %>  <span id="number"></span> </h4>
                 </div>
             </div>
         </div>
@@ -98,7 +97,7 @@
                         </button>
                         <div class="dropdown-menu">
                             <button class="VIEW dropdown-item" value="<%=element["ID"]%>" data-toggle="modal"
-                                data-target="#view_performances">View Performances
+                                data-target="#view_performances">View Performance Rubric
                             </button>
                             <a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
                                 EDIT

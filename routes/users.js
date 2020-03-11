@@ -20,7 +20,8 @@ var locals = {
 	api_get_url: base_url,
 	delete_redirect: null,
 	filter:true,
-	filter_title: "-- Department --"
+	filter_title: "-- Department --",
+	feedback_message: "Number of users: "
 };
 
 /*

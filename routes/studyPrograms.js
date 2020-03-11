@@ -21,6 +21,8 @@ let locals = {
 	dropdown_option_selected: null,
 	filter:true,
 	filter_title: "-- Department --",
+	feedback_message: "Number of Study Programs: ",
+
 };
 
 /* 

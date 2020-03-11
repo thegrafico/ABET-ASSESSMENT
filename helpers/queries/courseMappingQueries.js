@@ -27,25 +27,19 @@ function insert_course_mapping(course, outcome) {
 
 /**
  * insert_mapping ->  Inserting mapping course
- * @param {Number} course_id id of the course
  * @param {Array} mapping -> course ID
  * @return {Promise} resolve with true
  */
-function insert_mapping(course_id, mapping) {
+function insert_mapping(mapping) {
     return new Promise(function (resolve, reject) {
 
-        if (mapping == undefined) return reject("Empty parameters");
+        if (mapping == undefined || mapping.length == 0) return reject("Empty parameters");
 
         // variable that defines the query
         let insert_query = `INSERT INTO OUTCOME_COURSE (course_ID, outc_ID) values ?`;
 
-        let data = [];
-        mapping.forEach(element => {
-            data.push([course_id, element]);
-        });
-
         // query to insert new a Performance Criteria
-        conn.query(insert_query, [data], function (err, results, fields) {
+        conn.query(insert_query, [mapping], function (err, results, fields) {
             if (err) return reject(err);
 
             resolve(true);
@@ -55,25 +49,19 @@ function insert_mapping(course_id, mapping) {
 
 /**
  * insert_mapping ->  Remove mapping
- * @param {Number} course_id id of the course
  * @param {Array} mapping -> course ID
  * @return {Promise} resolve with true
  */
-function remove_mapping(course_id, mapping) {
+function remove_mapping(mapping) {
     return new Promise(function (resolve, reject) {
 
-        if (mapping == undefined) return reject("Empty parameters");
+        if (mapping == undefined || mapping.length == 0) return reject("Empty parameters");
 
         // variable that defines the query
         let delete_query = `DELETE FROM OUTCOME_COURSE WHERE (course_ID, outc_ID) IN (?)`;
 
-        let data = [];
-        mapping.forEach(element => {
-            data.push([course_id, element]);
-        });
-
         // query to insert new a Performance Criteria
-        conn.query(delete_query, [data], function (err, results, fields) {
+        conn.query(delete_query, [mapping], function (err, results, fields) {
             if (err) return reject(err);
 
             resolve(true);
@@ -196,8 +184,34 @@ function get_course_mapping(program_id) {
     });
 }
 
+/**
+ * get_outcome_with_study_programs ->  retrieves all Outcomes with their respective Study Program IDs
+ * @param {Array} mapping combination between courseid and outcomeid
+ * @return {Object} -> returns object containing all Outcomes with their respective Study Program IDs
+ */
+function get_mapping_name(mapping) {
+    return new Promise(function (resolve, reject) {
+
+        if (mapping == undefined || mapping.length == 0) {
+            return reject("Error with the Program ID");
+        }
+
+        let query = `SELECT COURSE.course_name, STUDENT_OUTCOME.outc_name
+        FROM OUTCOME_COURSE
+        INNER JOIN COURSE ON OUTCOME_COURSE.course_ID = COURSE.course_ID
+        INNER JOIN STUDENT_OUTCOME ON OUTCOME_COURSE.outc_ID = STUDENT_OUTCOME.outc_ID
+        WHERE (OUTCOME_COURSE.course_ID, OUTCOME_COURSE.outc_ID) IN ?`;
+
+        conn.query(query, [mapping], function (err, results) {
+            if (err) return reject(err);
+
+            resolve(results);
+        });
+    });
+}
 
 
+module.exports.get_mapping_name = get_mapping_name;
 module.exports.insert_course_mapping = insert_course_mapping;
 module.exports.get_course_outcomes = get_course_outcomes;
 module.exports.get_outcome_with_study_programs = get_outcome_with_study_programs;

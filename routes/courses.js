@@ -19,7 +19,8 @@ let locals = {
 	"api_get_url": base_url,
 	"delete_redirect": null,
 	filter:true,
-	"filter_title": "-- Study Program --"
+	"filter_title": "-- Study Program --",
+	feedback_message: "Number of Courses: ",
 };
 
 /*

@@ -246,20 +246,20 @@
                         let msgBody;
                         if (response.wasUpdated) {
                             msgTitle = "Success";
-                            msgBody = "Mapping was successfully updated!";
+                            msgBody = "";
+
+                            create_list("#removedElements", response["deleted"], "#delQ");
+                            create_list("#addedElements", response["added"], "#addQ");
+
                         } else {
                             msgTitle = "Feedback";
-                            msgBody = "You dit not change any value!";
+                            msgBody = "You did not change any value!";
                         }
 
                         $("#modalTitle").text(msgTitle);
                         $("#modalMessage").text(msgBody)
-                        $('#view_performances').modal('toggle');
-                        // $('#myModal').modal('show');
-                        // $('#myModal').modal('hide');
 
-                        // $(location).attr('href', `/courseMapping/test?progID=${id}`);
-                        // location.reload(true);
+                        $('#view_performances').modal('toggle');
                     }
                 },
                 error: function () {
@@ -271,9 +271,17 @@
             });
         });
 
-
     });
 
+    function create_list(tag, elements, counter_tag) {
+        // $(tag).text(`---Courses:${elements.length}, outcomes: ${5}`);
+        
+        $(tag).empty();
+        elements.forEach(row => {
+            let outcomes = row["outcome"].join(", ");
+            $(tag).append(`<li><strong> ${row["course"]}:</strong> ${outcomes} </li>`);
+        });
+    }
 
     /**
      * validate_form 
