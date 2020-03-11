@@ -107,10 +107,10 @@ router.post("/assessment/create", async function (req, res) {
 	- Get /professor/assessment/id
 	// TODO: VERIFY IF EXITS
 */
-router.get('/assessment/:id', async function (req, res) {
+router.get('/assessment/:assessmentID/performanceTable', async function (req, res) {
 
 	// Validate ID
-	if (req.params.id == undefined || isNaN(req.params.id)) {
+	if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
 		req.flash("error", "Invalid Assessment");
 		return res.redirect("back");
 	}
@@ -119,8 +119,7 @@ router.get('/assessment/:id', async function (req, res) {
 	let perf_criterias = await queries.get_perf_criterias(req.params.id).catch((err) => {
 		console.log("Error: ", err);
 	});
-
-	
+	console.log("Perf_Cirterias Results: ", perf_criterias);
 
 	locals.colNums = perf_criterias.length;
 	locals.perfCrit = perf_criterias.map(e => e.perC_order); 
@@ -218,9 +217,6 @@ router.delete('/assessment/:id', async function (req, res) {
 /* 
 	GET assessment/chooseCourseTerm/:id
 */
-
-// TODO: Noah R. Almeda
-// Finish Ajax implementation
 
 router.get('/:id/chooseCourseTerm', async function (req, res) {
 
@@ -321,41 +317,6 @@ router.post('/:id/professorInput', function (req, res, next) {
 		// res.redirect('/assessment/' + req.params.id + '/professorInput');
 	});
 	res.redirect('/assessment/' + req.params.id + '/perfomanceTable');
-});
-
-
-// <------ perfomanceTable GET request ------>
-
-// The ID being sent is the assessment ID
-router.get('/:id/perfomanceTable', async function (req, res, next) {
-	let perfOrder = [];
-	console.log('You are in perfomance table');
-	// TODO: validate 
-	assessmentID = req.params.id;
-
-	// GET ALL performance criterias
-	let perf_criterias = await queries.get_perf_criterias(assessmentID).catch((err) => {
-		console.log(err);
-	});
-
-	console.log("Perf Crit", perf_criterias);
-
-	//IF found results from the database
-	if (perf_criterias == undefined || perf_criterias.length == 0) {
-		/* TODO:
-			- Add Flash Message
-		*/
-		console.log('Performance Criteria not found.');
-		return res.send("No performancw criterias available");
-	}
-	for (let i = 0; i < perf_criterias.length; i++) {
-		perfOrder[i] = perf_criterias[i].perC_order
-	}
-	console.log(perfOrder);
-	locals.colNums = perf_criterias.length;
-	locals.perfCrit = perfOrder;
-
-	res.render('assessment/perfomanceTable', locals);
 });
 
 // <------ perfomanceTable Post request ------>
