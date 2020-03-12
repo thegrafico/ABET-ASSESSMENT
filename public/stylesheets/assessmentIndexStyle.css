@@ -27,7 +27,7 @@
 /* Srcoolbar CSS Ends Here */
 
 .assessmentContainer {
-	height: 600px;
+	height: 500px;
 	border: 1px solid #aaaaaa;
 	border-radius: 15px;
 	overflow-y: auto;
@@ -50,7 +50,7 @@
 	margin-top: 2.5%;
 	margin-bottom: 2.5%;
 	width: auto;
-	height: 50%;
+	height: 40%;
 	border-radius: 25px;
 }
 
@@ -67,10 +67,10 @@
 }
 
 .card-img-top {
-	width: 10rem;
-	height: 10rem;
-	margin-left: 15%;
-	margin-right: 15%;
+	width: 8rem;
+	height: 8rem;
+	margin-left: 20%;
+	margin-right: 20%;
 	margin-top: 5%;
 }
 
@@ -139,8 +139,10 @@ img {
 }
 
 #createNew {
-	margin-left: 42.5rem;
-	margin-top: 1.3rem;
+	position: absolute;
+	right: 15%;
+	padding: 14px 16px;
+    font-size: 17px;
 }
 
 .btn-group.btn-group-toggle {

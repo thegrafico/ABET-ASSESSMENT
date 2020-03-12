@@ -12,9 +12,34 @@ $(document).ready(function () {
     const default_message = ["Study Program", "Outcome", "Course", "Rubric"];
 
     /**
-     * When Create assessment
+     * WHEN USER WANT TO RECOVER AN COMPLETED ASSESSMENT
     */
 
+    $("#recoverBtn").click(function () {
+        // show the mdodal
+        $("#delete_title").text("Recover Assessment");
+        $('#deleteModal').modal('toggle');
+
+
+        // get the id of the assessment
+        let assessment_id = $(this).find('input:first').attr('value');
+        let assessment_name = $(this).find('input:nth-child(2)').attr('value');
+
+
+        console.log(assessment_id);
+        console.log(assessment_name);
+
+        $("#modal-text").text(`Are you sure you want to recover Assessment with the name: ${assessment_name}?`);
+        $("#remove_submit").text(`Recover Assessment`);
+
+        // change the action of form
+        $("#formDelete").attr("action", `/professor/assessment/changeStatus/${assessment_id}?_method=PUT`);
+
+    });
+
+    /**
+     * When Create assessment
+    */
     $("#createNew").click(function () {
 
         // Change the tittle
@@ -34,7 +59,9 @@ $(document).ready(function () {
      * when user click the trash button 
     * */
     $(".trashBtn").click(function () {
+
         // show the mdodal
+        $("#delete_title").text("Removing Assessment");
         $('#deleteModal').modal('toggle');
 
 
@@ -42,8 +69,8 @@ $(document).ready(function () {
         let assessment_id = $(this).find('input:first').attr('value');
         let assessment_name = $(this).find('input:nth-child(2)').attr('value');
 
-        // change the text of the modal
-        $("#modal-text").text(`${assessment_name}?`);
+        $("#modal-text").text(`Are you sure you want to remove Assessment with the name: ${assessment_name}?`);
+        $("#remove_submit").text(`Remove Assessment`);
 
         // change the action of form
         $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
@@ -59,8 +86,8 @@ $(document).ready(function () {
         $("#loader-modal").show();
 
         // Change the title and button text
-        $("#modalTitle").text("Edit Assessment");
-        $("#submitBtn").text("Edit Assessment");
+        $("#modalTitle").text("Edit Assessment information");
+        $("#submitBtn").text("Edit Assessment Information");
 
         // show the mdodal
         $('#createModal').modal('toggle');

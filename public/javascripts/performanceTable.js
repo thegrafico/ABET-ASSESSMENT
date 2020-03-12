@@ -54,6 +54,7 @@ function generateCols() {
 	}
 	$("#header").append(`<th>${outcomeName}</th>`);
 }
+console.log(`${index}, '${$(this).val}'`)
 
 // Creates a new row
 function addRow() {

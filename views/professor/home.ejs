@@ -2,52 +2,28 @@
 <script src="/javascripts/ajaxRequest.js"></script>
 <link rel="stylesheet" href="/stylesheets/professor_assessment.css">
 
+<div class="container" id="container_professor">
 
-<div class="container reportTabs row">
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" name="options" id="option1" checked> In Progress
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="options" id="option2"> Completed
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="options" id="option3"> Archived
-        </label>
+
+    <div style="width: 80%;">
+        <button class="tablink" onclick="openPage('Home', this, '#777')" id="defaultOpen">In progress</button>
+        <button class="tablink" onclick="openPage('News', this, '#777')">Completed</button>
+        <button class="tablink" onclick="openPage('Contact', this, '#777')">Archive</button>
     </div>
-    <div class="">
-        <button type="button" class="btn btn-success" id="createNew">
-            Create New
-        </button>
+
+    <button type="button" class="btn btn-success" id="createNew">
+        Create New
+    </button>
+
+    <div id="Home" class="tabcontent">
+        <%- include ('./modal/assessment_in_progress', {assessment_in_progress}) -%>
     </div>
-</div>
-<div class="container assessmentContainer">
-    <div class="row search">
-        <input class="reportSearch" placeholder="Search" type="text" name="reportSearch">
+
+    <div id="News" class="tabcontent">
+        <%- include ('./modal/assessment_completed', {assessment_completed}) -%>
     </div>
-    <style>
-        select {
-            /* for Firefox */
-            -moz-appearance: none;
-            /* for Chrome */
-            -webkit-appearance: none;
-        }
 
-        /* For IE10 */
-        select::-ms-expand {
-            display: none;
-        }
-
-        .div_select {
-            width: 30%;
-            right: 0;
-        }
-
-        .div_select select {
-            width: 100%;
-            border: none;
-        }
-
+<<<<<<< HEAD
         .fa-ellipsis-h {
             padding: 5%;
             border: 1px solid red;
@@ -104,8 +80,19 @@
             </div>
             <% } %>
         </div>
+=======
+    <div id="Contact" class="tabcontent">
+        <%- include ('./modal/assessment_archive', {assessment_archive}) -%>
     </div>
+
+    <div id="About" class="tabcontent">
+        <h3>About</h3>
+        <p>Who we are and what we do.</p>
+>>>>>>> origin/master
+    </div>
+
 </div>
+
 
 
 <!-- MODAL CREATE -->
@@ -116,6 +103,25 @@
 
 <!-- LOGIC FOR MODAL -->
 <script src="/javascripts/modals/assessment_create.js"></script>
+
+<script>
+    function openPage(pageName, elmnt, color) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "";
+        }
+        document.getElementById(pageName).style.display = "block";
+        elmnt.style.backgroundColor = color;
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+</script>
 
 <!-- FOOTER -->
 <%- include ('../admin/partials/footer') -%>

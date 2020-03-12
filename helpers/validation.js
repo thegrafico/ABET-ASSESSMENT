@@ -24,7 +24,7 @@ function validate_form(body, keys_types) {
 					return false
 				}
 			} else {
-				if (body[key] == undefined || isNaN(body[key]) || body[key].length == 0 || body[key] <= 0) {
+				if (body[key] == undefined || isNaN(body[key]) || body[key].length == 0 || body[key] < 0) {
 					console.log("Error with the parameter: ", body[key], "With the key: ", key);
 					return false
 				}
