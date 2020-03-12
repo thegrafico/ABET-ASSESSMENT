@@ -23,64 +23,6 @@
         <%- include ('./modal/assessment_completed', {assessment_completed}) -%>
     </div>
 
-<<<<<<< HEAD
-        .fa-ellipsis-h {
-            padding: 5%;
-            border: 1px solid red;
-            position: absolute;
-            right: 0;
-            font-size: 1.2em;
-        }
-    </style>
-
-    <!-- <i class="fa fa-ellipsis-h"></i> -->
-    <div class="container assessmentReports">
-        <div class="row">
-
-            <!-- TODO: GET THE VALUE FOR EDIT VIA AN API -->
-            <% for( let i = 0; i < assessments.length; i++) { %>
-
-            <div class="col-6">
-                <div class="card" style="width: 80%; margin: auto;">
-                    <!-- <div class="form-group div_select" style="position: absolute;">
-                        <i class="fa fa-ellipsis-h"></i>
-                        <select class="select_ form-group">
-                            <option selected value=""></option>
-                            <option>1</option>
-                            <option>2</option>
-                        </select>
-                    </div> -->
-                    <!-- <i class="fa fa-window-close-o"></i> -->
-                    <i class="editBtn fa fa-pencil-square-o">
-                        <input type="hidden" name="id" value="<%=assessments[i].assessment_ID%>">
-                        <input type="hidden" name="name" value="<%=assessments[i].name%>">
-                        <input type="hidden" name="department" value="<%=assessments[i].dep_ID%>">
-                        <input type="hidden" name="studyprogram" value="<%=assessments[i].prog_ID%>">
-                        <input type="hidden" name="outcome" value="<%=assessments[i].outc_ID%>">
-                        <input type="hidden" name="course" value="<%=assessments[i].course_ID%>">
-                        <input type="hidden" name="rubric" value="<%=assessments[i].rubric_ID%>">
-                        <input type="hidden" name="rubric" value="<%=assessments[i].term_ID%>">
-                    </i>
-                    <i class="trashBtn fa fa-trash-o" value="<%=assessments[i].assessment_ID%>">
-                        <input type="hidden" value="<%=assessments[i].assessment_ID%>">
-                        <input type="hidden" value="<%=assessments[i].name%>">
-                    </i>
-                    <div style="margin-left: 15%;">
-                        <img src="../images/paper.png" class="card-img-top" alt="Assessment">
-                    </div>
-                    <div class="card-body" style=" width: 80%; margin-left: 5%; text-align: center; font-size: 0.9em;">
-                        <h5 class="card-title"> <a href="/professor/assessment/<%=assessments[i].assessment_ID%>/performanceTable">
-                                <%=assessments[i].name %></a></h5>
-                        <p class="card-text"><%=assessments[i].course_name %></p>
-                        <p class="card-text"><%=assessments[i].term_name %></p>
-                        <p class="card-text"><%=assessments[i].rubric_name %></p>
-                        <p class="card-text">Created at <%=assessments[i].creation_date %></p>
-                    </div>
-                </div>
-            </div>
-            <% } %>
-        </div>
-=======
     <div id="Contact" class="tabcontent">
         <%- include ('./modal/assessment_archive', {assessment_archive}) -%>
     </div>
@@ -88,7 +30,6 @@
     <div id="About" class="tabcontent">
         <h3>About</h3>
         <p>Who we are and what we do.</p>
->>>>>>> origin/master
     </div>
 
 </div>

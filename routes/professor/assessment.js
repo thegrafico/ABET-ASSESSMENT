@@ -117,39 +117,60 @@ router.post("/assessment/create", async function (req, res) {
 /*
 	- Get /professor/assessment/id
 */
-<<<<<<< HEAD
 router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment ,async function (req, res) {
-=======
-router.get('/assessment/:assessmentID', middleware.validate_assessment, async function (req, res) {
-
-
-	locals.id = req.params.assessmentID;
->>>>>>> origin/master
 
 	locals.breadcrumb = [
 		{ "name": req.body.assessment.name, "url": "." }
 	];
-	
+	locals.id = req.params.assessmentID;
 
 	// GET ALL performance criterias
 	let perf_criterias = await queries.get_perf_criterias(locals.id).catch((err) => {
 		console.log("Error: ", err);
 	});
-<<<<<<< HEAD
-	console.log("Perf_Cirterias Results: ", perf_criterias);
-=======
->>>>>>> origin/master
 
 	locals.colNums = perf_criterias.length;
 	locals.perfCrit = perf_criterias.map(e => e.perC_order);
 	locals.outc_name = perf_criterias[0].outc_name;
+	locals.perf_ID = perf_criterias.map(e => e.perC_ID);
+	console.log("ID: ", perf_criterias.map(e => e.perC_ID));
 
 	res.render('assessment/perfomanceTable', locals);
 });
 
 router.post('/assessment/insertData', function(req, res) {
-	let data = req.body.data;
-	console.log("DATA: ", data);
+	let data = req.body.entryData;
+	
+	// data.forEach(function(e) {
+	// 	console.log("E: ",e);
+	// 	if(e.scores[0] != '') {
+	// 		queries.insertDataToEvaluationRow(e.assessment_ID).catch((err) => {
+	// 			console.log("Error: ", err);
+	// 		});
+	// 		console.log('Inserted');
+	// 	} else
+	// 		console.log("Empty boxes");	
+	// });
+	// console.log("Ass ID", data[0].assessment_ID);
+	// let getRowID = queries.getRow_ID(data[0].assessment_ID).catch((err) => {
+	// 	console.log("Error: ", err);
+	// });
+
+	// console.log('getRowId: ', getRowID);
+
+	// data.forEach(function(e) {
+	// 	console.log("E: ",e);
+	// 	if(e.scores[0] != '') {
+	// 		for(let i = 0; i < e.scores.length; i++) {
+	// 				queries.insertDataToRowPerc().catch((err) => {
+	// 					console.log("Error: ", err);
+	// 				});
+	// 		}
+	// 		console.log('Inserted');
+	// 	} else
+	// 		console.log("Empty boxes");	
+	// });
+	
 });
 
 
@@ -358,8 +379,6 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 
 });
 
-<<<<<<< HEAD
-=======
 
 
 /**
@@ -416,7 +435,6 @@ router.get('/:id/perfomanceTable', async function (req, res, next) {
 	res.render('assessment/perfomanceTable', locals);
 });
 
->>>>>>> origin/master
 // <------ perfomanceTable Post request ------>
 
 /* TODO: for Noah R. Almeda 
