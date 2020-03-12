@@ -34,18 +34,49 @@ function get_perf_criterias(assessmentID) {
 }
 
 /***
- * Insert students evaluation results to STUDENT_PERFORMANCE table
+ * Insert students evaluation results to EVALUATION_ROW table
  * @param {Array} data -> Array that contains each of the perfomance criterias score and the assessment ID
  * @returns {Promise} -> Returns true if query was able to insert the data
 */
-function insertData(data) {
+function insertDataToEvaluationRow(data) {
 	return new Promise(function (resolve, reject) {
-		let insertData = `INSERT INTO EVALUATION_ROW(row_ID, assessment_ID) VALUES(?, ?);`;
+		let insertData = `INSERT INTO EVALUATION_ROW(assessment_ID) VALUES(?);`;
 		conn.query(insertData, data, function (err, results) {
 			if (err)
 				reject(err || "Wasn't able to insert data");
 			else
 				resolve(true);
+		});
+	});
+}
+
+/***
+ * Insert students evaluation results to ROW_PERC table
+ * @param {Array} data -> Array that contains each of the perfomance criterias score and the assessment ID
+ * @returns {Promise} -> Returns true if query was able to insert the data
+*/
+function insertDataToRowPerc(data) {
+	return new Promise(function (resolve, reject) {
+		let insertData = `INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES(?, ?, ?);`;
+		conn.query(insertData, data, function (err, results) {
+			if (err)
+				reject(err || "Wasn't able to insert data");
+			else
+				resolve(true);
+		});
+	});
+}
+
+function getRow_ID(assessmentID) {
+	return new Promise(function (resolve, reject) {
+		let findRows = `SELECT row_ID
+							FROM EVALUATION_ROW
+							WHERE EVALUATION_ROW.assessment_ID = ?;`;
+		conn.query(findRows, assessmentID, function (err, results) {
+			if (err)
+				reject(err || "Error retreiving performance criterias.");
+			else
+				resolve(results);
 		});
 	});
 }
@@ -212,9 +243,11 @@ function update_status(id, status) {
 
 module.exports.update_status = update_status;
 module.exports.get_perf_criterias = get_perf_criterias;
-module.exports.insertData = insertData;
+module.exports.insertDataToEvaluationRow = insertDataToEvaluationRow;
 module.exports.get_study_program_by_user_id = get_study_program_by_user_id;
 module.exports.get_department_by_user_id = get_department_by_user_id;
 module.exports.deleteRowWithAssessmentID = deleteRowWithAssessmentID;
 module.exports.insert_professor_input = insert_professor_input;
 module.exports.update_professor_input = update_professor_input;
+module.exports.insertDataToRowPerc = insertDataToRowPerc;
+module.exports.getRow_ID = getRow_ID;

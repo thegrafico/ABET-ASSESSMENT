@@ -4,12 +4,15 @@ let amountOfColumns = $('#amountOfCol').val();
 let assessment_ID = $('#assessmentID').val();
 let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
+let perfID = $('#perfID').val();
+perfID = perfID.split(',');
 let outcomeName = $('#outcomeName').val();
 let labels = [];
 let row = 1;
 let graph;
 let avgPerRow = [];
 let data = [];
+console.log("PERFFF: ", perfID);
 
 // Loads empty chart when page is load
 window.onload = createChart();
@@ -23,6 +26,7 @@ $(document).ready(function () {
 	$('#addRow').click(function () {
 		avgPerRow.push(0);
 		addRow();
+		updateIndex();
 	});
 	
 	$('#delRow').click(function () {
@@ -40,7 +44,7 @@ $(document).ready(function () {
 function generateRow(r) {
 	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
-		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' oninput='createChart()' value='0'></td>`);
+		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' oninput='createChart()' value=''></td>`);
 	}
 	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
 	$("#tableBody").append(markup);
@@ -54,7 +58,7 @@ function generateCols() {
 	}
 	$("#header").append(`<th>${outcomeName}</th>`);
 }
-console.log(`${index}, '${$(this).val}'`)
+
 
 // Creates a new row
 function addRow() {
@@ -74,7 +78,6 @@ function delRow() {
 
 // TODO:
 // - Add Target line to graph
-// - Update info when deleting row
 
 
 function updateIndex() {
@@ -85,11 +88,6 @@ function updateIndex() {
 		$(this).find('td:nth-last-of-type(2)').attr('id', newId);
 		
 	});
-	// $("#tableBody").find('td').each(() => {
-	// 	$(this).val(data);
-	// });
-	//$(this).prev('li').prop('id', 'newId');
-	//:nth-last-of-type(1)
 }
 
 // Creates chart depending the users input
@@ -201,21 +199,25 @@ function createChart() {
 
 function insertEvaluation(rowData, assessmetID) {
 	let entryData = [];
-	let index = 1;
+	let index = 0;
 	rowData.forEach(element => {
 		let tempObject = {};
-		tempObject['row_ID'] = index;
 		tempObject['assessment_ID'] = assessmetID;
-		tempObject['rowEvaluation'] = element;
+		tempObject['perfC'] = perfID;
+		tempObject['scores'] = element;
+		// for(let i = 0; i < perfID.length; i++) {
+		// 	tempObject[`'${perfID[i]}'`] = element[i];
+		// }
 		entryData.push(tempObject);
 		index++;
 	});
 	index = 0;
-
+	console.log("Entry Data: ", entryData);
 	$.ajax({
 		type: "POST",
 		url: '/professor/assessment/insertData',
-		data: entryData,
+		data: {entryData},
+		dataType: 'json',
 		success: () => {
 			alert("Post");
 		}
