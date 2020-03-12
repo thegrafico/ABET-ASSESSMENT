@@ -234,10 +234,11 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	]
 
 	locals.total_value = 0;
+	locals.have_data = "n";
 	let database_keys = ["grade_A", "grade_B", "grade_C", "grade_D", "grade_F", "UW"];
 	if (report != undefined && report.length > 0) {
 		report = report[0];
-
+		locals.have_data = "y";
 		for (let i = 0; i < database_keys.length; i++) {
 			locals.grades[i]["value"] = report[database_keys[i]];
 			locals.total_value += parseInt(report[database_keys[i]]);
@@ -248,6 +249,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	locals.course_reflection = report["course_reflection"] || "";
 	locals.course_actions = report["course_actions"] || "";
 	locals.course_modification = report["course_modification"] || "";
+
 
 	res.render('assessment/professorInput', locals);
 });
@@ -269,12 +271,9 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 	if (req.body.save == undefined) {
 		status = "completed";
 	}
-
-	console.log("PARAMS: ", req.body);
-
 	// Assessment id
 	let id = req.params.assessmentID;
-
+	let isUpdate = (req.body.have_data == "y");
 	// For breadcrumb
 	locals.breadcrumb = [
 		{ "name": req.body.assessment.name, "url": `${base_url}/assessment/${id}` },
@@ -311,19 +310,59 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		req.flash("error", "Text boxes cannot be empty and cannot be only numbers");
 		return res.redirect("back");
 	}
-	queries.insert_professor_input(id, req.body, req.body.course).then(async (ok) => {
 
-		await queries.update_status(id, status).catch((err) => {
-			console.log("Cannot update the status of the assessment: ", err);
+	if (isUpdate) {
+		// insert data
+		queries.update_professor_input(id, req.body, req.body.course).then(async (ok) => {
+
+			await queries.update_status(id, status).catch((err) => {
+				console.log("Cannot update the status of the assessment: ", err);
+			});
+			req.flash("success", "Data was sucessfully Updated!");
+			res.redirect(base_url);
+		}).catch((err) => {
+			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
+			req.flash("error", "There is an error trying to update the data");
+			res.redirect("back");
 		});
+	} else {
+		// insert data
+		queries.insert_professor_input(id, req.body, req.body.course).then(async (ok) => {
 
-		req.flash("success", "Data was sucessfully added!");
-		res.redirect(base_url);
+			await queries.update_status(id, status).catch((err) => {
+				console.log("Cannot update the status of the assessment: ", err);
+			});
+			req.flash("success", "Data was sucessfully added!");
+			res.redirect(base_url);
+		}).catch((err) => {
+			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
+			req.flash("error", "There is an error trying to add the data");
+			res.redirect("back");
+		});
+	}
+
+});
+
+
+
+/**
+ *  UPDATE - UPDATE STATUS OF ASSESSMENT
+ * 	GET - /professor/assessment/:id/professorInput
+ */
+router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessment, function (req, res) {
+
+	// assessment id
+	let id = req.params.assessmentID;
+
+	queries.update_status(id, "in_progress").then((ok)=>{
+		req.flash("success", "Assessment now is in progress section!");
+		res.redirect("back");
 	}).catch((err) => {
-		console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
-		req.flash("error", "There is an error trying to add the data");
+		console.log("Cannot update the status of the assessment: ", err);
+		req.flash("error", "Cannot move assessment!");
 		res.redirect("back");
 	});
+
 });
 
 // <------ perfomanceTable GET request ------>

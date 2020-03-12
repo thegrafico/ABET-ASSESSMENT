@@ -7,6 +7,8 @@
     <div class="container assessmentReports">
         <div class="row">
 
+            <% if (assessment_completed.length > 0) { %>
+
             <% for( let i = 0; i < assessment_completed.length; i++) { %>
 
             <div class="col-6">
@@ -20,6 +22,10 @@
                         </select>
                     </div> -->
                     <!-- <i class="fa fa-window-close-o"></i> -->
+                    <i id="recoverBtn" class="fa fa-refresh">
+                        <input type="hidden" name="id" value="<%=assessment_completed[i].assessment_ID%>">
+                        <input type="hidden" name="name" value="<%=assessment_completed[i].name%>">
+                    </i>
                     <!-- <i class="editBtn fa fa-pencil-square-o">
                         <input type="hidden" name="id" value="<%=assessment_completed[i].assessment_ID%>">
                         <input type="hidden" name="name" value="<%=assessment_completed[i].name%>">
@@ -48,6 +54,10 @@
                     </div>
                 </div>
             </div>
+            <% } %>
+
+            <% }else{ %>
+            <h3 class="feedback_message_assessment">You do not have any Assessment Completed</h3>
             <% } %>
         </div>
     </div>

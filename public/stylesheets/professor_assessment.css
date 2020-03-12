@@ -27,6 +27,7 @@
     /* border:1px solid red; */
 }
 
+.fa-refresh,
 .fa-pencil-square-o {
     /* border: 1px solid red; */
     position: absolute;
@@ -37,6 +38,7 @@
     text-align: center;
 }
 
+.fa-refresh:hover,
 .fa-trash-o:hover,
 .fa-window-close-o:hover,
 .fa-pencil-square-o:hover {
@@ -100,11 +102,12 @@ html {
     border-left: 1px solid black;
     margin-bottom: 5px;
 }
+
 .tablink:hover {
     background-color: #777;
 }
 
-button:focus{
+button:focus {
     outline: none;
 }
 
@@ -115,6 +118,6 @@ button:focus{
     height: 100%;
 }
 
-#container_professor{
+#container_professor {
     margin-top: 2%;
 }

@@ -165,3 +165,9 @@ ol>li {
 .submitBtn input:hover{
   background-color:rgba(0, 0, 0, 0.3);
 }
+
+.feedback_message_assessment{
+  text-align: center;
+  width: 100%;
+  /* border: 1px solid red; */
+}

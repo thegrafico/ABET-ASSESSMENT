@@ -22,6 +22,7 @@
 
 <div class="container my-4 mx-5">
     <form id="course_evaluation" class="professorInput" action="<%=form_action%>" method="POST">
+        <input type="hidden" name="have_data" value="<%=locals.have_data%>">
         <h3 class="mb-4">Grade Distribution</h3>
         <table class="table table-sm" style="text-align: center;">
             <!--Grade Scale-->
@@ -46,7 +47,7 @@
 
                     <td scope="col-auto">
                         <div class="form-group">
-                            <input style="text-align: center;" type="number" value="<%=total_value%>" name="total"
+                            <input style="text-align: center;" type="number" id="total" value="<%=total_value%>" name="total"
                                 placeholder="0" disabled>
                         </div>
                     </td>
@@ -63,12 +64,12 @@
                 let grades = undefined;
                 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
-
                 $("#course_evaluation :input").change(function () {
                     let sum = notas.reduce(reducer);
                     grades = 0;
                     notas.forEach(n => {
                         let val = $(n).val();
+                        console.log(val);
 
                         if (val == undefined || val == '' || val.length == 0) {
                             val = 0;

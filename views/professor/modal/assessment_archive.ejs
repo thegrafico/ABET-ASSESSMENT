@@ -7,6 +7,8 @@
     <div class="container assessmentReports">
         <div class="row">
 
+            <% if (assessment_archive.length > 0) { %>
+
             <% for( let i = 0; i < assessment_archive.length; i++) { %>
 
             <div class="col-6">
@@ -48,6 +50,10 @@
                     </div>
                 </div>
             </div>
+            <% } %>
+
+            <% }else{ %>
+            <h3 class="feedback_message_assessment">You do not have any Assessment Archived</h3>
             <% } %>
         </div>
     </div>

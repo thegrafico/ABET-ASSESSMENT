@@ -7,6 +7,9 @@
     <div class="container assessmentReports">
         <div class="row">
 
+            <% if (assessment_in_progress.length > 0) { %>
+
+
             <!-- TODO: GET THE VALUE FOR EDIT VIA AN API -->
             <% for( let i = 0; i < assessment_in_progress.length; i++) { %>
 
@@ -38,8 +41,7 @@
                     <div style="margin-left: 15%;">
                         <img src="../images/paper.png" class="card-img-top" alt="Assessment">
                     </div>
-                    <div class="card-body"
-                        style=" width: 80%; margin-left: 5%; text-align: center; font-size: 0.9em;">
+                    <div class="card-body" style=" width: 80%; margin-left: 5%; text-align: center; font-size: 0.9em;">
                         <h5 class="card-title"> <a
                                 href="/professor/assessment/<%=assessment_in_progress[i].assessment_ID%>">
                                 <%=assessment_in_progress[i].name %></a></h5>
@@ -50,6 +52,11 @@
                     </div>
                 </div>
             </div>
+            <% } %>
+
+
+            <% }else{ %>
+                <h3 class="feedback_message_assessment">You do not have any Assessment in Progress</h3>
             <% } %>
         </div>
     </div>

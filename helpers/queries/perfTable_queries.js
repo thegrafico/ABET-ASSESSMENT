@@ -121,7 +121,43 @@ function insert_professor_input(id, grades, course_info) {
 			grades.C,
 			grades.D,
 			grades.F,
-			grades.UW,
+			grades.W,
+			course_info.results,
+			course_info.reflection,
+			course_info.improvement,
+			course_info.modification,
+			id
+		];
+
+		conn.query(insert_query, data, function (err, results) {
+			if (err)
+				reject(err);
+			else
+				resolve(true);
+		});
+	});
+}
+
+/**
+ * update_professor_input - Update report with the course information
+ * @param {Object} grades - all grades {"A", "B", "C", "D", "F", "UW"}
+ * @param {Object} course_info - course information {results, modification, reflection, improvement}
+ * @return {Promise} Resolve with true
+ */
+function update_professor_input(id, grades, course_info) {
+	return new Promise(function (resolve, reject) {
+
+		let insert_query = `UPDATE REPORTS SET grade_A = ?, grade_B = ?, grade_C = ?, grade_D = ?, grade_F =?,
+		UW = ?, course_results = ?, course_reflection = ?, course_actions = ?, course_modification = ?
+		WHERE assessment_ID = ?`;
+
+		let data = [
+			grades.A,
+			grades.B,
+			grades.C,
+			grades.D,
+			grades.F,
+			grades.W,
 			course_info.results,
 			course_info.reflection,
 			course_info.improvement,
@@ -164,5 +200,7 @@ module.exports.insertData = insertData;
 module.exports.get_study_program_by_user_id = get_study_program_by_user_id;
 module.exports.get_department_by_user_id = get_department_by_user_id;
 module.exports.insert_professor_input = insert_professor_input;
+module.exports.update_professor_input = update_professor_input;
+
 
 
