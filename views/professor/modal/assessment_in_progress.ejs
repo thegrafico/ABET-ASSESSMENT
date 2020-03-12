@@ -1,7 +1,89 @@
 <div class="container assessmentContainer">
-    <div class="row search">
-        <input class="reportSearch" placeholder="Search" type="text" name="reportSearch">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="d-flex flex-row bd-highlight">
+
+                <div class="p-2 bd-highlight">
+                    <h3>Filters: </h3>
+                </div>
+
+                <div class="p-2 bd-highlight" style="max-width: 50%;">
+
+                    <div class="form-group">
+                        <select class="form-control" id="filter_term_progress" type="text">
+                            <option selected value=""> -- Academic Term --</option>
+                            <% academic_term.forEach(term => { %>
+                            <option value="<%=term["term_name"]%>"> <%= term["term_name"]%></option>
+                            <% }) %>
+                        </select>
+
+                        <input type="hidden" id="dept_selected" value="">
+                    </div>
+                </div>
+
+                <div class="p-2 bd-highlight" style="width: 50%;">
+
+                    <div class="form-group">
+                        <div>
+                            <input name="filter" disabled class="form-control"  style="margin-top: 0;" type="text"
+                                placeholder="Type Assessment name, Rubric name or created date" back>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="p-2 bd-highlight" style=" margin-left:3%;">
+                    <h5> "CANTIDAD: " <span id="number"></span> </h5>
+                </div> -->
+            </div>
+        </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $("#filter_term_progress").change(function () {
+
+                let value = $(this).val().toLowerCase();
+
+                console.log(value);
+                $(".progress_assessments").filter(function () {
+
+                    // find all term in assessment
+                    let text = $(this).find('input[name="term_name"]').val();
+
+                    $(this).toggle(text.toLowerCase().indexOf(value) > -1);
+
+                });
+
+                // update the number of quantity
+                // $("#number").text($("#filter tr:visible").length);
+            });
+
+            // $("#myInput").on("keyup", function () {
+
+            //     let value = $(this).val().toLowerCase();
+            //     console.log(value);
+            //     $(".progress_assessments").filter(function () {
+
+            //         // find all term in assessment
+            //         let text = $(this).find('input[name="term_name"]').val();
+
+            //         $(this).toggle(text.toLowerCase().indexOf(value) > -1);
+
+            //         // // get the text of the tr
+            //         // let tr_text = $(this).text().toLowerCase();
+
+            //         // $(this).toggle(names.some(n => tr_text.indexOf(n.toLowerCase()) > 0));
+
+            //     });
+
+            //     let names = study_programs.map(e => e.toLowerCase());
+            //     // update the number of quantity
+            //     // $("#number").text($("#filter tr:visible").length);
+            // });
+        });
+    </script>
 
     <!-- <i class="fa fa-ellipsis-h"></i> -->
     <div class="container assessmentReports">
@@ -13,17 +95,8 @@
             <!-- TODO: GET THE VALUE FOR EDIT VIA AN API -->
             <% for( let i = 0; i < assessment_in_progress.length; i++) { %>
 
-            <div class="col-6">
+            <div class="col-6 progress_assessments">
                 <div class="card" style="width: 80%; margin: auto;">
-                    <!-- <div class="form-group div_select" style="position: absolute;">
-                        <i class="fa fa-ellipsis-h"></i>
-                        <select class="select_ form-group">
-                            <option selected value=""></option>
-                            <option>1</option>
-                            <option>2</option>
-                        </select>
-                    </div> -->
-                    <!-- <i class="fa fa-window-close-o"></i> -->
                     <i class="editBtn fa fa-pencil-square-o">
                         <input type="hidden" name="id" value="<%=assessment_in_progress[i].assessment_ID%>">
                         <input type="hidden" name="name" value="<%=assessment_in_progress[i].name%>">
@@ -32,7 +105,8 @@
                         <input type="hidden" name="outcome" value="<%=assessment_in_progress[i].outc_ID%>">
                         <input type="hidden" name="course" value="<%=assessment_in_progress[i].course_ID%>">
                         <input type="hidden" name="rubric" value="<%=assessment_in_progress[i].rubric_ID%>">
-                        <input type="hidden" name="rubric" value="<%=assessment_in_progress[i].term_ID%>">
+                        <input type="hidden" name="term" value="<%=assessment_in_progress[i].term_ID%>">
+                        <input type="hidden" name="term_name" value="<%=assessment_in_progress[i].term_name %>">
                     </i>
                     <i class="trashBtn fa fa-trash-o" value="<%=assessment_in_progress[i].assessment_ID%>">
                         <input type="hidden" value="<%=assessment_in_progress[i].assessment_ID%>">
@@ -53,10 +127,8 @@
                 </div>
             </div>
             <% } %>
-
-
             <% }else{ %>
-                <h3 class="feedback_message_assessment">You do not have any Assessment in Progress</h3>
+            <h3 class="feedback_message_assessment">You do not have any Assessment in Progress</h3>
             <% } %>
         </div>
     </div>

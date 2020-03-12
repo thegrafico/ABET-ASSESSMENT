@@ -1,7 +1,66 @@
 <div class="container assessmentContainer">
-    <div class="row search">
-        <input class="reportSearch" placeholder="Search" type="text" name="reportSearch">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="d-flex flex-row bd-highlight">
+
+                <div class="p-2 bd-highlight">
+                    <h3>Filters: </h3>
+                </div>
+
+                <div class="p-2 bd-highlight" style="max-width: 50%;">
+
+                    <div class="form-group">
+                        <select class="form-control" id="filter_term_completed" type="text">
+                            <option selected value=""> -- Academic Term --</option>
+                            <% academic_term.forEach(term => { %>
+                            <option value="<%=term["term_name"]%>"> <%= term["term_name"]%></option>
+                            <% }) %>
+                        </select>
+
+                        <input type="hidden" id="dept_selected" value="">
+                    </div>
+                </div>
+
+                <div class="p-2 bd-highlight" style="width: 50%;">
+
+                    <div class="form-group">
+                        <div>
+                            <input name="filter" disabled class="form-control" style="margin-top: 0;"
+                                type="text" placeholder="Type Assessment name, Rubric name or created date" back>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="p-2 bd-highlight" style=" margin-left:3%;">
+                    <h5> "CANTIDAD: " <span id="number"></span> </h5>
+                </div> -->
+            </div>
+        </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $("#filter_term_completed").change(function () {
+
+                let value = $(this).val().toLowerCase();
+
+                console.log(value);
+                $(".assessment_completed").filter(function () {
+
+                    // find all term in assessment
+                    let text = $(this).find('input[name="term_name"]').val();
+
+                    $(this).toggle(text.toLowerCase().indexOf(value) > -1);
+
+                });
+
+                // update the number of quantity
+                // $("#number").text($("#filter tr:visible").length);
+            });
+        });
+    </script>
 
     <!-- <i class="fa fa-ellipsis-h"></i> -->
     <div class="container assessmentReports">
@@ -11,7 +70,7 @@
 
             <% for( let i = 0; i < assessment_completed.length; i++) { %>
 
-            <div class="col-6">
+            <div class="col-6 assessment_completed">
                 <div class="card" style="width: 80%; margin: auto;">
                     <!-- <div class="form-group div_select" style="position: absolute;">
                         <i class="fa fa-ellipsis-h"></i>
@@ -25,6 +84,8 @@
                     <i id="recoverBtn" class="fa fa-refresh">
                         <input type="hidden" name="id" value="<%=assessment_completed[i].assessment_ID%>">
                         <input type="hidden" name="name" value="<%=assessment_completed[i].name%>">
+                        <input type="hidden" name="term_name" value="<%=assessment_completed[i].term_name%>">
+
                     </i>
                     <!-- <i class="editBtn fa fa-pencil-square-o">
                         <input type="hidden" name="id" value="<%=assessment_completed[i].assessment_ID%>">

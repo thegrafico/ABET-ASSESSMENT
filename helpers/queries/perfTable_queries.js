@@ -215,12 +215,6 @@ module.exports.get_perf_criterias = get_perf_criterias;
 module.exports.insertData = insertData;
 module.exports.get_study_program_by_user_id = get_study_program_by_user_id;
 module.exports.get_department_by_user_id = get_department_by_user_id;
-<<<<<<< HEAD
 module.exports.deleteRowWithAssessmentID = deleteRowWithAssessmentID;
-=======
 module.exports.insert_professor_input = insert_professor_input;
 module.exports.update_professor_input = update_professor_input;
-
-
-
->>>>>>> origin/master

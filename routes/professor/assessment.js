@@ -117,14 +117,10 @@ router.post("/assessment/create", async function (req, res) {
 /*
 	- Get /professor/assessment/id
 */
-<<<<<<< HEAD
-router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment ,async function (req, res) {
-=======
 router.get('/assessment/:assessmentID', middleware.validate_assessment, async function (req, res) {
 
 
 	locals.id = req.params.assessmentID;
->>>>>>> origin/master
 
 	locals.breadcrumb = [
 		{ "name": req.body.assessment.name, "url": "." }
@@ -135,10 +131,6 @@ router.get('/assessment/:assessmentID', middleware.validate_assessment, async fu
 	let perf_criterias = await queries.get_perf_criterias(locals.id).catch((err) => {
 		console.log("Error: ", err);
 	});
-<<<<<<< HEAD
-	console.log("Perf_Cirterias Results: ", perf_criterias);
-=======
->>>>>>> origin/master
 
 	locals.colNums = perf_criterias.length;
 	locals.perfCrit = perf_criterias.map(e => e.perC_order);
@@ -358,8 +350,6 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 
 });
 
-<<<<<<< HEAD
-=======
 
 
 /**
@@ -416,7 +406,6 @@ router.get('/:id/perfomanceTable', async function (req, res, next) {
 	res.render('assessment/perfomanceTable', locals);
 });
 
->>>>>>> origin/master
 // <------ perfomanceTable Post request ------>
 
 /* TODO: for Noah R. Almeda 
