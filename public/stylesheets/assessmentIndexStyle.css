@@ -35,15 +35,12 @@
 
 .perfomanceTable {
 	border: 1px solid #aaaaaa;
+	border-radius: 10px;
 	height: 100%;
-	box-shadow: 2.5px 2.5px 2.5px #aaaaaa;
-	border-radius: 15px;
 	overflow-y: auto;
 }
 
 .barChart{
-	box-shadow: 2.5px 2.5px 2.5px #aaaaaa;
-	border-radius: 15px;
 	text-align: center;
 	height: 100%
 }
@@ -88,6 +85,10 @@
 
 .card-text {
 	margin: 0em;
+}
+
+.avgRow {
+	text-emphasis: center;
 }
 
 /* Need to fix this because it's mixin with other pages */

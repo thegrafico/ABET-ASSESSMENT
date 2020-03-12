@@ -1,10 +1,10 @@
 const canvas = document.getElementById('myChart')
 let ctx = canvas.getContext('2d');
 let amountOfColumns = $('#amountOfCol').val();
+let assessment_ID = $('#assessmentID').val();
 let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
 let outcomeName = $('#outcomeName').val();
-outcomeName = outcomeName.split(' ');
 let labels = [];
 let row = 1;
 let graph;
@@ -24,30 +24,35 @@ $(document).ready(function () {
 		avgPerRow.push(0);
 		addRow();
 	});
-	// Find and remove selected table rows
+	
 	$('#delRow').click(function () {
-		updateIndex();
 		delRow();
+		updateIndex();
+	});
+
+	$('#saveBtn').click(function() {
+		insertEvaluation(data, assessment_ID);
 	});
 });
 
 
 // This function creates a row with the amount of columns which depends of the amount of performance Criterias
 function generateRow(r) {
-	var markup = `<tr><th id='indexRow' name='index' scope='row'> ${r} </th>`;
+	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
-		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0' max = '4' size = '25' oninput='createChart()' value='0'></td>`);
+		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' oninput='createChart()' value='0'></td>`);
 	}
-	markup = markup.concat(`<td id="avg${r-1}">${avgPerRow[r-1]}</td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
+	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
 	$("#tableBody").append(markup);
 }
 
 // Creates header row of the table
 function generateCols() {
 	for (let i = 1; i <= amountOfColumns; i++) {
-		var col = "<th> Criteria " + performanceCriteria[i - 1] + "</th>";
+		var col = "<th> PC " + performanceCriteria[i - 1] + "</th>";
 		$("#header").append(col);
 	}
+	$("#header").append(`<th>${outcomeName}</th>`);
 }
 
 // Creates a new row
@@ -61,9 +66,7 @@ function delRow() {
 	$("#tableBody").find('input[name="record"]').each(function () {
 		if ($(this).is(":checked")) {
 			$(this).parents("tr").remove();
-			console.log("Before Splice: ", avgPerRow);
 			avgPerRow.splice($(this).val(), 1);
-			console.log("After Splice: ", avgPerRow);
 		}
 	});
 }
@@ -74,14 +77,18 @@ function delRow() {
 
 
 function updateIndex() {
-	alert("Deleted");
-	// $("th.indexRow").each(function(index) {
-	// 	// $(this).text(index);
-	// 	console.log(`${index} : '${$(this).val()}'`);
-	// });
+	$('table tbody tr').each(function(index) {
+		console.log(index);
+		$(this).find('th').text(index+1);
+		let newId = 'avg' + index;
+		$(this).find('td:nth-last-of-type(2)').attr('id', newId);
+		
+	});
 	// $("#tableBody").find('td').each(() => {
 	// 	$(this).val(data);
 	// });
+	//$(this).prev('li').prop('id', 'newId');
+	//:nth-last-of-type(1)
 }
 
 // Creates chart depending the users input
@@ -94,7 +101,7 @@ function createChart() {
 		labels[i] = "PC " + performanceCriteria[i];
 	}
 
-	labels[performanceCriteria.length] = outcomeName[0] + ' ' + outcomeName[1] + ' Average';
+	labels[performanceCriteria.length] = outcomeName + ' Average';
 
 	$("#performanceTable, input[type=number]").each(function (index) {
 		let input = $(this); 
@@ -102,9 +109,9 @@ function createChart() {
 		$(input).val(formData[index]);
 	});
 
-	let amountRows = ((formData.length - 1) / amountOfColumns);
+	let amountRows = ((formData.length) / amountOfColumns);
 	let temp = [];
-	let e = 1;
+	let e = 0;
 
 	for (let i = 0; i < amountRows; i++) {
 		for (let j = 0; j < amountOfColumns; j++) {
@@ -152,14 +159,13 @@ function createChart() {
 	let graphData = percTable;
 	graphData.push(outcomeAVG);
 
-	console.log("Average per Row: ", avgPerRow);
 	let myChart = new Chart(canvas, {
 		type: 'bar',
 		data: {
 			labels: labels,
 			datasets: [
 				{
-					label: '% of Student with 3 or more in ' + outcomeName[0] + ' ' + outcomeName[1],
+					label: '% of Student with 3 or more in ' + outcomeName,
 					data: graphData,
 					backgroundColor: 'rgba(58, 166, 87, 0.2)', // Need to make where now matter the amount of PC it can make amou
 				},
@@ -187,5 +193,30 @@ function createChart() {
 
 	$(document).ready(function () {
 		$('input[name="graph"]').val(graph);
+	});
+}
+
+
+
+function insertEvaluation(rowData, assessmetID) {
+	let entryData = [];
+	let index = 1;
+	rowData.forEach(element => {
+		let tempObject = {};
+		tempObject['row_ID'] = index;
+		tempObject['assessment_ID'] = assessmetID;
+		tempObject['rowEvaluation'] = element;
+		entryData.push(tempObject);
+		index++;
+	});
+	index = 0;
+
+	$.ajax({
+		type: "POST",
+		url: '/professor/assessment/insertData',
+		data: entryData,
+		success: () => {
+			alert("Post");
+		}
 	});
 }

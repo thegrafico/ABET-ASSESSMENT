@@ -23,6 +23,7 @@
 <input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
 <input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">
 <input type="hidden" id="outcomeName" name="outcomeName" value="<%= outc_name %> ">
+<input type="hidden" id="assessmentID" name="outcomeName" value="<%= id %> ">
 
 <div class="container-fluid" style="margin-top: 10px; margin-bottom: 100px;">
 	<div class="row" style="padding: 2%;">
@@ -30,7 +31,7 @@
 		<div class="col-6" style="height: 450px;">
 			<h4 style="text-align: center;">Insert Criteria Values for each Student</h4>
 			<div class="perfomanceTable">
-				<form id="performanceTable" action="/assessment/perfomanceTable" method="POST">
+				<!-- <form id="performanceTable" action="/assessment/perfomanceTable" method="POST"> -->
 					<table id="table" class="table">
 						<thead>
 							<tr id="header">
@@ -42,18 +43,19 @@
 					</table>
 
 					<input type="hidden" id="graph" name="graph" value="">
-				</form>
+				<!-- </form> -->
 			</div>
 			<div>
 
 				<div style="float: left; width: 80%;">
 					<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
 					<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
+					<button style="width: 20%;" id="saveBtn" class="btn inter-green inter-green-btn" ><a href="<%= base_url %>/">Save</a></button>
 				</div>
-
-				<!-- <input style="width: 15%;" type="submit" class="btn inter-green inter-green-btn" id="delRow" value="Next"> -->
+				<!-- onclick="insertEvaluation()" -->
 				<a style="width: 15%;margin-top: 5px;" class="btn inter-green inter-green-btn" id="delRow"
-					href="<%=base_url%>/">Next</a>
+					href="<%= base_url %>/">Next
+				</a>
 			</div>
 		</div>
 		<div class="col-6 barChart">

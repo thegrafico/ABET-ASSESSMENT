@@ -6,7 +6,6 @@ var conn = db.mysql_pool;
  * @param {Number} assessmentID -> Assessment ID
  * @returns {Promise} -> Resolves contain query results.
 */
-
 function get_perf_criterias(assessmentID) {
 	return new Promise(function (resolve, reject) {
 		let findPerfCrit = `SELECT *
@@ -39,15 +38,29 @@ function get_perf_criterias(assessmentID) {
  * @param {Array} data -> Array that contains each of the perfomance criterias score and the assessment ID
  * @returns {Promise} -> Returns true if query was able to insert the data
 */
-
 function insertData(data) {
 	return new Promise(function (resolve, reject) {
-		let insertData = `INSERT INTO STUDENT_PERFORMANCE(pc_1, pc_2, pc_3, pc_4, pc_5, assessment_ID) VALUES(?, ?, ?, ?, ?, ?)`;
+		let insertData = `INSERT INTO EVALUATION_ROW(row_ID, assessment_ID) VALUES(?, ?);`;
 		conn.query(insertData, data, function (err, results) {
 			if (err)
 				reject(err || "Wasn't able to insert data");
 			else
 				resolve(true);
+		});
+	});
+}
+
+/**
+ * Deletes all row with {x} Assessment ID from EVALUATION_ROW
+ * @param {number} assessmentID -> Assessment ID which you want to eliminate.
+ * @returns {Promise} -> Returns true if query was successful.
+*/
+function deleteRowWithAssessmentID(assessmentID) {
+	return new Promise(function(resolve, reject) {
+		let deleteData = `DELETE FROM EVALUATION_ROW WHERE assessment_ID = ?;`
+		conn.query(deleteData, assessmentID, function(err, results) {
+			if(err) reject(err || "Wasn't able to delete data.");
+			else resolve(true);
 		});
 	});
 }
@@ -108,4 +121,4 @@ module.exports.get_perf_criterias = get_perf_criterias;
 module.exports.insertData = insertData;
 module.exports.get_study_program_by_user_id = get_study_program_by_user_id;
 module.exports.get_department_by_user_id = get_department_by_user_id;
-
+module.exports.deleteRowWithAssessmentID = deleteRowWithAssessmentID;

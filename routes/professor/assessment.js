@@ -110,12 +110,12 @@ router.post("/assessment/create", async function (req, res) {
 */
 router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment ,async function (req, res) {
 
-
 	locals.id = req.params.assessmentID; 
 	locals.homeURL = base_url;
 	locals.breadcrumb = [
 		{ "name": req.body.assessment.name, "url": "." }
 	];
+	
 
 	// GET ALL performance criterias
 	let perf_criterias = await queries.get_perf_criterias(locals.id).catch((err) => {
@@ -157,6 +157,11 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	// console.log(assessments);
 
 	res.render('assessment/perfomanceTable', locals);
+});
+
+router.post('/assessment/insertData', function(req, res) {
+	let data = req.body.data;
+	console.log("DATA: ", data);
 });
 
 
@@ -351,13 +356,18 @@ router.post('/perfomanceTable', async function (req, res) {
 			}
 		}
 		studentPerformance.push(assessmentID);
-		let stud_performance_inserted = queries.insertData(studentPerformance);
-		stud_performance_inserted.then((yes) => {
-			if (yes)
-				console.log('Data was added to STUD_PERFORMANCE table.');
-		}).catch((err) => {
-			console.log('Wasn\'t able to add data.');
-		});
+		
+		/* ----------- This needs to change ------------*/
+		
+		// let stud_performance_inserted = queries.insertData(studentPerformance);
+		// stud_performance_inserted.then((yes) => {
+		// 	if (yes)
+		// 		console.log('Data was added to STUD_PERFORMANCE table.');
+		// }).catch((err) => {
+		// 	console.log('Wasn\'t able to add data.');
+		// });
+
+		/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 	}
 
 	// pngDataURL => contains a base64 encoding of the graph created
