@@ -209,8 +209,13 @@ $(document).ready(function () {
 
     // WHE USER CHANGES THE OUTCOME -> UPDATE RUBRIC
     $(tag_outcome).change(async function () {
+
         // get outcome ID
         let outc_id = $(this).val();
+
+        // Disable and clean the rubric select
+        $(tag_rubric).prop("disabled", true);
+        clean_select(tag_rubric, "Rubric");
 
         $("#loader-modal").show();
         await update_outcome(outc_id).then((ok) => {
