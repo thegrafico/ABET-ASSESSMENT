@@ -6,15 +6,15 @@
 		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
 		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
-			<% if (index == breadcrumb.length -1) { %>
-				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
-			<% }else { %>
-				<li class="breadcrumb-item">
-					<a href="<%= breadcrumb[index].url %>">
-						<%= breadcrumb[index].name %>
-					</a>
-				</li>
-			<% } %>
+		<% if (index == breadcrumb.length -1) { %>
+		<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+		<% }else { %>
+		<li class="breadcrumb-item">
+			<a href="<%= breadcrumb[index].url %>">
+				<%= breadcrumb[index].name %>
+			</a>
+		</li>
+		<% } %>
 
 		<% } %>
 	</ol>
@@ -24,41 +24,45 @@
 	<h2><%= title_action %> </h2>
 	<hr class="my-4">
 	<form id="<%= form_id %>" action="<%= url_form_redirect %>" method="POST">
-		
-		<% if (have_dropdown) { %>
-			<div class="container-fluid">
-				
-				<div class="row my-4">
-					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %></strong></div>
-					<div class="col-8">
-                        <span class="multi-select"></span>
-						<input id="multiple_values" type="hidden" name="user_selection">
-						<input type="hidden" name="selected" value="<%=selected%> ">
-					</div>
-				</div>
-							
-				<script>
-					let dropdowm_values = <%- JSON.stringify(study_programs) %>;
-					let dropdown_selected = <%- JSON.stringify(selected) %>;
-				</script>
 
-				<script src="/javascripts/multiselect.js"></script>
-				<link rel="stylesheet" type="text/css" href="/stylesheets/multiselect.css">
+		<% if (have_dropdown) { %>
+		<div class="container-fluid">
+
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %></strong></div>
+				<div class="col-8">
+					<span class="multi-select"></span>
+					<input id="multiple_values" type="hidden" name="user_selection">
+					<input type="hidden" name="selected" value="<%=selected%> ">
+				</div>
 			</div>
+
+			<script>
+				let dropdowm_values = <%- JSON.stringify(study_programs) %>;
+				let dropdown_selected = <%- JSON.stringify(selected) %>;
+			</script>
+
+			<script src="/javascripts/multiselect.js"></script>
+			<link rel="stylesheet" type="text/css" href="/stylesheets/multiselect.css">
+		</div>
 		<% } %>
 		<% inputs.forEach(element => { %>
-			<div class="row my-4">
-					<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-					<div class="col-8">
-						<input class="form-control" value="<%= element.value %>" 
-						type="text" placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
-					</div>
+		<div class="row my-4">
+			<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+			<div class="col-8">
+				<input class="form-control" value="<%= element.value %>" type="text"
+					placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
 			</div>
+		</div>
 		<% }); %>
+
+		<!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
+		<!-- <textarea class="form-control" name="course[improvement]" id="cImprovement" rows="3"
+			placeholder="Insert Proposed Action"></textarea> -->
 
 		<div class="row my-4">
 			<div class="col-2"></div>
-			<div class="col"><button type ="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
+			<div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
 		</div>
 		<p><a href="<%= base_url %> ">Back to List</a></p>
 	</form>

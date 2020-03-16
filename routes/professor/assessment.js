@@ -117,7 +117,7 @@ router.post("/assessment/create", async function (req, res) {
 /*
 	- Get /professor/assessment/id
 */
-router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment ,async function (req, res) {
+router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment, async function (req, res) {
 
 	locals.breadcrumb = [
 		{ "name": req.body.assessment.name, "url": "." }
@@ -138,9 +138,9 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	res.render('assessment/perfomanceTable', locals);
 });
 
-router.post('/assessment/insertData', function(req, res) {
+router.post('/assessment/insertData', function (req, res) {
 	let data = req.body.entryData;
-	
+
 	// data.forEach(function(e) {
 	// 	console.log("E: ",e);
 	// 	if(e.scores[0] != '') {
@@ -170,7 +170,7 @@ router.post('/assessment/insertData', function(req, res) {
 	// 	} else
 	// 		console.log("Empty boxes");	
 	// });
-	
+
 });
 
 
@@ -249,9 +249,9 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	let id = req.params.assessmentID;
 
 	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
-	// for breadcrum
+	// For breadcrumb
 	locals.breadcrumb = [
-		{ "name": req.body.assessment.name, "url": `${base_url}/assessment/${id}` },
+		{ "name": req.body.assessment.name, "url": `${base_url}/assessment/${id}/performanceTable` },
 		{ "name": "Course Evaluation", "url": `.` }
 	];
 
@@ -312,7 +312,7 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 	let isUpdate = (req.body.have_data == "y");
 	// For breadcrumb
 	locals.breadcrumb = [
-		{ "name": req.body.assessment.name, "url": `${base_url}/assessment/${id}` },
+		{ "name": req.body.assessment.name, "url": `${base_url}/assessment/${id}/professorInput` },
 		{ "name": "Course Evaluation", "url": `.` }
 	];
 
@@ -390,7 +390,7 @@ router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessm
 	// assessment id
 	let id = req.params.assessmentID;
 
-	queries.update_status(id, "in_progress").then((ok)=>{
+	queries.update_status(id, "in_progress").then((ok) => {
 		req.flash("success", "Assessment now is in progress section!");
 		res.redirect("back");
 	}).catch((err) => {
@@ -399,6 +399,69 @@ router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessm
 		res.redirect("back");
 	});
 
+});
+
+
+/**
+ *  VIEW REPORT - ASSESSMENT REPORT
+ * 	GET - /professor/:assessment_id/report
+*/
+router.get('/assessment/:assessmentID/report', middleware.validate_assessment, async function (req, res) {
+
+	// assessment id
+	let id = req.params.assessmentID;
+
+	// get the department, pro name, course information and term
+	let reportHeader = await queries.get_report_header(id).catch((err) => {
+		console.error("Error getting report header: ", err);
+	});
+
+	// Validate not empty
+	if (reportHeader == undefined || reportHeader.length == 0) {
+		req.flash("error", "Cannot find the information of the assessment");
+		return res.redirect(base_url);
+	}
+	locals.header = reportHeader[0];
+
+	// get the professor input data
+	let prof_query = { "from": "REPORTS", "where": "assessment_ID", "id": id }
+	let professor_input = await general_queries.get_table_info_by_id(prof_query).catch((err) => {
+		console.error("Cannot get the professor input data: ", err);
+	});
+
+	// Validate not empty
+	if (professor_input == undefined || professor_input.length == 0) {
+		req.flash("error", "Cannot find the information of course from the selected assessment");
+		return res.redirect(base_url);
+	}
+
+	// get all performance Criteria
+	locals.performance_criteria = reportHeader.map(each => each["perC_Desk"]); 
+	professor_input = professor_input[0];
+	
+	
+	// get all grades for table
+	let grades = {
+		A: professor_input["grade_A"],
+		B: professor_input["grade_B"],
+		C: professor_input["grade_C"],
+		D: professor_input["grade_D"],
+		F: professor_input["grade_F"],
+		W: professor_input["UW"]
+	}
+	let total = 0;
+	for (key in grades) {
+		total += parseInt(grades[key]);
+	}
+	grades["Total"] = total;
+
+	// assign values to frontend
+	locals.profesor_input = professor_input;
+	locals.grades = grades;
+
+	// console.log(locals);
+	
+	res.render('assessment/word', locals);
 });
 
 // <------ perfomanceTable GET request ------>
@@ -544,9 +607,9 @@ router.post('/perfomanceTable', async function (req, res) {
 			}
 		}
 		studentPerformance.push(assessmentID);
-		
+
 		/* ----------- This needs to change ------------*/
-		
+
 		// let stud_performance_inserted = queries.insertData(studentPerformance);
 		// stud_performance_inserted.then((yes) => {
 		// 	if (yes)

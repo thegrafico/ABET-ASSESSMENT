@@ -20,7 +20,7 @@
 </nav>
 
 
-<div class="container my-4 mx-5">
+<div class="container my-4 mx-5" id="source-html">
     <form id="course_evaluation" class="professorInput" action="<%=form_action%>" method="POST">
         <input type="hidden" name="have_data" value="<%=locals.have_data%>">
         <h3 class="mb-4">Grade Distribution</h3>
@@ -131,5 +131,7 @@
         </div>
     </form>
 </div>
+
+
 
 <%- include ('../admin/partials/footer') -%>

@@ -87,10 +87,10 @@ function getRow_ID(assessmentID) {
  * @returns {Promise} -> Returns true if query was successful.
 */
 function deleteRowWithAssessmentID(assessmentID) {
-	return new Promise(function(resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		let deleteData = `DELETE FROM EVALUATION_ROW WHERE assessment_ID = ?;`
-		conn.query(deleteData, assessmentID, function(err, results) {
-			if(err) reject(err || "Wasn't able to delete data.");
+		conn.query(deleteData, assessmentID, function (err, results) {
+			if (err) reject(err || "Wasn't able to delete data.");
 			else resolve(true);
 		});
 	});
@@ -241,7 +241,42 @@ function update_status(id, status) {
 	});
 }
 
+/**
+ * get_report_header -Get the header report of the assessment report
+ * @param {Number} assessment_id - id of the assessment
+ * @return {Promise} Resolve with true
+ */
+function get_report_header(assessment_id) {
+	return new Promise(function (resolve, reject) {
+
+		let get_query = `SELECT ASSESSMENT.name, USER.first_name, COURSE.course_name, 
+		EVALUATION_RUBRIC.rubric_name, STUDENT_OUTCOME.outc_name, STUDENT_OUTCOME.outc_description,
+		STUDY_PROGRAM.prog_name, DEPARTMENT.dep_name, ACADEMIC_TERM.term_name, 
+		COURSE.course_number, USER.last_name, COURSE.course_description, PERF_CRITERIA.perC_Desk
+		FROM ASSESSMENT
+		INNER JOIN USER USING(user_ID)
+		INNER JOIN ACADEMIC_TERM USING (term_ID)
+		INNER JOIN COURSE ON ASSESSMENT.course_ID = COURSE.course_ID
+		INNER JOIN EVALUATION_RUBRIC ON ASSESSMENT.rubric_ID = EVALUATION_RUBRIC.rubric_ID
+		INNER JOIN STUDENT_OUTCOME ON EVALUATION_RUBRIC.outc_ID = STUDENT_OUTCOME.outc_ID
+		INNER JOIN STUDY_PROGRAM ON STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
+		INNER JOIN DEPARTMENT ON STUDY_PROGRAM.dep_ID = DEPARTMENT.dep_ID
+        INNER JOIN PERF_CRITERIA ON PERF_CRITERIA.outc_ID = EVALUATION_RUBRIC.outc_ID
+		WHERE ASSESSMENT.assessment_ID = ?
+        ORDER BY PERF_CRITERIA.perC_order ASC`;
+
+		conn.query(get_query, [assessment_id], function (err, results) {
+			if (err)
+				reject(err);
+			else
+				resolve(results);
+		});
+	});
+}
+
+
 module.exports.update_status = update_status;
+module.exports.get_report_header = get_report_header;
 module.exports.get_perf_criterias = get_perf_criterias;
 module.exports.insertDataToEvaluationRow = insertDataToEvaluationRow;
 module.exports.get_study_program_by_user_id = get_study_program_by_user_id;

@@ -1,0 +1,300 @@
+<%- include ('../admin/partials/header') -%>
+
+<div id="exportContent" class="container">
+
+    <style>
+        #exportContent {
+            -webkit-box-shadow: 10px 10px 18px 0px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: 10px 10px 18px 0px rgba(0, 0, 0, 0.75);
+            box-shadow: 10px 10px 18px 0px rgba(0, 0, 0, 0.75);
+        }
+
+        .container {
+            padding-bottom: 100px;
+        }
+
+        /* #inter-logo {
+            width: 100%;
+            margin-bottom: -2%;
+            text-align: center;
+        } */
+
+        .report-body p {
+            text-align: justify;
+            /* border: 1px solid red; */
+        }
+
+        .report-header img {
+            width: 10%;
+        }
+
+        .header-department {
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        .header-course-information {
+            font-style: normal;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        .ml-3 {
+            margin-left: 3%;
+        }
+
+        .ml-3 table {
+            width: 80%;
+            margin-left: 5%;
+        }
+
+        .report-body ol>li {
+            font-size: 1em;
+        }
+
+        .container p {
+
+            margin-bottom: 0;
+            width: 90%;
+            text-align: justify;
+        }
+
+        table th,
+        table td {
+            text-align: center;
+        }
+    </style>
+
+
+    <div class="row">
+
+        <div class="col-12 report-header">
+
+            <div>
+
+                <p id="inter-logo" style="text-align: center;">
+                    <img src="/images/inter-logo_50.jpg" alt="">
+                </p>
+            </div>
+
+
+            <p style="text-align: center; line-height: 1.1em;">
+                Inter American University of Puerto Rico <br>
+                Bayam&oacute;n Campus <br>
+                <span class="header-department">
+                    School of Engineering<br>
+                    <%= header["dep_name"] %>
+                </span>
+                <br>
+                <br>
+                <span class="header-course-information">
+                    Faculty Course Assessment Report
+                    <br>
+                    <%= header["course_number"] %> - <%= header["course_name"] %>
+                    <br>
+                    <%= header["term_name"] %> - Prof. <%= header["first_name"] %> <%= header["last_name"] %>
+                </span>
+            </p>
+        </div>
+
+
+        <div class="col-12 report-body">
+            <p><strong>I. Catalog Description:</strong></p>
+            <p style="margin-top: 0;">
+                <%= header["course_description"] %>
+            </p>
+
+            <p><strong> II. Course Development:</strong> <br>
+
+                <div>
+                    <p style="margin-left: 3%;"><strong>1. Grade Distribution:</strong></p>
+                    <table style="margin-left: 3%; width: 80%;">
+                        <tr>
+                            <% for( let key in grades) { %>
+                            <th><%= key %></th>
+                            <% } %>
+                        </tr>
+                        <tr>
+                            <% for( let key in grades) { %>
+                            <td><%= grades[key] %></td>
+                            <% } %>
+                        </tr>
+                    </table>
+                </div>
+        </div>
+
+        <div class="col-12 report-body">
+
+            <p style="margin-left: 3%;"><strong>2. Results of the course:</strong><br>
+                <%= profesor_input["course_results"] %>
+            </p>
+        </div>
+
+        <div class="col-12 report-body">
+            <p style="margin-left: 3%;"><strong>3. Modification Made to Course:</strong> <br>
+                <%= profesor_input["course_modification"] %>
+            </p>
+        </div>
+
+        <div class="col-12 report-body">
+            <p style="margin-left: 3%;"><strong>4. Reflection:</strong> <br>
+                <%= profesor_input["course_reflection"] %>
+            </p>
+        </div>
+
+        <div class="col-12 report-body">
+            <p style="margin-left: 3%;"><strong>5. Proposed Actions for Course Improvements:</strong> <br>
+                <%= profesor_input["course_actions"] %>
+            </p>
+        </div>
+
+        <div class="col-12 report-body">
+            <p style="margin-bottom: 0;">
+                <strong>III. Course <span style="text-transform: uppercase;"><%= header["outc_name"] %></span>
+                    Assessment:
+                    <!-- Score Scale: 4-Exemplary, 3-Proeficient, 2-Developing, 1-Beginning -->
+                </strong> <br>
+            </p>
+
+            <div class="ml-3">
+                <div>
+                    <p style="margin-left: 3%;">
+
+                        <strong>1. <%= header["outc_name"] %>:</strong> <%= header["outc_description"] %>
+                        <br>
+                        <strong>Sources:</strong> Unknow
+                    </p>
+                </div>
+
+                <p style="margin-left: 3%;">
+                    <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
+                    <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
+                    <br>
+                    <% } %>
+                </p>
+
+                <p style="margin-left: 3%;">
+                    <strong> 2. Target </strong>
+                    <br>
+                    75% of the student must be equal or more than 3 as final value in the outcome
+                </p>
+                <br>
+
+                <div>
+                    
+                    <p style="margin-left: 3%;">
+                        <strong style="margin-left: 3%;">3. Outcome Distribution</strong>
+                    </p>
+
+                    <table style="margin-left: 4%;width: 80%;">
+                        <tr>
+                            <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
+                            <th>PC-<%= (i+1)%></th>
+                            <% } %>
+                        </tr>
+                        <tr>
+                            <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
+                            <td>Unknow</td>
+                            <% } %>
+                        </tr>
+                    </table>
+                </div>
+                <br>
+
+                <div>
+                    <p style="margin-left: 3%;">
+                        <strong>4. Results of the outcome </strong>
+                        <br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rem esse doloremque atque sunt id
+                        illum
+                        neque a. Rerum expedita animi sint. Iusto possimus iure soluta animi eum expedita dicta amet.
+                    </p>
+                </div>
+
+                <div>
+                    <p style="margin-left: 3%;">
+
+                        <strong>5. Graph goes here </strong>
+                        <br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rem esse doloremque atque sunt id
+                        illum
+                        neque a. Rerum expedita animi sint. Iusto possimus iure soluta animi eum expedita dicta amet.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="word-content" href="javascript:void(0)">Export to word</a>
+
+<script src="/javascripts/jquery-1.11.1.min.js"></script>
+<script src="/javascripts/FileSaver.js"></script>
+<script src="/javascripts/jquery.wordexport.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+
+<script>
+
+    $(".word-content").click(function () {
+        $('#exportContent').wordExport("Document");
+    });
+</script>
+
+
+<%- include ('../admin/partials/footer') -%>
+
+<!--
+<script>
+<button onclick="Export2Doc('exportContent', 'html-conten-with-image');">Export as .doc</button>
+
+    function Export2Doc(element, filename = '') {
+        var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+        var postHtml = "</body></html>";
+        var html = preHtml + document.getElementById(element).innerHTML + postHtml;
+
+        var blob = new Blob(['\ufeff', html], {
+            type: 'application/msword'
+        });
+
+        // Specify link url
+        var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+
+        // Specify file name
+        filename = filename ? filename + '.doc' : 'document.doc';
+
+        // Create download link element
+        var downloadLink = document.createElement("a");
+
+        document.body.appendChild(downloadLink);
+
+        if (navigator.msSaveOrOpenBlob) {
+            navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+            // Create a link to the file
+            downloadLink.href = url;
+
+            // Setting the file name
+            downloadLink.download = filename;
+
+            //triggering the function
+            downloadLink.click();
+        }
+
+        document.body.removeChild(downloadLink);
+    }
+</script> -->

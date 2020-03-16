@@ -19,7 +19,6 @@
 	</ol>
 </nav>
 
-
 <input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
 <input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">
 <input type="hidden" id="outcomeName" name="outcomeName" value="<%= outc_name %> ">
@@ -27,24 +26,24 @@
 <input type="hidden" id="perfID" name="perfID" value="<%= perf_ID %>">
 
 
-<div class="container-fluid" style="margin-top: 10px; margin-bottom: 100px;">
+<div class="container-fluid" id="source-html" style="margin-top: 10px; margin-bottom: 100px;">
 	<div class="row" style="padding: 2%;">
 
 		<div class="col-6" style="height: 450px;">
 			<h4 style="text-align: center;">Insert Criteria Values for each Student</h4>
 			<div class="perfomanceTable">
 				<!-- <form id="performanceTable" action="/assessment/perfomanceTable" method="POST"> -->
-					<table id="table" class="table">
-						<thead>
-							<tr id="header">
-								<th scope="col">Student</th>
-							</tr>
-						</thead>
-						<tbody id="tableBody">
-						</tbody>
-					</table>
+				<table id="table" class="table">
+					<thead>
+						<tr id="header">
+							<th scope="col">Student</th>
+						</tr>
+					</thead>
+					<tbody id="tableBody">
+					</tbody>
+				</table>
 
-					<input type="hidden" id="graph" name="graph" value="">
+				<input type="hidden" id="graph" name="graph" value="">
 				<!-- </form> -->
 			</div>
 			<div>
@@ -52,7 +51,7 @@
 				<div style="float: left; width: 80%;">
 					<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
 					<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
-					<button style="width: 20%;" id="saveBtn" class="btn inter-green inter-green-btn" ><a href="<%= base_url %>/">Save</a></button>
+					<!-- <button style="width: 20%;" id="saveBtn" class="btn inter-green inter-green-btn" ><a href="<%= base_url %>/">Save</a></button> -->
 				</div>
 				<!-- onclick="insertEvaluation()" -->
 				<a style="width: 15%;margin-top: 5px;" class="btn inter-green inter-green-btn" id="delRow"
@@ -65,6 +64,7 @@
 		</div>
 	</div>
 </div>
+
 
 <!-- jQuery script -->
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
