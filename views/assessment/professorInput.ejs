@@ -47,49 +47,19 @@
 
                     <td scope="col-auto">
                         <div class="form-group">
-                            <input style="text-align: center;" type="number" id="total" value="<%=total_value%>" name="total"
-                                placeholder="0" disabled>
+                            <input style="text-align: center;" type="number" id="total" value="<%=total_value%>"
+                                name="total" placeholder="0" disabled>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <script>
-            $(document).ready(function () {
-
-                let A = "#A", B = "#B", C = "#C", D = "#D", F = "#F", W = "#W";
-                let total = "#total";
-                let notas = [A, B, C, D, F, W];
-                let grades = undefined;
-                const reducer = (accumulator, currentValue) => accumulator + currentValue;
-
-                $("#course_evaluation :input").change(function () {
-                    let sum = notas.reduce(reducer);
-                    grades = 0;
-                    notas.forEach(n => {
-                        let val = $(n).val();
-                        console.log(val);
-
-                        if (val == undefined || val == '' || val.length == 0) {
-                            val = 0;
-                        }
-
-                        grades += parseInt(val);
-
-                    });
-
-                    $(total).val(grades);
-                });
-            });
-        </script>
-
-
         <div class="container my-4 mx-5">
             <h3 class="mb-4">Result of the Course: </h3>
             <hr>
             <div class="form-group">
-                <textarea class="form-control" name="course[results]" id="rCourse" rows="3"
+                <textarea class="form-control" name="course[results]" id="rCourse" rows="5"
                     placeholder="Insert the results of the Course"><%=course_results%></textarea>
             </div>
 
@@ -99,7 +69,7 @@
             <h3 class="mb-4">Modification Made to Course: </h3>
             <hr>
             <div class="form-group">
-                <textarea class="form-control" name="course[modification]" id="cReflection" rows="3"
+                <textarea class="form-control" name="course[modification]" id="cReflection" rows="5"
                     placeholder="Insert Modifications"><%=course_modification%></textarea>
             </div>
         </div>
@@ -108,7 +78,7 @@
             <h3 class="mb-4">Course Reflection: </h3>
             <hr>
             <div class="form-group">
-                <textarea class="form-control" name="course[reflection]" id="cReflection" rows="3"
+                <textarea class="form-control" name="course[reflection]" id="cReflection" rows="5"
                     placeholder="Insert Course Reflection"><%=course_reflection%></textarea>
             </div>
         </div>
@@ -117,7 +87,7 @@
             <hr>
             <div class="form-group">
                 <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
-                <textarea class="form-control" name="course[improvement]" id="cImprovement" rows="3"
+                <textarea class="form-control" name="course[improvement]" id="cImprovement" rows="5"
                     placeholder="Insert Proposed Action"><%=course_actions%></textarea>
             </div>
         </div>
@@ -131,6 +101,36 @@
         </div>
     </form>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+
+        let A = "#A", B = "#B", C = "#C", D = "#D", F = "#F", W = "#W";
+        let total = "#total";
+        let notas = [A, B, C, D, F, W];
+        let grades = undefined;
+        const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+        $("#course_evaluation :input").change(function () {
+            let sum = notas.reduce(reducer);
+            grades = 0;
+            notas.forEach(n => {
+                let val = $(n).val();
+                console.log(val);
+
+                if (val == undefined || val == '' || val.length == 0) {
+                    val = 0;
+                }
+
+                grades += parseInt(val);
+
+            });
+
+            $(total).val(grades);
+        });
+    });
+</script>
 
 
 

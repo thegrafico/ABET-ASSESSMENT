@@ -15,7 +15,7 @@ $(document).ready(function () {
      * WHEN USER WANT TO RECOVER AN COMPLETED ASSESSMENT
     */
 
-    $("#recoverBtn").click(function () {
+    $(".recoverBtn").click(function () {
         // show the mdodal
         $("#delete_title").text("Recover Assessment");
         $('#deleteModal').modal('toggle');

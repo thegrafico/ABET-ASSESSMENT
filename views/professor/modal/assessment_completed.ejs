@@ -39,28 +39,6 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-
-            $("#filter_term_completed").change(function () {
-
-                let value = $(this).val().toLowerCase();
-
-                console.log(value);
-                $(".assessment_completed").filter(function () {
-
-                    // find all term in assessment
-                    let text = $(this).find('input[name="term_name"]').val();
-
-                    $(this).toggle(text.toLowerCase().indexOf(value) > -1);
-
-                });
-
-                // update the number of quantity
-                // $("#number").text($("#filter tr:visible").length);
-            });
-        });
-    </script>
 
     <!-- <i class="fa fa-ellipsis-h"></i> -->
     <div class="container assessmentReports">
@@ -72,7 +50,7 @@
 
             <div class="col-6 assessment_completed">
                 <div class="card" style="width: 80%; margin: auto;">
-                    <i id="recoverBtn" class="fa fa-refresh">
+                    <i class="recoverBtn fa fa-refresh">
                         <input type="hidden" name="id" value="<%=assessment_completed[i].assessment_ID%>">
                         <input type="hidden" name="name" value="<%=assessment_completed[i].name%>">
                         <input type="hidden" name="term_name" value="<%=assessment_completed[i].term_name%>">
@@ -106,3 +84,27 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#filter_term_completed").change(function () {
+
+            let value = $(this).val().toLowerCase();
+
+            console.log(value);
+            $(".assessment_completed").filter(function () {
+
+                // find all term in assessment
+                let text = $(this).find('input[name="term_name"]').val();
+
+                $(this).toggle(text.toLowerCase().indexOf(value) > -1);
+
+            });
+
+            // update the number of quantity
+            // $("#number").text($("#filter tr:visible").length);
+        });
+    });
+</script>
