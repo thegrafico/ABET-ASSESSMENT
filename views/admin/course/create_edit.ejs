@@ -56,9 +56,16 @@
 		</div>
 		<% }); %>
 
-		<!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
-		<!-- <textarea class="form-control" name="course[improvement]" id="cImprovement" rows="3"
-			placeholder="Insert Proposed Action"></textarea> -->
+		<% if (description_box != undefined) { %>
+	
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+				<div class="col-8">
+					<textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
+					placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
+				</div>
+			</div>
+		<% } %>
 
 		<div class="row my-4">
 			<div class="col-2"></div>

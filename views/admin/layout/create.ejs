@@ -24,42 +24,43 @@
 	<form id="<%= form_id %>" action="<%= url_form_redirect %>" method="POST">
 
 		<% if (have_dropdown) { %>
-		<div class="container-fluid">
-			<div class="row my-4">
-				<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
-				<div class="col-8">
-					<select type="text" name="<%= dropdown_name %>" required>
-						<% for (let profile of dropdown_options) {%>
-							<% if (profile.ID == dropdown_option_selected) { %>
-								<option class="dropdown-item" selected value="<%=profile.ID%>"> <%= profile.NAME%> </option>
-							<% }else { %>
-								<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
-							<%	} %>
-						<% } %>
-					</select>
+			<div class="container-fluid">
+				<div class="row my-4">
+					<div class="col-2 align-self-center text-right"><strong><%= dropdown_title %> </strong></div>
+					<div class="col-8">
+						<select type="text" name="<%= dropdown_name %>" required>
+							<% for (let profile of dropdown_options) {%>
+								<% if (profile.ID == dropdown_option_selected) { %>
+									<option class="dropdown-item" selected value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+								<% }else { %>
+									<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+								<%	} %>
+							<% } %>
+						</select>
+					</div>
 				</div>
 			</div>
-		</div>
 		<% } %>
 		<% inputs.forEach(element => { %>
-		<% if (element.isRequire) { %>
-		<div class="row my-4">
-			<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-			<div class="col-8">
-				<input class="form-control" value="<%= element.value %>" type="text"
-					placeholder="<%= element.placeHolder %>" name="<%= element.name %>" required>
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+				<div class="col-8">
+					<input class="form-control" value="<%= element.value %>" type="text"
+						placeholder="<%= element.placeHolder %>" name="<%= element.name %>" required>
+				</div>
 			</div>
-		</div>
-		<% }else {%>
-		<div class="row my-4">
-			<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-			<div class="col-8">
-				<input class="form-control" value="<%= element.value %>" type="text"
-					placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
-			</div>
-		</div>
-		<% } %>
 		<% }) %>
+
+		<% if (description_box != undefined) { %>
+	
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+				<div class="col-8">
+					<textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
+					placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
+				</div>
+			</div>
+		<% } %>
 
 		<div class="row my-4">
 			<div class="col-2"></div>

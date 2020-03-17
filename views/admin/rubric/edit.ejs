@@ -74,9 +74,40 @@
             </script>
         </div>
 
+        <% inputs.forEach(element => { %>
 
-        <script>
-            var multi = new SelectPure(".multi-select2", {
+        <div class="row my-4">
+            <div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+            <div class="col-8">
+                <input class="form-control" value="<%= element.value %>" type="text"
+                    placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
+            </div>
+        </div>
+        <% }) %>
+
+        <% if (description_box != undefined) { %>
+	
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+				<div class="col-8">
+					<textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
+					placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
+				</div>
+			</div>
+		<% } %>
+
+        <div class="row my-4">
+            <div class="col-2"></div>
+            <div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
+        </div>
+        <p><a href="<%= base_url %> ">Back to List</a></p>
+    </form>
+</div>
+
+<script>
+    $(document).ready(() => {
+
+        var multi = new SelectPure(".multi-select2", {
                 options: criterias,
                 value: criterias_selected,
                 multiple: true,
@@ -97,29 +128,6 @@
                     optionHidden: "select-pure__option--hidden",
                 }
             });
-        </script>
-
-        <% inputs.forEach(element => { %>
-
-        <div class="row my-4">
-            <div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-            <div class="col-8">
-                <input class="form-control" value="<%= element.value %>" type="text"
-                    placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
-            </div>
-        </div>
-        <% }) %>
-
-        <div class="row my-4">
-            <div class="col-2"></div>
-            <div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
-        </div>
-        <p><a href="<%= base_url %> ">Back to List</a></p>
-    </form>
-</div>
-
-<script>
-    $(document).ready(() => {
 
         $('#multi_selection').bind("DOMSubtreeModified", function () {
             let values = [];

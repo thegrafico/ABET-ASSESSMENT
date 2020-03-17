@@ -22,7 +22,6 @@ let locals = {
 	filter:true,
 	filter_title: "-- Department --",
 	feedback_message: "Number of Study Programs: ",
-
 };
 
 /* 
@@ -124,6 +123,7 @@ router.get('/create', async function(req, res) {
 
 	// set the input for user
 	locals.inputs = study_program_create_input;
+
 
 	// for dynamic frontend
 	deparments.forEach( (element) =>{

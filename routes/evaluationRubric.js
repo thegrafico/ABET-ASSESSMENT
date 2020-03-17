@@ -35,7 +35,7 @@ router.get('/', async function (req, res) {
 
 	// Breadcrum for web
 	locals.breadcrumb = [
-		{"name": "Evaluation Rubric", "url": base_url},
+		{ "name": "Evaluation Rubric", "url": base_url },
 	];
 
 	// getting evaluation rubric from db
@@ -89,8 +89,8 @@ router.get('/create', async function (req, res) {
 
 	// Breadcrum for web
 	locals.breadcrumb = [
-		{"name": "Evaluation Rubric", "url": base_url},
-		{"name": "Create", "url": "."},
+		{ "name": "Evaluation Rubric", "url": base_url },
+		{ "name": "Create", "url": "." },
 	];
 
 	let std_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
@@ -113,6 +113,8 @@ router.get('/create', async function (req, res) {
 
 	// set the input for user
 	locals.inputs = evaluation_rubric_input;
+	locals.description_box = { name: "description", text: "Rubric Description", value: "" }
+
 
 	std_programs.forEach((element) => {
 		locals.std_options.push({
@@ -168,8 +170,8 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 
 	// Breadcrum for web
 	locals.breadcrumb = [
-		{"name": "Evaluation Rubric", "url": base_url},
-		{"name": "Edit", "url": "."},
+		{ "name": "Evaluation Rubric", "url": base_url },
+		{ "name": "Edit", "url": "." },
 	];
 
 	locals.std_options = [];
@@ -238,11 +240,8 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 		});
 	});
 
-	// // set the data user for edit
-	temp_r = [
-		rubric.rubric_name,
-		rubric.rubric_description,
-	]
+	// set the data user for edit
+	temp_r = [rubric.rubric_name];
 
 	let index = 0;
 	evaluation_rubric_input.forEach((record) => {
@@ -252,6 +251,8 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 
 	// set the input for user
 	locals.inputs = evaluation_rubric_input;
+	locals.description_box = { name: "description", text: "Rubric Description", value: rubric.rubric_description }
+
 	res.render('admin/rubric/edit', locals);
 });
 

@@ -122,6 +122,8 @@ router.get('/create', async function (req, res, next) {
 
 	// front
 	locals.inputs = course_create_inputs;
+	locals.description_box = {name: "data[description]", text: "Course Description", value: ""}
+
 
 	res.render('admin/course/create_edit', locals);
 });
@@ -242,7 +244,6 @@ router.get('/:id/edit', async function (req, res) {
 	course = [
 		courses_info.course_number,
 		courses_info.course_name,
-		courses_info.course_description
 	];
 
 	// set the ejs data to append
@@ -254,6 +255,8 @@ router.get('/:id/edit', async function (req, res) {
 
 	// append the course information to the EJS
 	locals.inputs = course_create_inputs;
+	locals.description_box = {name: "data[description]", text: "Course Description", value: courses_info.course_description}
+
 
 	res.render('admin/course/create_edit', locals);
 });

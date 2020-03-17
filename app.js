@@ -102,6 +102,7 @@ app.use(function (req, res, next) {
   res.locals.filter_value = [];
   res.locals.breadcrumb = [];
   res.locals.feedback_message = "";
+	res.locals.description_box = undefined;
   next();
 });
 

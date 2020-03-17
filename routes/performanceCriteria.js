@@ -24,8 +24,8 @@ var locals = {
 router.get('/:outc_id/performanceCriteria', validate_outcome, async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Outcomes", "url": base_url},
-		{"name": "Performance Criteria", "url": '.'}
+		{ "name": "Outcomes", "url": base_url },
+		{ "name": "Performance Criteria", "url": '.' }
 	];
 
 	locals.subtitle = title + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
@@ -66,15 +66,15 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 });
 
 /* 
-	-- SHOW CREATE PERF CRIT -- 
+	-- CREATE PERF CRIT -- 
 	GET /performanceCriteria/create
 */
 router.get("/:outc_id/performanceCriteria/create", validate_outcome, async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Outcomes", "url": base_url},
-		{"name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria`},
-		{"name": "Create", "url": '.'}
+		{ "name": "Outcomes", "url": base_url },
+		{ "name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria` },
+		{ "name": "Create", "url": '.' }
 	];
 
 	locals.title_action = (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
@@ -89,6 +89,8 @@ router.get("/:outc_id/performanceCriteria/create", validate_outcome, async funct
 	});
 
 	locals.inputs = performance_criteria_create_input;
+	locals.description_box = { name: "description", text: "Criteria Description", value: "" };
+
 
 	res.render('admin/layout/create', locals);
 });
@@ -123,11 +125,11 @@ router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, vali
 
 
 	locals.breadcrumb = [
-		{"name": "Outcomes", "url": base_url},
-		{"name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria`},
-		{"name": "Edit", "url": '.'}
+		{ "name": "Outcomes", "url": base_url },
+		{ "name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria` },
+		{ "name": "Edit", "url": '.' }
 	];
-	
+
 	let message = "Edit Performance Criteria for: ";
 	locals.title_action = message + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.have_dropdown = false;
@@ -136,7 +138,7 @@ router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, vali
 	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
 	// append the rubric data to the array
-	let performance_rubric = [req.body.rubric.perC_Desk, req.body.rubric.perC_order];
+	let performance_rubric = [req.body.rubric.perC_order];
 
 	// add the rubric data to front-end
 	let index = 0;
@@ -146,6 +148,8 @@ router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, vali
 	});
 
 	locals.inputs = performance_criteria_create_input;
+	locals.description_box = { name: "description", text: "Criteria Description", value: req.body.rubric.perC_Desk };
+
 	res.render('admin/layout/create', locals);
 });
 

@@ -87,7 +87,7 @@ router.get('/create', function (req, res) {
 	});
 
 	locals.inputs = department_create_inputs;
-
+	locals.description_box = { name: "description", text: "Department Description", value: "" }
 	res.render('admin/layout/create', locals);
 });
 
@@ -172,7 +172,6 @@ router.get('/:id/edit', async function (req, res) {
 
 	dept = [
 		dept_data.dep_name,
-		dept_data.dep_description
 	];
 
 	let index = 0;
@@ -181,6 +180,7 @@ router.get('/:id/edit', async function (req, res) {
 		index++;
 	});
 
+	locals.description_box = { name: "description", text: "Department Description", value: dept_data.dep_description }
 	locals.inputs = department_create_inputs;
 
 	res.render('admin/layout/create', locals);

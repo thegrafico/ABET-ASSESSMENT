@@ -1,67 +1,53 @@
 /* 
   * user_create_inputs -> inputs in the form /users/create
-*/ 
+*/
 module.exports.user_create_inputs = [
     {
         "title": "Inter ID",
-        "placeHolder":"User Inter ID",
+        "placeHolder": "User Inter ID",
         "name": "interID",
         "value": "",
-        "isRequire": true
     },
     {
         "title": "Name",
-        "placeHolder":"User Name",
+        "placeHolder": "User Name",
         "name": "username",
         "value": "",
-        "isRequire": true
     },
     {
         "title": "Last Name",
-        "placeHolder":"User Last Name",
+        "placeHolder": "User Last Name",
         "name": "lastname",
         "value": "",
-        "isRequire": true
     },
     {
         "title": "email",
-        "placeHolder":"User Email",
+        "placeHolder": "User Email",
         "name": "email",
         "value": "",
-        "isRequire": true
     },
     {
         "title": "Phone Number",
-        "placeHolder":"User Phone Number",
+        "placeHolder": "User Phone Number",
         "name": "phoneNumber",
-        "isRequire": false
     }
 ];
 
 /* 
   * course_create_inputs -> inputs in the form /courses/create
-*/ 
+*/
 module.exports.course_create_inputs = [
     {
         "title": "Number",
-        "placeHolder":"Course Number",
+        "placeHolder": "Course Number",
         "name": "data[number]",
         "value": "",
-        "isRequire": true
     },
     {
         "title": "Name",
-        "placeHolder":"Course Name",
+        "placeHolder": "Course Name",
         "name": "data[name]",
         "value": "",
-        "isRequire": true
-    },
-    {
-        "title": "Description",
-        "placeHolder":"Course Description",
-        "name": "data[description]",
-        "value": "",
-        "isRequire": true
     },
 ];
 
@@ -74,15 +60,7 @@ module.exports.department_create_inputs = [
         "placeHolder": "Department Name",
         "name": "name",
         "value": "",
-        "isRequire": true
     },
-    {
-        "title": "Description",
-        "placeHolder": "Department Description",
-        "name": "description",
-        "value": "",
-        "isRequire": true
-    }
 ];
 
 // create and edit outcome
@@ -91,13 +69,6 @@ module.exports.outcome_create_inputs = [
         "title": "Name",
         "placeHolder": "Outcome Name",
         "name": "outcome_name",
-        "value": "",
-        "isRequire": true
-    },
-    {
-        "title": "Description",
-        "placeHolder": "Outcome Description",
-        "name": "outcome_description",
         "value": "",
         "isRequire": true
     },
@@ -129,18 +100,8 @@ module.exports.evaluation_rubric_input = [
         "placeHolder": "Rubric Name",
         "name": "name",
         "value": "",
-        "isRequire": true
     },
-    {
-        "title": "Description",
-        "placeHolder": "Rubric Description",
-        "name": "description",
-        "value": "",
-        "isRequire": true
-    }
 ];
-
-
 
 /* 
     - create and edit academic term
@@ -160,18 +121,10 @@ module.exports.academic_term = [
 // create and edit study program
 module.exports.performance_criteria_create_input = [
     {
-        "title": "Description",
-        "placeHolder": "Criteria Description",
-        "name": "description",
-        "value": "",
-        "isRequire": true
-    },
-    {
         "title": "Order",
         "placeHolder": "Insert the order",
         "name": "order",
         "value": "",
-        "isRequire": true
     }
 ];
 

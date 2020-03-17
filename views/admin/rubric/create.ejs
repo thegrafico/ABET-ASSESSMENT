@@ -1,22 +1,22 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
 <nav aria-label="breadcrumb">
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
-		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+        <% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
-			<% if (index == breadcrumb.length -1) { %>
-				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
-			<% }else { %>
-				<li class="breadcrumb-item">
-					<a href="<%= breadcrumb[index].url %>">
-						<%= breadcrumb[index].name %>
-					</a>
-				</li>
-			<% } %>
+        <% if (index == breadcrumb.length -1) { %>
+        <li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+        <% }else { %>
+        <li class="breadcrumb-item">
+            <a href="<%= breadcrumb[index].url %>">
+                <%= breadcrumb[index].name %>
+            </a>
+        </li>
+        <% } %>
 
-		<% } %>
-	</ol>
+        <% } %>
+    </ol>
 </nav>
 <div class="container-fluid">
     <h2>Create Evaluation Rubric</h2>
@@ -59,31 +59,6 @@
 
         </div>
 
-
-        <script>
-            var multi = new SelectPure(".multi-select2", {
-                options: [],
-                value: [],
-                multiple: true,
-                icon: "fa fa-times",
-                placeholder: "-- Please Select --",
-                onChange: value => { },
-                classNames: {
-                    select: "select-pure__select",
-                    dropdownShown: "select-pure__select--opened",
-                    multiselect: "select-pure__select--multiple",
-                    label: "select-pure__label",
-                    placeholder: "select-pure__placeholder",
-                    dropdown: "select-pure__options",
-                    option: "select-pure__option",
-                    selectedLabel: "select-pure__selected-label",
-                    selectedOption: "select-pure__option--selected",
-                    placeholderHidden: "select-pure__placeholder--hidden",
-                    optionHidden: "select-pure__option--hidden",
-                }
-            });
-        </script>
-
         <% inputs.forEach(element => { %>
 
         <div class="row my-4">
@@ -94,6 +69,17 @@
             </div>
         </div>
         <% }) %>
+
+        <% if (description_box != undefined) { %>
+	
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+				<div class="col-8">
+					<textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
+					placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
+				</div>
+			</div>
+		<% } %>
 
         <div class="row my-4">
             <div class="col-2"></div>
@@ -106,6 +92,28 @@
 
 <script>
     $(document).ready(() => {
+
+        var multi = new SelectPure(".multi-select2", {
+            options: [],
+            value: [],
+            multiple: true,
+            icon: "fa fa-times",
+            placeholder: "-- Please Select --",
+            onChange: value => { },
+            classNames: {
+                select: "select-pure__select",
+                dropdownShown: "select-pure__select--opened",
+                multiselect: "select-pure__select--multiple",
+                label: "select-pure__label",
+                placeholder: "select-pure__placeholder",
+                dropdown: "select-pure__options",
+                option: "select-pure__option",
+                selectedLabel: "select-pure__selected-label",
+                selectedOption: "select-pure__option--selected",
+                placeholderHidden: "select-pure__placeholder--hidden",
+                optionHidden: "select-pure__option--hidden",
+            }
+        });
 
         // change the data when user select study program
         $("#study_program").change(function () {

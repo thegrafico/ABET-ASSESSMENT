@@ -139,7 +139,10 @@ router.get('/create', async function (req, res) {
 	outcome_create_inputs.forEach((record) => {
 		record.value = "";
 	});
+
 	locals.inputs = outcome_create_inputs;
+	locals.description_box = { name: "outcome_description", text: "Outcome Description", value: "" };
+
 
 	// for dynamic frontend
 	study_programs.forEach((element) => {
@@ -261,7 +264,6 @@ router.get('/:id/edit', async function (req, res) {
 	// to add the oucome information into the frontend
 	let outcome = [
 		outcome_to_edit.outc_name,
-		outcome_to_edit.outc_description,
 	]
 
 	let index = 0;
@@ -269,7 +271,11 @@ router.get('/:id/edit', async function (req, res) {
 		record.value = outcome[index];
 		index++;
 	});
+
+	// set the value of the outcome
 	locals.inputs = outcome_create_inputs;
+	locals.description_box = { name: "outcome_description", text: "Outcome Description", value: outcome_to_edit.outc_description };
+
 
 	// for dynamic frontend
 	study_programs.forEach((element) => {
