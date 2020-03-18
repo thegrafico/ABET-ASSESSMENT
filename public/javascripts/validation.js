@@ -304,10 +304,6 @@ $(document).ready(function () {
                 digits: true,
                 maxlength: 3
             },
-            "course[results]": "required",
-            "course[modification]": "required",
-            "course[reflection]": "required",
-            "course[improvement]": "required",
         },
         // Specify validation error messages
         messages: {

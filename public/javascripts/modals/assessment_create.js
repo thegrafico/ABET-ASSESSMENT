@@ -342,7 +342,6 @@ $(document).ready(function () {
                 console.log("CANNOT GET THE OUTCOMES: ", err);
             });
 
-            // TODO: better message of description
             if (outcomes == undefined || outcomes.length == 0) {
                 show_span("#std_message", `*This study Program does not have any Outcome`);
                 return reject("Cannot find any outcome");
@@ -364,7 +363,6 @@ $(document).ready(function () {
                 console.log("There is an error: ", err);
             });
 
-            // TODO: better message
             if (courses["data"] == undefined || courses["data"].length == 0) {
                 show_span("#course_message", `*This study program does not have any courses`);
                 return reject("Cannot find any course");

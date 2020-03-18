@@ -79,8 +79,7 @@ table {
 
 /* FORM VALIDATION */
 
-form,
-p {
+form, p {
   margin: 20px;
 }
 
@@ -131,9 +130,6 @@ textarea.error {
   border-bottom: 1px solid black;
 }
 
-ol>li {
-  font-size: 1.5em;
-}
 
 /* Style to change separator  */
 /* .breadcrumb-item + .breadcrumb-item::before {
@@ -141,33 +137,13 @@ ol>li {
 } */
 
 /* END FORM VALIDATION */
-
-.submitBtn input{
-  text-transform: uppercase;
-}
-
-.submitBtn input:nth-child(2){
-  margin-left: auto;
-  width: 30%;
-  padding: 1.5%;
-  font-size: 1.5em;
-  background-color: #00833e;
-}
-
-.submitBtn input:nth-child(1){
-  margin-left: auto;
-  width: 30%;
-  padding: 1.5%;
-  font-size: 1.5em;
-  background-color: gray;
-}
-
-.submitBtn input:hover{
-  background-color:rgba(0, 0, 0, 0.3);
-}
-
 .feedback_message_assessment{
   text-align: center;
   width: 100%;
   /* border: 1px solid red; */
+}
+
+/* PANEL FOR TEXT AREA */
+.panel-heading{
+  background-color: rgba(0, 0, 0, 0.2);
 }

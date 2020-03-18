@@ -53,7 +53,7 @@
         }
 
         .ml-3 {
-            margin-left: 3%;
+            
         }
 
         .ml-3 table {
@@ -68,6 +68,7 @@
         .container p {
 
             margin-bottom: 0;
+            /* margin-top: ; */
             width: 90%;
             text-align: justify;
         }
@@ -84,7 +85,6 @@
         <div class="col-12 report-header">
 
             <div>
-
                 <p id="inter-logo" style="text-align: center;">
                     <img src="/images/inter-logo_50.jpg" alt="">
                 </p>
@@ -120,8 +120,8 @@
             <p><strong> II. Course Development:</strong> <br>
 
                 <div>
-                    <p style="margin-left: 3%;"><strong>1. Grade Distribution:</strong></p>
-                    <table style="margin-left: 3%; width: 80%;">
+                    <p ><strong>1. Grade Distribution:</strong></p>
+                    <table style="width: 90%; margin-left: 5%;">
                         <tr>
                             <% for( let key in grades) { %>
                             <th><%= key %></th>
@@ -134,32 +134,43 @@
                         </tr>
                     </table>
                 </div>
+            </p>
         </div>
 
+        <!-- TODO: Do a loop here -->
         <div class="col-12 report-body">
-
-            <p style="margin-left: 3%;"><strong>2. Results of the course:</strong><br>
-                <%= profesor_input["course_results"] %>
+            <p style=" margin-bottom: 0;"><strong>2. Results of the course:</strong><br>
+                <span id="course_results" class="sp-data">
+                    <%= profesor_input["course_results"] %>
+                </span>
             </p>
         </div>
 
         <div class="col-12 report-body">
-            <p style="margin-left: 3%;"><strong>3. Modification Made to Course:</strong> <br>
-                <%= profesor_input["course_modification"] %>
+            <p style="margin-bottom: 0;"><strong>3. Modification Made to Course:</strong><br>
+                <span id="course_modification" class="sp-data">
+                    <%= profesor_input["course_modification"] %>
+                </span>
             </p>
         </div>
 
         <div class="col-12 report-body">
-            <p style="margin-left: 3%;"><strong>4. Reflection:</strong> <br>
-                <%= profesor_input["course_reflection"] %>
+            <p style="margin-bottom: 0;"><strong>4. Reflection:</strong><br>
+                <span id="course_reflection" class="sp-data">
+                    <%= profesor_input["course_reflection"] %>
+                </span>
             </p>
         </div>
 
         <div class="col-12 report-body">
-            <p style="margin-left: 3%;"><strong>5. Proposed Actions for Course Improvements:</strong> <br>
-                <%= profesor_input["course_actions"] %>
+            <p style="margin-bottom: 0;"><strong>5. Proposed Actions for Course Improvements:</strong><br>
+                <span id="course_actions" class="sp-data">
+                    <%= profesor_input["course_actions"] %>
+                </span>
             </p>
         </div>
+
+        <!-- END OF LOOP HERE -->
 
         <div class="col-12 report-body">
             <p style="margin-bottom: 0;">
@@ -171,7 +182,7 @@
 
             <div class="ml-3">
                 <div>
-                    <p style="margin-left: 3%;">
+                    <p >
 
                         <strong>1. <%= header["outc_name"] %>:</strong> <%= header["outc_description"] %>
                         <br>
@@ -179,43 +190,42 @@
                     </p>
                 </div>
 
-                <p style="margin-left: 3%;">
+                <p >
                     <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
                     <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
                     <br>
                     <% } %>
                 </p>
 
-                <p style="margin-left: 3%;">
+                <p >
                     <strong> 2. Target </strong>
                     <br>
                     75% of the student must be equal or more than 3 as final value in the outcome
                 </p>
                 <br>
 
-                <div>
-                    
-                    <p style="margin-left: 3%;">
-                        <strong style="margin-left: 3%;">3. Outcome Distribution</strong>
-                    </p>
 
-                    <table style="margin-left: 4%;width: 80%;">
-                        <tr>
-                            <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
-                            <th>PC-<%= (i+1)%></th>
-                            <% } %>
-                        </tr>
-                        <tr>
-                            <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
-                            <td>Unknow</td>
-                            <% } %>
-                        </tr>
-                    </table>
-                </div>
+                <p >
+                    <strong>3. Outcome Distribution</strong>
+                </p>
+
+                <table style="margin-left: 5%;width: 80%;">
+                    <tr>
+                        <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
+                        <th>PC-<%= (i+1)%></th>
+                        <% } %>
+                    </tr>
+                    <tr>
+                        <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
+                        <td>Unknow</td>
+                        <% } %>
+                    </tr>
+                </table>
+
                 <br>
 
                 <div>
-                    <p style="margin-left: 3%;">
+                    <p >
                         <strong>4. Results of the outcome </strong>
                         <br>
                         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rem esse doloremque atque sunt id
@@ -225,7 +235,7 @@
                 </div>
 
                 <div>
-                    <p style="margin-left: 3%;">
+                    <p >
 
                         <strong>5. Graph goes here </strong>
                         <br>
@@ -249,9 +259,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
 
 <script>
+    $(document).ready(function () {
 
-    $(".word-content").click(function () {
-        $('#exportContent').wordExport("Document");
+        // tags for dynamic info
+        let tag_course_info = ["#course_results", "#course_modification", "#course_reflection", "#course_actions"];
+
+        tag_course_info.forEach(each => {
+            let text = $(each).text();
+            $(each).text("").html(text);
+        });
+
+        $("p").each(function () {
+            let text = $(this).text();
+            if (text.length < 2) {
+                console.log($(this).remove());
+            }
+        });
+
+        setInterval(function () {
+            $(".sp-data p").each(function () {
+                $(this).css({'margin-left': '3%', "margin-top": "0"});
+
+            });
+        }, 300);
+
+
+        $(".word-content").click(function () {
+            $('#exportContent').wordExport("Document");
+        });
+
     });
 </script>
 

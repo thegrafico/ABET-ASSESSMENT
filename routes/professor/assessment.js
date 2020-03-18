@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var general_queries = require('../../helpers/queries/general_queries');
-var chooseCourseTermQuery = require('../../helpers/queries/chooseCourseTermQueries');
 var queries = require('../../helpers/queries/perfTable_queries');
 var reportTemplate = require('../../helpers/reportTemplate');
 var middleware = require('../../middleware/validate_assessment')
@@ -310,11 +309,6 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 	// Assessment id
 	let id = req.params.assessmentID;
 	let isUpdate = (req.body.have_data == "y");
-	// For breadcrumb
-	locals.breadcrumb = [
-		{ "name": req.body.assessment.name, "url": `${base_url}/assessment/${id}/professorInput` },
-		{ "name": "Course Evaluation", "url": `.` }
-	];
 
 	// keys for grades
 	let grades_keys = {
@@ -324,7 +318,7 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		"D": "n",
 		"F": "n",
 		"W": "n"
-	}
+	};
 
 	// validate grades
 	if (!validate_form(req.body, grades_keys)) {
@@ -347,14 +341,15 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		return res.redirect("back");
 	}
 
+	// TODO: Roolback query is better option
 	if (isUpdate) {
-		// insert data
+		// Update Data 
 		queries.update_professor_input(id, req.body, req.body.course).then(async (ok) => {
 
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-			req.flash("success", "Data was sucessfully Updated!");
+			req.flash("success", "Assessment was saved!");
 			res.redirect(base_url);
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
@@ -362,13 +357,13 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			res.redirect("back");
 		});
 	} else {
-		// insert data
+		// Insert data
 		queries.insert_professor_input(id, req.body, req.body.course).then(async (ok) => {
 
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-			req.flash("success", "Data was sucessfully added!");
+			req.flash("success", "Assessment was moved to the complete section!");
 			res.redirect(base_url);
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
@@ -376,7 +371,6 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			res.redirect("back");
 		});
 	}
-
 });
 
 
@@ -459,8 +453,6 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	locals.profesor_input = professor_input;
 	locals.grades = grades;
 
-	// console.log(locals);
-	
 	res.render('assessment/word', locals);
 });
 

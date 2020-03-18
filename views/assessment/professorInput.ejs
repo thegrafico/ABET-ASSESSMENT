@@ -19,105 +19,117 @@
     </ol>
 </nav>
 
+<div class="container">
+    <div class="row">
+        <form id="course_evaluation" class="professorInput" action="<%=form_action%>" method="POST">
+            <input type="hidden" name="have_data" value="<%=locals.have_data%>">
 
-<div class="container my-4 mx-5" id="source-html">
-    <form id="course_evaluation" class="professorInput" action="<%=form_action%>" method="POST">
-        <input type="hidden" name="have_data" value="<%=locals.have_data%>">
-        <h3 class="mb-4">Grade Distribution</h3>
-        <table class="table table-sm" style="text-align: center;">
-            <!--Grade Scale-->
-            <thead class="thead-light">
-                <tr>
-                    <% grades.forEach(element => { %>
-                    <th scope="col-auto"><%= element["name"] %> </th>
-                    <% }) %>
-                    <th scope="col-auto"><strong> Total</strong></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <% grades.forEach(element => { %>
-                    <td scope="col-auto">
-                        <div class="form-group">
-                            <input type="text" name="<%= element["name"]%>" id="<%= element["name"]%>"
+            <div class="container mb-4">
+                <h3 class="mb-4">Grade Distribution</h3>
+            </div>
+
+            <table class="table table-sm">
+                <!--Grade Scale-->
+                <thead class=>
+                    <tr>
+                        <% grades.forEach(element => { %>
+                        <th><%= element["name"] %> </th>
+                        <% }) %>
+                        <th><strong> Total</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <% grades.forEach(element => { %>
+                        <td>
+                            <input class="inputs" type="text" name="<%= element["name"]%>" id="<%= element["name"]%>"
                                 value="<%= element["value"] %>" placeholder="Insert">
-                        </div>
-                    </td>
-                    <% }) %>
+                        </td>
+                        <% }) %>
 
-                    <td scope="col-auto">
-                        <div class="form-group">
-                            <input style="text-align: center;" type="number" id="total" value="<%=total_value%>"
-                                name="total" placeholder="0" disabled>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        <td>
+                            <div class="">
+                                <input style="text-align: center;" type="number" id="total" value="<%=total_value%>"
+                                    name="total" placeholder="0" disabled>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <div class="container my-4 mx-5">
-            <h3 class="mb-4">Result of the Course: </h3>
-            <hr>
-            <div class="form-group">
-                <textarea class="form-control" name="course[results]" id="rCourse" rows="5"
-                    placeholder="Insert the results of the Course"><%=course_results%></textarea>
+            <div class="container">
+                <h3 class="mb-4">Result of the Course: </h3>
+                <hr>
+                <div class="form-group">
+                    <textarea id="results_of_course" class="form-control" name="course[results]"
+                        placeholder="Insert the results of the Course"><%=course_results%></textarea>
+                </div>
             </div>
 
-        </div>
 
-        <div class="container my-4 mx-5">
-            <h3 class="mb-4">Modification Made to Course: </h3>
-            <hr>
-            <div class="form-group">
-                <textarea class="form-control" name="course[modification]" id="cReflection" rows="5"
-                    placeholder="Insert Modifications"><%=course_modification%></textarea>
+            <div class="container">
+                <h3 class="mb-4">Modification Made to Course: </h3>
+                <hr>
+                <div class="form-group">
+                    <textarea class="form-control" name="course[modification]" id="course_modification" rows="5"
+                        placeholder="Insert Modifications"><%=course_modification%></textarea>
+                </div>
             </div>
-        </div>
 
-        <div class="container my-4 mx-5">
-            <h3 class="mb-4">Course Reflection: </h3>
-            <hr>
-            <div class="form-group">
-                <textarea class="form-control" name="course[reflection]" id="cReflection" rows="5"
-                    placeholder="Insert Course Reflection"><%=course_reflection%></textarea>
+            <div class="container">
+                <h3 class="mb-4">Course Reflection: </h3>
+                <hr>
+                <div class="form-group">
+                    <textarea class="form-control" name="course[reflection]" id="course_reflection" rows="5"
+                        placeholder="Insert Course Reflection"><%=course_reflection%></textarea>
+                </div>
             </div>
-        </div>
-        <div class="container my-4 mx-5">
-            <h3 class="mb-4">Proposed Action for Course Improvement: </h3>
-            <hr>
-            <div class="form-group">
-                <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
-                <textarea class="form-control" name="course[improvement]" id="cImprovement" rows="5"
-                    placeholder="Insert Proposed Action"><%=course_actions%></textarea>
+            <div class="container">
+                <h3 class="mb-4">Proposed Action for Course Improvement: </h3>
+                <hr>
+                <div class="form-group">
+                    <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
+                    <textarea class="form-control" name="course[improvement]" id="course_action" rows="5"
+                        placeholder="Insert Proposed Action"><%=course_actions%></textarea>
+                </div>
             </div>
-        </div>
 
-        <div class="container">
-            <hr class="my-2">
-            <div class="row submitBtn">
-                <input type="submit" name="save" class="btn btn-secondary" value="Save and finish later">
-                <input id="finish_professor_input" name="finish" class="btn btn-secondary" type="submit" value="Finish">
+            <div class="container">
+                <hr class="my-2">
+                <div class="row submitBtn">
+
+                    <!-- SAVE BTN -->
+                    <input type="submit" name="save" class="btn btn-secondary" value="Save and finish later">
+
+                    <!-- FINISH BTN -->
+                    <input id="finish_professor_input" name="finish" class="btn btn-secondary" type="submit"
+                        value="Finish Assessment">
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+
 </div>
 
 
 <script>
     $(document).ready(function () {
 
+        // Grades Options
         let A = "#A", B = "#B", C = "#C", D = "#D", F = "#F", W = "#W";
         let total = "#total";
         let notas = [A, B, C, D, F, W];
         let grades = undefined;
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
+        //To sum values
+        const suma = (accumulator, currentValue) => accumulator + currentValue;
+
+        // SUM ALL VALUES
         $("#course_evaluation :input").change(function () {
-            let sum = notas.reduce(reducer);
+            let sum = notas.reduce(suma);
             grades = 0;
             notas.forEach(n => {
                 let val = $(n).val();
-                console.log(val);
 
                 if (val == undefined || val == '' || val.length == 0) {
                     val = 0;
@@ -126,12 +138,46 @@
                 grades += parseInt(val);
 
             });
-
             $(total).val(grades);
         });
+
+        // INIT ALL SUPERNTOES
+        let placeholders = ["Results", "Modifications", "Reflection", "Actions"];
+        let tag_suppernote = ["results_of_course", "course_modification", "course_reflection", "course_action"];
+        for (let i = 0; i < tag_suppernote.length; i++) {
+            $(`#${tag_suppernote[i]}`).summernote(return_supernote_options(placeholders[i]));
+        }
+
+        // VALIDATIOn
+        $("#finish_professor_input").click(function (e) {
+            if ($('#results_of_course').summernote('isEmpty')) {
+                alert('editor content is empty');
+                e.preventDefault(e);
+            }
+        });
+
+        function return_supernote_options(placeholder) {
+            // Options for all supernoes
+            return {
+                placeholder: placeholder,
+                height: 150,
+                minHeight: 100,             // set minimum height of editor
+                maxHeight: 300,
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    // ['fontsize', ['fontsize']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                ],
+            }
+        }
+        // $(".note-btn").click(function(){
+        //     $(this).toggleClass("bg-color-btn");
+        // });
     });
+
 </script>
 
-
-
+<link rel="stylesheet" href="/stylesheets/professor_input.css">
 <%- include ('../admin/partials/footer') -%>
