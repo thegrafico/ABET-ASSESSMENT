@@ -1,0 +1,155 @@
+<%- include ('../admin/partials/header') -%>
+
+<style>
+    .side-bard {
+        background-color: #333333;
+        color: #ffffff;
+    }
+
+    .side-bard a {
+        font-size: 0.8em;
+        border-color: white;
+        color: white;
+        margin: 5% 0;
+        padding: 5%;
+        width: 100%;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .side-bard a:last-child {
+        margin-bottom: 10%;
+    }
+
+    .side-bard a i {
+        float: right;
+        font-size: 1.5em;
+    }
+
+    .side-bar-title {
+        /* border: 1px solid red; */
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-bottom: 1px solid #706c61;
+    }
+
+    .mg-0,
+    .pd-0 {
+        margin: 0;
+    }
+
+    .header-filtering {
+        width: 100%;
+        /* border-bottom: 1px solid #706c61; */
+    }
+
+    .header-filtering div {
+        display: inline;
+        line-height: 4rem;
+    }
+
+    .header-filtering div:last-child {
+        font-size: 1.2em;
+        float: right;
+    }
+
+    label {
+        margin: 0;
+    }
+
+    /* BUTTON */
+    #create-assessment {
+        padding: 1%;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .header-table {
+        max-height: 400px;
+        height: 400px;
+        overflow-y: scroll;
+        border-bottom: 1px solid #706c61;
+    }
+
+    /* TABLE  */
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-2 side-bard" style="border:1px solid rosybrown;">
+            <div class="side-bar-title">
+                <p> Options</p>
+            </div>
+
+            <a class="btn btn-outline-primary" href="">Assessment in Progress &nbsp;<i
+                    class="fa fa-play-circle-o"></i></a>
+            <a class="btn btn-outline-primary" href="">Assessment Completed &nbsp;<i class="fa fa-check"></i> </a>
+            <a class="btn btn-outline-primary" href="">Assessment Archive &nbsp;<i class="fa fa-inbox"></i></a>
+            <a class="btn btn-outline-primary" href="">Analysis &nbsp;<i class="fa fa-bar-chart"></i></a>
+        </div>
+
+        <div class="col-10" style="padding: 0; max-width: 100%;">
+
+            <div class="row" style="margin: 0;">
+
+                <div class="col-12 header-filtering">
+
+                    <div>
+                        <button type="button" class="btn btn-success" id="create-assessment">
+                            Create Assessment
+                        </button>
+                    </div>
+
+                    <div>
+                        <div class="filter">
+                            <label for="filter">Filter &nbsp;<i class="fa fa-filter"></i></label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12 header-table">
+                    <table id="table" class="table table-fixed table-hover table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Course</th>
+                                <th scope="col">Rubric</th>
+                                <th scope="col">Term</th>
+                                <th scope="col">Creation Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (assessment_in_progress.length == 0) { %>
+                                <h2 style="text-align: center;">You do not have any assessent in process!</h2>
+                            <% }else{ %>
+
+                                <% assessment_in_progress.forEach(element => { %>
+                                <tr>
+                                    <th scope="row"><%= element["name"] %></th>
+                                    <td><%= element["course_name"] %></td>
+                                    <td><%= element["rubric_name"] %></td>
+                                    <td><%= element["term_name"] %></td>
+                                    <td><%= element["creation_date"] %></td>
+                                </tr>
+                                <% }) %>
+                            <% } %>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FOOTER -->
+<script src="/javascripts/ajaxRequest.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#table').floatThead()
+    });
+</script>
+<%- include ('../admin/partials/footer') -%>
