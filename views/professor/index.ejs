@@ -4,9 +4,10 @@
     .side-bard {
         background-color: #333333;
         color: #ffffff;
+        border: none;
     }
 
-    .side-bard a {
+    .side-bard button {
         font-size: 0.8em;
         border-color: white;
         color: white;
@@ -17,11 +18,11 @@
         font-weight: bold;
     }
 
-    .side-bard a:last-child {
+    .side-bard button:last-child {
         margin-bottom: 10%;
     }
 
-    .side-bard a i {
+    .side-bard button i {
         float: right;
         font-size: 1.5em;
     }
@@ -65,29 +66,75 @@
         font-weight: bold;
     }
 
-    .header-table {
-        max-height: 400px;
-        height: 400px;
-        overflow-y: scroll;
+    .row-heigth {
+        min-height: 450px;
+        max-height: 450px;
+        height: 450px;
         border-bottom: 1px solid #706c61;
     }
+
+    .header-table {
+        overflow-y: scroll;
+    }
+
+    .title {
+        background-color: #75daad;
+        /* color: white; */
+        padding: 1%;
+        text-align: center;
+        /* border-bottom: 1px solid #706c61; */
+    }
+
+    .title i {
+        font-size: 0.8em;
+    }
+
+    th {
+        font-family: 'Segoe UI';
+        font-size: 1.2em;
+    }
+
 
     /* TABLE  */
 </style>
 
 <div class="container-fluid">
     <div class="row">
+        <div class="col-12 title">
+            <h2 id="header-title">Assessment in Progress &nbsp;<i class="fa fa-play-circle-o"></i></h2>
+        </div>
+    </div>
+</div>
 
-        <div class="col-2 side-bard" style="border:1px solid rosybrown;">
+<div class="container-fluid">
+    <div class="row row-heigth">
+
+        <div class="col-2 side-bard">
             <div class="side-bar-title">
                 <p> Options</p>
             </div>
 
-            <a class="btn btn-outline-primary" href="">Assessment in Progress &nbsp;<i
-                    class="fa fa-play-circle-o"></i></a>
-            <a class="btn btn-outline-primary" href="">Assessment Completed &nbsp;<i class="fa fa-check"></i> </a>
-            <a class="btn btn-outline-primary" href="">Assessment Archive &nbsp;<i class="fa fa-inbox"></i></a>
-            <a class="btn btn-outline-primary" href="">Analysis &nbsp;<i class="fa fa-bar-chart"></i></a>
+            <div class="group-btn">
+                <!-- ASSESSMENT IN PROGRESS -->
+                <button class="btn btn-outline-primary active" id="assessmentProgress">
+                    Assessment in Progress &nbsp;<i class="fa fa-play-circle-o"></i>
+                </button>
+
+                <!-- ASSESSMENT COMPLETED -->
+                <button class="btn btn-outline-primary" id="assessmentCompleted">
+                    Assessment Completed &nbsp;<i class="fa fa-check"></i>
+                </button>
+
+                <!-- ASSESSMENT ARCHIVE -->
+                <button class="btn btn-outline-primary" id="assessmentArchive">
+                    Assessment Archive &nbsp;<i class="fa fa-inbox"></i>
+                </button>
+
+                <!-- PROFESSOR ANALYSIS -->
+                <button class="btn btn-outline-primary" id="analysis">
+                    Analysis &nbsp;<i class="fa fa-bar-chart"></i>
+                </button>
+            </div>
         </div>
 
         <div class="col-10" style="padding: 0; max-width: 100%;">
@@ -110,46 +157,103 @@
 
                 </div>
 
-                <div class="col-12 header-table">
-                    <table id="table" class="table table-fixed table-hover table-bordered">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Course</th>
-                                <th scope="col">Rubric</th>
-                                <th scope="col">Term</th>
-                                <th scope="col">Creation Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (assessment_in_progress.length == 0) { %>
-                                <h2 style="text-align: center;">You do not have any assessent in process!</h2>
-                            <% }else{ %>
+                <!-- ASSESSMENT IN PROGRESS -->
+                <div class="col-12 header-table" id="progress">
+                    <%- include ('./modal/assessment_in_progress', {assessment: assessment_in_progress, academic_term}) -%>
+                </div>
 
-                                <% assessment_in_progress.forEach(element => { %>
-                                <tr>
-                                    <th scope="row"><%= element["name"] %></th>
-                                    <td><%= element["course_name"] %></td>
-                                    <td><%= element["rubric_name"] %></td>
-                                    <td><%= element["term_name"] %></td>
-                                    <td><%= element["creation_date"] %></td>
-                                </tr>
-                                <% }) %>
-                            <% } %>
+                <!-- ASSESSMENT COMPLETED -->
+                <div class="col-12 header-table d-none" id="completed">
+                    <%- include ('./modal/assessment_completed', {assessment: assessment_completed, academic_term}) -%>
+                </div>
 
-                        </tbody>
-                    </table>
+                <!-- ASSESSMENT ARCHIVE -->
+                <div class="col-12 header-table d-none" id="archive">
+                    <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term}) -%>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- MODAL CREATE -->
+<%- include ('./modal/create_assessment', {departments, academic_term}) -%>
+
 <!-- FOOTER -->
 <script src="/javascripts/ajaxRequest.js"></script>
+<script src="/javascripts/modals/assessment_create.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
 <script>
+
+    // ASSESSMENT BUTTONS TAGS
+    const btnProgress = "assessmentProgress";
+    const btnCompleted = "assessmentCompleted";
+    const btnArchive = "assessmentArchive";
+    const btnAnalysis = "analysis";
+
+    // table to show tags
+    const tableProgress = "#progress";
+    const tableCompleted = "#completed";
+    const tableArchive = "#archive";
+
     $(document).ready(function () {
+
+        // TABLE STICKY HEADER
         $('#table').floatThead()
+
+        // WHEN CLICK SOME OF THE OPTIONS BUTTONS
+        $(".group-btn button").click(function (event) {
+
+            // remove the active class in all bnt
+            $(".group-btn button").each(function () {
+                $(this).removeClass("active");
+
+            });
+
+            // hide all tables
+            $(".header-table").each(function () {
+                $(this).addClass("d-none");
+            });
+
+
+            // add the active class to the button clicked
+            $(this).addClass("active");
+
+            // get the html content from the button clicked
+            let html_text = $(this).html();
+
+            // change the header for the button clicked headers
+            $("#header-title").html(html_text);
+
+
+            // get the button id
+            let btn_id = event.target.id;
+
+            // if the btn_id has something
+            if (btn_id != undefined && btn_id.length > 0) {
+
+                // store the id to show
+                let id_selected = undefined;
+
+                if (btn_id == btnProgress) {
+                    id_selected = tableProgress;
+                } else if (btn_id == btnCompleted) {
+                    id_selected = tableCompleted;
+                } else if(btn_id == btnArchive){
+                    id_selected = tableArchive;
+                }
+
+                $(id_selected).removeClass("d-none");
+
+            }
+
+        });
+
+
     });
+
+
+
+
 </script>
 <%- include ('../admin/partials/footer') -%>

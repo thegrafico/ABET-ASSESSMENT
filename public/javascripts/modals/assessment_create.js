@@ -38,9 +38,9 @@ $(document).ready(function () {
     });
 
     /**
-     * When Create assessment
+     * BTN CREATE ASSESSMENT EVENT
     */
-    $("#createNew").click(function () {
+    $("#create-assessment").click(function () {
 
         // Change the tittle
         $("#modalTitle").text("Create Assessment");

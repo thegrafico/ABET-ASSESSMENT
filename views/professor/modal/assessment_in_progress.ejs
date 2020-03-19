@@ -1,135 +1,30 @@
-<div class="container assessmentContainer">
-    <div class="row">
-        <div class="col-12">
+<table id="table" class="table table-fixed table-hover table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Course</th>
+            <th scope="col">Rubric</th>
+            <th scope="col">Term</th>
+            <th scope="col">Creation Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (assessment.length != 0) { %>
+        
+            <% assessment.forEach(element => { %>
+                <tr>
+                    <th scope="row"><%= element["name"] %></th>
+                    <td><%= element["course_name"] %></td>
+                    <td><%= element["rubric_name"] %></td>
+                    <td><%= element["term_name"] %></td>
+                    <td><%= element["creation_date"] %></td>
+                </tr>        
+            <% }) %>
+        
+        <% }else{ %>
 
-            <div class="d-flex flex-row bd-highlight">
-
-                <div class="p-2 bd-highlight">
-                    <h3>Filters: </h3>
-                </div>
-
-                <div class="p-2 bd-highlight" style="max-width: 50%;">
-
-                    <div class="form-group">
-                        <select class="form-control" id="filter_term_progress" type="text">
-                            <option selected value=""> -- Academic Term --</option>
-                            <% academic_term.forEach(term => { %>
-                            <option value="<%=term["term_name"]%>"> <%= term["term_name"]%></option>
-                            <% }) %>
-                        </select>
-
-                        <input type="hidden" id="dept_selected" value="">
-                    </div>
-                </div>
-
-                <div class="p-2 bd-highlight" style="width: 50%;">
-
-                    <div class="form-group">
-                        <div>
-                            <input name="filter" disabled class="form-control"  style="margin-top: 0;" type="text"
-                                placeholder="Type Assessment name, Rubric name or created date" back>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- <div class="p-2 bd-highlight" style=" margin-left:3%;">
-                    <h5> "CANTIDAD: " <span id="number"></span> </h5>
-                </div> -->
-            </div>
-        </div>
-    </div>
-
-    <script>
-        $(document).ready(function () {
-
-            $("#filter_term_progress").change(function () {
-
-                let value = $(this).val().toLowerCase();
-
-                console.log(value);
-                $(".progress_assessments").filter(function () {
-
-                    // find all term in assessment
-                    let text = $(this).find('input[name="term_name"]').val();
-
-                    $(this).toggle(text.toLowerCase().indexOf(value) > -1);
-
-                });
-
-                // update the number of quantity
-                // $("#number").text($("#filter tr:visible").length);
-            });
-
-            // $("#myInput").on("keyup", function () {
-
-            //     let value = $(this).val().toLowerCase();
-            //     console.log(value);
-            //     $(".progress_assessments").filter(function () {
-
-            //         // find all term in assessment
-            //         let text = $(this).find('input[name="term_name"]').val();
-
-            //         $(this).toggle(text.toLowerCase().indexOf(value) > -1);
-
-            //         // // get the text of the tr
-            //         // let tr_text = $(this).text().toLowerCase();
-
-            //         // $(this).toggle(names.some(n => tr_text.indexOf(n.toLowerCase()) > 0));
-
-            //     });
-
-            //     let names = study_programs.map(e => e.toLowerCase());
-            //     // update the number of quantity
-            //     // $("#number").text($("#filter tr:visible").length);
-            // });
-        });
-    </script>
-
-    <!-- <i class="fa fa-ellipsis-h"></i> -->
-    <div class="container assessmentReports">
-        <div class="row">
-
-            <% if (assessment_in_progress.length > 0) { %>
-
-
-            <!-- TODO: GET THE VALUE FOR EDIT VIA AN API -->
-            <% for( let i = 0; i < assessment_in_progress.length; i++) { %>
-
-            <div class="col-6 progress_assessments">
-                <div class="card" style="width: 80%; margin: auto;">
-                    <i class="editBtn fa fa-pencil-square-o">
-                        <input type="hidden" name="id" value="<%=assessment_in_progress[i].assessment_ID%>">
-                        <input type="hidden" name="name" value="<%=assessment_in_progress[i].name%>">
-                        <input type="hidden" name="department" value="<%=assessment_in_progress[i].dep_ID%>">
-                        <input type="hidden" name="studyprogram" value="<%=assessment_in_progress[i].prog_ID%>">
-                        <input type="hidden" name="outcome" value="<%=assessment_in_progress[i].outc_ID%>">
-                        <input type="hidden" name="course" value="<%=assessment_in_progress[i].course_ID%>">
-                        <input type="hidden" name="rubric" value="<%=assessment_in_progress[i].rubric_ID%>">
-                        <input type="hidden" name="term" value="<%=assessment_in_progress[i].term_ID%>">
-                        <input type="hidden" name="term_name" value="<%=assessment_in_progress[i].term_name %>">
-                    </i>
-                    <i class="trashBtn fa fa-trash-o" value="<%=assessment_in_progress[i].assessment_ID%>">
-                        <input type="hidden" value="<%=assessment_in_progress[i].assessment_ID%>">
-                        <input type="hidden" value="<%=assessment_in_progress[i].name%>">
-                    </i>
-                    <div style="margin-left: 15%;">
-                        <img src="../images/paper.png" class="card-img-top" alt="Assessment">
-                    </div>
-                    <div class="card-body" style=" width: 80%; margin-left: 5%; text-align: center; font-size: 0.9em;">
-                        <h5 class="card-title"> <a
-                                href="/professor/assessment/<%=assessment_in_progress[i].assessment_ID%>/performanceTable">
-                                <%=assessment_in_progress[i].name %></a></h5>
-                        <p class="card-text"><%=assessment_in_progress[i].course_name %></p>
-                        <p class="card-text"><%=assessment_in_progress[i].term_name %></p>
-                        <p class="card-text"><%=assessment_in_progress[i].rubric_name %></p>
-                        <p class="card-text">Created at <%=assessment_in_progress[i].creation_date %></p>
-                    </div>
-                </div>
-            </div>
+            <h2 style="text-align: center;">You do not have any assessent in process!</h2>
+        
             <% } %>
-            <% }else{ %>
-            <h3 class="feedback_message_assessment">You do not have any Assessment in Progress</h3>
-            <% } %>
-        </div>
-    </div>
-</div>
+    </tbody>
+</table>
