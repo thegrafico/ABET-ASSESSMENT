@@ -139,13 +139,14 @@
         background-color: #c0f2f5;
     }
 
-    .container-fluid{
-        padding:0;
+    .container-fluid {
+        padding: 0;
     }
+
     /* END */
 </style>
 
-<div class="container-fluid" >
+<div class="container-fluid">
     <div class="row row-heigth">
 
         <div class="col-2 side-bard">
@@ -248,11 +249,16 @@
 
     $(document).ready(function () {
         // TABLE STICKY HEADER
-        $('#table').floatThead()
+        $('#table').floatThead();
+
+        // REMOVE ASSESSMENT
+        $(".REMOVE").click(function () {
+            remove_assessment(this);
+        });
     });
 
     // Dynamic Change pages
-    function openPage(tag, table_id,color) {
+    function openPage(tag, table_id, color) {
 
         // remove the active class in all bnt
         $(".group-btn button").each(function () {
@@ -272,10 +278,33 @@
 
         // change the header for the button clicked headers
         $("#header-title").html(html_text);
-        $("#title").css({"background-color": color});
+        $("#title").css({ "background-color": color });
 
         $(table_id).removeClass("d-none");
 
+    }
+
+    function remove_assessment(element) {
+        // show the mdodal
+        $("#delete_title").text("Removing Assessment");
+        $('#deleteModal').modal('toggle');
+
+        // get the id of the assessment
+        let assessment_data = $(element).val().split(",");
+
+        let assessment_id = assessment_data[0];
+        let assessment_name = assessment_data[1];
+
+        // message body
+        $("#modal-delete-assessment-body")
+            .empty()
+            .append(`<p>Are you sure you want to remove Assessment with the name: <strong>${assessment_name}</strong>?</p>`);
+
+        // Button text
+        $("#remove_submit").text(`Remove Assessment`);
+
+        // change the action of form
+        $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
     }
 
 </script>

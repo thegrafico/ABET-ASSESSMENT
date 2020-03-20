@@ -27,11 +27,11 @@
                     </button>
                     <div class="dropdown-menu">
 
-                        <a class="EDIT dropdown-item" href="">
+                        <button class="EDIT dropdown-item" value="<%=element["assessment_ID"]%>">
                             EDIT
-                        </a>
-                        <button class="REMOVE dropdown-item" value="" data-toggle="modal"
-                            data-target="#exampleModal">Remove
+                        </button>
+                        <button class="REMOVE dropdown-item" value="<%=element["assessment_ID"]%>,<%=element["name"]%>">
+                            Remove
                         </button>
                     </div>
                 </div>

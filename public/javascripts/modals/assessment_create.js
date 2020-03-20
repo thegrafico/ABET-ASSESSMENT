@@ -25,10 +25,6 @@ $(document).ready(function () {
         let assessment_id = $(this).find('input:first').attr('value');
         let assessment_name = $(this).find('input:nth-child(2)').attr('value');
 
-
-        console.log(assessment_id);
-        console.log(assessment_name);
-
         $("#modal-text").text(`Are you sure you want to recover Assessment with the name: ${assessment_name}?`);
         $("#remove_submit").text(`Recover Assessment`);
 
@@ -52,28 +48,6 @@ $(document).ready(function () {
         // change the action of form
         $("#create_assessment").attr("action", `/professor/assessment/create`);
 
-    });
-
-    /**
-     * MODAL FOR DELETE
-     * when user click the trash button 
-    * */
-    $(".trashBtn").click(function () {
-
-        // show the mdodal
-        $("#delete_title").text("Removing Assessment");
-        $('#deleteModal').modal('toggle');
-
-
-        // get the id of the assessment
-        let assessment_id = $(this).find('input:first').attr('value');
-        let assessment_name = $(this).find('input:nth-child(2)').attr('value');
-
-        $("#modal-text").text(`Are you sure you want to remove Assessment with the name: ${assessment_name}?`);
-        $("#remove_submit").text(`Remove Assessment`);
-
-        // change the action of form
-        $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
     });
 
     /**
