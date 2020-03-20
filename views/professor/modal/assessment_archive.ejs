@@ -3,10 +3,12 @@
     <thead class="thead-dark">
         <tr>
             <th scope="col">Name</th>
-            <th scope="col">Action</th>
+            <th scope="col"></th>
             <th scope="col">Course</th>
             <th scope="col">Rubric</th>
             <th scope="col">Term</th>
+            <th scope="col">Action</th>
+
         </tr>
     </thead>
     <tbody>
@@ -16,8 +18,13 @@
         <tr class="table-row">
             <th scope="row">
                 <%= element["name"] %> <br>
-                <span class="date-format">Creation date: <%= element["creation_date"] %></span>
+                <span class="date-format"><%= element["creation_date"] %></span>
             </th>
+
+            <td><a class="btn btn-success link-work" href="">Work in Assessment</a></td>
+            <td><%= element["course_name"] %></td>
+            <td><%= element["rubric_name"] %></td>
+            <td><%= element["term_name"] %></td>
 
             <td>
                 <div class="col dropdown">
@@ -28,17 +35,14 @@
                     <div class="dropdown-menu">
 
                         <button class="EDIT dropdown-item" value="<%=element["assessment_ID"]%>">
-                            EDIT
+                            Edit Assessment Template &nbsp; <i class="fa fa-pencil"></i>
                         </button>
                         <button class="REMOVE dropdown-item" value="<%=element["assessment_ID"]%>,<%=element["name"]%>">
-                            Remove
+                            Archive Assessment &nbsp;<i class="fa fa-inbox"></i>
                         </button>
                     </div>
                 </div>
             </td>
-            <td><%= element["course_name"] %></td>
-            <td><%= element["rubric_name"] %></td>
-            <td><%= element["term_name"] %></td>
         </tr>
         </div>
 

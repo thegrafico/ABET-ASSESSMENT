@@ -1,0 +1,162 @@
+.side-bard {
+    /* background-color: #333333; */
+    background-color: #235952;
+    color: #ffffff;
+    border: none;
+}
+
+.side-bard button {
+    font-size: 0.8em;
+    border-color: white;
+    color: white;
+    margin: 5% 0;
+    padding: 5%;
+    width: 100%;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.side-bard button:last-child {
+    margin-bottom: 10%;
+}
+
+.side-bard button i {
+    float: right;
+    font-size: 1.5em;
+}
+
+.side-bar-title {
+    /* border: 1px solid red; */
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-bottom: 1px solid #706c61;
+}
+
+.mg-0,
+.pd-0 {
+    margin: 0;
+}
+
+.header-filtering {
+    width: 100%;
+    /* border-bottom: 1px solid #706c61; */
+}
+
+.header-filtering div {
+    display: inline;
+    line-height: 4rem;
+}
+
+.header-filtering div:last-child {
+    font-size: 1.2em;
+    float: right;
+}
+
+label {
+    margin: 0;
+}
+
+.link-work{
+    padding: 2%;
+}
+
+/* BUTTON */
+#create-assessment,
+.link-work {
+    padding: 1%;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: #235952;
+}
+
+#create-assessment:hover,
+.link-work:hover {
+    background-color: #235952a6;
+}
+
+.row-heigth {
+    min-height: 550px;
+    max-height: 550px;
+    border-bottom: 1px solid #706c61;
+}
+
+.header-table {
+    overflow-y: scroll;
+    max-height: 400px;
+}
+
+#title {
+    /* color: white; */
+    padding: 1%;
+    text-align: center;
+    /* border-bottom: 1px solid #706c61; */
+}
+
+.dropdown-item i {
+    font-size: 1em;
+    padding: 1%;
+    right: 5%;
+    vertical-align: middle;
+}
+
+#title i {
+    font-size: 0.8em;
+}
+
+th {
+    font-family: 'Segoe UI';
+    font-size: 1.2em;
+}
+
+.thead-dark {
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.table-row {
+    height: 7rem;
+    -webkit-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+    box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+
+}
+
+.table-row th,
+.table-row td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.date-format {
+    font-weight: normal;
+    font-size: 0.7em;
+    font-style: italic;
+}
+
+/* COLORS FOR TITLE HEADER */
+.bg-progress-color {
+    background-color: #ecfbfc;
+}
+
+.bg-completed-color {
+    background-color: #d6f6f9;
+}
+
+.bg-archive-color {
+    background-color: #c0f2f5;
+}
+
+.container-fluid {
+    padding: 0;
+}
+
+.link-work{
+    padding: 4%;
+}
+
+th, td{
+    width: 20%;
+}
+
+/* END */

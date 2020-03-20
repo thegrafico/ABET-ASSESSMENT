@@ -1,151 +1,5 @@
 <%- include ('../admin/partials/header') -%>
 
-<style>
-    .side-bard {
-        /* background-color: #333333; */
-        background-color: #235952;
-        color: #ffffff;
-        border: none;
-    }
-
-    .side-bard button {
-        font-size: 0.8em;
-        border-color: white;
-        color: white;
-        margin: 5% 0;
-        padding: 5%;
-        width: 100%;
-        text-transform: uppercase;
-        font-weight: bold;
-    }
-
-    .side-bard button:last-child {
-        margin-bottom: 10%;
-    }
-
-    .side-bard button i {
-        float: right;
-        font-size: 1.5em;
-    }
-
-    .side-bar-title {
-        /* border: 1px solid red; */
-        text-align: center;
-        text-transform: uppercase;
-        font-weight: bold;
-        border-bottom: 1px solid #706c61;
-    }
-
-    .mg-0,
-    .pd-0 {
-        margin: 0;
-    }
-
-    .header-filtering {
-        width: 100%;
-        /* border-bottom: 1px solid #706c61; */
-    }
-
-    .header-filtering div {
-        display: inline;
-        line-height: 4rem;
-    }
-
-    .header-filtering div:last-child {
-        font-size: 1.2em;
-        float: right;
-    }
-
-    label {
-        margin: 0;
-    }
-
-    /* BUTTON */
-    #create-assessment {
-        padding: 1%;
-        text-transform: uppercase;
-        font-weight: bold;
-        background-color: #235952;
-    }
-
-    #create-assessment:hover {
-        background-color: #235952a6;
-    }
-
-    .row-heigth {
-        min-height: 550px;
-        max-height: 550px;
-        border-bottom: 1px solid #706c61;
-    }
-
-    .header-table {
-        overflow-y: scroll;
-        max-height: 400px;
-    }
-
-    #title {
-        /* color: white; */
-        padding: 1%;
-        text-align: center;
-        /* border-bottom: 1px solid #706c61; */
-    }
-
-
-
-    #title i {
-        font-size: 0.8em;
-    }
-
-    th {
-        font-family: 'Segoe UI';
-        font-size: 1.2em;
-    }
-
-    .thead-dark {
-        text-transform: uppercase;
-        text-align: center;
-    }
-
-    .table-row {
-        height: 7rem;
-        -webkit-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
-        box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
-
-    }
-
-    .table-row th,
-    .table-row td {
-        vertical-align: middle;
-        text-align: center;
-    }
-
-    .date-format {
-        font-weight: normal;
-        font-size: 0.7em;
-        font-style: italic;
-    }
-
-    /* COLORS FOR TITLE HEADER */
-    .bg-progress-color {
-        background-color: #ecfbfc;
-    }
-
-    .bg-completed-color {
-        background-color: #d6f6f9;
-    }
-
-    .bg-archive-color {
-        background-color: #c0f2f5;
-    }
-
-    .container-fluid {
-        padding: 0;
-    }
-
-    /* END */
-</style>
-
 <div class="container-fluid">
     <div class="row row-heigth">
 
@@ -169,7 +23,7 @@
 
                 <!-- ASSESSMENT ARCHIVE -->
                 <button class="btn btn-outline-primary" id="assessmentArchive"
-                    onclick="openPage('#assessmentArchive', '#archive' ,'#c0f2f5')">
+                    onclick="openPage('#assessmentArchive', '#archive' ,'#aaedf2')">
                     Assessment Archive &nbsp; <i id="assessmentArchive" class="fa fa-inbox"></i>
                 </button>
 
@@ -205,17 +59,17 @@
 
                 <!-- ASSESSMENT IN PROGRESS -->
                 <div class="col-12 header-table" id="progress">
-                    <%- include ('./modal/assessment_table', {assessment: assessment_in_progress, academic_term}) -%>
+                    <%- include ('./modal/assessment_in_progress', {assessment: assessment_in_progress, academic_term}) -%>
                 </div>
 
                 <!-- ASSESSMENT COMPLETED -->
                 <div class="col-12 header-table d-none" id="completed">
-                    <%- include ('./modal/assessment_table', {assessment: assessment_completed, academic_term}) -%>
+                    <%- include ('./modal/assessment_completed', {assessment: assessment_completed, academic_term}) -%>
                 </div>
 
                 <!-- ASSESSMENT ARCHIVE -->
                 <div class="col-12 header-table d-none" id="archive">
-                    <%- include ('./modal/assessment_table', {assessment: assessment_archive, academic_term}) -%>
+                    <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term}) -%>
                 </div>
 
             </div>
@@ -230,84 +84,10 @@
 <%- include ('./modal/delete_assessment') -%>
 
 <!-- FOOTER -->
+<link rel="stylesheet" href="/stylesheets/professor_index.css">
 <link rel="stylesheet" href="/stylesheets/professor_assessment.css">
 <script src="/javascripts/ajaxRequest.js"></script>
-<script src="/javascripts/modals/assessment_create.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
-<script>
-
-    // ASSESSMENT BUTTONS TAGS
-    const btnProgress = "assessmentProgress";
-    const btnCompleted = "assessmentCompleted";
-    const btnArchive = "assessmentArchive";
-    const btnAnalysis = "analysis";
-
-    // table to show tags
-    const tableProgress = "#progress";
-    const tableCompleted = "#completed";
-    const tableArchive = "#archive";
-
-    $(document).ready(function () {
-        // TABLE STICKY HEADER
-        $('#table').floatThead();
-
-        // REMOVE ASSESSMENT
-        $(".REMOVE").click(function () {
-            remove_assessment(this);
-        });
-    });
-
-    // Dynamic Change pages
-    function openPage(tag, table_id, color) {
-
-        // remove the active class in all bnt
-        $(".group-btn button").each(function () {
-            $(this).removeClass("active");
-        });
-
-        // hide all tables
-        $(".header-table").each(function () {
-            $(this).addClass("d-none");
-        });
-
-        // add the active class to the button clicked
-        $(tag).addClass("active");
-
-        // get the html content from the button clicked
-        let html_text = $(tag).html();
-
-        // change the header for the button clicked headers
-        $("#header-title").html(html_text);
-        $("#title").css({ "background-color": color });
-
-        $(table_id).removeClass("d-none");
-
-    }
-
-    function remove_assessment(element) {
-        // show the mdodal
-        $("#delete_title").text("Removing Assessment");
-        $('#deleteModal').modal('toggle');
-
-        // get the id of the assessment
-        let assessment_data = $(element).val().split(",");
-
-        let assessment_id = assessment_data[0];
-        let assessment_name = assessment_data[1];
-
-        // message body
-        $("#modal-delete-assessment-body")
-            .empty()
-            .append(`<p>Are you sure you want to remove Assessment with the name: <strong>${assessment_name}</strong>?</p>`);
-
-        // Button text
-        $("#remove_submit").text(`Remove Assessment`);
-
-        // change the action of form
-        $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
-    }
-
-</script>
-
+<script src="/javascripts/modals/assessments.js"></script>
 
 <%- include ('../admin/partials/footer') -%>

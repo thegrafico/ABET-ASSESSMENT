@@ -11,10 +11,17 @@ $(document).ready(function () {
     const tags = [tag_study_program, tag_outcome, tag_course, tag_rubric];
     const default_message = ["Study Program", "Outcome", "Course", "Rubric"];
 
+    // TABLE STICKY HEADER
+    $('#table').floatThead();
+
+    // REMOVE ASSESSMENT
+    $(".REMOVE").click(function () {
+        remove_assessment(this);
+    });
+
     /**
      * WHEN USER WANT TO RECOVER AN COMPLETED ASSESSMENT
     */
-
     $(".recoverBtn").click(function () {
         // show the mdodal
         $("#delete_title").text("Recover Assessment");
@@ -54,7 +61,7 @@ $(document).ready(function () {
     * MODAL FOR EDIT
     * WHEN USER CLICK EDIT BUTTON
     */
-    $(".editBtn").click(async function () {
+    $(".EDIT").click(async function () {
 
         // show loading icon
         $("#loader-modal").show();
@@ -67,14 +74,26 @@ $(document).ready(function () {
         $('#createModal').modal('toggle');
 
         // Get all information from assessment to edit
-        let assessment_id = $(this).find('input:first').attr('value');
-        let assessment_name = $(this).find('input:nth-child(2)').attr('value');
-        let dept = $(this).find('input:nth-child(3)').attr('value');
-        let std = $(this).find('input:nth-child(4)').attr('value');
-        let outc = $(this).find('input:nth-child(5)').attr('value');
-        let course = $(this).find('input:nth-child(6)').attr('value');
-        let rubric = $(this).find('input:nth-child(7)').attr('value');
-        let term = $(this).find('input:nth-child(8)').attr('value');
+        let assessment_id = $(this).find('input[name="id"]').attr('value');
+        let assessment_name = $(this).find('input[name="name"]').attr('value');
+        let dept = $(this).find('input[name="department"]').attr('value');
+        let std = $(this).find('input[name="studyprogram"]').attr('value');
+        let outc = $(this).find('input[name="outcome"]').attr('value');
+        let course = $(this).find('input[name="course"]').attr('value');
+        let rubric = $(this).find('input[name="rubric"]').attr('value');
+        let term = $(this).find('input[name="term"]').attr('value');
+
+        console.log(
+            `ID: ${assessment_id} \n
+            Name: ${assessment_name} \n
+            dept: ${dept}\n
+            std: ${std}\n
+            out: ${outc}\n
+            course: ${course}\n
+            rubric: ${rubric}\n
+            term: ${term}
+            `
+        );
 
         // Change the name
         $(tag_name).val(assessment_name);
@@ -86,7 +105,7 @@ $(document).ready(function () {
 
         // Update the department and setup the value
         await update_departmet(dept).catch((err) => {
-            console.log(error);
+            console.log("Error updating the department: ", err);
         });
 
         // disable all options - after set department
@@ -98,13 +117,13 @@ $(document).ready(function () {
         // Change study program, and update all study program
         $(tag_study_program).val(std);
         await update_study_program(std).catch((err) => {
-            console.log(error);
+            console.log('Error updating the study program: ', err);
         });
 
         // select outcome, and update all outcomes
         $(tag_outcome).val(outc);
         await update_outcome(outc).catch((err) => {
-            console.log(err);
+            console.log("Error updating the outcome: ", err);
         });
 
         // Select course and rubric
@@ -383,3 +402,54 @@ $(document).ready(function () {
         });
     };
 });
+
+// Dynamic Change pages
+function openPage(tag, table_id, color) {
+
+    // remove the active class in all bnt
+    $(".group-btn button").each(function () {
+        $(this).removeClass("active");
+    });
+
+    // hide all tables
+    $(".header-table").each(function () {
+        $(this).addClass("d-none");
+    });
+
+    // add the active class to the button clicked
+    $(tag).addClass("active");
+
+    // get the html content from the button clicked
+    let html_text = $(tag).html();
+
+    // change the header for the button clicked headers
+    $("#header-title").html(html_text);
+    $("#title").css({ "background-color": color });
+
+    $(table_id).removeClass("d-none");
+
+}
+
+// MODAL HANDLER FOR DELETE ASSESSMENT
+function remove_assessment(element) {
+    // show the mdodal
+    $("#delete_title").text("Removing Assessment");
+    $('#deleteModal').modal('toggle');
+
+    // get the id of the assessment
+    let assessment_data = $(element).val().split(",");
+
+    let assessment_id = assessment_data[0];
+    let assessment_name = assessment_data[1];
+
+    // message body
+    $("#modal-delete-assessment-body")
+        .empty()
+        .append(`<p>Are you sure you want to remove Assessment with the name: <strong>${assessment_name}</strong>?</p>`);
+
+    // Button text
+    $("#remove_submit").text(`Remove Assessment`);
+
+    // change the action of form
+    $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
+}
