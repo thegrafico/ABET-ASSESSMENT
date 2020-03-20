@@ -33,50 +33,88 @@ function get_perf_criterias(assessmentID) {
 	});
 }
 
-/***
- * Insert students evaluation results to EVALUATION_ROW table
- * @param {Array} data -> Array that contains each of the perfomance criterias score and the assessment ID
- * @returns {Promise} -> Returns true if query was able to insert the data
+/**
+ * deletePrevEntry() -> function that deletes all of the previous entries corresponding to a specific Assessment ID
+ * @param {Number} -> Assessment ID
 */
-function insertDataToEvaluationRow(data) {
-	return new Promise(function (resolve, reject) {
-		let insertData = `INSERT INTO EVALUATION_ROW(assessment_ID) VALUES(?);`;
-		conn.query(insertData, data, function (err, results) {
-			if (err)
-				reject(err || "Wasn't able to insert data");
-			else
-				resolve(true);
+function deletePrevEntry(assessment_ID) {
+	return new Promise((resolve, reject) => {
+		let deletePrevEntry = `DELETE FROM EVALUATION_ROW WHERE EVALUATION_ROW.assessment_ID = ?;`;
+
+		conn.query(deletePrevEntry, assessment_ID, (err, results) => {
+			if(err) { reject(err); }
+			else resolve(true);
 		});
 	});
 }
 
-/***
- * Insert students evaluation results to ROW_PERC table
- * @param {Array} data -> Array that contains each of the perfomance criterias score and the assessment ID
- * @returns {Promise} -> Returns true if query was able to insert the data
+
+/**
+ * insertStudentScores() -> function that executes query which inserts student scores to database.
+ * @param {Array} data -> [assessment_ID, perc_ID, row_perc_score]
+ * @returns {Boolean} -> returns true if successful.
 */
-function insertDataToRowPerc(data) {
-	return new Promise(function (resolve, reject) {
-		let insertData = `INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES(?, ?, ?);`;
-		conn.query(insertData, data, function (err, results) {
-			if (err)
-				reject(err || "Wasn't able to insert data");
-			else
-				resolve(true);
+function insertStudentScores(data) {
+	return new Promise((resolve, reject) => {
+		let transactionQuery = [`INSERT INTO EVALUATION_ROW(assessment_ID) VALUES(?);`,
+								`INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES(?, ?, ?);`
+							];
+		conn.getConnection(function(err , conn) {
+			conn.beginTransaction(function(err) {
+				if (err) { throw err; }
+				conn.query(transactionQuery[0], data[0], function(error, results, fields) {
+					if(error) {
+						return conn.rollback(function() {
+							reject(error);
+						});
+					}
+	
+					let last_insert_id = results.insertId;
+
+					for(let i = 0; i < data[1].length; i++) {
+						conn.query(transactionQuery[1], [last_insert_id, data[1][i], data[2][i]], function(error, results, fields) {
+							if (error) {
+								return conn.rollback(function() {
+								reject(error);
+								});
+							}
+						});
+					}
+					conn.commit(function(err) {
+						if (err) {
+						return conn.rollback(function() {
+							reject(err);
+						});
+						}
+						console.log('success!');
+						resolve('success!');
+					});
+				});
+			});
 		});
 	});
 }
 
-function getRow_ID(assessmentID) {
-	return new Promise(function (resolve, reject) {
-		let findRows = `SELECT row_ID
-							FROM EVALUATION_ROW
-							WHERE EVALUATION_ROW.assessment_ID = ?;`;
-		conn.query(findRows, assessmentID, function (err, results) {
-			if (err)
-				reject(err || "Error retreiving performance criterias.");
-			else
+/**
+ * getEvaluationByID() -> function that retrieve all entries from a specific Assessment ID
+ * @param {Number} -> Assessment ID
+ * @resolve {Object} -> when resolve it returns all row entries inserted from assessment ID inserted.
+*/
+function getEvaluationByID(assessmentID) {
+	return new Promise(function(resolve, reject) {
+		if (assessmentID == undefined || isNaN(assessmentID)) {
+            return reject("Error with the asessment ID");
+		}
+
+		let getEvaluation = `SELECT ROW_PERC.row_ID, perC_ID, row_perc_score, assessment_ID
+							 FROM ROW_PERC INNER JOIN EVALUATION_ROW
+							 WHERE ROW_PERC.row_ID = EVALUATION_ROW.row_ID AND EVALUATION_ROW.assessment_ID = ?;`;
+		conn.query(getEvaluation, [assessmentID], function(err, results) {
+			if (err) 
+				reject(err || "Evaluation hasen't been done yet.");
+			else {
 				resolve(results);
+			} 
 		});
 	});
 }
@@ -243,11 +281,11 @@ function update_status(id, status) {
 
 module.exports.update_status = update_status;
 module.exports.get_perf_criterias = get_perf_criterias;
-module.exports.insertDataToEvaluationRow = insertDataToEvaluationRow;
 module.exports.get_study_program_by_user_id = get_study_program_by_user_id;
 module.exports.get_department_by_user_id = get_department_by_user_id;
 module.exports.deleteRowWithAssessmentID = deleteRowWithAssessmentID;
 module.exports.insert_professor_input = insert_professor_input;
 module.exports.update_professor_input = update_professor_input;
-module.exports.insertDataToRowPerc = insertDataToRowPerc;
-module.exports.getRow_ID = getRow_ID;
+module.exports.insertStudentScores = insertStudentScores;
+module.exports.deletePrevEntry = deletePrevEntry;
+module.exports.getEvaluationByID = getEvaluationByID;

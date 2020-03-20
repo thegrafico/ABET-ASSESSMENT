@@ -2,28 +2,34 @@ const canvas = document.getElementById('myChart')
 let ctx = canvas.getContext('2d');
 let amountOfColumns = $('#amountOfCol').val();
 let assessment_ID = $('#assessmentID').val();
-let performanceCriteria = $('#perfCrit').val();
-performanceCriteria = performanceCriteria.split(',');
+let outcomeName = $('#outcomeName').val();
+let row = 1;
+let avgPerRow = [];
+let amountRows;
+let data;
+let hasInput = $('#hasValue').val();
+let prevScores = $('#prevScores').val();
+prevScores = JSON.parse(prevScores);
 let perfID = $('#perfID').val();
 perfID = perfID.split(',');
-let outcomeName = $('#outcomeName').val();
-let labels = [];
-let row = 1;
-let graph;
-let avgPerRow = [];
-let data = [];
-console.log("PERFFF: ", perfID);
+let performanceCriteria = $('#perfCrit').val();
+performanceCriteria = performanceCriteria.split(',');
 
 // Loads empty chart when page is load
-window.onload = createChart();
+window.onload = () => {
+    createChart();
+    data = getTableData();
+};
 
 $(document).ready(function () {
-	generateCols();
-	for (let i = 0; i <= 9; i++) {
-		avgPerRow.push(0);
-		addRow();
-	}
-	$('#addRow').click(function () {
+    if(hasInput == 'y') {
+        withValues(prevScores);
+    } else {
+        noValues();
+    }
+    
+    console.log("prevScores: ", prevScores);
+    $('#addRow').click(function () {
 		avgPerRow.push(0);
 		addRow();
 		updateIndex();
@@ -32,26 +38,70 @@ $(document).ready(function () {
 	$('#delRow').click(function () {
 		delRow();
 		updateIndex();
-	});
-
-	$('#saveBtn').click(function() {
-		insertEvaluation(data, assessment_ID);
-	});
+    });
+    
+    $('#save').click(function() {
+        insertEvaluation(mapData(data, assessment_ID));
+    });
 });
 
-
-// This function creates a row with the amount of columns which depends of the amount of performance Criterias
-function generateRow(r) {
-	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
-	for (let i = 1; i <= amountOfColumns; i++) {
-		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' oninput='createChart()' value=''></td>`);
+/**
+ * generateRowWithVal() -> function that creates tables with previous evaluation values.
+*/
+function generateRowWithVal(r, data) {
+    var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
+	for (let i = 0; i < amountOfColumns; i++) { 
+        try {
+            markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' value='${data[r-1].scores[i]}' oninput='createChart()' ></td>`);
+        } catch(err) {
+            break;
+        }
 	}
 	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
 	$("#tableBody").append(markup);
 }
 
-// Creates header row of the table
-function generateCols() {
+/**
+ * noValues() -> function that creates the table if the query result return empty, 
+ *               meaning that there was no previous evaluation done to the report.
+*/
+function noValues() {
+    generateHeaderRow();
+	for (let i = 0; i <= 9; i++) {
+		avgPerRow.push(0);
+		addRow();
+	}
+}
+
+/**
+ * withValues() -> function that creates table with previous values if existing.
+ * @param {Object} -> Object containing previous scores.
+*/
+function withValues(data) {
+    generateHeaderRow();
+	for (let i = 0; i < data.length; i++) {
+		avgPerRow.push(0);
+		addRowWithValue(data)
+	}
+}
+
+/**
+ * generateRow() -> function that create the template of the row
+ * @param {number} -> Index to keep track of the index of the rows and data
+*/
+function generateRow(r) {
+	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
+	for (let i = 1; i <= amountOfColumns; i++) {
+		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' value='' oninput='createChart()' ></td>`);
+	}
+	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
+	$("#tableBody").append(markup);
+}
+
+/**
+ * generateCols() -> function that creates the header row for the table
+*/
+function generateHeaderRow() {
 	for (let i = 1; i <= amountOfColumns; i++) {
 		var col = "<th> PC " + performanceCriteria[i - 1] + "</th>";
 		$("#header").append(col);
@@ -59,30 +109,41 @@ function generateCols() {
 	$("#header").append(`<th>${outcomeName}</th>`);
 }
 
-
-// Creates a new row
+/**
+ * addRow() -> function that adds a new row
+*/
 function addRow() {
 	$("#tableBody").append(generateRow(row));
 	row++;
 }
 
-// Deletes selected rows
+/**
+ * addRowWithValue() -> Creates rows with previous values.
+ * @param {Object} -> Object containing previous scores.
+*/
+function addRowWithValue(data) {
+    $("#tableBody").append(generateRowWithVal(row, data));
+	row++;
+}
+
+/**
+ * delRow() -> function that deletes selected row
+*/
 function delRow() {
 	$("#tableBody").find('input[name="record"]').each(function () {
 		if ($(this).is(":checked")) {
-			$(this).parents("tr").remove();
-			avgPerRow.splice($(this).val(), 1);
+            $(this).parents("tr").remove();
+            avgPerRow.splice($(this).val(), 1);
 		}
-	});
+    });
+    data = getTableData();
 }
 
-// TODO:
-// - Add Target line to graph
-
-
+/**
+ * updateIndex() -> function that updates the index every time a row is deleted or new row is added
+*/
 function updateIndex() {
 	$('table tbody tr').each(function(index) {
-		console.log(index);
 		$(this).find('th').text(index+1);
 		let newId = 'avg' + index;
 		$(this).find('td:nth-last-of-type(2)').attr('id', newId);
@@ -90,36 +151,21 @@ function updateIndex() {
 	});
 }
 
-// Creates chart depending the users input
+/**
+ * createChart() -> function that creates the graph according to the input that the user inserts
+*/
 function createChart() {
-	let formData = [];
-
-	// Creates labels for the x-axis of the chart
+    // Creates labels for the x-axis of the chart
+    let labels = [];
 	for (let i = 0; i < performanceCriteria.length; i++) {
 		performanceCriteria[i] = parseInt(performanceCriteria[i]);
 		labels[i] = "PC " + performanceCriteria[i];
 	}
 
-	labels[performanceCriteria.length] = outcomeName + ' Average';
-
-	$("#performanceTable, input[type=number]").each(function (index) {
-		let input = $(this); 
-		formData[index] = input.val();
-		$(input).val(formData[index]);
-	});
-
-	let amountRows = ((formData.length) / amountOfColumns);
-	let temp = [];
-	let e = 0;
-
-	for (let i = 0; i < amountRows; i++) {
-		for (let j = 0; j < amountOfColumns; j++) {
-			temp[j] = formData[e];
-			e++;
-		}
-		data[i] = temp;
-		temp = [];
-	}
+    labels[performanceCriteria.length] = outcomeName + ' Average';
+    
+    data = getTableData();
+    
 	let count = 0;
 	let percTable = [];
 	let rowSum = 0;
@@ -157,7 +203,7 @@ function createChart() {
 
 	let graphData = percTable;
 	graphData.push(outcomeAVG);
-
+    let graph;
 	let myChart = new Chart(canvas, {
 		type: 'bar',
 		data: {
@@ -195,31 +241,79 @@ function createChart() {
 	});
 }
 
-
-
-function insertEvaluation(rowData, assessmetID) {
-	let entryData = [];
-	let index = 0;
-	rowData.forEach(element => {
-		let tempObject = {};
-		tempObject['assessment_ID'] = assessmetID;
-		tempObject['perfC'] = perfID;
-		tempObject['scores'] = element;
-		// for(let i = 0; i < perfID.length; i++) {
-		// 	tempObject[`'${perfID[i]}'`] = element[i];
-		// }
-		entryData.push(tempObject);
-		index++;
-	});
-	index = 0;
-	console.log("Entry Data: ", entryData);
+/**
+ * insertEvaluation() -> function that formats the data to then insert to database
+ * @param {Array} -> Array of arrays containing the scores per row
+ * @param {Number} -> Assessment ID of the current report
+*/
+function insertEvaluation(entryData) {	
+    console.log("Inserting: ", entryData);
 	$.ajax({
 		type: "POST",
 		url: '/professor/assessment/insertData',
-		data: {entryData},
+     data: {data: entryData},
 		dataType: 'json',
 		success: () => {
 			alert("Post");
 		}
 	});
+}
+
+/**
+ * mapData() -> function that is going to map the data with it's corresponding scores and ID's.
+ * @param {Array} rowData -> Multidimensional array containing all of the scores.
+ * @param {Number} assessmentID -> Current Assessment ID.
+ * @returns {Object} -> Returns an object with all of the data mapped.
+*/
+function mapData(rowData, assessmentID) {
+    let mappedData = [];
+    let index = 0;
+    
+	rowData.forEach(element => {
+		let tempObject = {};
+		tempObject['assessment_ID'] = assessmentID;
+		tempObject['perfC'] = perfID;
+		tempObject['scores'] = element;
+		mappedData.push(tempObject);
+		index++;
+	});
+    index = 0;
+    
+    console.log("Entry Data: ", mappedData);
+    return mappedData;
+}
+
+/**
+ * getTableData() -> Function that gathers all of the table data.
+ * @returns {Array} -> Return and multidimmensional array of the data sorted by rows.
+*/
+function getTableData() {
+    let rowData = [];
+    let tableData = [];
+
+    $("#performanceTable, input[type=number]").each(function (index) {
+        let input = $(this);
+
+        if(input.val() == '') {
+            rowData.push(null);
+        } else {
+            rowData.push(input.val());
+        }
+        $(input).val(input.val());
+    });
+
+    amountRows = ((rowData.length) / amountOfColumns);
+	let temp = [];
+	let e = 0;
+
+	for (let i = 0; i < amountRows; i++) {
+		for (let j = 0; j < amountOfColumns; j++) {
+			temp[j] = rowData[e];
+			e++;
+		}
+		tableData[i] = temp;
+		temp = [];
+    }
+
+    return tableData;
 }
