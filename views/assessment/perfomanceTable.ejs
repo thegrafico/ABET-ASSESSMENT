@@ -24,7 +24,8 @@
 <input type="hidden" id="outcomeName" name="outcomeName" value="<%= outc_name %> ">
 <input type="hidden" id="assessmentID" name="assessmentID" value="<%= id %>">
 <input type="hidden" id="perfID" name="perfID" value="<%= perf_ID %>">
-
+<input type="hidden" id="prevScores" name="prevScores" value="<%= prevScores %>">
+<input type="hidden" id="hasValue" name="hasValue" value="<%= hasValue %>">
 
 <div class="container-fluid" id="source-html" style="margin-top: 10px; margin-bottom: 100px;">
 	<div class="row" style="padding: 2%;">
@@ -51,7 +52,8 @@
 				<div style="float: left; width: 80%;">
 					<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
 					<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
-					<!-- <button style="width: 20%;" id="saveBtn" class="btn inter-green inter-green-btn" ><a href="<%= base_url %>/">Save</a></button> -->
+					<button id="save" style="width: 20%;" id="saveBtn"
+						class="btn inter-green inter-green-btn"><a>Save</a></button>
 				</div>
 				<!-- onclick="insertEvaluation()" -->
 				<a style="width: 15%;margin-top: 5px;" class="btn inter-green inter-green-btn" id="delRow"
@@ -70,6 +72,5 @@
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
 	crossorigin="anonymous"></script>
 <script type="text/javascript" src="/javascripts/performanceTable.js"></script>
-
 
 <%- include ('../admin/partials/footer') -%>

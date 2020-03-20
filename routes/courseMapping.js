@@ -122,8 +122,10 @@ router.post('/addMapping', async function (req, res) {
     }
 
     if (can_insert || can_remove) {
-        res.json({ "success": "Updated Successfully", "status": 200, "wasUpdated": true,
-        "deleted": removed_elements, "added": update_elements});
+        res.json({
+            "success": "Updated Successfully", "status": 200, "wasUpdated": true,
+            "deleted": removed_elements, "added": update_elements
+        });
     } else {
         res.end('{"success" : "Data keep the same", "status" : 200, "wasUpdated": false}');
     }
@@ -249,4 +251,5 @@ function transformdt(outcomes) {
     });
     return temp;
 }
+
 module.exports = router;

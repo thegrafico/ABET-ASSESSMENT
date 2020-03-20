@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+
 var config;
 
 
@@ -31,7 +32,8 @@ var options = {
           session_id: 'custom_session_id',
           expires: 'custom_expires_column_name',
           data: 'custom_data_column_name'
-      }
+      },
+      multipleStatements: true
   }
 };
 

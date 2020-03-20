@@ -117,7 +117,9 @@ router.post("/assessment/create", async function (req, res) {
 /*
 	- Get /professor/assessment/id
 */
-router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment, async function (req, res) {
+router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment ,async function (req, res) {
+	let results;
+	let hasValue;
 
 	locals.breadcrumb = [
 		{ "name": req.body.assessment.name, "url": "." }
@@ -129,48 +131,50 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		console.log("Error: ", err);
 	});
 
+	let studentEvaluation = await queries.getEvaluationByID(req.params.assessmentID).catch((err) => {
+        console.error("ERROR: ", err);
+	});
+	
+	console.log("StudentEvaluation Results: ", studentEvaluation.length);
+
+	if(studentEvaluation.length <= 0) {
+		results = [];
+		hasValue = 'n';
+	} else {
+		results = mapData(studentEvaluation);
+		hasValue = 'y';
+	}
+
+	locals.hasValue = hasValue;
+	locals.prevScores = JSON.stringify(results);
 	locals.colNums = perf_criterias.length;
 	locals.perfCrit = perf_criterias.map(e => e.perC_order);
 	locals.outc_name = perf_criterias[0].outc_name;
 	locals.perf_ID = perf_criterias.map(e => e.perC_ID);
-	console.log("ID: ", perf_criterias.map(e => e.perC_ID));
 
 	res.render('assessment/perfomanceTable', locals);
 });
 
-router.post('/assessment/insertData', function (req, res) {
-	let data = req.body.entryData;
+router.post('/assessment/insertData', async function(req, res) {
+	let data = req.body.data;
 
-	// data.forEach(function(e) {
-	// 	console.log("E: ",e);
-	// 	if(e.scores[0] != '') {
-	// 		queries.insertDataToEvaluationRow(e.assessment_ID).catch((err) => {
-	// 			console.log("Error: ", err);
-	// 		});
-	// 		console.log('Inserted');
-	// 	} else
-	// 		console.log("Empty boxes");	
-	// });
-	// console.log("Ass ID", data[0].assessment_ID);
-	// let getRowID = queries.getRow_ID(data[0].assessment_ID).catch((err) => {
-	// 	console.log("Error: ", err);
-	// });
+	let deletePrevEntry = queries.deletePrevEntry(data[0].assessment_ID).catch((err) => {
+		if(err) {
+			console.log("No existing scores on Assessment ID: ", data[0].assessment_ID);
+		}
+	});
 
-	// console.log('getRowId: ', getRowID);
-
-	// data.forEach(function(e) {
-	// 	console.log("E: ",e);
-	// 	if(e.scores[0] != '') {
-	// 		for(let i = 0; i < e.scores.length; i++) {
-	// 				queries.insertDataToRowPerc().catch((err) => {
-	// 					console.log("Error: ", err);
-	// 				});
-	// 		}
-	// 		console.log('Inserted');
-	// 	} else
-	// 		console.log("Empty boxes");	
-	// });
-
+	let index = 0;
+	data.forEach((entry) => {
+		console.log("Inserting: ", entry);
+		let insertScores = queries.insertStudentScores([entry.assessment_ID, entry.perfC, entry.scores]).catch((err) => {
+			if(err) {
+				console.log("No student scores inputed.");
+			}
+		});
+		index++;
+	});
+	index = 0;
 });
 
 
@@ -632,5 +636,39 @@ router.post('/perfomanceTable', async function (req, res) {
 	// TODO: flash message = Your report was generated
 	res.redirect(base_url);
 });
+
+/**
+ * 
+*/
+function mapData(data) {
+    let assessmentID = data[0].assessment_ID;
+    let ids = data.map(row => row.row_ID);
+
+    ids = ids.filter(function (item, pos) {
+        return ids.indexOf(item) == pos;
+    })
+
+    let temp = [];
+    ids.forEach((id) => {
+        let row_info = [];
+
+        row_info = data.filter(row => row.row_ID == id);
+
+        let row_perf = row_info.map(row => row.perC_ID);
+        let row_scores = row_info.map(row => row.row_perc_score);
+
+
+        console.log("Row DAta ", row_perf);
+
+        temp.push({
+            rowID: id,
+            perfC: row_perf,
+            scores: row_scores,
+            assessmentID: assessmentID
+        });
+    });
+
+    return temp;
+}
 
 module.exports = router;

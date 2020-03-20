@@ -7,7 +7,6 @@ const api_queries = require("../helpers/queries/api");
 const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 
-
 /*
 	-- GET all performance criteria from rubric -- 
 	GET /users
@@ -110,7 +109,6 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 	res.json({mapping, outcome_course, current_mapping});
 });
 
-
 /**
  * transform_outcome_courses -> transform the data structure to a new data structure
  * @param {Array} outcome_course array of element to transform
@@ -167,6 +165,7 @@ function transformdt(outcomes) {
     ids.forEach((ID) => {
         let row_outcomes = [];
         let courses_name = [];
+
         // filter only outcomes that belown to specific study program (Still we got the object)
         row_outcomes = outcomes.filter(row => row.prog_ID == ID);
 
@@ -230,9 +229,4 @@ function transformdt(outcomes) {
     return temp;
 }
 
-
 module.exports = router;
-
-
-
-
