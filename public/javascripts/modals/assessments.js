@@ -14,30 +14,49 @@ $(document).ready(function () {
     // TABLE STICKY HEADER
     $('#table').floatThead();
 
+    //  // show the mdodal
+    //  $("#delete_title").text("");
+    //  $('#deleteModal').modal('toggle');
+ 
+    //  // get the id of the assessment
+    //  let assessment_data = $(element).val().split(",");
+ 
+    //  let assessment_id = assessment_data[0];
+    //  let assessment_name = assessment_data[1];
+ 
+    //  // message body
+    //  $("#modal-delete-assessment-body")
+    //      .empty()
+    //      .append(`<p><strong>${assessment_name}</strong>?</p>`);
+ 
+    //  // Button text
+    //  $("#remove_submit").text(``);
+ 
+    //  // change the action of form
+    //  $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
+
     // REMOVE ASSESSMENT
     $(".REMOVE").click(function () {
-        remove_assessment(this);
+        let data = {
+            title: "Removing Assessment",
+            bodyMsg: "Are you sure you want to remove Assessment with the name: ",
+            btnText: "Remove Assessment",
+            action: "D"
+        } 
+        update_modal_data(this, data);
     });
 
     /**
      * WHEN USER WANT TO RECOVER AN COMPLETED ASSESSMENT
     */
-    $(".recoverBtn").click(function () {
-        // show the mdodal
-        $("#delete_title").text("Recover Assessment");
-        $('#deleteModal').modal('toggle');
-
-
-        // get the id of the assessment
-        let assessment_id = $(this).find('input:first').attr('value');
-        let assessment_name = $(this).find('input:nth-child(2)').attr('value');
-
-        $("#modal-text").text(`Are you sure you want to recover Assessment with the name: ${assessment_name}?`);
-        $("#remove_submit").text(`Recover Assessment`);
-
-        // change the action of form
-        $("#formDelete").attr("action", `/professor/assessment/changeStatus/${assessment_id}?_method=PUT`);
-
+    $(".RECOVER").click(function () {
+        let data = {
+            title: "Recover Assessment",
+            bodyMsg: "Are you sure you want to recover Assessment with the name: ",
+            btnText: "Recover Assessment",
+            action: "U"
+        }; 
+        update_modal_data(this, data);
     });
 
     /**
@@ -431,9 +450,9 @@ function openPage(tag, table_id, color) {
 }
 
 // MODAL HANDLER FOR DELETE ASSESSMENT
-function remove_assessment(element) {
+function update_modal_data(element, data) {
     // show the mdodal
-    $("#delete_title").text("Removing Assessment");
+    $("#delete_title").text(data["title"]);
     $('#deleteModal').modal('toggle');
 
     // get the id of the assessment
@@ -445,11 +464,15 @@ function remove_assessment(element) {
     // message body
     $("#modal-delete-assessment-body")
         .empty()
-        .append(`<p>Are you sure you want to remove Assessment with the name: <strong>${assessment_name}</strong>?</p>`);
-
+        .append(`<p>${data["bodyMsg"]}<strong>${assessment_name}</strong>?</p>`);
+        
     // Button text
-    $("#remove_submit").text(`Remove Assessment`);
+    $("#remove_submit").text(`${data["btnText"]}`);
 
+    if (data["action"] == 'D'){
+        $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
+    }else{
+        $("#formDelete").attr("action", `/professor/assessment/changeStatus/${assessment_id}?_method=PUT`);
+    }
     // change the action of form
-    $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
 }

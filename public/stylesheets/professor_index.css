@@ -160,4 +160,7 @@ th, td{
     width: 20%;
 }
 
+th:first-child{
+    width: 5%;
+}
 /* END */

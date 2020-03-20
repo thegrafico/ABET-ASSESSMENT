@@ -2,6 +2,7 @@
 
     <thead class="thead-dark">
         <tr>
+            <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Course</th>
             <th scope="col">Rubric</th>
@@ -13,8 +14,13 @@
     <tbody>
         <% if (assessment.length != 0) { %>
 
-        <% assessment.forEach(element => { %>
+        <% assessment.forEach((element, index) => { %>
         <tr class="table-row">
+
+            
+            <th scope="row">
+                <%=(index+1)%> 
+            </th>
             <th scope="row">
                 <%= element["name"] %> <br>
                 <span class="date-format"><%= element["creation_date"] %></span>

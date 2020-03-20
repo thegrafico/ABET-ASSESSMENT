@@ -2,6 +2,7 @@
 
     <thead class="thead-dark">
         <tr>
+            <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col"></th>
             <th scope="col">Course</th>
@@ -14,8 +15,12 @@
     <tbody>
         <% if (assessment.length != 0) { %>
 
-        <% assessment.forEach(element => { %>
+        <% assessment.forEach((element, index) => { %>
         <tr class="table-row">
+
+            <th scope="row">
+                <%=(index+1)%> 
+            </th>
             <th scope="row">
                 <%= element["name"] %> <br>
                 <span class="date-format"><%= element["creation_date"] %></span>
@@ -37,8 +42,8 @@
                     </button>
                     <div class="dropdown-menu">
 
-                        <button class="EDIT dropdown-item" value="<%=element["assessment_ID"]%>">
-                            Edit Assessment Template &nbsp; <i class="fa fa-pencil"></i>
+                        <button class="RECOVER dropdown-item" value="<%=element["assessment_ID"]%>,<%=element["name"]%>">
+                            Move to progress section &nbsp; <i class="fa fa-repeat"></i>
                         </button>
                         <button class="REMOVE dropdown-item" value="<%=element["assessment_ID"]%>,<%=element["name"]%>">
                             Archive Assessment &nbsp;<i class="fa fa-inbox"></i>
