@@ -2,7 +2,8 @@
 
 <style>
     .side-bard {
-        background-color: #333333;
+        /* background-color: #333333; */
+        background-color: #235952;
         color: #ffffff;
         border: none;
     }
@@ -64,28 +65,34 @@
         padding: 1%;
         text-transform: uppercase;
         font-weight: bold;
+        background-color: #235952;
+    }
+
+    #create-assessment:hover {
+        background-color: #235952a6;
     }
 
     .row-heigth {
-        min-height: 450px;
-        max-height: 450px;
-        height: 450px;
+        min-height: 550px;
+        max-height: 550px;
         border-bottom: 1px solid #706c61;
     }
 
     .header-table {
         overflow-y: scroll;
+        max-height: 400px;
     }
 
-    .title {
-        background-color: #75daad;
+    #title {
         /* color: white; */
         padding: 1%;
         text-align: center;
         /* border-bottom: 1px solid #706c61; */
     }
 
-    .title i {
+
+
+    #title i {
         font-size: 0.8em;
     }
 
@@ -94,19 +101,51 @@
         font-size: 1.2em;
     }
 
+    .thead-dark {
+        text-transform: uppercase;
+        text-align: center;
+    }
 
-    /* TABLE  */
+    .table-row {
+        height: 7rem;
+        -webkit-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+        box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+
+    }
+
+    .table-row th,
+    .table-row td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .date-format {
+        font-weight: normal;
+        font-size: 0.7em;
+        font-style: italic;
+    }
+
+    /* COLORS FOR TITLE HEADER */
+    .bg-progress-color {
+        background-color: #ecfbfc;
+    }
+
+    .bg-completed-color {
+        background-color: #d6f6f9;
+    }
+
+    .bg-archive-color {
+        background-color: #c0f2f5;
+    }
+
+    .container-fluid{
+        padding:0;
+    }
+    /* END */
 </style>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12 title">
-            <h2 id="header-title">Assessment in Progress &nbsp;<i class="fa fa-play-circle-o"></i></h2>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid">
+<div class="container-fluid" >
     <div class="row row-heigth">
 
         <div class="col-2 side-bard">
@@ -116,23 +155,26 @@
 
             <div class="group-btn">
                 <!-- ASSESSMENT IN PROGRESS -->
-                <button class="btn btn-outline-primary active" id="assessmentProgress">
-                    Assessment in Progress &nbsp;<i class="fa fa-play-circle-o"></i>
+                <button class="btn btn-outline-primary active" id="assessmentProgress"
+                    onclick="openPage('#assessmentProgress', '#progress','#ecfbfc' )">
+                    Assessment in Progress &nbsp;<i id="assessmentProgress" class="fa fa-play-circle-o"></i>
                 </button>
 
                 <!-- ASSESSMENT COMPLETED -->
-                <button class="btn btn-outline-primary" id="assessmentCompleted">
-                    Assessment Completed &nbsp;<i class="fa fa-check"></i>
+                <button class="btn btn-outline-primary" id="assessmentCompleted"
+                    onclick="openPage('#assessmentCompleted', '#completed', '#d6f6f9')">
+                    Assessment Completed &nbsp;<i id="assessmentCompleted" class="fa fa-check"></i>
                 </button>
 
                 <!-- ASSESSMENT ARCHIVE -->
-                <button class="btn btn-outline-primary" id="assessmentArchive">
-                    Assessment Archive &nbsp;<i class="fa fa-inbox"></i>
+                <button class="btn btn-outline-primary" id="assessmentArchive"
+                    onclick="openPage('#assessmentArchive', '#archive' ,'#c0f2f5')">
+                    Assessment Archive &nbsp; <i id="assessmentArchive" class="fa fa-inbox"></i>
                 </button>
 
                 <!-- PROFESSOR ANALYSIS -->
                 <button class="btn btn-outline-primary" id="analysis">
-                    Analysis &nbsp;<i class="fa fa-bar-chart"></i>
+                    Analysis &nbsp;<i id="analysis" class="fa fa-bar-chart"></i>
                 </button>
             </div>
         </div>
@@ -140,6 +182,10 @@
         <div class="col-10" style="padding: 0; max-width: 100%;">
 
             <div class="row" style="margin: 0;">
+
+                <div class="col-12 bg-progress-color" id="title">
+                    <h2 id="header-title">Assessment in Progress &nbsp;<i class="fa fa-play-circle-o"></i></h2>
+                </div>
 
                 <div class="col-12 header-filtering">
 
@@ -154,23 +200,23 @@
                             <label for="filter">Filter &nbsp;<i class="fa fa-filter"></i></label>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- ASSESSMENT IN PROGRESS -->
                 <div class="col-12 header-table" id="progress">
-                    <%- include ('./modal/assessment_in_progress', {assessment: assessment_in_progress, academic_term}) -%>
+                    <%- include ('./modal/assessment_table', {assessment: assessment_in_progress, academic_term}) -%>
                 </div>
 
                 <!-- ASSESSMENT COMPLETED -->
                 <div class="col-12 header-table d-none" id="completed">
-                    <%- include ('./modal/assessment_completed', {assessment: assessment_completed, academic_term}) -%>
+                    <%- include ('./modal/assessment_table', {assessment: assessment_completed, academic_term}) -%>
                 </div>
 
                 <!-- ASSESSMENT ARCHIVE -->
                 <div class="col-12 header-table d-none" id="archive">
-                    <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term}) -%>
+                    <%- include ('./modal/assessment_table', {assessment: assessment_archive, academic_term}) -%>
                 </div>
+
             </div>
         </div>
     </div>
@@ -179,7 +225,11 @@
 <!-- MODAL CREATE -->
 <%- include ('./modal/create_assessment', {departments, academic_term}) -%>
 
+<!-- MODAL DELETE -->
+<%- include ('./modal/delete_assessment') -%>
+
 <!-- FOOTER -->
+<link rel="stylesheet" href="/stylesheets/professor_assessment.css">
 <script src="/javascripts/ajaxRequest.js"></script>
 <script src="/javascripts/modals/assessment_create.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
@@ -197,63 +247,38 @@
     const tableArchive = "#archive";
 
     $(document).ready(function () {
-
         // TABLE STICKY HEADER
         $('#table').floatThead()
-
-        // WHEN CLICK SOME OF THE OPTIONS BUTTONS
-        $(".group-btn button").click(function (event) {
-
-            // remove the active class in all bnt
-            $(".group-btn button").each(function () {
-                $(this).removeClass("active");
-
-            });
-
-            // hide all tables
-            $(".header-table").each(function () {
-                $(this).addClass("d-none");
-            });
-
-
-            // add the active class to the button clicked
-            $(this).addClass("active");
-
-            // get the html content from the button clicked
-            let html_text = $(this).html();
-
-            // change the header for the button clicked headers
-            $("#header-title").html(html_text);
-
-
-            // get the button id
-            let btn_id = event.target.id;
-
-            // if the btn_id has something
-            if (btn_id != undefined && btn_id.length > 0) {
-
-                // store the id to show
-                let id_selected = undefined;
-
-                if (btn_id == btnProgress) {
-                    id_selected = tableProgress;
-                } else if (btn_id == btnCompleted) {
-                    id_selected = tableCompleted;
-                } else if(btn_id == btnArchive){
-                    id_selected = tableArchive;
-                }
-
-                $(id_selected).removeClass("d-none");
-
-            }
-
-        });
-
-
     });
 
+    // Dynamic Change pages
+    function openPage(tag, table_id,color) {
 
+        // remove the active class in all bnt
+        $(".group-btn button").each(function () {
+            $(this).removeClass("active");
+        });
 
+        // hide all tables
+        $(".header-table").each(function () {
+            $(this).addClass("d-none");
+        });
+
+        // add the active class to the button clicked
+        $(tag).addClass("active");
+
+        // get the html content from the button clicked
+        let html_text = $(tag).html();
+
+        // change the header for the button clicked headers
+        $("#header-title").html(html_text);
+        $("#title").css({"background-color": color});
+
+        $(table_id).removeClass("d-none");
+
+    }
 
 </script>
+
+
 <%- include ('../admin/partials/footer') -%>

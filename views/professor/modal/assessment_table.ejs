@@ -1,0 +1,53 @@
+<table id="table" class="table table-fixed table-hover ">
+
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Action</th>
+            <th scope="col">Course</th>
+            <th scope="col">Rubric</th>
+            <th scope="col">Term</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (assessment.length != 0) { %>
+
+        <% assessment.forEach(element => { %>
+        <tr class="table-row">
+            <th scope="row">
+                <%= element["name"] %> <br>
+                <span class="date-format">Creation date: <%= element["creation_date"] %></span>
+            </th>
+
+            <td>
+                <div class="col dropdown">
+                    <button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
+                        data-toggle="dropdown">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu">
+
+                        <a class="EDIT dropdown-item" href="">
+                            EDIT
+                        </a>
+                        <button class="REMOVE dropdown-item" value="" data-toggle="modal"
+                            data-target="#exampleModal">Remove
+                        </button>
+                    </div>
+                </div>
+            </td>
+            <td><%= element["course_name"] %></td>
+            <td><%= element["rubric_name"] %></td>
+            <td><%= element["term_name"] %></td>
+        </tr>
+        </div>
+
+        <% }) %>
+
+        <% }else{ %>
+
+        <h2 style="text-align: center;">You do not have any assessent in process!</h2>
+
+        <% } %>
+    </tbody>
+</table>

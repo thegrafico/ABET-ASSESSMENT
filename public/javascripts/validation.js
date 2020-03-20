@@ -9,6 +9,7 @@
     TO VALIDATE RUBRIC: --------------> rubric_data
     TO VALIDATE CRITERIA: ------------> criteria_data
     TO VALIDATE COURSE EVALUATION: ---> course_evaluation
+    TO VALIDATE CREATE ASSESSMENT: ---> create_assessment
 */
 
 // Wait for the DOM to be ready
@@ -32,7 +33,8 @@ $(document).ready(function () {
             "profile_id": "required",
             "interID": {
                 required: true,
-                minlength: 6
+                minlength: 6,
+                maxlength: 20
             },
             "username": { required: true, lettersonly: true },
             "lastname": { required: true, lettersonly: true },
@@ -51,7 +53,8 @@ $(document).ready(function () {
         messages: {
             "interID": {
                 required: "Cannot be empty",
-                minlength: "Have to be greater than 5"
+                minlength: "Have to be greater than 5",
+                maxlength: "Inter ID is to big"
             },
             "profile_id": "Please select a profile",
             "username": {
@@ -213,7 +216,7 @@ $(document).ready(function () {
         // Specify validation rules
         rules: {
 
-            "name": "required",
+            "name": { required: true, minlength: 3, maxlength: 35 },
             "department_id": "required",
             "study_program": "required",
             "outcome": "required",
@@ -224,7 +227,11 @@ $(document).ready(function () {
         // Specify validation error messages
         messages: {
 
-            "name": "Cannot be empty",
+            "name": {
+                required: "Cannot be empty",
+                minlength: "Name is to short",
+                maxlength: "Name is to big"
+            },
             "department_id": "Select a Department",
             "study_program": "Select a Study Program",
             "outcome": "Select an Outcome",
