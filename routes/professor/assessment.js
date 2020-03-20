@@ -66,8 +66,6 @@ router.get('/', async function (req, res) {
 	locals.departments = departments || [];
 	locals.academic_term = academic_term || [];
 
-	console.log(locals);
-	// res.render('professor/home', locals);
 	res.render('professor/index', locals);
 
 });

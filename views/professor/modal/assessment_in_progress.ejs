@@ -21,7 +21,12 @@
                 <span class="date-format"><%= element["creation_date"] %></span>
             </th>
 
-            <td><a class="btn btn-success link-work" href="">Work in Assessment</a></td>
+            <td>
+                <a class="btn btn-success link-work" style="background-color: #2a6b63;"
+                    href="<%=base_url%>/assessment/<%=element.assessment_ID%>/performanceTable">
+                    Work in Assessment
+                </a>
+            </td>
             <td><%= element["course_name"] %></td>
             <td><%= element["rubric_name"] %></td>
             <td><%= element["term_name"] %></td>

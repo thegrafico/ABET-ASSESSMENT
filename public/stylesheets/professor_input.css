@@ -52,3 +52,10 @@ p {
 .submitBtn input:hover {
     background-color: rgba(0, 0, 0, 0.3);
 }
+
+.professor-container {
+    -webkit-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+    box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
+    padding: 5% 0;
+}
