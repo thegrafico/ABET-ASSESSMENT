@@ -1,5 +1,4 @@
 <%- include ('../admin/partials/header') -%>
-
 <div id="exportContent" class="container">
 
     <style>
@@ -12,12 +11,6 @@
         .container {
             padding-bottom: 100px;
         }
-
-        /* #inter-logo {
-            width: 100%;
-            margin-bottom: -2%;
-            text-align: center;
-        } */
 
         .report-body p {
             text-align: justify;
@@ -99,9 +92,10 @@
                 <span class="header-course-information">
                     Faculty Course Assessment Report
                     <br>
-                    <%= header["course_number"] %> - <%= header["course_name"] %>
+                    <span id="course_number"><%= header["course_number"] %></span> - <%= header["course_name"] %>
                     <br>
-                    <%= header["term_name"] %> - Prof. <%= header["first_name"] %> <%= header["last_name"] %>
+                    <span id="term_name"> <%= header["term_name"] %></span> - Prof. <%= header["first_name"] %>
+                    <%= header["last_name"] %>
                 </span>
             </p>
         </div>
@@ -116,7 +110,7 @@
             <p><strong> II. Course Development:</strong> <br>
 
                 <div>
-                    <p ><strong>1. Grade Distribution:</strong></p>
+                    <p><strong>1. Grade Distribution:</strong></p>
                     <table style="width: 90%; margin-left: 5%;">
                         <tr>
                             <% for( let key in grades) { %>
@@ -178,7 +172,7 @@
 
             <div class="ml-3">
                 <div>
-                    <p >
+                    <p>
 
                         <strong>1. <%= header["outc_name"] %>:</strong> <%= header["outc_description"] %>
                         <br>
@@ -186,14 +180,14 @@
                     </p>
                 </div>
 
-                <p >
+                <p>
                     <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
                     <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
                     <br>
                     <% } %>
                 </p>
 
-                <p >
+                <p>
                     <strong> 2. Target </strong>
                     <br>
                     75% of the student must be equal or more than 3 as final value in the outcome
@@ -201,7 +195,7 @@
                 <br>
 
 
-                <p >
+                <p>
                     <strong>3. Outcome Distribution</strong>
                 </p>
 
@@ -221,7 +215,7 @@
                 <br>
 
                 <div>
-                    <p >
+                    <p>
                         <strong>4. Results of the outcome </strong>
                         <br>
                         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rem esse doloremque atque sunt id
@@ -231,7 +225,7 @@
                 </div>
 
                 <div>
-                    <p >
+                    <p>
 
                         <strong>5. Graph goes here </strong>
                         <br>
@@ -246,7 +240,23 @@
     </div>
 </div>
 
-<a class="word-content" href="javascript:void(0)">Export to word</a>
+<style>
+    .expot-btn {
+        width: 100%;
+    }
+
+    .expot-btn a {
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-left: 30%;
+        margin-top: 1%;
+        padding: 1%;
+        width: 40%;
+    }
+</style>
+<div class="expot-btn">
+    <a class="word-content btn btn-success" href="javascript:void(0)">Save as Word document</a>
+</div>
 
 <script src="/javascripts/jquery-1.11.1.min.js"></script>
 <script src="/javascripts/FileSaver.js"></script>
@@ -274,14 +284,17 @@
 
         setInterval(function () {
             $(".sp-data p").each(function () {
-                $(this).css({'margin-left': '3%', "margin-top": "0"});
+                $(this).css({ 'margin-left': '3%', "margin-top": "0" });
 
             });
         }, 300);
 
 
         $(".word-content").click(function () {
-            $('#exportContent').wordExport("Document");
+            let course_number = $("#course_number").text().replace(" ", "_");
+            let term_name = $("#term_name").text().replace("-", "_");
+            let document_name = `Assessment_${course_number}_${term_name}`;
+            $('#exportContent').wordExport(document_name);
         });
 
     });

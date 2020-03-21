@@ -44,16 +44,39 @@
 
                 <div class="col-12 header-filtering">
 
-                    <div>
-                        <button type="button" class="btn btn-success" id="create-assessment">
-                            Create Assessment
-                        </button>
-                    </div>
+                    <div class="d-flex flex-row bd-highlight">
 
-                    <div>
-                        <div class="filter">
-                            <label for="filter">Filter &nbsp;<i class="fa fa-filter"></i></label>
+                        <div class="p-2 bd-highlight btn-create">
+                            <button type="button" class="btn btn-success" id="create-assessment">
+                                Create Assessment
+                            </button>
                         </div>
+
+                        <div class="p-2 bd-highlight" style="margin-left: 40%;">
+                            <h3 style="padding: 0; margin:0;  margin-top: 3%;">Filter By Term: </h3>
+                        </div>
+
+                        <div class="p-2 bd-highlight filter-box">
+                            <div class="form-group">
+                                <select name="filter" class="form-control" id="filterBy" type="text">
+                                    <option selected value=""> -- All -- </option>
+                                    <% academic_term.forEach(term => { %>
+                                    <option value="<%=term["term_name"]%>"><%=term["term_name"]%></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!--                         
+                        <div class="p-2 bd-highlight">
+
+                            <div class="form-group">
+                                <div>
+                                    <input name="filter" class="form-control" id="myInput" style="margin-top: 0;"
+                                        type="text" placeholder="Type what you're Looking for. Ex. Name or Date" back>
+                                </div>
+                            </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -71,7 +94,6 @@
                 <div class="col-12 header-table d-none" id="archive">
                     <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term}) -%>
                 </div>
-
             </div>
         </div>
     </div>
@@ -87,6 +109,7 @@
 <link rel="stylesheet" href="/stylesheets/professor_index.css">
 <link rel="stylesheet" href="/stylesheets/professor_assessment.css">
 <script src="/javascripts/ajaxRequest.js"></script>
+<script src="/javascripts/filters/home.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
 <script src="/javascripts/modals/assessments.js"></script>
 

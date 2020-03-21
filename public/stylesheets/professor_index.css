@@ -38,19 +38,13 @@
     margin: 0;
 }
 
-.header-filtering {
+.btn-create{
+    width: 20%;
+}
+
+.btn-create button{
     width: 100%;
-    /* border-bottom: 1px solid #706c61; */
-}
-
-.header-filtering div {
-    display: inline;
-    line-height: 4rem;
-}
-
-.header-filtering div:last-child {
-    font-size: 1.2em;
-    float: right;
+    height: 100%;
 }
 
 label {
@@ -78,7 +72,6 @@ label {
 .row-heigth {
     min-height: 550px;
     max-height: 550px;
-    border-bottom: 1px solid #706c61;
 }
 
 .header-table {
@@ -164,3 +157,7 @@ th:first-child{
     width: 5%;
 }
 /* END */
+.filter-box div, .filter-box div select{
+    /* margin-top: 10%; */
+    height: 100%;
+}

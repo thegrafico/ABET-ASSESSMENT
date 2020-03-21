@@ -13,27 +13,7 @@ $(document).ready(function () {
 
     // TABLE STICKY HEADER
     $('#table').floatThead();
-
-    //  // show the mdodal
-    //  $("#delete_title").text("");
-    //  $('#deleteModal').modal('toggle');
- 
-    //  // get the id of the assessment
-    //  let assessment_data = $(element).val().split(",");
- 
-    //  let assessment_id = assessment_data[0];
-    //  let assessment_name = assessment_data[1];
- 
-    //  // message body
-    //  $("#modal-delete-assessment-body")
-    //      .empty()
-    //      .append(`<p><strong>${assessment_name}</strong>?</p>`);
- 
-    //  // Button text
-    //  $("#remove_submit").text(``);
- 
-    //  // change the action of form
-    //  $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
+    $('#table').trigger('reflow')
 
     // REMOVE ASSESSMENT
     $(".REMOVE").click(function () {
@@ -42,7 +22,7 @@ $(document).ready(function () {
             bodyMsg: "Are you sure you want to remove Assessment with the name: ",
             btnText: "Remove Assessment",
             action: "D"
-        } 
+        }
         update_modal_data(this, data);
     });
 
@@ -55,7 +35,7 @@ $(document).ready(function () {
             bodyMsg: "Are you sure you want to recover Assessment with the name: ",
             btnText: "Recover Assessment",
             action: "U"
-        }; 
+        };
         update_modal_data(this, data);
     });
 
@@ -465,13 +445,13 @@ function update_modal_data(element, data) {
     $("#modal-delete-assessment-body")
         .empty()
         .append(`<p>${data["bodyMsg"]}<strong>${assessment_name}</strong>?</p>`);
-        
+
     // Button text
     $("#remove_submit").text(`${data["btnText"]}`);
 
-    if (data["action"] == 'D'){
+    if (data["action"] == 'D') {
         $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);
-    }else{
+    } else {
         $("#formDelete").attr("action", `/professor/assessment/changeStatus/${assessment_id}?_method=PUT`);
     }
     // change the action of form

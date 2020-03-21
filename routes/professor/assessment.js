@@ -65,7 +65,6 @@ router.get('/', async function (req, res) {
 	// assign value of table info
 	locals.departments = departments || [];
 	locals.academic_term = academic_term || [];
-
 	res.render('professor/index', locals);
 
 });
@@ -115,15 +114,17 @@ router.post("/assessment/create", async function (req, res) {
 
 
 /*
-	- Get /professor/assessment/id
+	- GET PERFORMANCE TABLE ROUTE
+	professor/assessment/:id/performanceTable
 */
-router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment ,async function (req, res) {
-	let results;
-	let hasValue;
+router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment, async function (req, res) {
 
+	// Breadcrumb navbar options
 	locals.breadcrumb = [
-		{ "name": req.body.assessment.name, "url": "." }
+		{ "name": "Performances Table", "url": "." }
 	];
+
+	// assessment ID
 	locals.id = req.params.assessmentID;
 
 	// GET ALL performance criterias
@@ -131,16 +132,21 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		console.log("Error: ", err);
 	});
 
-	let studentEvaluation = await queries.getEvaluationByID(req.params.assessmentID).catch((err) => {
-        console.error("ERROR: ", err);
-	});
-	
-	console.log("StudentEvaluation Results: ", studentEvaluation.length);
+	// Validate performance criteria
+	if (perf_criterias == undefined || perf_criterias.length == 0) {
+		req.flash("error", "Cannot find any performance Criteria");
+		return res.redirect(base_url);
+	}
 
-	if(studentEvaluation.length <= 0) {
-		results = [];
-		hasValue = 'n';
-	} else {
+	// Get all evaluation
+	let studentEvaluation = await queries.getEvaluationByID(locals.id).catch((err) => {
+		console.error("ERROR: ", err);
+	});
+
+	// Validation
+	let results = [];
+	let hasValue = 'n';
+	if (studentEvaluation != undefined && studentEvaluation.length > 0) {
 		results = mapData(studentEvaluation);
 		hasValue = 'y';
 	}
@@ -155,11 +161,11 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	res.render('assessment/perfomanceTable', locals);
 });
 
-router.post('/assessment/insertData', async function(req, res) {
+router.post('/assessment/insertData', async function (req, res) {
 	let data = req.body.data;
 
 	let deletePrevEntry = queries.deletePrevEntry(data[0].assessment_ID).catch((err) => {
-		if(err) {
+		if (err) {
 			console.log("No existing scores on Assessment ID: ", data[0].assessment_ID);
 		}
 	});
@@ -168,7 +174,7 @@ router.post('/assessment/insertData', async function(req, res) {
 	data.forEach((entry) => {
 		console.log("Inserting: ", entry);
 		let insertScores = queries.insertStudentScores([entry.assessment_ID, entry.perfC, entry.scores]).catch((err) => {
-			if(err) {
+			if (err) {
 				console.log("No student scores inputed.");
 			}
 		});
@@ -228,19 +234,6 @@ router.delete('/assessment/:assessmentID', async function (req, res) {
 		req.flash("error", "Cannot Remove the assessment!");
 		res.redirect("back");
 	});
-
-
-	// assessment_query.remove_assessment_by_id(user_id, assessment_id).then((ok) => {
-	// 	req.flash("success", "Assessment Removed!");
-	// 	res.redirect("back");
-	// }).catch((err) => {
-	// 	console.log("ERROR: ", err);
-
-	// 	req.flash("error", "Cannot remove the assessment");
-
-	// 	res.redirect("back");
-	// });
-
 });
 
 /**
@@ -255,7 +248,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
 	// For breadcrumb
 	locals.breadcrumb = [
-		{ "name": req.body.assessment.name, "url": `${base_url}/assessment/${id}/performanceTable` },
+		{ "name": "Performances Table", "url": `${base_url}/assessment/${id}/performanceTable` },
 		{ "name": "Course Evaluation", "url": `.` }
 	];
 
@@ -271,7 +264,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 		{ "name": "D", "value": "" },
 		{ "name": "F", "value": "" },
 		{ "name": "W", "value": "" },
-	]
+	];
 
 	locals.total_value = 0;
 	locals.have_data = "n";
@@ -410,6 +403,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	// assessment id
 	let id = req.params.assessmentID;
 
+
 	// get the department, pro name, course information and term
 	let reportHeader = await queries.get_report_header(id).catch((err) => {
 		console.error("Error getting report header: ", err);
@@ -435,10 +429,10 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	}
 
 	// get all performance Criteria
-	locals.performance_criteria = reportHeader.map(each => each["perC_Desk"]); 
+	locals.performance_criteria = reportHeader.map(each => each["perC_Desk"]);
 	professor_input = professor_input[0];
-	
-	
+
+
 	// get all grades for table
 	let grades = {
 		A: professor_input["grade_A"],
@@ -447,7 +441,8 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		D: professor_input["grade_D"],
 		F: professor_input["grade_F"],
 		W: professor_input["UW"]
-	}
+	};
+
 	let total = 0;
 	for (key in grades) {
 		total += parseInt(grades[key]);
@@ -458,7 +453,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	locals.profesor_input = professor_input;
 	locals.grades = grades;
 
-	res.render('assessment/word', locals);
+	res.render('assessment/report', locals);
 });
 
 // <------ perfomanceTable GET request ------>
@@ -641,34 +636,34 @@ router.post('/perfomanceTable', async function (req, res) {
  * 
 */
 function mapData(data) {
-    let assessmentID = data[0].assessment_ID;
-    let ids = data.map(row => row.row_ID);
+	let assessmentID = data[0].assessment_ID;
+	let ids = data.map(row => row.row_ID);
 
-    ids = ids.filter(function (item, pos) {
-        return ids.indexOf(item) == pos;
-    })
+	ids = ids.filter(function (item, pos) {
+		return ids.indexOf(item) == pos;
+	})
 
-    let temp = [];
-    ids.forEach((id) => {
-        let row_info = [];
+	let temp = [];
+	ids.forEach((id) => {
+		let row_info = [];
 
-        row_info = data.filter(row => row.row_ID == id);
+		row_info = data.filter(row => row.row_ID == id);
 
-        let row_perf = row_info.map(row => row.perC_ID);
-        let row_scores = row_info.map(row => row.row_perc_score);
+		let row_perf = row_info.map(row => row.perC_ID);
+		let row_scores = row_info.map(row => row.row_perc_score);
 
 
-        console.log("Row DAta ", row_perf);
+		console.log("Row DAta ", row_perf);
 
-        temp.push({
-            rowID: id,
-            perfC: row_perf,
-            scores: row_scores,
-            assessmentID: assessmentID
-        });
-    });
+		temp.push({
+			rowID: id,
+			perfC: row_perf,
+			scores: row_scores,
+			assessmentID: assessmentID
+		});
+	});
 
-    return temp;
+	return temp;
 }
 
 module.exports = router;
