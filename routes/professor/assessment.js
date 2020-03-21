@@ -107,7 +107,6 @@ router.post("/assessment/create", async function (req, res) {
 			req.flash("error", "An Assessment with the same information does already exits");
 		else
 			req.flash("error", "Error creating assessment");
-
 		res.redirect("back");
 	});
 });
