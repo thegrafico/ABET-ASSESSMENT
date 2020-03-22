@@ -6,7 +6,6 @@ var reportTemplate = require('../../helpers/reportTemplate');
 var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
 var { validate_form } = require("../../helpers/validation");
-
 var docx = require('docx');
 var fs = require('fs');
 
@@ -118,13 +117,18 @@ router.post("/assessment/create", async function (req, res) {
 */
 router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment, async function (req, res) {
 
-	// Breadcrumb navbar options
-	locals.breadcrumb = [
-		{ "name": "Performances Table", "url": "." }
-	];
-
 	// assessment ID
 	locals.id = req.params.assessmentID;
+
+	// For breadcrumb
+	locals.progressBar = (req.body.assessment.status == "completed") ? 100 : 45;
+
+	// nav breadcrumb
+	locals.breadcrumb = [
+		{ "name": "Performances Table", "url": `${base_url}/assessment/${locals.id}/performanceTable`, "active": true },
+		{ "name": "Course Evaluation", "url": `${base_url}/assessment/${locals.id}/professorInput`, "active": false },
+		{ "name": "Report", "url": `${base_url}/assessment/${locals.id}/report`, "active": false }
+	];
 
 	// GET ALL performance criterias
 	let perf_criterias = await queries.get_perf_criterias(locals.id).catch((err) => {
@@ -163,19 +167,15 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 router.post('/assessment/insertData', async function (req, res) {
 	let data = req.body.data;
 
-	let deletePrevEntry = queries.deletePrevEntry(data[0].assessment_ID).catch((err) => {
-		if (err) {
-			console.log("No existing scores on Assessment ID: ", data[0].assessment_ID);
-		}
+	await queries.deletePrevEntry(data[0].assessment_ID).catch((err) => {
+		console.log("No existing scores on Assessment ID: ", data[0].assessment_ID);
 	});
 
 	let index = 0;
-	data.forEach((entry) => {
+	data.forEach(async (entry) => {
 		console.log("Inserting: ", entry);
-		let insertScores = queries.insertStudentScores([entry.assessment_ID, entry.perfC, entry.scores]).catch((err) => {
-			if (err) {
-				console.log("No student scores inputed.");
-			}
+		await queries.insertStudentScores([entry.assessment_ID, entry.perfC, entry.scores]).catch((err) => {
+			console.log("Error: ", err);
 		});
 		index++;
 	});
@@ -186,7 +186,7 @@ router.post('/assessment/insertData', async function (req, res) {
 /* 
 	- UPDATE AN ASSESSMENT INFORMATION - 
 */
-router.put('/assessment/:assessmentID', function (req, res) {
+router.put('/assessment/:assessmentID', middleware.validate_assessment, function (req, res) {
 
 	if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
 		req.flash("error", "Cannot find the assessment");
@@ -244,11 +244,15 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	// assessment id
 	let id = req.params.assessmentID;
 
-	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
+
 	// For breadcrumb
+	locals.progressBar = (req.body.assessment.status == "completed") ? 100 : 75;
+
+	// nav breadcrumb
 	locals.breadcrumb = [
-		{ "name": "Performances Table", "url": `${base_url}/assessment/${id}/performanceTable` },
-		{ "name": "Course Evaluation", "url": `.` }
+		{ "name": "Performances Table", "url": `${base_url}/assessment/${id}/performanceTable`, "active": false },
+		{ "name": "Course Evaluation", "url": `${base_url}/assessment/${id}/professorInput`, "active": true },
+		{ "name": "Report", "url": `${base_url}/assessment/${id}/report`, "active": false }
 	];
 
 	let report_query = { "from": "REPORTS", "where": "assessment_ID", "id": id }
@@ -281,6 +285,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	locals.course_reflection = report["course_reflection"] || "";
 	locals.course_actions = report["course_actions"] || "";
 	locals.course_modification = report["course_modification"] || "";
+	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
 
 
 	res.render('assessment/professorInput', locals);
@@ -293,13 +298,10 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
  */
 router.post('/assessment/:assessmentID/professorInput', middleware.validate_assessment, async function (req, res) {
 
-	if (req.body == undefined) {
-		req.flash("error", "Cannot find any data to insert");
-		return res.redirect("back");
-	}
-
-	// if the user press the save and finish later option
+	// default status
 	let status = "in_progress";
+
+	// of the user press the finish btn
 	if (req.body.save == undefined) {
 		status = "completed";
 	}
@@ -307,36 +309,40 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 	let id = req.params.assessmentID;
 	let isUpdate = (req.body.have_data == "y");
 
-	// keys for grades
-	let grades_keys = {
-		"A": "n",
-		"B": "n",
-		"C": "n",
-		"D": "n",
-		"F": "n",
-		"W": "n"
-	};
+	// Only validate the data if the status is completed
+	if (status == "completed") {
+		
+		// keys for grades
+		let grades_keys = {
+			"A": "n",
+			"B": "n",
+			"C": "n",
+			"D": "n",
+			"F": "n",
+			"W": "n"
+		};
 
-	// validate grades
-	if (!validate_form(req.body, grades_keys)) {
-		req.flash("error", "Invalid grades, only numbers are accepted");
-		return res.redirect("back");
+		// validate grades
+		if (!validate_form(req.body, grades_keys)) {
+			req.flash("error", "Invalid grades, only numbers are accepted");
+			return res.redirect("back");
+		}
+
+		// Course is the master key
+		let text_keys = {
+			"results": "s",
+			"modification": "s",
+			"reflection": "s",
+			"improvement": "s"
+		};
+
+		// Validate professor input
+		if (!validate_form(req.body.course, text_keys)) {
+			req.flash("error", "Text boxes cannot be empty and cannot be only numbers");
+			return res.redirect("back");
+		}
 	}
 
-
-	// Course is the master key
-	let text_keys = {
-		"results": "s",
-		"modification": "s",
-		"reflection": "s",
-		"improvement": "s"
-	};
-
-	// Validate professor input
-	if (!validate_form(req.body.course, text_keys)) {
-		req.flash("error", "Text boxes cannot be empty and cannot be only numbers");
-		return res.redirect("back");
-	}
 
 	// TODO: Roolback query is better option
 	if (isUpdate) {
@@ -399,8 +405,21 @@ router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessm
 */
 router.get('/assessment/:assessmentID/report', middleware.validate_assessment, async function (req, res) {
 
+	// if assessment if completed
+	if (req.body.assessment.status != "completed") {
+		req.flash("error", "Please complete the assessment first");
+		return res.redirect("back");
+	}
+
 	// assessment id
 	let id = req.params.assessmentID;
+
+	// nav breadcrumb
+	locals.breadcrumb = [
+		{ "name": "Performances Table", "url": `${base_url}/assessment/${id}/performanceTable`, "active": false },
+		{ "name": "Course Evaluation", "url": `${base_url}/assessment/${id}/professorInput`, "active": false },
+		{ "name": "Report", "url": `${base_url}/assessment/${id}/report`, "active": true }
+	];
 
 
 	// get the department, pro name, course information and term
@@ -652,7 +671,7 @@ function mapData(data) {
 		let row_scores = row_info.map(row => row.row_perc_score);
 
 
-		console.log("Row DAta ", row_perf);
+		// console.log("Row DAta ", row_perf);
 
 		temp.push({
 			rowID: id,

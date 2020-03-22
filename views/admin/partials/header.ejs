@@ -2,117 +2,119 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- Bootsrapt CSS Link -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Bootsrapt CSS Link -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <!-- lOCALS StYLE -->
-  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-  
-  <!-- Stylesheet for AssessmentIndex page -->
-  <link rel="stylesheet" type="text/css" href="/stylesheets/assessmentIndexStyle.css">
+	<!-- lOCALS StYLE -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
 
-  <!-- Icons -->
-  <script src="https://kit.fontawesome.com/6114d6256f.js" crossorigin="anonymous"></script>
+	<!-- Stylesheet for AssessmentIndex page -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/assessmentIndexStyle.css">
 
-  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<!-- Icons -->
+	<script src="https://kit.fontawesome.com/6114d6256f.js" crossorigin="anonymous"></script>
 
-  <!-- JQUERY -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <script src="/javascripts/bundle.min.js"></script>
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+		integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-  <!-- SUPERNOTE -->
-  <link rel="stylesheet" href="/summernote-0.8.16-dist/summernote.min.css">
-  <script src="/summernote-0.8.16-dist/summernote.min.js"></script>
-  
-  <!-- HEADER BACKGROUND -->
-  <style>
-    .inter-green {
-      background-color: #00833e !important;
-      color: #FFF !important;
-    }
-  </style>
-  <!-- Page Source css -->
-  <!-- <link rel="stylesheet" href="css/Evaluation_css.css"> -->
-  <title><%= title %></title>
+	<!-- JQUERY -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<script src="/javascripts/bundle.min.js"></script>
+
+	<!-- SUPERNOTE -->
+	<link rel="stylesheet" href="/summernote-0.8.16-dist/summernote.min.css">
+	<script src="/summernote-0.8.16-dist/summernote.min.js"></script>
+
+	<!-- HEADER BACKGROUND -->
+	<style>
+		.inter-green {
+			background-color: #00833e !important;
+			color: #FFF !important;
+		}
+	</style>
+	<!-- Page Source css -->
+	<!-- <link rel="stylesheet" href="css/Evaluation_css.css"> -->
+	<title><%= title %></title>
 </head>
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark shadow inter-green">
+	<nav class="navbar navbar-expand-lg navbar-dark shadow inter-green">
 
-    <a class="navbar-brand" href="/admin">ABET Assessment</a>
+		<a class="navbar-brand" href="/admin">ABET Assessment</a>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="<%= admin_route %>">Home <span class="sr-only">(current)</span></a>
-        </li>
-       
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Sections
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="<%= admin_route %>/users">Users</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<%= admin_route %>/courses">Courses</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<%= admin_route %>/department">Departments</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<%= admin_route %>/outcomes">Outcomes</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<%= admin_route %>/evaluation">Evaluation Rubric</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<%= admin_route %>/performanceCriteria">Performance Criteria</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<%= admin_route %>/studyprograms">Study Program</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<%= admin_route %>/term">Terms</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/professor">Professor</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="<%= signOutUrl %>">Logout</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="<%= admin_route %>">Home <span class="sr-only">(current)</span></a>
+				</li>
 
-  <div class="container feedback" style="z-index: 999;">
-    <!--check if error and display a message-->
-    <% if(error && error.length > 0 ){ %>
-    <div class="alert alert-danger feedbackAlert" role="alert">
-      <%= error %>
-    </div>
-    <% } %>
-    <!--check if success and display a message-->
-    <% if(success && success.length > 0 ){ %>
-    <div class="alert alert-success feedbackAlert" role="alert">
-      <%= success %>
-    </div>
-    <% } %>
-  </div>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Sections
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="<%= admin_route %>/users">Users</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="<%= admin_route %>/courses">Courses</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="<%= admin_route %>/department">Departments</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="<%= admin_route %>/outcomes">Outcomes</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="<%= admin_route %>/evaluation">Evaluation Rubric</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="<%= admin_route %>/performanceCriteria">Performance Criteria</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="<%= admin_route %>/studyprograms">Study Program</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="<%= admin_route %>/term">Terms</a>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/professor">Professor</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="<%= signOutUrl %>">Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
 
-  <div id='loader'>
-    <img class="rounded mx-auto d-block" src='/images/loading.gif' style="border-radius: 5%;z-index: 999;" width='64px'
-      height='64px'>
-  </div>
+	<% if((error && error.length > 0) || (success && success.length > 0) ){ %>
+	<div class="container feedback" style="z-index: 999;">
+		<!--check if error and display a message-->
+		<% if(error && error.length > 0 ){ %>
+		<div class="alert alert-danger feedbackAlert" role="alert">
+			<%= error %>
+		</div>
+		<% } %>
+		<!--check if success and display a message-->
+		<% if(success && success.length > 0 ){ %>
+		<div class="alert alert-success feedbackAlert" role="alert">
+			<%= success %>
+		</div>
+		<% } %>
+	</div>
+	<% } %>
 
-  <script>
-    setTimeout(function(){
-      $(".feedbackAlert").hide();
-    }, 2000)
-  </script>
+	<div id='loader'>
+		<img class="rounded mx-auto d-block" src='/images/loading.gif' style="border-radius: 5%;z-index: 999;"
+			width='64px' height='64px'>
+	</div>
+
+	<script>
+		setTimeout(function () {
+			$(".feedbackAlert").hide();
+		}, 2000)
+	</script>

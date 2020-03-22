@@ -1,28 +1,12 @@
 <%- include ('../admin/partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
-        <% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+<%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar, hasValue: have_data}) -%>
 
-        <% if (index == breadcrumb.length -1) { %>
-        <li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
-        <% }else { %>
-        <li class="breadcrumb-item">
-            <a href="<%= breadcrumb[index].url %>">
-                <%= breadcrumb[index].name %>
-            </a>
-        </li>
-        <% } %>
-
-        <% } %>
-    </ol>
-</nav>
 
 <div class="container professor-container">
     <div class="row">
         <form id="course_evaluation" class="professorInput" action="<%=form_action%>" method="POST">
-            <input type="hidden" name="have_data" value="<%=locals.have_data%>">
+            <input type="hidden" name="have_data" value="<%=have_data%>">
 
             <div class="container mb-4">
                 <h3 class="mb-4">Grade Distribution</h3>
@@ -42,7 +26,7 @@
                     <tr>
                         <% grades.forEach(element => { %>
                         <td>
-                            <input class="inputs" type="text" name="<%= element["name"]%>" id="<%= element["name"]%>"
+                            <input class="inputs gradeInputs" type="text" name="<%= element["name"]%>" id="<%= element["name"]%>"
                                 value="<%= element["value"] %>" placeholder="Insert">
                         </td>
                         <% }) %>
@@ -99,7 +83,7 @@
                 <div class="row submitBtn">
 
                     <!-- SAVE BTN -->
-                    <input type="submit" name="save" class="btn btn-secondary" value="Save and finish later">
+                    <input type="submit" id="saveBtn" name="save" class="btn btn-secondary" value="Save and finish later">
 
                     <!-- FINISH BTN -->
                     <input id="finish_professor_input" name="finish" class="btn btn-secondary" type="submit"
@@ -139,6 +123,18 @@
             $(total).val(grades);
         });
 
+        // When the user press the save btn
+        $("#saveBtn").click(function(){
+            let areEmpty = true;
+            $(".saveBtn").each(function(){
+
+                if ($(this).val() != undefined || $(this).val() != 0){
+                    areEmpty = false;
+                }
+            });
+        });
+
+        // =============================SUPER NOTE ==================================
         // INIT ALL SUPERNTOES
         let placeholders = ["Results", "Modifications", "Reflection", "Actions"];
         let tag_suppernote = ["results_of_course", "course_modification", "course_reflection", "course_action"];
@@ -146,14 +142,20 @@
             $(`#${tag_suppernote[i]}`).summernote(return_supernote_options(placeholders[i]));
         }
 
-        // VALIDATIOn
+        /*
+            Course information Boxes
+            TODO: Validate of all boxes
+        */
         $("#finish_professor_input").click(function (e) {
+
+            // Validating the box result of course
             if ($('#results_of_course').summernote('isEmpty')) {
-                alert('editor content is empty');
+                alert('Please fill out ');
                 e.preventDefault(e);
             }
         });
 
+        // Options for boxes
         function return_supernote_options(placeholder) {
             // Options for all supernoes
             return {
@@ -170,9 +172,6 @@
                 ],
             }
         }
-        // $(".note-btn").click(function(){
-        //     $(this).toggleClass("bg-color-btn");
-        // });
     });
 
 </script>

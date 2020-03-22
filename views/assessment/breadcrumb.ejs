@@ -1,0 +1,41 @@
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb" style="margin-bottom: 0; padding-bottom: 0;">
+		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+		<% breadcrumb.forEach(each => { %>
+
+		<% if (each["active"]) { %>
+		<li class="breadcrumb-item active" aria-current="page"><%= each.name%></li>
+		<% }else { %>
+		<li class="breadcrumb-item">
+			<a href="<%= each.url %>">
+				<%= each.name %>
+			</a>
+		</li>
+		<% }%>
+		<% }); %>
+	</ol>
+
+	<% if (hasValue == 'y'){%>
+		<div class="progressBar" style="width: <%=progressBar%>%;">
+			<span><%= progressBar %>% </span>
+		</div>
+	<% }else { %>
+		<div class="progressBar" style="width: <%=(progressBar - 10)%>%;">
+			<span><%= (progressBar- 10) %>% </span>
+		</div>
+	<% }%>
+
+</nav>
+
+<style>
+	.progressBar {
+		font-size: 0.9em;
+		height: 1.5rem;
+		background-color: green;
+		color: white;
+	}
+	.progressBar span{
+		margin-left: 3%;
+		vertical-align: middle;
+	}
+</style>

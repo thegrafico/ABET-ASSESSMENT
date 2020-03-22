@@ -42,7 +42,7 @@ function deletePrevEntry(assessment_ID) {
 		let deletePrevEntry = `DELETE FROM EVALUATION_ROW WHERE EVALUATION_ROW.assessment_ID = ?;`;
 
 		conn.query(deletePrevEntry, assessment_ID, (err, results) => {
-			if(err) { reject(err); }
+			if (err) { reject(err); }
 			else resolve(true);
 		});
 	});
@@ -56,38 +56,38 @@ function deletePrevEntry(assessment_ID) {
 */
 function insertStudentScores(data) {
 	return new Promise((resolve, reject) => {
-		let transactionQuery = [`INSERT INTO EVALUATION_ROW(assessment_ID) VALUES(?);`,
-								`INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES(?, ?, ?);`
-							];
-		conn.getConnection(function(err , conn) {
-			conn.beginTransaction(function(err) {
+		let transactionQuery =
+			[`INSERT INTO EVALUATION_ROW(assessment_ID) VALUES(?);`,
+				`INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES(?, ?, ?);`
+			];
+		conn.getConnection(function (err, conn) {
+			conn.beginTransaction(function (err) {
 				if (err) { throw err; }
-				conn.query(transactionQuery[0], data[0], function(error, results, fields) {
-					if(error) {
-						return conn.rollback(function() {
+				conn.query(transactionQuery[0], data[0], function (error, results, fields) {
+					if (error) {
+						return conn.rollback(function () {
 							reject(error);
 						});
 					}
-	
+
 					let last_insert_id = results.insertId;
 
-					for(let i = 0; i < data[1].length; i++) {
-						conn.query(transactionQuery[1], [last_insert_id, data[1][i], data[2][i]], function(error, results, fields) {
+					for (let i = 0; i < data[1].length; i++) {
+						conn.query(transactionQuery[1], [last_insert_id, data[1][i], data[2][i]], function (error, results, fields) {
 							if (error) {
-								return conn.rollback(function() {
-								reject(error);
+								return conn.rollback(function () {
+									reject(error);
 								});
 							}
 						});
 					}
-					conn.commit(function(err) {
+					conn.commit(function (err) {
 						if (err) {
-						return conn.rollback(function() {
-							reject(err);
-						});
+							return conn.rollback(function () {
+								reject(err);
+							});
 						}
-						console.log('success!');
-						resolve('success!');
+						resolve(true);
 					});
 				});
 			});
@@ -101,20 +101,20 @@ function insertStudentScores(data) {
  * @resolve {Object} -> when resolve it returns all row entries inserted from assessment ID inserted.
 */
 function getEvaluationByID(assessmentID) {
-	return new Promise(function(resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		if (assessmentID == undefined || isNaN(assessmentID)) {
-            return reject("Error with the asessment ID");
+			return reject("Error with the asessment ID");
 		}
 
 		let getEvaluation = `SELECT ROW_PERC.row_ID, perC_ID, row_perc_score, assessment_ID
 							 FROM ROW_PERC INNER JOIN EVALUATION_ROW
 							 WHERE ROW_PERC.row_ID = EVALUATION_ROW.row_ID AND EVALUATION_ROW.assessment_ID = ?;`;
-		conn.query(getEvaluation, [assessmentID], function(err, results) {
-			if (err) 
+		conn.query(getEvaluation, [assessmentID], function (err, results) {
+			if (err)
 				reject(err || "Evaluation hasen't been done yet.");
 			else {
 				resolve(results);
-			} 
+			}
 		});
 	});
 }

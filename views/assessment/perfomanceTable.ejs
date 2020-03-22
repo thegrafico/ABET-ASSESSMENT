@@ -1,23 +1,8 @@
 <%- include ('../admin/partials/header') -%>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<nav aria-label="breadcrumb">
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
-		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
-		<% if (index == breadcrumb.length -1) { %>
-		<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
-		<% }else { %>
-		<li class="breadcrumb-item">
-			<a href="<%= breadcrumb[index].url %>">
-				<%= breadcrumb[index].name %>
-			</a>
-		</li>
-		<% } %>
+<%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar, hasValue}) -%>
 
-		<% } %>
-	</ol>
-</nav>
 
 <input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
 <input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">
@@ -72,5 +57,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
 	crossorigin="anonymous"></script>
 <script type="text/javascript" src="/javascripts/performanceTable.js"></script>
+
+<link rel="stylesheet" href="/stylesheets/progress_bar.css">
 
 <%- include ('../admin/partials/footer') -%>
