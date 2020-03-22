@@ -173,7 +173,7 @@ router.post('/assessment/insertData', async function (req, res) {
 
 	let index = 0;
 	data.forEach(async (entry) => {
-		console.log("Inserting: ", entry);
+		// console.log("Inserting: ", entry);
 		await queries.insertStudentScores([entry.assessment_ID, entry.perfC, entry.scores]).catch((err) => {
 			console.log("Error: ", err);
 		});
