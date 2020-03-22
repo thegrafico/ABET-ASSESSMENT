@@ -5,7 +5,7 @@ var queries = require('../../helpers/queries/perfTable_queries');
 var reportTemplate = require('../../helpers/reportTemplate');
 var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
-var { validate_form } = require("../../helpers/validation");
+var { validate_form, get_performance_criteria_results } = require("../../helpers/validation");
 var docx = require('docx');
 var fs = require('fs');
 
@@ -287,7 +287,6 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	locals.course_modification = report["course_modification"] || "";
 	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
 
-
 	res.render('assessment/professorInput', locals);
 });
 
@@ -352,8 +351,8 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-			req.flash("success", "Assessment was saved!");
-			res.redirect(base_url);
+			req.flash("success", "Assessment was moved to completed section!");
+			res.redirect(`${base_url}/assessment/${id}/report`);
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
 			req.flash("error", "There is an error trying to update the data");
@@ -446,10 +445,29 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		return res.redirect(base_url);
 	}
 
-	// get all performance Criteria
+	// Get performance table data
+	let performanceData = await queries.getEvaluationByID(id).catch((err) => {
+		console.log("ERROR GETTING PERFOMRNACE DATA: ", err);
+	});
+
+	// Validate performance
+	if (performanceData == undefined || performanceData.length == 0){
+		req.flash("error", "Cannot find the performance criteria data");
+		return res.redirect("back");
+	}
+
+	// student performance criteria evaluation
+	locals.performanceData = mapData(performanceData);
+	
+	locals.performanceResults = get_performance_criteria_results(locals.performanceData);
+
+	// console.log(locals.performanceData);
+	console.log( locals.performanceResults);
+
+
+
 	locals.performance_criteria = reportHeader.map(each => each["perC_Desk"]);
 	professor_input = professor_input[0];
-
 
 	// get all grades for table
 	let grades = {
@@ -468,7 +486,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	grades["Total"] = total;
 
 	// assign values to frontend
-	locals.profesor_input = professor_input;
+	locals.profesor_input = professor_input;	
 	locals.grades = grades;
 
 	res.render('assessment/report', locals);

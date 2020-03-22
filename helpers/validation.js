@@ -5,7 +5,7 @@
  * @return {Boolean} True if value are all good, otherwise false
  */
 
-function validate_form(body, keys_types) {
+module.exports.validate_form = function validate_form(body, keys_types) {
 
 	try {
 
@@ -43,7 +43,7 @@ function validate_form(body, keys_types) {
  * @param {Array} selected_for_update actual department the user should have
  * @return {Object} Object of array for "delete" and "insert"
  */
-function get_data_for_update(current, selected_for_update) {
+module.exports.get_data_for_update = function get_data_for_update(current, selected_for_update) {
 
 	// if (current == undefined  || selected_for_update == undefined || selected_for_update.length == 0){
 	// 	return undefined;
@@ -69,7 +69,7 @@ function get_data_for_update(current, selected_for_update) {
  * @param {String} pattern where to split the str
  * @return {Array} array of string
  */
-function split_and_filter(str, pattern) {
+module.exports.split_and_filter = function split_and_filter(str, pattern) {
 
 	if (str == undefined || str.length < 2) {
 		return [];
@@ -82,8 +82,62 @@ function split_and_filter(str, pattern) {
 	return arr_str.map(el => parseInt(el));
 }
 
-module.exports.validate_form = validate_form;
-module.exports.get_data_for_update = get_data_for_update;
-module.exports.split_and_filter = split_and_filter;
+
+/**
+ * get_performance_criteria_results - get the calculation values from a performance criteria 
+ * @param {Array[Object]} pc performance criteria array of object
+ * @return {Array} array of results
+ */
+module.exports.get_performance_criteria_results = function get_performance_criteria_results(pc) {
+
+	if (pc == undefined || pc.length == 0) {
+		console.log("Performance Criteria does not have any value");
+		return undefined;
+	}
+
+	const student_tam = pc.length, acceptedVal = 3;
+	let pec_len = pc[0]["perfC"].length; // len of row of performance criteria 
+	let results = [], outcomeRowAVG = [];
+	let sum, outAvg, outResult;
+	const sum_row_outcome = (accumulator, currentValue) => accumulator + currentValue;
+
+	// Calulate the performance criteria column value
+	for (let i = 0; i < pec_len; i++) {
+		sum = 0, outAvg = 0;
+
+		// sum each column of score 
+		pc.map(each => {
+			// if the value if grater or equal than the accepted value
+			if (each["scores"][i] >= acceptedVal) sum++;
+		});
+
+		// get percent of student with 3 or more (Only one decimal place)
+		sum = ((sum / student_tam) * 100).toFixed(1);
+
+		results.push(sum);
+	}
+
+	// Calculate the performance criteria row value
+	pc.map(each => {
+		// sum each row value by value
+		outAvg = parseFloat((each["scores"].reduce(sum_row_outcome)) / pec_len).toFixed(2);
+		outcomeRowAVG.push(outAvg);
+	});
+
+	// Calculate the outcome final avg result
+	sum = 0;
+	outcomeRowAVG.map(each => {
+		if (each >= acceptedVal) sum++;
+	});
+	outResult = (sum / student_tam * 100).toFixed(1);
+	results.push(outResult);
+		
+	// console.log("OUTCOME AVG: ", outcomeRowAVG);
+	// console.log("PERFORMANCE RESULT: ", results);
+	// console.log("Result of outcome: ", outResult);
+	return {outcomeRowAVG, results};
+}
+
+
 
 

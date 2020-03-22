@@ -97,6 +97,9 @@
 <script>
     $(document).ready(function () {
 
+        // form id
+        let tagForm = "#course_evaluation";
+
         // Grades Options
         let A = "#A", B = "#B", C = "#C", D = "#D", F = "#F", W = "#W";
         let total = "#total";
@@ -107,7 +110,7 @@
         const suma = (accumulator, currentValue) => accumulator + currentValue;
 
         // SUM ALL VALUES
-        $("#course_evaluation :input").change(function () {
+        $(`${tagForm} :input`).change(function () {
             let sum = notas.reduce(suma);
             grades = 0;
             notas.forEach(n => {
@@ -123,15 +126,17 @@
             $(total).val(grades);
         });
 
-        // When the user press the save btn
-        $("#saveBtn").click(function(){
+        // Save the data
+        $("#saveBtn").click(function(e){
             let areEmpty = true;
-            $(".saveBtn").each(function(){
+            $(".gradeInputs").each(function(){
+                
+                let val = $(this).val();
 
-                if ($(this).val() != undefined || $(this).val() != 0){
-                    areEmpty = false;
+                if (val != "" && isNaN(val)){
+                    $(this).val(0);
                 }
-            });
+            }); 
         });
 
         // =============================SUPER NOTE ==================================

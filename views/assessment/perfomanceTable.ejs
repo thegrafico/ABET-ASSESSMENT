@@ -1,8 +1,8 @@
 <%- include ('../admin/partials/header') -%>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
+<!-- MODAL FOR BREADCRUMB -->
 <%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar, hasValue}) -%>
-
 
 <input type="hidden" id="amountOfCol" name="amountOfCol" value="<%= colNums %> ">
 <input type="hidden" id="perfCrit" name="perfCrit" value="<%= perfCrit %> ">

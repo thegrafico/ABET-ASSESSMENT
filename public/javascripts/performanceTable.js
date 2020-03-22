@@ -267,8 +267,8 @@ function insertEvaluation(entryData) {
 */
 function mapData(rowData, assessmentID) {
     let mappedData = [];
-    let index = 0;
-    
+	let index = 0;
+	
 	rowData.forEach(element => {
 		let tempObject = {};
 		tempObject['assessment_ID'] = assessmentID;

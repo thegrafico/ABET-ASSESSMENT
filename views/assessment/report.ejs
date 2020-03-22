@@ -1,9 +1,8 @@
 <%- include ('../admin/partials/header') -%>
-
 <%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar: 100, hasValue: 'y'}) -%>
 
 
-<div id="exportContent" class="container">
+<div id="exportContent" class="container" style="margin-top: 10px;">
 
     <style>
         #exportContent {
@@ -186,8 +185,8 @@
 
                 <p>
                     <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
-                    <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
-                    <br>
+                        <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
+                        <br>
                     <% } %>
                 </p>
 
@@ -205,15 +204,24 @@
 
                 <table style="margin-left: 5%;width: 80%;">
                     <tr>
-                        <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
-                        <th>PC-<%= (i+1)%></th>
-                        <% } %>
+                        <th scope="col" style="width: 20%;"></th>
+                        <% performanceResults["results"].forEach((element, i) => { %>
+
+                        <% if (i == performanceResults["results"].length -1) { %>
+                            <th><%= header["outc_name"] %></th>
+                        <% }else { %>
+                            <th>PC-<%= (i+1)%></th>
+                        <% }%>
+
+                        <% });%>
                     </tr>
                     <tr>
-                        <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
-                        <td>Unknow</td>
-                        <% } %>
+                        <th scope="col"> % Student with 3 or more</th>
+                        <% performanceResults["results"].forEach((element) => { %>
+                            <td><%= element %>%</td>
+                        <% }); %>
                     </tr>
+
                 </table>
 
                 <br>
@@ -262,6 +270,10 @@
     <a class="word-content btn btn-success" href="javascript:void(0)">Save as Word document</a>
 </div>
 
+<div style="margin-left: 85%;">
+    <a href="<%=base_url%>">Go back to Assessments</a>
+</div>
+
 <script src="/javascripts/jquery-1.11.1.min.js"></script>
 <script src="/javascripts/FileSaver.js"></script>
 <script src="/javascripts/jquery.wordexport.js"></script>
@@ -292,7 +304,6 @@
 
             });
         }, 300);
-
 
         $(".word-content").click(function () {
             let course_number = $("#course_number").text().replace(" ", "_");
