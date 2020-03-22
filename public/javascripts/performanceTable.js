@@ -14,6 +14,9 @@ let perfID = $('#perfID').val();
 perfID = perfID.split(',');
 let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
+let allPerc;
+
+$('#spinner').inputSpinner();
 
 // Loads empty chart when page is load
 window.onload = () => {
@@ -23,16 +26,19 @@ window.onload = () => {
 
 $(document).ready(function () {
     if(hasInput == 'y') {
-        withValues(prevScores);
+		withValues(prevScores);
     } else {
-        noValues();
+		noValues();
     }
     
     console.log("prevScores: ", prevScores);
     $('#addRow').click(function () {
-		avgPerRow.push(0);
-		addRow();
-		updateIndex();
+		let spinnerInput = $('#spinner').val();
+		for(let i = 0; i < spinnerInput; i++) {
+			avgPerRow.push(0);
+			addRow();
+			updateIndex();
+		}
 	});
 	
 	$('#delRow').click(function () {
@@ -52,7 +58,7 @@ function generateRowWithVal(r, data) {
     var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
 	for (let i = 0; i < amountOfColumns; i++) { 
         try {
-            markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' value='${data[r-1].scores[i]}' oninput='createChart()' ></td>`);
+            markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='${data[r-1].scores[i]}' oninput='createChart()' required></td>`);
         } catch(err) {
             break;
         }
@@ -71,6 +77,7 @@ function noValues() {
 		avgPerRow.push(0);
 		addRow();
 	}
+	generateSideDisplay();
 }
 
 /**
@@ -83,6 +90,7 @@ function withValues(data) {
 		avgPerRow.push(0);
 		addRowWithValue(data)
 	}
+	generateSideDisplay();
 }
 
 /**
@@ -92,21 +100,22 @@ function withValues(data) {
 function generateRow(r) {
 	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
-		markup = markup.concat(`<td><input type='number' name='rowValue' min = '0.0' max = '4.0' size = '25' value='' oninput='createChart()' ></td>`);
+		markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='' oninput='createChart()'></td>`);
 	}
 	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
 	$("#tableBody").append(markup);
 }
 
 /**
- * generateCols() -> function that creates the header row for the table
+ * generateHeaderRow() -> function that creates the header row for the table
 */
 function generateHeaderRow() {
 	for (let i = 1; i <= amountOfColumns; i++) {
-		var col = "<th> PC " + performanceCriteria[i - 1] + "</th>";
+		var col = "<th class='headerRow'> PC " + performanceCriteria[i - 1] + "</th>";
 		$("#header").append(col);
 	}
-	$("#header").append(`<th>${outcomeName}</th>`);
+	$("#header").append(`<th class='headerRow'>${outcomeName}</th>`);
+	$("#header").append(`<th class='headerRow'></th>`);
 }
 
 /**
@@ -177,6 +186,7 @@ function createChart() {
 			}
 		}		
 		percTable[col] = ((count / amountRows) * 100);
+		percTable[col] = percTable[col].toFixed(2);
 		count = 0;
 	}
 	
@@ -200,9 +210,15 @@ function createChart() {
 		}
 	}
 	let outcomeAVG = (outcomeAVGCount / amountRows) * 100;
+	outcomeAVG = outcomeAVG.toFixed(2);
 
 	let graphData = percTable;
 	graphData.push(outcomeAVG);
+
+	for(let i = 0; i < amountOfColumns; i++) {
+		$('#pc'+ i + ' span').text(graphData[i]);
+	}
+
     let graph;
 	let myChart = new Chart(canvas, {
 		type: 'bar',
@@ -254,7 +270,6 @@ function insertEvaluation(entryData) {
      data: {data: entryData},
 		dataType: 'json',
 		success: () => {
-			alert("Post");
 		}
 	});
 }
@@ -316,4 +331,25 @@ function getTableData() {
     }
 
     return tableData;
+}
+
+/**
+ * inputValidation() ->  function which will check users input and make sure that follows the reg exp
+ * @param {Number} -> User input
+ * @returns {Boolean} -> Return True if the input is valid, return false if its not
+*/
+function inputValidation() {
+
+}
+
+/**
+ * generateSideDisplay() -> function that creates the side display panel.
+*/
+// TODO: 
+// Fix labels
+function generateSideDisplay() {
+	for (let i = 0; i < amountOfColumns; i++) {
+		let row = `<div class="row" id="pc${i}"><h5>Performance Criteria ${i+1}: <span></span>%</h5></div>`;
+		$('#performanceResults').append(row);
+	}
 }

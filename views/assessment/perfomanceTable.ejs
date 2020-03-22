@@ -28,16 +28,19 @@
 <input type="hidden" id="hasValue" name="hasValue" value="<%= hasValue %>">
 
 <div class="container-fluid" id="source-html" style="margin-top: 10px; margin-bottom: 100px;">
-	<div class="row" style="padding: 2%;">
-
-		<div class="col-6" style="height: 450px;">
-			<h4 style="text-align: center;">Insert Criteria Values for each Student</h4>
+	<div id="mainRow" class="row" style="padding: 2%;">
+		<div class="col-9" style="height: 450px;">
+			<div class="row"> 
+				<h4>Insert Criteria Values for each Student</h4>
+				<input type="number" value="0" min="0" max="50" step="1" id="spinner">
+				<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
+				<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
+			</div>
 			<div class="perfomanceTable">
-				<!-- <form id="performanceTable" action="/assessment/perfomanceTable" method="POST"> -->
 				<table id="table" class="table">
 					<thead>
 						<tr id="header">
-							<th scope="col">Student</th>
+							<th scope="col" class='headerRow'>Student</th>
 						</tr>
 					</thead>
 					<tbody id="tableBody">
@@ -45,32 +48,32 @@
 				</table>
 
 				<input type="hidden" id="graph" name="graph" value="">
-				<!-- </form> -->
-			</div>
-			<div>
-
-				<div style="float: left; width: 80%;">
-					<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
-					<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
-					<button id="save" style="width: 20%;" id="saveBtn"
-						class="btn inter-green inter-green-btn"><a>Save</a></button>
+			</div>			
+		</div>
+		<div class="col-3">
+			<div class="container">
+				<h2>Outcome Results</h2>
+				<div id="performanceResults">
 				</div>
-				<!-- onclick="insertEvaluation()" -->
-				<a style="width: 15%;margin-top: 5px;" class="btn inter-green inter-green-btn" id="delRow"
-					href="<%=base_url%>/assessment/<%=id%>/professorInput">Next</a>
+			</div>
+			<div class="row" id="saveOrNext">
+				<a id="save" class="btn btn-primary" href="/professor" role="button">Save</a>
+				<a id="save" class="btn btn-primary" href="<%=base_url%>/assessment/<%=id%>/professorInput" role="button">Next</a>
 			</div>
 		</div>
-		<div class="col-6 barChart">
-			<h3>% Student with 3 or more in <%= outc_name %></h3>
-			<canvas id="myChart" width="350" height="200" role="img"></canvas>
-		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="col-6 barChart">
+		<h3>% Student with 3 or more in <%= outc_name %></h3>
+		<canvas id="myChart" width="350" height="200" role="img"></canvas>
 	</div>
 </div>
 
 
 <!-- jQuery script -->
-<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/javascripts/extra/input-spinner.js"></script>
 <script type="text/javascript" src="/javascripts/performanceTable.js"></script>
 
 <%- include ('../admin/partials/footer') -%>
