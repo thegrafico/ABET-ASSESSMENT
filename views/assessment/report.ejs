@@ -185,8 +185,8 @@
 
                 <p>
                     <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
-                        <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
-                        <br>
+                    <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
+                    <br>
                     <% } %>
                 </p>
 
@@ -195,7 +195,6 @@
                     <br>
                     75% of the student must be equal or more than 3 as final value in the outcome
                 </p>
-                <br>
 
 
                 <p>
@@ -208,9 +207,9 @@
                         <% performanceResults["results"].forEach((element, i) => { %>
 
                         <% if (i == performanceResults["results"].length -1) { %>
-                            <th><%= header["outc_name"] %></th>
+                        <th><%= header["outc_name"] %></th>
                         <% }else { %>
-                            <th>PC-<%= (i+1)%></th>
+                        <th>PC-<%= (i+1)%></th>
                         <% }%>
 
                         <% });%>
@@ -218,7 +217,7 @@
                     <tr>
                         <th scope="col"> % Student with 3 or more</th>
                         <% performanceResults["results"].forEach((element) => { %>
-                            <td><%= element %>%</td>
+                        <td><%= element %>%</td>
                         <% }); %>
                     </tr>
 
@@ -236,6 +235,8 @@
                     </p>
                 </div>
 
+                <!-- <br style="page-break-before: always"> -->
+
                 <div>
                     <p>
 
@@ -246,6 +247,48 @@
                         neque a. Rerum expedita animi sint. Iusto possimus iure soluta animi eum expedita dicta amet.
                     </p>
 
+
+                    <p>
+                        <strong>
+                            Table. Student data results for <%= header["outc_name"] %>
+                            (<%= performanceData.length%> Student sample).
+                        </strong>
+                    </p>
+
+                    <table style="margin-left: 10%;width: 80%;">
+                        <tr>
+                            <th scope="col" style="width: 10%;"> Student </th>
+                            <th scope="col" colspan="<%= performanceData[0]["perfC"].length %>"> Average </th>
+                            <th scope="col" style="width: 10%;"> </th>
+                        </tr>
+                        <tr>
+                            <th scope="col" style="width: 10%;"></th>
+                            <% performanceResults["results"].forEach((element, i) => { %>
+                            <% if (i == performanceResults["results"].length -1) { %>
+                            <th><%= header["outc_name"] %></th>
+                            <% }else { %>
+                            <th>PC- <%=(i+1)%></th>
+                            <% } %>
+                            <% }); %>
+                        </tr>
+
+                        <% for( let i = 0; i < performanceData.length; i++ ) { %>
+                        <tr>
+                            <th scope="col" style="width: 10%;"> <%= (i+1) %> </th>
+
+                            <% performanceData[i]["scores"].forEach(each => {%>
+                            <td><%=each%></td>
+                            <% }); %>
+                            <th><%= performanceResults["outcomeRowAVG"][i] %> </th>
+                        </tr>
+                        <% } %>
+                        <tr>
+                            <th scope="col" style="width: 10%;"> % Student with 3 or more</th>
+                            <% performanceResults["results"].forEach(element => { %>
+                                <th><%= element %>%</th>
+                            <% }); %>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
