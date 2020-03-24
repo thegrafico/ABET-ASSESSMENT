@@ -6,6 +6,8 @@ var router = express.Router();
 const api_queries = require("../helpers/queries/api");
 const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
+var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
+
 
 /*
 	-- GET all performance criteria from rubric -- 
@@ -228,5 +230,101 @@ function transformdt(outcomes) {
     });
     return temp;
 }
+
+
+// =============================== DEPARTMENT API ============================
+
+
+/* 
+	-- API TO GET ALL study program by Department ID -- 
+	GET /studyprograms//remove 
+	TODO: send a resposes to user is data is not found
+*/
+router.get('/department/get/studyPrograms/:departmentId', async function (req, res) {
+
+
+	// validating id 
+	if (req.params.departmentId == undefined || isNaN(req.params.departmentId)) {
+		return res.end();
+    }
+
+	let dept_ID = req.params.departmentId;
+
+	let data = { "from": "STUDY_PROGRAM", "where": "dep_ID", "id": dept_ID };
+
+	// get std program
+	let study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
+		console.log("ERROR: ", err);
+	});
+
+	// validate std program
+	if (study_programs == undefined || study_programs.length == 0) {
+		return res.end();
+	}
+
+    let record = [];
+    
+    // convert in dt
+	study_programs.forEach(row => {
+		record.push({ "name": row["prog_name"], "value": row["prog_ID"] });
+	});
+
+    // return
+	res.json(record);
+});
+
+// ============================================ OUTCOMES ======================================
+
+/**
+ * -- API -- 
+ * GET THE OUTCOMES BY STUDY PROGRAM
+ */
+router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res) {
+
+	if (req.params.programID == undefined || isNaN(req.params.programID)) {
+		return res.json([]);
+	}
+
+	let outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": req.params.programID };
+	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
+		console.log("Error getting performance: ", err);
+	})
+
+
+	if (outcomes == undefined || outcomes.length == 0) {
+		return res.json([]);
+	}
+
+	let record = [];
+	outcomes.forEach(element => {
+		record.push({ "name": element["outc_name"], "value": element["outc_ID"] })
+	});
+
+	return res.json(record);
+});
+
+// ======================================== EVALUATION RUBRIC =======================================
+
+/**
+ * API - GET THE EVALUATION RUBRIC DATA TO REMOVE
+ * GET - /api/get/evaluationRubric/
+ */
+router.get('/get/:r_id', validate_evaluation_rubric, async function (req, res) {
+
+	rubric_to_remove = req.body["rubric"][0];
+
+	let names = ["Name", "Description"];
+	let values = [
+		rubric_to_remove.rubric_name,
+		rubric_to_remove.rubric_description,
+	];
+
+	let record = [];
+	for (let index = 0; index < names.length; index++) {
+		record.push({ "name": names[index], "value": values[index] })
+	}
+	res.json(record);
+});
+
 
 module.exports = router;

@@ -291,7 +291,7 @@ $(document).ready(function () {
 
 
             // get study program 
-            let study_programs = await make_request(`/admin/department/get/studyPrograms/${dept_id}`).catch((err) => {
+            let study_programs = await make_request(`/api/department/get/studyPrograms/${dept_id}`).catch((err) => {
                 console.log("Error getting study programs: ", err);
             });
 
@@ -330,7 +330,7 @@ $(document).ready(function () {
 
 
             // get all outcomes by study program
-            let outcomes = await make_request(`/admin/outcomes/get/outcomes/${std_id}`).catch((err) => {
+            let outcomes = await make_request(`/api/get/outcomesByStudyProgramID/${std_id}`).catch((err) => {
                 console.log("CANNOT GET THE OUTCOMES: ", err);
             });
 
@@ -351,7 +351,7 @@ $(document).ready(function () {
             clean_select(tag_rubric, "Rubric");
 
             // TODO: Los cursos que aparecen deberian ser los que estan en course mapping??
-            let courses = await make_request(`/admin/api/get/coursesbystudyprogram/${std_id}`).catch((err) => {
+            let courses = await make_request(`/api/get/coursesbystudyprogram/${std_id}`).catch((err) => {
                 console.log("There is an error: ", err);
             });
 
@@ -377,7 +377,7 @@ $(document).ready(function () {
         return new Promise(async function (resolve, reject) {
 
             // get rubric
-            let rubrics = await make_request(`/admin/api/get/rubricByOutcome/${outc_id}`).catch((err) => {
+            let rubrics = await make_request(`/api/get/rubricByOutcome/${outc_id}`).catch((err) => {
                 console.log("There is an error getting the rubrics: ", err);
             });
 

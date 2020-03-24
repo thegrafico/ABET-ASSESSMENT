@@ -16,9 +16,9 @@ db = db.mysql_pool;
 
 // connect to db
 db.query('SELECT 1', function (error, results, fields) {
-  // TODO: Catch error if can't connect to the database
-  if (error) throw error;
-  console.log('Connected to the database');
+	// TODO: Catch error if can't connect to the database
+	if (error) throw error;
+	console.log('Connected to the database');
 });
 
 // For sessions
@@ -74,12 +74,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // to store sessions
 app.use(session({
-  key: 'sjadhkasdhkjasdhwqudhasjbqkugdabsjdkbwkaudgbjkkfvrrt192ejamnx',
-  secret: 'thegrafico is a cool guy',
-  store: sessionStore,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 3600000 } // 30 minutes ultil sessions ends
+	key: 'sjadhkasdhkjasdhwqudhasjbqkugdabsjdkbwkaudgbjkkfvrrt192ejamnx',
+	secret: 'thegrafico is a cool guy',
+	store: sessionStore,
+	resave: false,
+	saveUninitialized: false,
+	cookie: { maxAge: 3600000 } // 30 minutes ultil sessions ends
 }));
 
 
@@ -89,21 +89,26 @@ const admin_route = "/admin";
 // create a global variable - req.locals.name = value
 app.use(function (req, res, next) {
 
-  res.locals.error = req.flash("error"); //error mesage go red
-  res.locals.success = req.flash("success"); //success message go green
-  res.locals.admin_route = admin_route;
-  res.locals.homeURL = admin_route;
-
-
-  res.locals.signOutUrl = "/authorize/signout";
-  res.locals.signInUrl = authHelper.getAuthUrl();
-  res.locals.filter = false;
-  res.locals.filter_title = false;
-  res.locals.filter_value = [];
-  res.locals.breadcrumb = [];
-  res.locals.feedback_message = "";
+	res.locals.error = req.flash("error"); //error mesage go red
+	res.locals.success = req.flash("success"); //success message go green
+	res.locals.admin_route = admin_route;
+	res.locals.homeURL = admin_route;
+	res.locals.signOutUrl = "/authorize/signout";
+	res.locals.signInUrl = authHelper.getAuthUrl();
+	res.locals.filter = false;
+	res.locals.filter_title = false;
+	res.locals.filter_value = [];
+	res.locals.breadcrumb = [];
+	res.locals.feedback_message = "";
 	res.locals.description_box = undefined;
-  next();
+
+	// is user admin = true, eitherway false 
+	if (req.session != undefined && req.session.user_email) {
+		res.locals.isAdmin = (req.session.user_profile == "admin") ? true : false;
+	} else {
+		res.locals.isAdmin = false;
+	}
+	next();
 });
 
 // Index route & authorize
@@ -111,7 +116,7 @@ app.use('/', indexRouter);
 // ===== LOGIN AND SIGN OUT =====
 app.use('/authorize', authorize);
 // ===== PROFESSOR =====
-app.use('/professor', middleware.is_login, assessmentRouter);
+app.use('/professor', middleware.is_login,middleware.is_professor, assessmentRouter);
 // ===== School Term Section =====
 app.use(`${admin_route}/term`, middleware.is_login, middleware.is_admin, schoolTermRouter);
 // ===== Departments Section =====
@@ -128,15 +133,18 @@ app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.is_admin, per
 app.use(`${admin_route}/evaluation`, middleware.is_login, middleware.is_admin, evaluationRubric);
 // ===== Courses Section =====
 app.use(`${admin_route}/courses`, middleware.is_login, middleware.is_admin, coursesRouter);
-app.use(`${admin_route}/api`, middleware.is_login, middleware.is_admin, apiRoute);
-
 // ===== CourseMapping Section =====
 app.use(`${admin_route}/courseMapping`, middleware.is_login, middleware.is_admin, courseMapping);
+
+/**
+ * API TO GET THE DATA FROM REQUEST
+ */
+app.use('/api', middleware.hasProfile, apiRoute);
 // ====================================================
 
 // 404 ERROR HANDLE
 app.use("*", function (req, res) {
-  res.render("notFound");
+	res.render("notFound");
 });
 
 //Run the app

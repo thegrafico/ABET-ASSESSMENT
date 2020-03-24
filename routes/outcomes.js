@@ -455,59 +455,36 @@ router.get('/get/:id', async function (req, res) {
  */
 router.get("/get/performances/:outcome_id", async function (req, res) {
 
+	// Validate outcome is a number and is not undefined
 	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
 		return res.json([]);
 	}
 
+	// query format
 	let performance_query = {
 		"from": "PERF_CRITERIA",
 		"where": "outc_ID",
 		"id": req.params.outcome_id
 	};
 
+	// get the data
 	let outcome_performances = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})
 
+	// verify the data
 	if (outcome_performances == undefined || outcome_performances.length == 0) {
 		return res.json([]);
 	}
 
+	// transfor the data 
 	let record = [];
 	outcome_performances.forEach(element => {
 		record.push({ "name": element["perC_Desk"], "value": element["perC_ID"] })
 	});
 
+	// return the data 
 	return res.json(record);
 });
-
-/**
- * -- API -- 
- * GET THE OUTCOMES BY STUDY PROGRAM
- */
-router.get("/get/outcomes/:programID", async function (req, res) {
-
-	if (req.params.programID == undefined || isNaN(req.params.programID)) {
-		return res.json([]);
-	}
-
-	let outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": req.params.programID };
-	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
-		console.log("Error getting performance: ", err);
-	})
-
-
-	if (outcomes == undefined || outcomes.length == 0) {
-		return res.json([]);
-	}
-
-	let record = [];
-	outcomes.forEach(element => {
-		record.push({ "name": element["outc_name"], "value": element["outc_ID"] })
-	});
-
-	return res.json(record);
-});
-
 
 module.exports = router;

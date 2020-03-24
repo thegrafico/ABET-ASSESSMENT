@@ -1,6 +1,8 @@
 /* 
 	EVALUATION RUBRIC ROUTE
 	GET /evaluation
+
+	TODO: Arregar donde es que la API tiene que ir
 */
 var express = require('express');
 var router = express.Router();
@@ -11,8 +13,6 @@ var { get_outcome_by_study_program } = require("../helpers/queries/outcomes_quer
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
 var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
-
-
 
 const base_url = "/admin/evaluation";
 //Paramns to routes links
@@ -317,27 +317,6 @@ router.put('/:r_id', validate_evaluation_rubric, async function (req, res) {
 		req.flash("error", "Error updating the Evaluation Rubric");
 		res.redirect(base_url);
 	});
-});
-
-/* 
-	-- SHOW DELETE EVAluation rubric --
-	GET /evaluation/:id/delete 
-*/
-router.get('/get/:r_id', validate_evaluation_rubric, async function (req, res) {
-
-	rubric_to_remove = req.body["rubric"][0];
-
-	let names = ["Name", "Description"];
-	let values = [
-		rubric_to_remove.rubric_name,
-		rubric_to_remove.rubric_description,
-	];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++) {
-		record.push({ "name": names[index], "value": values[index] })
-	}
-	res.json(record);
 });
 
 /* 

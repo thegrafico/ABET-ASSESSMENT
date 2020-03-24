@@ -34,7 +34,7 @@ router.get('/', async function (req, res) {
 
 	locals.results = [];
 
-	locals.delete_redirect = "/users"
+	locals.delete_redirect = "/users";
 
 	// the last header is for position the button
 	locals.table_header = ["Inter ID", "Profile", "Name", "Last Name",
@@ -111,7 +111,6 @@ router.get('/create', async function (req, res) {
 	// verify profiles
 	if (profiles == undefined || profiles.length == 0) {
 		console.log("There is not profile created");
-
 		req.flash("error", "Cannot find any profiles");
 		return res.redirect(base_url);
 	}
@@ -166,7 +165,7 @@ router.post('/create', async function (req, res) {
 		return res.redirect("back");
 	}
 
-	if (req.body.selected_values == undefined || req.body.selected_values.length  < 2){
+	if (req.body.selected_values == undefined || req.body.selected_values.length < 2){
 		req.flash("error", "Department Cannot be empty");
 		return res.redirect("back");
 	}
@@ -365,10 +364,6 @@ router.put('/:id', async function (req, res) {
 	let current_department = split_and_filter(req.body.selected, ",");
 	let selected_department = split_and_filter(req.body.selected_values, ",");
 
-	// console.log("CURRENT: ", current_department);
-	// console.log("EXPECTED: ", selected_department);
-
-
 	let departments_for_update = get_data_for_update(current_department, selected_department);
 	// console.log("RESULTS: ", departments_for_update);
 
@@ -397,7 +392,6 @@ router.put('/:id', async function (req, res) {
 	// update the department if != undefined
 	if (departments_for_update != undefined) {
 
-		console.log(departments_for_update);
 		// remove element if there is any
 		if (departments_for_update["delete"].length > 0) {
 

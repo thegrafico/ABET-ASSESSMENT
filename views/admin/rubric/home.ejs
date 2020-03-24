@@ -131,10 +131,12 @@
 <%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
 <%- include ('../partials/modal_view', {delete_redirect: delete_redirect || ""}) -%>
 
-<script src="/javascripts/modals/viewRubric.js"></script>
-
+<!-- MAKE AJAX GET REQUEST -->
+<script src="/javascripts/ajaxRequest.js"></script>
+<!-- MODAL FOR VIEW RUBRIC  -->
+<script src="/javascripts/modals/evaluationRubric.js"></script>
+<!-- FILTERS -->
 <script src="/javascripts/filters/rubric.js"></script>
+<!-- MODAL LOGIG -->
 <script src="/javascripts/modals.js"></script>
-
-
 <%- include ('../partials/footer') -%>
