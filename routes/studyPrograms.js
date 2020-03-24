@@ -16,7 +16,7 @@ let locals = {
 	"base_url": base_url,
 	"url_create": `${base_url}/create`,
 	"form_id": "std_data",
-	"api_get_url": base_url,
+	"api_get_url": "/api/get/studyprogram", // missing id - api/get/studyprogram/:id
 	delete_redirect: null,
 	dropdown_option_selected: null,
 	filter:true,
@@ -312,50 +312,6 @@ router.put('/:id', function(req, res) {
 });
 
 /* 
-	-- API TO GET study program by ID-- 
-	GET /studyprograms/:id/remove 
-*/
-router.get('/get/:id', async function (req, res) {
-
-	// validating id 
-	if (req.params.id == undefined || isNaN(req.params.id)){
-		req.flash("error", "This Study program does not exits");
-		return res.redirect("back");
-	}
-
-	let std_program_id = req.params.id;
-
-	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": std_program_id};
-	
-	// get std program
-	let std_program_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
-		console.log("ERROR: ", err);
-	})
-
-	// validate std program
-	if( std_program_to_remove == undefined || std_program_to_remove.length == 0){
-		req.flash("error", "Cannot find study program, Please create one");
-		return res.redirect(base_url);
-	}
-	std_program_to_remove = std_program_to_remove[0];
-
-	let date = new Date(std_program_to_remove.date_created);
-	date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-	
-	// header of inputs
-	let names = ["Name", "Department", "Date created"];
-	let values = [ std_program_to_remove.prog_name, std_program_to_remove.dep_ID, date];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++)
-		record.push({"name": names[index], "value": values[index]})
-
-	res.json(record);
-});
-
-
-
-/* 
 	-- REMOVE study program -- 
 	DELETE /studyprograms/:id/remove 
 */
@@ -380,8 +336,5 @@ router.delete('/:id', function (req, res) {
 		res.redirect(base_url);
 	});
 });
-
-
-
 
 module.exports = router;

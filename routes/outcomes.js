@@ -15,7 +15,7 @@ let locals = {
 	"base_url": base_url,
 	"url_create": `${base_url}/create`,
 	"form_id": "outcome_data",
-	"api_get_url": base_url,
+	"api_get_url": "/api/get/outcome", // missing id
 	delete_redirect: null,
 	dropdown_option_selected: null,
 	feedback_message: "Number of Outcomes: ",
@@ -365,126 +365,6 @@ router.delete('/:id', function (req, res, next) {
 		req.flash("error", "Cannot remove this outcome");
 		res.redirect(base_url);
 	});
-});
-
-/* 
-	-- API --
-	GET ALL STUDY PROGRAMS FROM OUTCOME
-*/
-router.get('/:id/getStudyProgram', async function (req, res) {
-
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		req.flash("error", "Cannot find the outcome");
-		return res.redirect(base_url);
-	}
-
-	// id of the study program
-	let study_program_id = req.params.id;
-	let get_outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": study_program_id };
-
-	// fetching data from db
-	let outcomes = await general_queries.get_table_info_by_id(get_outcomes_query).catch((err) => {
-		console.log("Error getting the information: ", err);
-	});
-
-	// verify
-	if (outcomes == undefined || outcomes.length == 0) {
-		return res.json([]);
-	}
-
-	// send response if it's good
-	res.json(outcomes);
-});
-
-/* 
-	-- API --
-	GET OUTCOMES TO REMOVE
-	GET /outcome/:id/delete
-*/
-router.get('/get/:id', async function (req, res) {
-
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		return res.end();
-	}
-
-	let outcome_query = {
-		"from": "STUDENT_OUTCOME",
-		"join": "STUDY_PROGRAM",
-		"using": "prog_ID",
-		"where": "outc_ID",
-		"id": req.params.id
-	};
-
-	// Get outcome to remove 
-	let outcome_to_remove = await general_queries.get_table_info_inner_join_by_id(outcome_query).catch((err) => {
-		console.log("Error: ", err);
-	});
-
-	if (outcome_to_remove == undefined || outcome_to_remove.length == 0) {
-		return res.end();
-	}
-
-	outcome_to_remove = outcome_to_remove[0];
-
-	let names = ["Name", "Description", "Study Program", "Date created"];
-
-	// change date format 
-	let date = new Date(outcome_to_remove.date_created);
-	date = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
-
-	let values = [
-		outcome_to_remove.outc_name,
-		outcome_to_remove.outc_description,
-		outcome_to_remove.prog_name,
-		date
-	];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++) {
-		record.push({
-			"name": names[index],
-			"value": values[index]
-		});
-	}
-	res.json(record);
-});
-
-/**
- * -- API -- 
- * GET THE PERFORMANCE RUBRIC BY OUTCOME ID
- */
-router.get("/get/performances/:outcome_id", async function (req, res) {
-
-	// Validate outcome is a number and is not undefined
-	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
-		return res.json([]);
-	}
-
-	// query format
-	let performance_query = {
-		"from": "PERF_CRITERIA",
-		"where": "outc_ID",
-		"id": req.params.outcome_id
-	};
-
-	// get the data
-	let outcome_performances = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
-		console.log("Error getting performance: ", err);
-	})
-
-	// verify the data
-	if (outcome_performances == undefined || outcome_performances.length == 0) {
-		return res.json([]);
-	}
-
-	// transfor the data 
-	let record = [];
-	outcome_performances.forEach(element => {
-		record.push({ "name": element["perC_Desk"], "value": element["perC_ID"] })
-	});
-
-	// return the data 
-	return res.json(record);
 });
 
 module.exports = router;

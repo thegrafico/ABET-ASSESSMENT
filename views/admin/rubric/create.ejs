@@ -18,6 +18,8 @@
         <% } %>
     </ol>
 </nav>
+
+<!-- FORM CONTAINER -->
 <div class="container-fluid">
     <h2>Create Evaluation Rubric</h2>
     <hr class="my-4">
@@ -71,15 +73,15 @@
         <% }) %>
 
         <% if (description_box != undefined) { %>
-	
-			<div class="row my-4">
-				<div class="col-2 align-self-center text-right"><strong>Description</strong></div>
-				<div class="col-8">
-					<textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
-					placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
-				</div>
-			</div>
-		<% } %>
+
+        <div class="row my-4">
+            <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+            <div class="col-8">
+                <textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
+                    placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
+            </div>
+        </div>
+        <% } %>
 
         <div class="row my-4">
             <div class="col-2"></div>
@@ -116,7 +118,10 @@
         });
 
         // change the data when user select study program
-        $("#study_program").change(function () {
+        $("#study_program").change(async function () {
+
+            // diabled outcomes
+            $('#outcomes').prop("disabled", true);
 
             // clean outcomes data
             $('#outcomes').empty().append('<option disabled selected value> -- Select Outcome -- </option>');
@@ -124,34 +129,26 @@
             // get the selected id of the study program to make the request
             var study_program_id = $(this).children("option:selected").val();
 
-            $.ajax({
-                'url': `/admin/outcomes/${study_program_id}/getStudyProgram`,
-                type: 'GET',
-                dataType: 'json',
-                beforeSend: function () {
-                    // Show image container
-                    $("#loader").show();
-                    $('#outcomes').prop("disabled", true);
-                },
-                success: (data) => {
-
-                    // populate the options
-                    data.forEach(element => {
-                        $('#outcomes').append(`<option value='${element.outc_ID}'>${element.outc_name}</option>`);
-                    });
-                }, complete: function (data) {
-                    // Hide image container
-                    $("#loader").hide();
-                    $('#outcomes').prop("disabled", false);
-
-                }
+            let outcomes = await make_request(`/api/get/outcomeByStudyProgram/${study_program_id}`).catch((err) => {
+                console.log("Error getting outcomes");
             });
+
+            // Validate outcome and fill out the select outcome
+            if (outcomes != undefined && outcomes.length > 0) {
+                // populate the options
+                outcomes.forEach(element => {
+                    $('#outcomes').append(`<option value='${element.outc_ID}'>${element.outc_name}</option>`);
+                });
+
+                $('#outcomes').prop("disabled", false);
+            } else {
+                // TODO: span message with error 
+                console.log("Cannot find the outcomes");
+            }
         });
 
-        // add performance Rubric
-
         // change the data when user select study program
-        $("#outcomes").change(function () {
+        $("#outcomes").change(async function () {
 
             mult = [];
 
@@ -160,58 +157,51 @@
 
             // get the selected id of the outcome to make the request
             var outcome_id = $(this).children("option:selected").val();
-            console.log("selected: ", outcome_id);
 
-            $.ajax({
-                'url': `/admin/outcomes/get/performances/${outcome_id}`,
-                type: 'GET',
-                dataType: 'json',
-                beforeSend: function () {
-                    // Show image container
-                    $("#loader").show();
-                },
-                complete: function (data) {
-                    // Hide image container
-                    $("#loader").hide();
-                },
-                success: (data) => {
-
-                    $(".multi-select2").remove();
-                    $("#multi_selection").empty();
-                    $("#multi_selection").append(`<span class="multi-select"></span>`);
-
-                    let mult_values = [];
-                    // populate the options
-                    data.forEach(element => {
-                        mult_values.push({ label: element.name, value: element.value.toString() })
-                    });
-
-                    var multi = new SelectPure(".multi-select", {
-                        options: mult_values,
-                        value: [],
-                        multiple: true,
-                        icon: "fa fa-times",
-                        placeholder: "-- Please Select --",
-                        onChange: value => {
-                            console.log(value);
-                            $("#multiple_performance").attr("value", value)
-                        },
-                        classNames: {
-                            select: "select-pure__select",
-                            dropdownShown: "select-pure__select--opened",
-                            multiselect: "select-pure__select--multiple",
-                            label: "select-pure__label",
-                            placeholder: "select-pure__placeholder",
-                            dropdown: "select-pure__options",
-                            option: "select-pure__option",
-                            selectedLabel: "select-pure__selected-label",
-                            selectedOption: "select-pure__option--selected",
-                            placeholderHidden: "select-pure__placeholder--hidden",
-                            optionHidden: "select-pure__option--hidden",
-                        }
-                    });
-                }
+            // request for performances criteria
+            let performances = await make_request(`/api/get/performancesByOutcome/${outcome_id}`).catch((err) => {
+                console.log("Cannot find performances criteria: ", err);
             });
+
+            if (performances != undefined && performances.length > 0) {
+                $(".multi-select2").remove();
+                $("#multi_selection").empty();
+                $("#multi_selection").append(`<span class="multi-select"></span>`);
+
+                let mult_values = [];
+                // populate the options
+                performances.forEach(element => {
+                    mult_values.push({ label: element.name, value: element.value.toString() })
+                });
+
+                var multi = new SelectPure(".multi-select", {
+                    options: mult_values,
+                    value: [],
+                    multiple: true,
+                    icon: "fa fa-times",
+                    placeholder: "-- Please Select --",
+                    onChange: value => {
+                        console.log(value);
+                        $("#multiple_performance").attr("value", value)
+                    },
+                    classNames: {
+                        select: "select-pure__select",
+                        dropdownShown: "select-pure__select--opened",
+                        multiselect: "select-pure__select--multiple",
+                        label: "select-pure__label",
+                        placeholder: "select-pure__placeholder",
+                        dropdown: "select-pure__options",
+                        option: "select-pure__option",
+                        selectedLabel: "select-pure__selected-label",
+                        selectedOption: "select-pure__option--selected",
+                        placeholderHidden: "select-pure__placeholder--hidden",
+                        optionHidden: "select-pure__option--hidden",
+                    }
+                });
+            }else{
+                // TODO: span message
+                console.log("Cannot find any performance criteria");
+            }
         });
     });
 </script>

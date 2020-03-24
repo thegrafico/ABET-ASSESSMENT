@@ -73,6 +73,8 @@
 </div>
 
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
+<button id="base_url" class="invisible" value="<%= base_url %>"></button>
+
 <div class="container-fluid my-2" id="divTable">
 
 	<table class="table table-bordered table-striped">
@@ -135,8 +137,8 @@
 </div>
 <!-- REMOVE PARTIAL -->
 <%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+<!-- FILTERING -->
 <script src="/javascripts/filters/home.js"></script>
-<script src="/javascripts/modals.js"></script>
+<!-- FILTER UP KEY -->
 <script src="/javascripts/filters/filter_key_up.js"></script>
-
 <%- include ('../partials/footer') -%>

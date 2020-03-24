@@ -5,17 +5,17 @@ $(document).ready(function () {
     tr_visibles = $("#home-table tr:visible");
     $("#number").text(tr_visibles.length);
 
-    $("#departments").change(function () {
+    $("#departments").change( async function () {
 
+        // get the department id selected
         let dept_ID = $(this).val();
 
-        // show table
-        // $("#home-table").removeClass("invisible")
+        // Disable the study program btn
+        $('#study_program').prop("disabled", true);
 
         // Clean inputs
         $('#study_program').empty().append('<option selected value="">-- Study Program --</option>');
         $("#study_program").trigger("change");
-
 
         // if the user wants to know all departmenst
         if (dept_ID != undefined && dept_ID.trim().length == 0) {
@@ -30,48 +30,45 @@ $(document).ready(function () {
             return;
         }
 
-        // REQUEST -> get all study programs by a department
-        $.ajax({
-            'url': `/admin/department/get/studyPrograms/${dept_ID}`,
-            type: 'GET',
-            dataType: 'json',
-            beforeSend: function () {
-                // Show image container
-                $("#loader").show();
-            },
-            complete: function (data) {
-                // Hide image container
-                $("#loader").hide();
-                $('#study_program').prop("disabled", false);
-            },
-            success: (response) => {
-                if (response != undefined && response.length > 0) {
-
-                    // get study programs names
-                    let names = [];
-
-                    // fill out the selection option
-                    response.forEach(element => {
-                        names.push(element.name.toLowerCase());
-                        $('#study_program').append(`<option value='${element.name}'>${element.name}</option>`);
-                    });
-
-                    $("#dept_selected").val(names.join(","));
-
-                    // filter by department
-                    filter_by_department(names);
-
-                    // update the number of quantity
-                    tr_visibles = $("#home-table tr:visible");
-
-                    $("#number").text(tr_visibles.length);
-
-                }
-            }
+        // getting study program by department id
+        let study_programs = await make_request(`/api/department/get/studyPrograms/${dept_ID}`).catch((err) =>{
+            console.log("There is an error getting department ID: ", err);
         });
+
+        // if found any study program for the selected department
+        if (study_programs != undefined && study_programs.length > 0) {
+
+            // Enable study programs
+            $('#study_program').prop("disabled", false);
+
+            // To store all study program names
+            let names = [];
+
+            // fill out the selection option
+            study_programs.forEach(element => {
+                // add the study program name to the array
+                names.push(element.name.toLowerCase());
+
+                // create a new option for the user in the select option
+                $('#study_program').append(`<option value='${element.name}'>${element.name}</option>`);
+            });
+
+            // Join all the names into a single string separate by ','
+            $("#dept_selected").val(names.join(","));
+
+            // filter by department by study program name
+            filter_by_department(names);
+
+            // update the number of quantity
+            tr_visibles = $("#home-table tr:visible");
+            $("#number").text(tr_visibles.length);
+
+        }else{
+            alert("Cannot find any study program");
+        }
     });
 
-    // filteer by study program
+    // filter by study program
     filter_by_study_program();
 
     // filter by input type
@@ -84,7 +81,7 @@ $(document).ready(function () {
  * @return VOID
 */
 function filter_by_department(study_programs) {
-
+    
     let names = study_programs.map(e => e.toLowerCase());
 
     // iter all over the tr
@@ -96,7 +93,6 @@ function filter_by_department(study_programs) {
     });
 
     $("#number").text( $("#home-table tr:visible").length);
-
 }
 
 /**

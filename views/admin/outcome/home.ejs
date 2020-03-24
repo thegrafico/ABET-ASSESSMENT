@@ -20,18 +20,6 @@
 
 <button id="url" class="invisible" value="<%= api_get_url %>"></button>
 
-<style>
-    th:nth-child(4),
-    th:nth-child(1) {
-        width: 10%;
-        text-align: center;
-    }
-
-    th:nth-child(2) {
-        width: 10%;
-    }
-</style>
-
 <!-- FILTERING HEADER -->
 <div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
     <div class="row">
@@ -150,6 +138,21 @@
 
 <!-- REMOVE PARTIAL -->
 <%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
-<script src="/javascripts/modals.js"></script>
+
+<!-- MAKE AJAX GET REQUEST -->
+<script src="/javascripts/ajaxRequest.js"></script>
+<!-- FITER OPTIONS -->
 <script src="/javascripts/filters/outcomes.js"></script>
+
+<style>
+    th:nth-child(4),
+    th:nth-child(1) {
+        width: 10%;
+        text-align: center;
+    }
+
+    th:nth-child(2) {
+        width: 10%;
+    }
+</style>
 <%- include ('../partials/footer') -%>

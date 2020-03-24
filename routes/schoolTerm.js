@@ -15,7 +15,7 @@ let locals = {
 	"base_url": base_url,
 	"url_create": `${base_url}/create`,
 	"form_id": "term_data",
-	"api_get_url": base_url,
+	"api_get_url": "/api/get/schoolterm", // missing id
 	delete_redirect: null,
 	feedback_message: "Number of Term: ",
 };
@@ -213,44 +213,6 @@ router.put('/:id', function (req, res) {
 		res.redirect(base_url);
 	});
 });
-
-/* 
-	-- SHOW TERM TO DELETE --
-	GET /term/:id/remove
-*/
-router.get('/get/:id', async function (req, res) {
-
-	// validating id 
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		req.flash("error", "This term don't exits");
-		return res.redirect(base_url);
-	}
-
-	let term_id = req.params.id;
-	let data = { "from": "ACADEMIC_TERM", "where": "term_ID", "id": term_id };
-
-	let term_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
-		console.log("Error getting the term: ", err);
-	});
-
-	if (term_to_remove == undefined || term_to_remove.length == 0) {
-		req.flash("error", "Cannot find the term");
-		return res.redirect(base_url);
-	}
-
-	term_to_remove = term_to_remove[0];
-
-	let names = ["Name"];
-	let values = [term_to_remove.term_name];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++) {
-		record.push({ "name": names[index], "value": values[index] })
-	}
-
-	res.json(record);
-});
-
 
 /* 
 	--  DELETE TERM --

@@ -17,7 +17,7 @@ var locals = {
 	url_create: "/admin/users/create",
 	base_url: base_url,
 	form_id: "user_data",
-	api_get_url: base_url,
+	api_get_url: "/api/get/user", // all api_url ends in the id
 	delete_redirect: null,
 	filter:true,
 	filter_title: "-- Department --",
@@ -416,46 +416,8 @@ router.put('/:id', async function (req, res) {
 });
 
 /* 
-	-- API GET USER BY ID -- 
-*/
-router.get('/get/:id', async function (req, res) {
-
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		req.flash("error", "Cannot find the user");
-		return res.redirect(base_url);
-	}
-
-	let user_id = req.params.id;
-
-	let user_data = await queries.get_user_by_id(user_id).catch((err) => {
-		console.log(err);
-	});
-
-	// verify is user data is good
-	if (user_data == undefined || user_data.length == 0) {
-		return res.json([]);
-	}
-
-	let names = ["User Id", "Inter Id", "Name", "Last Name", "Email", "Phone Number"];
-	let values = [
-		user_id,
-		user_data.inter_ID,
-		user_data.first_name,
-		user_data.last_name,
-		user_data.email,
-		user_data.phone_number
-	];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++) {
-		record.push({ "name": names[index], "value": values[index] })
-	}
-
-	res.json(record);
-});
-
-/* 
-	REMOVE users/:id
+	REMOVE the user by user id
+	DELETE /admin/user/:id
 */
 router.delete('/:id', function (req, res) {
 

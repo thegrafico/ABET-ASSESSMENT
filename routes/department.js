@@ -17,7 +17,7 @@ let locals = {
 	"base_url": base_url,
 	"url_create": `${base_url}create`,
 	"form_id": "department_data",
-	"api_get_url": base_url,
+	"api_get_url": "/api/get/department", // missing id - /api/get/department/:dept_id
 	"delete_redirect": null,
 	feedback_message: "Number of Departments: "
 
@@ -222,49 +222,9 @@ router.put('/:id', function (req, res, next) {
 	});
 });
 
-/*
-	--SHOW REMOVE DEPARMENT
-	GET /deparment/:id/remove
-*/
-router.get('/get/:id', async function (req, res) {
-
-	// validating
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		return res.end();
-		// return res.redirect(base_url);
-	}
-
-	let tabla_data = { "from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
-
-	let department = await general_queries.get_table_info_by_id(tabla_data).catch((err) => {
-		console("ERROR: ", err);
-	});
-
-	if (department == undefined || department.length == 0) {
-		res.json([]);
-		return res.redirect(base_url);
-	}
-
-	// we only care about the first element
-	department = department[0];
-
-	// change date format 
-	let date = new Date(department.date_created);
-	date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-
-	let names = ["Name", "Description", "Date"];
-	let values = [department.dep_name, department.dep_description, date];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++)
-		record.push({ "name": names[index], "value": values[index] })
-
-	res.json(record);
-});
-
 /* 
-	-- DELETE DEPARMENT
-	DELETE /deparment/:id
+	-- DELETE DEPARMENT BY ID -- 
+	DELETE /admin/deparment/:id
 */
 router.delete('/:id', function (req, res, next) {
 

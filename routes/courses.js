@@ -16,9 +16,9 @@ let locals = {
 	"subtitle": 'Courses',
 	"url_create": `${base_url}/create`,
 	"form_id": "course_data",
-	"api_get_url": base_url,
+	"api_get_url": "/api/get/course", // missing id - /apig/get/course/:id
 	"delete_redirect": null,
-	filter:true,
+	filter: true,
 	"filter_title": "-- Study Program --",
 	feedback_message: "Number of Courses: ",
 };
@@ -31,7 +31,7 @@ let locals = {
 router.get('/', async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Courses", "url": base_url},
+		{ "name": "Courses", "url": base_url },
 	];
 
 	locals.table_header = ["Course Name", "Course Number", "Study Program", "Date Created", ""];
@@ -83,8 +83,8 @@ router.get('/', async function (req, res) {
 router.get('/create', async function (req, res, next) {
 
 	locals.breadcrumb = [
-		{"name": "Courses", "url": base_url},
-		{"name": "Create", "url": locals.url_create }
+		{ "name": "Courses", "url": base_url },
+		{ "name": "Create", "url": locals.url_create }
 	];
 
 	locals.have_dropdown = true;
@@ -122,7 +122,7 @@ router.get('/create', async function (req, res, next) {
 
 	// front
 	locals.inputs = course_create_inputs;
-	locals.description_box = {name: "data[description]", text: "Course Description", value: ""}
+	locals.description_box = { name: "data[description]", text: "Course Description", value: "" }
 
 
 	res.render('admin/course/create_edit', locals);
@@ -183,8 +183,8 @@ router.get('/:id/edit', async function (req, res) {
 	}
 
 	locals.breadcrumb = [
-		{"name": "Courses", "url": base_url},
-		{"name": "Edit", "url": "."}
+		{ "name": "Courses", "url": base_url },
+		{ "name": "Edit", "url": "." }
 	];
 
 	// Dynamic frontend vars
@@ -255,7 +255,7 @@ router.get('/:id/edit', async function (req, res) {
 
 	// append the course information to the EJS
 	locals.inputs = course_create_inputs;
-	locals.description_box = {name: "data[description]", text: "Course Description", value: courses_info.course_description}
+	locals.description_box = { name: "data[description]", text: "Course Description", value: courses_info.course_description }
 
 
 	res.render('admin/course/create_edit', locals);
@@ -331,46 +331,6 @@ router.put('/:id', async function (req, res) {
 	});
 
 });
-
-/*
-	--SHOW REMOVE COURSE--
-	GET cousers/:id/remove
-*/
-router.get('/get/:id', async function (req, res) {
-
-	// validating id 
-	if (req.params.id == undefined || isNaN(req.params.id)) {
-		return res.json([]);
-	}
-
-	let course_id = req.params.id;
-
-	// for query
-	let data = { "from": "COURSE", "where": "course_ID", "id": course_id, "join": "PROG_COURSE" };
-
-	// getting course information from db
-	let course = await general_queries.get_table_info_by_id_naturalJoin(data).catch((err) => {
-		console.log("Error getting the course: ", err);
-	});
-
-	// validate course
-	if (course == undefined || course.length == 0) {
-		return res.json([]);
-	}
-
-	// we only care about the first position
-	course = course[0];
-
-	let names = ["Study Program", "Number", "Name", "description"];
-	let values = [course.prog_ID, course.course_number, course.course_name, course.course_description];
-
-	let record = [];
-	for (let index = 0; index < names.length; index++) {
-		record.push({ "name": names[index], "value": values[index] })
-	}
-	res.json(record);
-});
-
 
 /*
  	-- DELETE ROUTE -- 

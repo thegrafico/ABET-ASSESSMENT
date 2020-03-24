@@ -21,10 +21,9 @@ let locals = {
 	"subtitle": 'Evaluation Rubric',
 	"base_url": base_url,
 	"form_id": "rubric_data",
-	"api_get_url": base_url,
+	"api_get_url": "/api/get/evaluationRubric", //missing id at the end
 	"delete_redirect": null,
 	feedback_message: "Number of Evaluation Rubrics: ",
-
 };
 
 /*	

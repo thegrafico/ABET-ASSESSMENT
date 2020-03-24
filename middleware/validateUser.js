@@ -6,6 +6,10 @@
 var { db } = require("../helpers/mysqlConnection"); //pool connection
 conn = db.mysql_pool;
 
+const admin = "admin";
+const professor = "professor";
+const director = "director";
+
 
 /**
  * get_user_role get the user profile
@@ -38,7 +42,7 @@ function is_admin(req, res, next) {
     let sess = req.session;
     // is user login? 
     if (sess != undefined && sess.user_email) {
-        if (sess.user_profile == "admin") {
+        if (sess.user_profile == admin) {
             return next();
         }
     }
@@ -54,7 +58,7 @@ function is_professor(req, res, next) {
     let sess = req.session;
     // is user login? 
     if (sess != undefined && sess.user_email) {
-        if (sess.user_profile == "professor") {
+        if (sess.user_profile == professor || sess.user_profile == admin || sess.user_profile == director) {
             return next();
         }
     }
@@ -86,16 +90,16 @@ function hasProfile(req, res, next) {
     let sess = req.session;
 
     if (sess != undefined && sess.user_email) {
-        
-        let haveProfile = ( (sess.user_profile == "professor") || 
-            (sess.user_profile == "admin") || 
+
+        let haveProfile = ((sess.user_profile == "professor") ||
+            (sess.user_profile == "admin") ||
             (sess.user_profile == "director"));
-        
-        console.log("Have profile: ", haveProfile, sess.user_profile);
-        if (haveProfile){
+
+        // console.log("Have profile: ", haveProfile, sess.user_profile);
+        if (haveProfile) {
             next();
-        }else{
-            req.flash("error", "We don't record about you.");
+        } else {
+            req.flash("error", "We don't have any record with your information.");
             res.redirect("/");
         }
     } else {

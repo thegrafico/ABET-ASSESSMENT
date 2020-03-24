@@ -310,7 +310,7 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 
 	// Only validate the data if the status is completed
 	if (status == "completed") {
-		
+
 		// keys for grades
 		let grades_keys = {
 			"A": "n",
@@ -341,7 +341,6 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			return res.redirect("back");
 		}
 	}
-
 
 	// TODO: Roolback query is better option
 	if (isUpdate) {
@@ -374,8 +373,6 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		});
 	}
 });
-
-
 
 /**
  *  UPDATE - UPDATE STATUS OF ASSESSMENT
@@ -451,14 +448,14 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	});
 
 	// Validate performance
-	if (performanceData == undefined || performanceData.length == 0){
-		req.flash("error", "Cannot find the performance criteria data");
+	if (performanceData == undefined || performanceData.length == 0) {
+		req.flash("error", "This assessment does not have the performance criteria data, please recover the assessment and verify");
 		return res.redirect("back");
 	}
 
 	// student performance criteria evaluation
 	locals.performanceData = mapData(performanceData);
-	
+
 	locals.performanceResults = get_performance_criteria_results(locals.performanceData);
 
 	locals.performance_criteria = reportHeader.map(each => each["perC_Desk"]);
@@ -481,7 +478,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	grades["Total"] = total;
 
 	// assign values to frontend
-	locals.profesor_input = professor_input;	
+	locals.profesor_input = professor_input;
 	locals.grades = grades;
 
 	res.render('assessment/report', locals);
