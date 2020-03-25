@@ -16,7 +16,6 @@ let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
 let allPerc;
 
-$('#spinner').inputSpinner();
 
 // Loads empty chart when page is load
 window.onload = () => {
@@ -29,11 +28,11 @@ $(document).ready(function () {
 		withValues(prevScores);
     } else {
 		noValues();
-    }
+	}
+	generateSideDisplay();
     
     console.log("prevScores: ", prevScores);
     $('#addRow').click(function () {
-		let spinnerInput = $('#spinner').val();
 		for(let i = 0; i < spinnerInput; i++) {
 			avgPerRow.push(0);
 			addRow();
@@ -56,9 +55,9 @@ $(document).ready(function () {
 */
 function generateRowWithVal(r, data) {
     var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
-	for (let i = 0; i < amountOfColumns; i++) { 
+	for (let i = 1; i <= amountOfColumns; i++) { 
         try {
-            markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='${data[r-1].scores[i]}' oninput='createChart()' required></td>`);
+            markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='${data[r-1].scores[i-1]}' oninput='createChart()' required></td>`);
         } catch(err) {
             break;
         }
@@ -77,7 +76,7 @@ function noValues() {
 		avgPerRow.push(0);
 		addRow();
 	}
-	generateSideDisplay();
+
 }
 
 /**
@@ -90,7 +89,6 @@ function withValues(data) {
 		avgPerRow.push(0);
 		addRowWithValue(data)
 	}
-	generateSideDisplay();
 }
 
 /**
@@ -216,8 +214,10 @@ function createChart() {
 	graphData.push(outcomeAVG);
 
 	for(let i = 0; i < amountOfColumns; i++) {
-		$('#pc'+ i + ' span').text(graphData[i]);
+		$('#pc'+ i).text(graphData[i]);
 	}
+
+	console.log("Entry Data: ", mapData(data, assessment_ID));
 
     let graph;
 	let myChart = new Chart(canvas, {
@@ -294,7 +294,6 @@ function mapData(rowData, assessmentID) {
 	});
     index = 0;
     
-    console.log("Entry Data: ", mappedData);
     return mappedData;
 }
 
@@ -306,9 +305,9 @@ function getTableData() {
     let rowData = [];
     let tableData = [];
 
-    $("#performanceTable, input[type=number]").each(function (index) {
+    $(".performanceTable, input[type=number]").each(function (index) {
         let input = $(this);
-
+		console.log("Input: ", input);
         if(input.val() == '') {
             rowData.push(null);
         } else {
@@ -316,7 +315,6 @@ function getTableData() {
         }
         $(input).val(input.val());
     });
-
     amountRows = ((rowData.length) / amountOfColumns);
 	let temp = [];
 	let e = 0;
@@ -329,7 +327,7 @@ function getTableData() {
 		tableData[i] = temp;
 		temp = [];
     }
-
+	
     return tableData;
 }
 
@@ -349,7 +347,7 @@ function inputValidation() {
 // Fix labels
 function generateSideDisplay() {
 	for (let i = 0; i < amountOfColumns; i++) {
-		let row = `<div class="row" id="pc${i}"><h5>Performance Criteria ${i+1}: <span></span>%</h5></div>`;
-		$('#performanceResults').append(row);
+		let tRow = `<tr><th>Performance Criteria ${i+1}</th><td><span id="pc${i}"></span>%</td></tr>`;
+		$('#outcomeResultTbody').append(tRow);
 	}
 }

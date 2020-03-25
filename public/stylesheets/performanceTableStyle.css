@@ -1,4 +1,25 @@
 /* Tables Content Styles */
+.outcomeInfo {
+    height: 800px;
+}
+
+.perfomanceTable {
+    height: 800px;
+}
+
+.inputRow {
+    align-items: flex-end;
+}
+
+
+.rowInput {
+    flex-wrap: wrap;
+}
+
+.outcomeInfo {
+    border: 5px dotted red;
+}
+
 .headerRow {
     text-align: center;
     font-weight: bold;
@@ -7,7 +28,13 @@
     padding: 0px; 
 }
 
-
+span {
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    vertical-align: middle;
+    padding: 0px; 
+}
 
 #indexRow {
     text-align: center;
@@ -17,11 +44,6 @@
     padding: 0px;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
 
 .studInput{
     width: 2.5rem;
@@ -40,8 +62,25 @@ input::-webkit-inner-spin-button {
     padding: 0px;
 }
 
+.input-group {
+    width: 150px;
+}
+
+.form-control {
+    margin: 0;
+    height: auto;
+}
+
 input[type=checkbox] {
     transform: scale(2);
 }
 
 /* ===================== */
+
+/* Graph Content */
+
+.graphcontainer {
+    border: 4px dotted blue;
+}
+
+/* ============= */

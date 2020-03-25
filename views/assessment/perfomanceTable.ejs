@@ -12,34 +12,46 @@
 <input type="hidden" id="prevScores" name="prevScores" value="<%= prevScores %>">
 <input type="hidden" id="hasValue" name="hasValue" value="<%= hasValue %>">
 
-<div class="container-fluid" id="source-html" style="margin-top: 10px; margin-bottom: 100px;">
-	<div id="mainRow" class="row" style="padding: 2%;">
-		<div class="col-9" style="height: 450px;">
-			<div class="row"> 
-				<h4>Insert Criteria Values for each Student</h4>
-				<input type="number" value="0" min="0" max="50" step="1" id="spinner">
-				<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add Row">
-				<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete Row">
+<div class="container-fluid outcomeInfo">
+	<div class="row">
+		<div class="col-6">
+			<h4>Insert Criteria Values for each Student</h4>
+		</div> 
+		<div class="col-3">
+			<div class="row rowInput" >
+				<input type="button" class="btn btn-outline-secondary" id="addRow" value="Add">
+				<input type="button" class="btn btn-outline-secondary" id="delRow" value="Delete">
 			</div>
-			<div class="perfomanceTable">
-				<table id="table" class="table">
-					<thead>
-						<tr id="header">
-							<th scope="col" class='headerRow'>Student</th>
-						</tr>
-					</thead>
-					<tbody id="tableBody">
-					</tbody>
-				</table>
-
-				<input type="hidden" id="graph" name="graph" value="">
-			</div>			
 		</div>
 		<div class="col-3">
-			<div class="container">
-				<h2>Outcome Results</h2>
-				<div id="performanceResults">
-				</div>
+			<h2>Outcome Results</h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-9 perfomanceTable">
+			<table id="table" class="table">
+				<thead>
+					<tr id="header">
+						<th scope="col" class='headerRow'>Student</th>
+					</tr>
+				</thead>
+				<tbody id="tableBody">
+				</tbody>
+			</table>		
+		</div>	
+		<div class="col-3">
+			<div class="row" id="performanceResults" style="height: 100%;">
+				<table>
+					<thead>
+						<tr id="header2">
+							<th scope="col" class='headerRow'>Perf. Crit.</th>
+							<th scope="col" class='headerRow'>% Student with 3 or more in <%= outc_name %></th>
+						</tr>
+					</thead>
+					<tbody id="outcomeResultTbody">
+
+					</tbody>
+				</table>
 			</div>
 			<div class="row" id="saveOrNext">
 				<a id="save" class="btn btn-primary" href="" role="button">Save</a>
@@ -48,12 +60,16 @@
 		</div>
 	</div>
 </div>
-<div class="container-fluid">
-	<div class="col-6 barChart">
-		<h3>% Student with 3 or more in <%= outc_name %></h3>
-		<canvas id="myChart" width="350" height="200" role="img"></canvas>
-	</div>
+
+<div class="container graphcontainer">
+	<input type="hidden" id="graph" name="graph" value="">
+	<h2 style="text-align: center;">% Student with 3 or more in <%= outc_name %></h2>
+	<canvas id="myChart" role="img"></canvas>
 </div>
+
+
+<!-- Stylesheet for Performance Table -->
+<link rel="stylesheet" type="text/css" href="/stylesheets/performanceTableStyle.css">
 
 
 <!-- jQuery script -->
@@ -61,6 +77,7 @@
 <script type="text/javascript" src="/javascripts/extra/input-spinner.js"></script>
 <script type="text/javascript" src="/javascripts/performanceTable.js"></script>
 
+<!-- STYLE FOR PROGRESS BAR -->
 <link rel="stylesheet" href="/stylesheets/progress_bar.css">
 
 <%- include ('../admin/partials/footer') -%>
