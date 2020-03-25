@@ -2,13 +2,10 @@ var express = require('express');
 var router = express.Router();
 var general_queries = require('../../helpers/queries/general_queries');
 var queries = require('../../helpers/queries/perfTable_queries');
-var reportTemplate = require('../../helpers/reportTemplate');
 var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
-var { validate_form, get_performance_criteria_results } = require("../../helpers/validation");
-var docx = require('docx');
-var fs = require('fs');
-
+var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
+var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
 /* GLOBAL LOCALS */
 const base_url = '/professor';
 let locals = {
@@ -164,23 +161,52 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	res.render('assessment/perfomanceTable', locals);
 });
 
-router.post('/assessment/insertData', async function (req, res) {
-	let data = req.body.data;
 
-	await queries.deletePrevEntry(data[0].assessment_ID).catch((err) => {
-		console.log("No existing scores on Assessment ID: ", data[0].assessment_ID);
+/**
+ * -- API POST -- POST new performance record 
+ * -- POST /professor/assessment/id/performancetable
+ * TODO: the frontend is affecting the backed. if the data format changes, everything here changes. 
+ */
+router.post('/assessment/:assessmentID/performancetable', middleware.validate_assessment, async function (req, res) {
+
+	// validate data has data
+	if (req.body == undefined || req.body.data == undefined || isNaN(req.params.assessmentID)) {
+		return res.json({ error: true, message: "data is undefined" });
+	}
+
+	// assessment id
+	let assessment_id = req.params.assessmentID;
+
+	// performance data
+	let performance_records = req.body.data;
+
+	// validate there is data available
+	if (performance_records.length <= 0) {
+		return res.json({ error: true, message: "data is undefined" });
+	}
+	// get an array of index of the rows with the data good to insert
+	let indexs = getNumbersOfRows(performance_records);
+	
+	// to store each row || to store performances student
+	let rows = [], performances_student = [];
+
+	indexs.forEach(index => {
+		// to insert the new row id
+		rows.push([assessment_id]);
+
+		// the performance to be inserted
+		performances_student.push(performance_records[index]);
 	});
 
-	let index = 0;
-	data.forEach(async (entry) => {
-		// console.log("Inserting: ", entry);
-		await queries.insertStudentScores([entry.assessment_ID, entry.perfC, entry.scores]).catch((err) => {
-			console.log("Error: ", err);
-		});
-		index++;
+	insertStudentScores(rows, performances_student, assessment_id).then((success) => {
+		console.log("Data was successfully added");
+		return res.json({ error: false, message: "success" });
+	}).catch((err) => {
+		console.log("Error Performance table: ", err);
+		return res.json({ error: true, message: "data is undefined" });
 	});
-	index = 0;
 });
+
 
 
 /* 

@@ -164,7 +164,87 @@ async function create_evaluation_rubric(rubric) {
     });
 }
 
+/**
+ * insertStudentScores() -> function that executes query which inserts student scores to database.
+ * @param {Array} rows -> [...Assessment id]
+ * @param {Array} performances -> [null, Assessment id]
+ * @returns {Boolean} -> returns true if successful.
+*/
+function insertStudentScores(rows, performances, assessmentID) {
 
+    return new Promise((resolve, reject) => {
+
+        connection.beginTransaction(function (err) {
+            if (err) { return reject(err) }
+
+            // query
+            let deletePrevEntry = `DELETE FROM EVALUATION_ROW WHERE EVALUATION_ROW.assessment_ID = ?`;
+
+            // delete previus entries
+            connection.query(deletePrevEntry, [assessmentID], function (error, results) {
+                if (error) return connection.rollback(function () {return reject(error);});
+
+                // query
+                let insert_evaluation_row = 'INSERT INTO EVALUATION_ROW(assessment_ID) VALUES ?';
+
+                // insert new entries
+                connection.query(insert_evaluation_row, [rows], function (error, results) {
+                    // dont save the data
+                    if (error) return connection.rollback(function () { return reject(error); });
+
+                    // get all row id in order
+                    let get_row_query = 'SELECT row_ID FROM EVALUATION_ROW WHERE assessment_ID = ? ORDER BY row_ID ASC';
+
+                    connection.query(get_row_query, [assessmentID], async function (error, results) {
+                        if (error) return connection.rollback(function () { return reject(error); });
+
+                        // get an array of all row_ids
+                        let row_ids = results.map(record => record["row_ID"]);
+
+                        // combine row_ids with its respective performances evaluation
+                        let row_perf = await transformInRowPerf(row_ids, performances);
+
+                        // query
+                        let insert_row_performance = `INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES ?`;
+
+                        // insert student data
+                        connection.query(insert_row_performance, [row_perf], function (error, results) {
+                            if (error) return connection.rollback(function () { return reject(error); });
+
+                            // save the changes
+                            connection.commit(function (err) {
+                                if (err) return connection.rollback(function () { reject(err); });
+                                
+                                // Success
+                                resolve(true);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
+/**
+ * transformInRowPerf - combine the row_ids with the performances
+ * @param {Array} row_ids - Array with the row id number
+ * @param {Array} performances - Array with the row id number
+ * @returns {Array[Array]} - return array of array
+ */
+function transformInRowPerf(row_ids, performances) {
+    let row_perf = [];
+    // iter all row ids
+    for (let i = 0; i < row_ids.length; i++) {
+        // iter all perfC and scores
+        for (let j = 0; j < performances[i]["perfC"].length; j++) {
+            row_perf.push([row_ids[i], performances[i]["perfC"][j], performances[i]["scores"][j]]);
+        }
+    }
+
+    return row_perf;
+}
+
+module.exports.insertStudentScores = insertStudentScores;
 module.exports.create_user = create_user;
 module.exports.create_course = create_course;
 module.exports.create_evaluation_rubric = create_evaluation_rubric;

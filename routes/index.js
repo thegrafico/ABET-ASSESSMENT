@@ -11,6 +11,18 @@ let locals = {
  GET /login 
 */
 router.get('/', function (req, res) {
+	
+	let sess = req.session;
+
+	if (sess != undefined && sess.user_email) {
+
+		if (sess.user_profile == "admin") {
+			return res.redirect("/admin");
+		}else if( (sess.user_profile == "director") || (sess.user_profile == "professor")){
+			return (res.redirect("/professor"))
+		}
+	}
+
 	locals.title = "Login";
 	res.render('login', locals);
 });

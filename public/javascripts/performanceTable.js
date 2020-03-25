@@ -47,7 +47,7 @@ $(document).ready(function () {
     });
     
     $('#save').click(function() {
-        insertEvaluation(mapData(data, assessment_ID));
+        insertEvaluation(mapData(data, assessment_ID), assessment_ID);
     });
 });
 
@@ -262,11 +262,11 @@ function createChart() {
  * @param {Array} -> Array of arrays containing the scores per row
  * @param {Number} -> Assessment ID of the current report
 */
-function insertEvaluation(entryData) {	
+function insertEvaluation(entryData, assessment_id) {
     console.log("Inserting: ", entryData);
 	$.ajax({
 		type: "POST",
-		url: '/professor/assessment/insertData',
+		url: `/professor/assessment/${assessment_id}/performancetable`,
      data: {data: entryData},
 		dataType: 'json',
 		success: () => {

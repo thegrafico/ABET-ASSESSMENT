@@ -48,53 +48,6 @@ function deletePrevEntry(assessment_ID) {
 	});
 }
 
-
-/**
- * insertStudentScores() -> function that executes query which inserts student scores to database.
- * @param {Array} data -> [assessment_ID, perc_ID, row_perc_score]
- * @returns {Boolean} -> returns true if successful.
-*/
-function insertStudentScores(data) {
-	return new Promise((resolve, reject) => {
-		let transactionQuery =
-			[`INSERT INTO EVALUATION_ROW(assessment_ID) VALUES(?);`,
-				`INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES(?, ?, ?);`
-			];
-		conn.getConnection(function (err, conn) {
-			conn.beginTransaction(function (err) {
-				if (err) { throw err; }
-				conn.query(transactionQuery[0], data[0], function (error, results, fields) {
-					if (error) {
-						return conn.rollback(function () {
-							reject(error);
-						});
-					}
-
-					let last_insert_id = results.insertId;
-
-					for (let i = 0; i < data[1].length; i++) {
-						conn.query(transactionQuery[1], [last_insert_id, data[1][i], data[2][i]], function (error, results, fields) {
-							if (error) {
-								return conn.rollback(function () {
-									reject(error);
-								});
-							}
-						});
-					}
-					conn.commit(function (err) {
-						if (err) {
-							return conn.rollback(function () {
-								reject(err);
-							});
-						}
-						resolve(true);
-					});
-				});
-			});
-		});
-	});
-}
-
 /**
  * getEvaluationByID() -> function that retrieve all entries from a specific Assessment ID
  * @param {Number} -> Assessment ID
@@ -321,6 +274,5 @@ module.exports.get_department_by_user_id = get_department_by_user_id;
 module.exports.deleteRowWithAssessmentID = deleteRowWithAssessmentID;
 module.exports.insert_professor_input = insert_professor_input;
 module.exports.update_professor_input = update_professor_input;
-module.exports.insertStudentScores = insertStudentScores;
 module.exports.deletePrevEntry = deletePrevEntry;
 module.exports.getEvaluationByID = getEvaluationByID;

@@ -138,6 +138,44 @@ module.exports.get_performance_criteria_results = function get_performance_crite
 	return {outcomeRowAVG, results};
 }
 
+/**
+ * getNumbersOfRows - get the numer of row to crete
+ * @param {Array[Object]} performances 
+ * @returns {Array[Number]} - Array with the index of element to create the row
+ */
+module.exports.getNumbersOfRows = function getNumbersOfRows(performances){
+	let index = []; 
+
+	if (performances == undefined || performances.length == 0){
+		return 0;
+	}
+
+	const len_expected = performances[0]["perfC"].length;
+
+	performances.forEach((element, i) => {
+
+		// console.log(`${len_expected} == ${element["scores"].length}`);
+		let flag = false;
+		if (len_expected == element["scores"].length){
+
+			for (let j = 0; j < len_expected; j++) {
+				
+				const e = element["scores"][j];
+				
+				if (e == '' || isNaN(e)){
+					flag = true;
+					break;
+				}
+			}
+			if (!flag){
+				index.push(i);
+			}
+		}
+	});
+
+	return index;
+}
+
 
 
 

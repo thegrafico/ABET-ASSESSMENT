@@ -91,9 +91,9 @@ function hasProfile(req, res, next) {
 
     if (sess != undefined && sess.user_email) {
 
-        let haveProfile = ((sess.user_profile == "professor") ||
-            (sess.user_profile == "admin") ||
-            (sess.user_profile == "director"));
+        let haveProfile = ((sess.user_profile == professor) ||
+            (sess.user_profile == admin) ||
+            (sess.user_profile == director));
 
         // console.log("Have profile: ", haveProfile, sess.user_profile);
         if (haveProfile) {
