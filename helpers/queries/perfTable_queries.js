@@ -82,9 +82,9 @@ function insertStudentScores(data) {
 					}
 					conn.commit(function(err) {
 						if (err) {
-						return conn.rollback(function() {
-							reject(err);
-						});
+							return conn.rollback(function() {
+								reject(err);
+							});
 						}
 						console.log('success!');
 						resolve('success!');
