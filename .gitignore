@@ -1,6 +1,5 @@
 node_modules/
-helpers/raul_credentials.js
-helpers/noah_credentials.js
+helpers/credentials.js
 helpers/mysqlConnection.js
 ~$cument.docx
 Document.docx

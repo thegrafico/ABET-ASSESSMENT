@@ -376,7 +376,13 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-			req.flash("success", "Assessment was moved to completed section!");
+
+			if (status == "completed") {
+				req.flash("success", "Assessment was moved to completed section!");
+			}else{
+				req.flash("success", "Assessment data was saved!");
+			}
+
 			res.redirect(`${base_url}/assessment/${id}/report`);
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
@@ -390,7 +396,13 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-			req.flash("success", "Assessment was moved to the complete section!");
+			
+			if (status == "completed") {
+				req.flash("success", "Assessment was moved to completed section!");
+			}else{
+				req.flash("success", "Assessment data was saved!");
+			}
+			
 			res.redirect(base_url);
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
