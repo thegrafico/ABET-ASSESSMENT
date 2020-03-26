@@ -6,6 +6,8 @@ var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
 var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
 var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
+const { admin, coordinator } = require("../../helpers/profiles");
+
 /* GLOBAL LOCALS */
 const base_url = '/professor';
 let locals = {
@@ -61,6 +63,7 @@ router.get('/', async function (req, res) {
 	// assign value of table info
 	locals.departments = departments || [];
 	locals.academic_term = academic_term || [];
+	locals.HavePrivilege = (req.session.user_profile == admin || req.session.user_profile == coordinator ); 
 	res.render('professor/index', locals);
 
 });
@@ -206,8 +209,6 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 		return res.json({ error: true, message: "data is undefined" });
 	});
 });
-
-
 
 /* 
 	- UPDATE AN ASSESSMENT INFORMATION - 
@@ -379,11 +380,13 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 
 			if (status == "completed") {
 				req.flash("success", "Assessment was moved to completed section!");
+				res.redirect(`${base_url}/assessment/${id}/report`);
+
 			}else{
 				req.flash("success", "Assessment data was saved!");
+				res.redirect(base_url);
 			}
 
-			res.redirect(`${base_url}/assessment/${id}/report`);
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
 			req.flash("error", "There is an error trying to update the data");
@@ -399,11 +402,12 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			
 			if (status == "completed") {
 				req.flash("success", "Assessment was moved to completed section!");
+				res.redirect(`${base_url}/assessment/${id}/report`);
 			}else{
 				req.flash("success", "Assessment data was saved!");
+				res.redirect(base_url);
 			}
-			
-			res.redirect(base_url);
+
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
 			req.flash("error", "There is an error trying to add the data");

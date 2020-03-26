@@ -26,11 +26,23 @@
 }
 
 .side-bar-title {
-    /* border: 1px solid red; */
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
     border-bottom: 1px solid #706c61;
+}
+
+.side-bar-title p{
+    margin-bottom: 0;
+}
+
+.coordinatorOptions p {
+    margin: 0;
+    padding: 5%;
+}
+
+.coordinatorOptions{
+    border-top: 1px solid #706c61;
 }
 
 .mg-0,
@@ -160,4 +172,13 @@ th:first-child{
 .filter-box div, .filter-box div select{
     /* margin-top: 10%; */
     height: 100%;
+}
+
+.coordinatorBtn button{
+    border-color: gray;
+}
+
+.coordinatorBtn button:hover{
+    border-color: gray;
+    background-color: #706c61;
 }

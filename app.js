@@ -3,8 +3,6 @@ require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var ejs = require("ejs");
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
@@ -12,6 +10,7 @@ var authHelper = require('./helpers/auth');
 var flash = require("connect-flash");
 const middleware = require("./middleware/validateUser");
 var { options, db } = require("./helpers/mysqlConnection");
+const {admin, coordinator, routes} = require("./helpers/profiles");
 db = db.mysql_pool;
 
 // connect to db
@@ -104,10 +103,20 @@ app.use(function (req, res, next) {
 
 	// is user admin = true, eitherway false 
 	if (req.session != undefined && req.session.user_email) {
-		res.locals.isAdmin = (req.session.user_profile == "admin") ? true : false;
-	} else {
-		res.locals.isAdmin = false;
+
+		// load header options
+		res.locals.hasAdminPrivilege = (req.session.user_profile == admin || req.session.user_profile == coordinator);
+
+		// load admin options
+		if (res.locals.hasAdminPrivilege){
+			res.locals.adminOptions = routes[req.session.user_profile];
+		}
+
+	}else{
+		res.locals.hasAdminPrivilege = false;
+		res.locals.adminOptions = [];
 	}
+
 	next();
 });
 
@@ -116,25 +125,25 @@ app.use('/', indexRouter);
 // ===== LOGIN AND SIGN OUT =====
 app.use('/authorize', authorize);
 // ===== PROFESSOR =====
-app.use('/professor', middleware.is_login,middleware.is_professor, assessmentRouter);
-// ===== School Term Section =====
-app.use(`${admin_route}/term`, middleware.is_login, middleware.is_admin, schoolTermRouter);
+app.use('/professor', middleware.is_login, middleware.is_professor, assessmentRouter);
 // ===== Departments Section =====
 app.use(`${admin_route}/department`, middleware.is_login, middleware.is_admin, departmentRouter);
-// ===== Study Programs Section =====
-app.use(`${admin_route}/studyprograms`, middleware.is_login, middleware.is_admin, studyProgramsRouter);
 // ===== Users Section =====
 app.use(`${admin_route}/users`, middleware.is_login, middleware.is_admin, usersRouter);
-// ===== Outcomes Section =====
-app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.is_admin, outcomesRouter);
-// ===== Performance Criteria Section =====
-app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.is_admin, perfCritRouter);
-// ===== EVALUATION RUBRIC =====
-app.use(`${admin_route}/evaluation`, middleware.is_login, middleware.is_admin, evaluationRubric);
+// ===== Study Programs Section =====
+app.use(`${admin_route}/studyprograms`, middleware.is_login, middleware.is_admin, studyProgramsRouter);
 // ===== Courses Section =====
 app.use(`${admin_route}/courses`, middleware.is_login, middleware.is_admin, coursesRouter);
+// ===== Outcomes Section =====
+app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.hasAdminPrivilege, outcomesRouter);
+// ===== Performance Criteria Section =====
+app.use(`${admin_route}/outcomes`, middleware.is_login, middleware.hasAdminPrivilege, perfCritRouter);
+// ===== EVALUATION RUBRIC =====
+app.use(`${admin_route}/evaluation`, middleware.is_login, middleware.hasAdminPrivilege, evaluationRubric);
+// ===== School Term Section =====
+app.use(`${admin_route}/term`, middleware.is_login, middleware.hasAdminPrivilege, schoolTermRouter);
 // ===== CourseMapping Section =====
-app.use(`${admin_route}/courseMapping`, middleware.is_login, middleware.is_admin, courseMapping);
+app.use(`${admin_route}/courseMapping`, middleware.is_login, middleware.hasAdminPrivilege, courseMapping);
 
 /**
  * API TO GET THE DATA FROM REQUEST

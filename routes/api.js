@@ -524,9 +524,6 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
     current_mapping = current_course_mapping(outcome_course)
     outcome_course = transform_outcome_courses(outcome_course);
 
-    // console.log(outcome_course);
-    // console.log(mapping);
-
 	res.json({mapping, outcome_course, current_mapping});
 });
 

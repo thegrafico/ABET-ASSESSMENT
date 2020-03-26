@@ -4,12 +4,8 @@
  * Class Description: middleware to validate the user seccion and roles
 */
 var { db } = require("../helpers/mysqlConnection"); //pool connection
+const { admin, professor, coordinator, profilesWithPrivilege } = require("../helpers/profiles");
 conn = db.mysql_pool;
-
-const admin = "admin";
-const professor = "professor";
-const director = "director";
-
 
 /**
  * get_user_role get the user profile
@@ -30,7 +26,7 @@ async function get_user_role(email) {
         conn.query(query, [email.toLowerCase()], function (err, results) {
             if (err) return reject(err);
 
-            resolve(results[0]);
+            resolve(results[0] || []);
         });
     });
 }
@@ -40,15 +36,47 @@ async function get_user_role(email) {
  */
 function is_admin(req, res, next) {
     let sess = req.session;
+    
     // is user login? 
     if (sess != undefined && sess.user_email) {
+        
         if (sess.user_profile == admin) {
             return next();
+        }else{
+             if (sess.user_profile == professor || sess.user_profile == coordinator){
+                req.flash("error", "You don't have privileges");
+                return res.redirect("/professor");
+             }
         }
     }
     req.flash("error", "You don't have admin privilege");
     res.redirect("back");
 }
+
+/**
+ * is_admin Middleware to verify is user is admin
+ */
+function hasAdminPrivilege(req, res, next) {
+    let sess = req.session;
+    
+    // is user login? 
+    if (sess != undefined && sess.user_email) {
+        
+        // verify if have admin privilege
+        if (profilesWithPrivilege.includes(sess.user_profile)) {
+            return next();
+        }else{
+             if (sess.user_profile == professor || sess.user_profile == coordinator){
+                req.flash("error", "You don't have privileges");
+                return res.redirect("/professor");
+             }
+        }
+    }
+
+    req.flash("error", "You don't have admin privilege");
+    res.redirect("back");
+}
+
 
 
 /**
@@ -58,10 +86,11 @@ function is_professor(req, res, next) {
     let sess = req.session;
     // is user login? 
     if (sess != undefined && sess.user_email) {
-        if (sess.user_profile == professor || sess.user_profile == admin || sess.user_profile == director) {
+        if (sess.user_profile == professor || sess.user_profile == admin || sess.user_profile == coordinator) {
             return next();
         }
     }
+
     req.flash("error", "You don't have professor privilege");
     res.redirect("back");
 }
@@ -114,3 +143,4 @@ module.exports.is_login = is_login;
 module.exports.is_admin = is_admin;
 module.exports.is_professor = is_professor;
 module.exports.hasProfile = hasProfile;
+module.exports.hasAdminPrivilege = hasAdminPrivilege;

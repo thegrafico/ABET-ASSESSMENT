@@ -2,6 +2,7 @@ var express = require('express');
 var authHelper = require('../helpers/auth');
 var router = express.Router();
 var middleware = require("../middleware/validateUser");
+const {admin, professor, coordinator} = require("../helpers/profiles");
 
 let locals = {
 	title: 'ABET Assessment'
@@ -16,10 +17,10 @@ router.get('/', function (req, res) {
 
 	if (sess != undefined && sess.user_email) {
 
-		if (sess.user_profile == "admin") {
+		if (sess.user_profile == admin) {
 			return res.redirect("/admin");
-		}else if( (sess.user_profile == "director") || (sess.user_profile == "professor")){
-			return (res.redirect("/professor"))
+		}else if( (sess.user_profile == coordinator) || (sess.user_profile == professor)){
+			return res.redirect("/professor");
 		}
 	}
 
@@ -30,7 +31,7 @@ router.get('/', function (req, res) {
 /* 
  GET ADMIN HOME
 */
-router.get('/admin', middleware.is_login, middleware.is_admin, async function (req, res) {
+router.get('/admin', middleware.is_login, middleware.hasAdminPrivilege, async function (req, res) {
 	locals.title = "Admin";
 	res.render('admin/home', locals);
 });
