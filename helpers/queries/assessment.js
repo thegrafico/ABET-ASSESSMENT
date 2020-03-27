@@ -141,7 +141,11 @@ module.exports.get_professors_assessments = (user_id) => {
         INNER JOIN STUDENT_OUTCOME ON EVALUATION_RUBRIC.outc_ID = STUDENT_OUTCOME.outc_ID
         INNER JOIN STUDY_PROGRAM ON STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
         INNER JOIN DEPARTMENT ON STUDY_PROGRAM.dep_ID = DEPARTMENT.dep_ID
-        WHERE DEPARTMENT.dep_ID IN (SELECT USER_DEP.dep_ID FROM USER_DEP WHERE USER_DEP.user_ID = ?)`;
+        INNER JOIN COURSE ON ASSESSMENT.course_ID = COURSE.course_ID
+        INNER JOIN ACADEMIC_TERM ON ASSESSMENT.term_ID = ACADEMIC_TERM.term_ID
+        INNER JOIN USER ON USER.user_ID = ASSESSMENT.user_ID
+        WHERE DEPARTMENT.dep_ID IN (SELECT USER_DEP.dep_ID FROM USER_DEP WHERE USER_DEP.user_ID = ?)
+        ORDER BY ASSESSMENT.creation_date ASC`;
 
         // EXe query
         conn.query(get_assessments, [user_id], function (err, results) {

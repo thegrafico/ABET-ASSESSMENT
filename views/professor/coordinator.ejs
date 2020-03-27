@@ -1,6 +1,112 @@
 <%- include ('../admin/partials/header') -%>
 
-<h1>HOLA</h1>
 
+<div class="container-fluid">
+    <table id="table" class="table table-fixed table-hover">
+
+        <thead class="thead-dark">
+            <tr>
+                <th>Professor</th>
+                <th>Assessment</th>
+                <th>Course</th>
+                <th>Outcome</th>
+                <th>Status</th>
+                <th>Term</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="filter">
+
+            <% if (assessments.length > 0) { %>
+
+
+
+            <% assessment_completed.forEach( (each) => { %>
+            <tr>
+                <td> <%=each["first_name"]%> <%= each["last_name"]%> </td>
+                <td> <%=each["name"]%> </td>
+                <td> <%=each["course_number"]%> </td>
+                <td> <%=each["outc_name"]%> </td>
+                <td class="status <%=each["status"]["class"]%>"> <%=each["status"]["name"]%> </td>
+                <td> <%=each["term_name"]%> </td>
+                <td>1</td>
+            </tr>
+            <% }); %>
+
+            <% assessment_in_progress.forEach( (each) => { %>
+            <tr>
+                <td> <%=each["first_name"]%> <%= each["last_name"]%> </td>
+                <td> <%=each["name"]%> </td>
+                <td> <%=each["course_number"]%> </td>
+                <td> <%=each["outc_name"]%> </td>
+                <td class="status <%=each["status"]["class"]%>"> <%=each["status"]["name"]%> </td>
+                <td> <%=each["term_name"]%> </td>
+
+                <td>1</td>
+            </tr>
+            <% }); %>
+
+            <% assessment_archive.forEach( (each) => { %>
+            <tr>
+                <td> <%=each["first_name"]%> <%= each["last_name"]%> </td>
+                <td> <%=each["name"]%> </td>
+                <td> <%=each["course_number"]%> </td>
+                <td> <%=each["outc_name"]%> </td>
+                <td class="status <%=each["status"]["class"]%>"> <%=each["status"]["name"]%> </td>
+                <td> <%=each["term_name"]%> </td>
+
+                <td>1</td>
+            </tr>
+            <% }); %>
+
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .container-fluid {
+        margin-top: 2%;
+    }
+
+    tr,
+    th {
+        text-align: center;
+    }
+
+    /* 
+    th:first-child, td:first-child{
+        width: 2%;
+
+    } */
+
+    .status {
+        color: white;
+        font-weight: bold;
+    }
+
+    .in_progress {
+        background-color: #17a2b8;
+
+    }
+
+    .completed {
+        background-color: #28a745;
+
+    }
+
+    .archive {
+        background-color: #6c757d;
+
+    }
+</style>
+
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/stylesheets/professor_index.css">
+<!-- STATIC HEADER -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
+<!-- MODAL -->
+<script src="/javascripts/modals/assessments.js"></script>
+
 <%- include ('../admin/partials/footer') -%>

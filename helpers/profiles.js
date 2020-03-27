@@ -45,4 +45,16 @@ module.exports.routes = {
     coordinator: coordinatorOptions,
 };
 
+module.exports.statusOfAssessment = {
+    completed: "completed", 
+    in_progress: "in_progress",
+    archive: "archive"
+};
+
+/* Coordinator Table status*/
+module.exports.assessmentStatus = {
+    "in_progress": { name: "In Progress" },
+    "completed": { name: "Completed" },
+    "archive": { name: "Archive" }
+};
 

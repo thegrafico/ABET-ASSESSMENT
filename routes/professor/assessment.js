@@ -6,7 +6,7 @@ var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
 var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
 var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
-const { admin, coordinator } = require("../../helpers/profiles");
+const { admin, coordinator, statusOfAssessment} = require("../../helpers/profiles");
 
 /* GLOBAL LOCALS */
 const base_url = '/professor';
@@ -18,10 +18,9 @@ let locals = {
 };
 
 // Assessments status
-const progress = "in_progress";
-const completed = "completed";
-const archive = "archive";
-
+const progress = statusOfAssessment.in_progress;
+const completed = statusOfAssessment.completed;
+const archive = statusOfAssessment.archive;
 
 /*
 	- Get /professor
@@ -61,9 +60,9 @@ router.get('/', async function (req, res) {
 			row.creation_date = `${row.creation_date.getMonth() + 1}/${row.creation_date.getDate()}/${row.creation_date.getFullYear()}`;
 		});
 
-		locals.assessment_in_progress = assessments.filter(each => each.status == "in_progress");
-		locals.assessment_completed = assessments.filter(each => each.status == "completed");
-		locals.assessment_archive = assessments.filter(each => each.status == "archive");
+		locals.assessment_in_progress = assessments.filter(each => each.status == progress);
+		locals.assessment_completed = assessments.filter(each => each.status == completed);
+		locals.assessment_archive = assessments.filter(each => each.status == archive);
 	}
 
 	// assign value of table info
