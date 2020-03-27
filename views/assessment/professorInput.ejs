@@ -42,7 +42,7 @@
             </table>
 
             <div class="container">
-                <h3 class="mb-4">Result of the Course: </h3>
+                <h3 class="mb-4">* Result of the Course: </h3> <span class="errorMsg" id="errorResult" > </span>
                 <hr>
                 <div class="form-group">
                     <textarea id="results_of_course" class="form-control" name="course[results]"
@@ -52,7 +52,7 @@
 
 
             <div class="container">
-                <h3 class="mb-4">Modification Made to Course: </h3>
+                <h3 class="mb-4">* Modification Made to Course: </h3> <span class="errorMsg" id="errorModification" > </span>
                 <hr>
                 <div class="form-group">
                     <textarea class="form-control" name="course[modification]" id="course_modification" rows="5"
@@ -61,7 +61,7 @@
             </div>
 
             <div class="container">
-                <h3 class="mb-4">Course Reflection: </h3>
+                <h3 class="mb-4">* Course Reflection: </h3> <span class="errorMsg" id="errorReflection" > </span>
                 <hr>
                 <div class="form-group">
                     <textarea class="form-control" name="course[reflection]" id="course_reflection" rows="5"
@@ -69,12 +69,22 @@
                 </div>
             </div>
             <div class="container">
-                <h3 class="mb-4">Proposed Action for Course Improvement: </h3>
+                <h3 class="mb-4">* Proposed Action for Course Improvement: </h3> <span class="errorMsg" id="errorImprovement" > </span>
                 <hr>
                 <div class="form-group">
                     <!-- <label for="exampleFormControlTextarea1">Example textarea</label> -->
                     <textarea class="form-control" name="course[improvement]" id="course_action" rows="5"
                         placeholder="Insert Proposed Action"><%=course_actions%></textarea>
+                </div>
+            </div>
+
+            <!-- TODO: Outcome result var -->
+            <div class="container">
+                <h3 class="mb-4">* Result of Outcome: </h3> <span class="errorMsg" id="errorOutcome" > </span>
+                <hr>
+                <div class="form-group">
+                    <textarea class="form-control" name="course[result_outcome]" id="outcomeResult" rows="5"
+                        placeholder="Insert Proposed Action"><%=result_outcome%></textarea>
                 </div>
             </div>
 
@@ -88,98 +98,22 @@
                     <!-- FINISH BTN -->
                     <input id="finish_professor_input" name="finish" class="btn btn-secondary" type="submit"
                         value="Finish Assessment">
+
+                    <span class="errorMsg" id="finishError"></span>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
+<!-- SUPERNOTE -->
+<script src="/summernote-0.8.16-dist/summernote.min.js"></script>
 
-        // form id
-        let tagForm = "#course_evaluation";
+<!-- Professor Input -->
+<script src="/javascripts/professorInput.js"></script>
 
-        // Grades Options
-        let A = "#A", B = "#B", C = "#C", D = "#D", F = "#F", W = "#W";
-        let total = "#total";
-        let notas = [A, B, C, D, F, W];
-        let grades = undefined;
-
-        //To sum values
-        const suma = (accumulator, currentValue) => accumulator + currentValue;
-
-        // SUM ALL VALUES
-        $(`${tagForm} :input`).change(function () {
-            let sum = notas.reduce(suma);
-            grades = 0;
-            notas.forEach(n => {
-                let val = $(n).val();
-
-                if (val == undefined || val == '' || val.length == 0) {
-                    val = 0;
-                }
-
-                grades += parseInt(val);
-
-            });
-            $(total).val(grades);
-        });
-
-        // Save the data
-        $("#saveBtn").click(function(e){
-            let areEmpty = true;
-            $(".gradeInputs").each(function(){
-                
-                let val = $(this).val();
-
-                if (val != "" && isNaN(val)){
-                    $(this).val(0);
-                }
-            }); 
-        });
-
-        // =============================SUPER NOTE ==================================
-        // INIT ALL SUPERNTOES
-        let placeholders = ["Results", "Modifications", "Reflection", "Actions"];
-        let tag_suppernote = ["results_of_course", "course_modification", "course_reflection", "course_action"];
-        for (let i = 0; i < tag_suppernote.length; i++) {
-            $(`#${tag_suppernote[i]}`).summernote(return_supernote_options(placeholders[i]));
-        }
-
-        /*
-            Course information Boxes
-            TODO: Validate of all boxes
-        */
-        $("#finish_professor_input").click(function (e) {
-
-            // Validating the box result of course
-            if ($('#results_of_course').summernote('isEmpty')) {
-                alert('Please fill out ');
-                e.preventDefault(e);
-            }
-        });
-
-        // Options for boxes
-        function return_supernote_options(placeholder) {
-            // Options for all supernoes
-            return {
-                placeholder: placeholder,
-                height: 150,
-                minHeight: 100,             // set minimum height of editor
-                maxHeight: 300,
-                toolbar: [
-                    // [groupName, [list of button]]
-                    ['style', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough', 'superscript', 'subscript']],
-                    // ['fontsize', ['fontsize']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                ],
-            }
-        }
-    });
-
-</script>
-
+<!-- STYLES -->
 <link rel="stylesheet" href="/stylesheets/professor_input.css">
+<link rel="stylesheet" href="/summernote-0.8.16-dist/summernote.min.css">
+
 <%- include ('../admin/partials/footer') -%>

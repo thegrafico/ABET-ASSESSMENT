@@ -4,7 +4,7 @@
  * Class Description: middleware to validate the user seccion and roles
 */
 var { db } = require("../helpers/mysqlConnection"); //pool connection
-const { admin, professor, coordinator, profilesWithPrivilege } = require("../helpers/profiles");
+const { admin, professor, coordinator, profilesWithPrivilege, allProfiles } = require("../helpers/profiles");
 conn = db.mysql_pool;
 
 /**
@@ -36,17 +36,17 @@ async function get_user_role(email) {
  */
 function is_admin(req, res, next) {
     let sess = req.session;
-    
+
     // is user login? 
     if (sess != undefined && sess.user_email) {
-        
+
         if (sess.user_profile == admin) {
             return next();
-        }else{
-             if (sess.user_profile == professor || sess.user_profile == coordinator){
+        } else {
+            if (sess.user_profile == professor || sess.user_profile == coordinator) {
                 req.flash("error", "You don't have privileges");
                 return res.redirect("/professor");
-             }
+            }
         }
     }
     req.flash("error", "You don't have admin privilege");
@@ -58,18 +58,18 @@ function is_admin(req, res, next) {
  */
 function hasAdminPrivilege(req, res, next) {
     let sess = req.session;
-    
+
     // is user login? 
     if (sess != undefined && sess.user_email) {
-        
+
         // verify if have admin privilege
         if (profilesWithPrivilege.includes(sess.user_profile)) {
             return next();
-        }else{
-             if (sess.user_profile == professor || sess.user_profile == coordinator){
+        } else {
+            if (sess.user_profile == professor || sess.user_profile == coordinator) {
                 req.flash("error", "You don't have privileges");
                 return res.redirect("/professor");
-             }
+            }
         }
     }
 
@@ -86,8 +86,11 @@ function is_professor(req, res, next) {
     let sess = req.session;
     // is user login? 
     if (sess != undefined && sess.user_email) {
-        if (sess.user_profile == professor || sess.user_profile == admin || sess.user_profile == coordinator) {
+
+        // if the user has a profile
+        if (allProfiles.includes(sess.user_profile)) {
             return next();
+
         }
     }
 
@@ -122,7 +125,7 @@ function hasProfile(req, res, next) {
 
         let haveProfile = ((sess.user_profile == professor) ||
             (sess.user_profile == admin) ||
-            (sess.user_profile == director));
+            (sess.user_profile == coordinator));
 
         // console.log("Have profile: ", haveProfile, sess.user_profile);
         if (haveProfile) {

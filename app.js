@@ -47,8 +47,10 @@ var coursesRouter = require('./routes/courses');
 var perfCritRouter = require('./routes/performanceCriteria');
 // ====== AUTHORIZE ROUTE ====
 var authorize = require('./routes/authorize');
-// ===== Program/Course/Term Selection =====
+// ===== PROFESSOR =====
 var assessmentRouter = require('./routes/professor/assessment');
+// ===== COORDINATOR =====
+var coordinatorRoute = require('./routes/professor/coordinator');
 // ===== CourseMapping Route =====
 var courseMapping = require('./routes/courseMapping');
 // ===== API =====
@@ -126,6 +128,8 @@ app.use('/', indexRouter);
 app.use('/authorize', authorize);
 // ===== PROFESSOR =====
 app.use('/professor', middleware.is_login, middleware.is_professor, assessmentRouter);
+// ===== COORDINATOR =====
+app.use('/professor/coordinator', middleware.is_login, middleware.is_professor, coordinatorRoute);
 // ===== Departments Section =====
 app.use(`${admin_route}/department`, middleware.is_login, middleware.is_admin, departmentRouter);
 // ===== Users Section =====

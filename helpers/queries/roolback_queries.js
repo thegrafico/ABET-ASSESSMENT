@@ -11,7 +11,7 @@ connection.connect();
  * @param {Array} departments_id ids of departments 
  * @return {Promise} resolve with all profiles
  */
-async function create_user(user, profile_id, departments_id) {
+module.exports.create_user = function create_user(user, profile_id, departments_id) {
 
 
     // add user promise
@@ -70,7 +70,7 @@ async function create_user(user, profile_id, departments_id) {
  * @param {Array} study_program_ids id of study programs
  * @return {Promise} resolve with all profiles
  */
-async function create_course(course) {
+module.exports.create_course = function create_course(course) {
 
     // add user promise
     return new Promise(function (resolve, reject) {
@@ -121,7 +121,7 @@ async function create_course(course) {
  * @param {Object} rubric -> {name, description, outcome_id, performance}
  * @return {Promise} resolve with true
  */
-async function create_evaluation_rubric(rubric) {
+module.exports.create_evaluation_rubric =  function create_evaluation_rubric(rubric) {
     return new Promise(function (resolve, reject) {
 
         connection.beginTransaction(function (err) {
@@ -170,7 +170,7 @@ async function create_evaluation_rubric(rubric) {
  * @param {Array} performances -> [null, Assessment id]
  * @returns {Boolean} -> returns true if successful.
 */
-function insertStudentScores(rows, performances, assessmentID) {
+module.exports.insertStudentScores = function insertStudentScores(rows, performances, assessmentID) {
 
     return new Promise((resolve, reject) => {
 
@@ -243,8 +243,3 @@ function transformInRowPerf(row_ids, performances) {
 
     return row_perf;
 }
-
-module.exports.insertStudentScores = insertStudentScores;
-module.exports.create_user = create_user;
-module.exports.create_course = create_course;
-module.exports.create_evaluation_rubric = create_evaluation_rubric;

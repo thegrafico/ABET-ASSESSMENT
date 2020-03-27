@@ -8,6 +8,10 @@ const admin = "admin";
 const coordinator = "coordinator";
 const professor = "professor";
 
+// all profiles
+module.exports.allProfiles = [admin, professor, coordinator];
+
+
 // Admin Routes
 const adminOptions = [
     { url: "admin/department", name: "Departments" },

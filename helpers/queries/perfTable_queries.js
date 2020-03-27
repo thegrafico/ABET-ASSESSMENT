@@ -186,7 +186,7 @@ function update_professor_input(id, grades, course_info) {
 	return new Promise(function (resolve, reject) {
 
 		let insert_query = `UPDATE REPORTS SET grade_A = ?, grade_B = ?, grade_C = ?, grade_D = ?, grade_F =?,
-		UW = ?, course_results = ?, course_reflection = ?, course_actions = ?, course_modification = ?
+		UW = ?, course_results = ?, course_reflection = ?, course_actions = ?, course_modification = ?, result_outcome = ?
 		WHERE assessment_ID = ?`;
 
 		let data = [
@@ -200,6 +200,7 @@ function update_professor_input(id, grades, course_info) {
 			course_info.reflection,
 			course_info.improvement,
 			course_info.modification,
+			course_info.result_outcome,	
 			id
 		];
 
