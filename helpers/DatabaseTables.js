@@ -1,0 +1,21 @@
+module.exports.academic_term = "ABET.ACADEMIC_TERM";
+module.exports.assessment = "ABET.ASSESSMENT";
+module.exports.course = "ABET.COURSE";
+module.exports.department = "ABET.DEPARTMENT";
+module.exports.evaluation_row = "ABET.EVALUATION_ROW";
+module.exports.evaluation_rubric = "ABET.EVALUATION_RUBRIC";
+module.exports.outcome_course = "ABET.OUTCOME_COURSE";
+module.exports.performance_rubric = "ABET.PERFORMANCE_RUBRIC";
+module.exports.performance_criteria = "ABET.PERF_CRITERIA";
+module.exports.profile = "ABET.PROFILE";
+module.exports.prog_course = "ABET.PROG_COURSE";
+module.exports.reports = "ABET.REPORTS";
+module.exports.row_perc = "ABET.ROW_PERC";
+module.exports.row_perc = "ABET.ROW_PERC";
+module.exports.student_outcome = "ABET.STUDENT_OUTCOME";
+module.exports.student_performance = "ABET.STUDENT_PERFORMANCE";
+module.exports.study_program = "ABET.STUDY_PROGRAM";
+module.exports.user = "ABET.USER";
+module.exports.user_study_program = "ABET.USER_STUDY_PROGRAM";
+module.exports.user_profiles = "ABET.USER_PROFILES";
+

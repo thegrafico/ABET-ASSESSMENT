@@ -8,6 +8,7 @@ var general_queries = require("../helpers/queries/general_queries");
 var department_query = require("../helpers/queries/department_queries");
 var roolback_queries = require("../helpers/queries/roolback_queries");
 const { user_create_inputs } = require("../helpers/layout_template/create");
+const table = require("../helpers/DatabaseTables");
 var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
 
 const base_url = "/admin/users";
@@ -19,7 +20,7 @@ var locals = {
 	form_id: "user_data",
 	api_get_url: "/api/get/user", // all api_url ends in the id
 	delete_redirect: null,
-	filter:true,
+	filter: true,
 	filter_title: "-- Department --",
 	feedback_message: "Number of users: "
 };
@@ -30,7 +31,7 @@ var locals = {
 */
 router.get('/', async function (req, res) {
 
-	locals.breadcrumb = [{"name": "Users", "url": base_url}];
+	locals.breadcrumb = [{ "name": "Users", "url": base_url }];
 
 	locals.results = [];
 
@@ -47,13 +48,13 @@ router.get('/', async function (req, res) {
 	});
 
 	// Departments
-	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+	let departments = await general_queries.get_table_info(table.department).catch((err) => {
 		console.error("ERROR GETTING DEPARTMENTS: ", err);
 	});
 
-	if (departments != undefined && departments.length > 0){
+	if (departments != undefined && departments.length > 0) {
 
-		locals.filter_value = departments.map( each => each.dep_name);
+		locals.filter_value = departments.map(each => each.dep_name);
 	}
 
 	let results = [];
@@ -88,8 +89,8 @@ router.get('/', async function (req, res) {
 router.get('/create', async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Users", "url": base_url},
-		{"name": "Create", "url": locals.url_create }
+		{ "name": "Users", "url": base_url },
+		{ "name": "Create", "url": locals.url_create }
 	];
 
 	// store all profiles
@@ -101,7 +102,7 @@ router.get('/create', async function (req, res) {
 	locals.title_action = "Create User";
 	locals.url_form_redirect = locals.url_create;
 	locals.btn_title = "Create";
-	locals.department = [];
+	locals.study_program = [];
 
 	// get all profiles
 	let profiles = await queries.get_all_profiles().catch((err) => {
@@ -115,20 +116,22 @@ router.get('/create', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
-	// get all deparments
-	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
-		console.log("Cannot get deparment information: ", err);
+	// Getting study program
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+		console.error("ERROR GETTING STD PROGRAM: ", err);
 	});
 
 	// verify is found any department
-	if (departments == undefined || departments.length == 0) {
-		console.log("There is not department created");
-		req.flash("error", "Please create a department before creating a user");
+	if (study_programs == undefined || study_programs.length == 0) {
+		console.error("Cannot find any study program");
+		req.flash("error", "Please create a Study program before creating a user");
 		return res.redirect(base_url);
 	}
 
-	departments.forEach((element) => {
-		locals.department.push({
+	console.log(study_programs);
+
+	study_programs.forEach((element) => {
+		locals.study_program.push({
 			label: element.dep_name,
 			value: element.dep_ID.toString()
 		});
@@ -148,7 +151,7 @@ router.get('/create', async function (req, res) {
 		});
 	});
 
-	locals.user_dept = [];
+	locals.user_profe = [];
 	locals.user_profile = -1;
 
 	res.render('admin/user/create_edit', locals);
@@ -165,7 +168,7 @@ router.post('/create', async function (req, res) {
 		return res.redirect("back");
 	}
 
-	if (req.body.selected_values == undefined || req.body.selected_values.length < 2){
+	if (req.body.selected_values == undefined || req.body.selected_values.length < 2) {
 		req.flash("error", "Department Cannot be empty");
 		return res.redirect("back");
 	}
@@ -218,7 +221,7 @@ router.post('/create', async function (req, res) {
 	--SHOW USERS EDIT--
  	GET /users/:id/edit
 */
-router.get('/:id/edit',  async function (req, res) {
+router.get('/:id/edit', async function (req, res) {
 
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)) {
@@ -228,8 +231,8 @@ router.get('/:id/edit',  async function (req, res) {
 
 	// Breadcrum for web
 	locals.breadcrumb = [
-		{"name": "Users", "url": base_url, "active": false},
-		{"name": "Edit", "url": ".", "active": true}
+		{ "name": "Users", "url": base_url, "active": false },
+		{ "name": "Edit", "url": ".", "active": true }
 	];
 
 	let user_id = req.params.id;
@@ -333,13 +336,13 @@ router.put('/:id', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
-	if (req.body.selected_values == ","){
+	if (req.body.selected_values == ",") {
 		req.flash("error", "Department Cannot be empty");
 		return res.redirect("back");
 	}
 
 	let user_id = parseInt(req.params.id);
-	
+
 	// key with expected types (string, number);
 	let keys_types = {
 		"interID": "s",
