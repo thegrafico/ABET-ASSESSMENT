@@ -5,11 +5,10 @@ var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
 var general_queries = require("../helpers/queries/general_queries");
-var department_query = require("../helpers/queries/department_queries");
 var roolback_queries = require("../helpers/queries/roolback_queries");
 const { user_create_inputs } = require("../helpers/layout_template/create");
 const table = require("../helpers/DatabaseTables");
-var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
+var { validate_form} = require("../helpers/validation");
 
 const base_url = "/admin/users";
 var locals = {
@@ -48,13 +47,13 @@ router.get('/', async function (req, res) {
 	});
 
 	// Departments
-	let departments = await general_queries.get_table_info(table.department).catch((err) => {
-		console.error("ERROR GETTING DEPARTMENTS: ", err);
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+		console.error("ERROR GETTING study programs: ", err);
 	});
 
-	if (departments != undefined && departments.length > 0) {
+	if (study_programs != undefined && study_programs.length > 0) {
 
-		locals.filter_value = departments.map(each => each.dep_name);
+		locals.filter_value = study_programs.map(each => each.prog_name);
 	}
 
 	let results = [];

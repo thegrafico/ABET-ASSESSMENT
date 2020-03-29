@@ -100,9 +100,8 @@
     <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term, emptyMsg: "Archive"}) -%>
 </div>
 
-
-<!-- MODAL CREATE -->
-<%- include ('./modal/create_assessment', {departments, academic_term}) -%>
+<!-- MODAL CREATE AND EDIT -->
+<%- include ('./modal/create_assessment', {study_programs, academic_term}) -%>
 
 <!-- MODAL DELETE -->
 <%- include ('./modal/delete_assessment') -%>

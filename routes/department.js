@@ -32,7 +32,6 @@ router.get('/', async function (req, res) {
 		{ "name": "Department", "url": base_url },
 	];
 
-
 	//Getting the  DEPARTMENT information from db
 	let all_deparment = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
 		console.error("Error getting deparment information: ", err);

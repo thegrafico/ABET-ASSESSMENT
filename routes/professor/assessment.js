@@ -4,6 +4,7 @@ var general_queries = require('../../helpers/queries/general_queries');
 var queries = require('../../helpers/queries/perfTable_queries');
 var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
+const table = require("../../helpers/DatabaseTables");
 var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
 var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
 const { admin, coordinator, statusOfAssessment} = require("../../helpers/profiles");
@@ -35,8 +36,8 @@ router.get('/', async function (req, res) {
 	let user_id = req.session.user_id;
 
 	// Get all departments
-	let departments = await queries.get_department_by_user_id(user_id).catch((err) => {
-		console.error("Error getting department: ", err);
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+		console.error("Error Study programs: ", err);
 	});
 
 	// Getting the term
@@ -66,7 +67,7 @@ router.get('/', async function (req, res) {
 	}
 
 	// assign value of table info
-	locals.departments = departments || [];
+	locals.study_programs = study_programs || [];
 	locals.academic_term = academic_term || [];
 	locals.HavePrivilege = (req.session.user_profile == admin || req.session.user_profile == coordinator);
 	res.render('professor/index', locals);
