@@ -271,7 +271,7 @@ router.get('/:id/edit', async function (req, res) {
 	locals.is_coordinator = user_std.map(each => each["is_coordinator"]);
 
 	// get all profiles
-	let profiles = await queries.get_all_profiles().catch((err) => {
+	let profiles = await general_queries.get_table_info(table.profile).catch((err) => {
 		console.log("There is an error getting the profiles: ", err);
 	});
 

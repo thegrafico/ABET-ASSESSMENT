@@ -76,32 +76,28 @@ $(document).ready(function () {
         // Get all information from assessment to edit
         let assessment_id = $(this).find('input[name="id"]').attr('value');
         let assessment_name = $(this).find('input[name="name"]').attr('value');
-        let dept = $(this).find('input[name="department"]').attr('value');
         let std = $(this).find('input[name="studyprogram"]').attr('value');
         let outc = $(this).find('input[name="outcome"]').attr('value');
         let course = $(this).find('input[name="course"]').attr('value');
         let rubric = $(this).find('input[name="rubric"]').attr('value');
         let term = $(this).find('input[name="term"]').attr('value');
 
-        console.log(
-            `ID: ${assessment_id} \n
-            Name: ${assessment_name} \n
-            dept: ${dept}\n
-            std: ${std}\n
-            out: ${outc}\n
-            course: ${course}\n
-            rubric: ${rubric}\n
-            term: ${term}
-            `
-        );
+        // console.log(
+        //     `ID: ${assessment_id} \n
+        //     Name: ${assessment_name} \n
+        //     dept: ${dept}\n
+        //     std: ${std}\n
+        //     out: ${outc}\n
+        //     course: ${course}\n
+        //     rubric: ${rubric}\n
+        //     term: ${term}
+        //     `
+        // );
 
         // Change the name
         $(tag_name).val(assessment_name);
         // Change the term
         $(tag_term).val(term);
-        // Change the department
-        $(tag_department).val(dept);
-
 
         // Update the department and setup the value
         await update_departmet(dept).catch((err) => {
@@ -112,7 +108,6 @@ $(document).ready(function () {
         for (let i = 0; i < tags.length; i++) {
             $(tags[i]).prop("disabled", false);
         }
-
 
         // Change study program, and update all study program
         $(tag_study_program).val(std);

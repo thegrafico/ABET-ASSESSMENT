@@ -72,7 +72,6 @@ router.get('/', async function (req, res) {
 				]
 			});
 		}
-
 		// remove duplicates
 		locals.filter_value = study_program.map(each => each["prog_name"]);
 		locals.results = results;

@@ -17,20 +17,33 @@ function get_user_role(email) {
 
     return new Promise(function (resolve, reject) {
 
-        if (email == undefined)
-            reject("invalid email");
+        if (email == undefined) return reject("invalid email");
 
         //Look for the email in the DB,if there is one, get the profile data 
-        let query = `SELECT * FROM (SELECT * FROM ${table.user} NATURAL JOIN ${table.user_profiles} WHERE ${table.user}.email = ?) as NT,
-        ${table.profile} WHERE NT.profile_ID = ${table.profile}.profile_ID;`;
+        // let query = `SELECT * FROM (SELECT * FROM ${table.user} NATURAL JOIN ${table.user_profiles} WHERE ${table.user}.email = ?) as NT,
+        // ${table.profile} WHERE NT.profile_ID = ${table.profile}.profile_ID;`;
 
-        conn.query(query, [email.toLowerCase()], function (err, results) {
+        let get_role_query = `
+        SELECT * FROM (SELECT * FROM ${table.user} NATURAL JOIN ${table.user_profiles} 
+        WHERE ${table.user}.email = ?) as NT 
+        INNER JOIN ${table.user_study_program} ON NT.user_ID = ${table.user_study_program}.user_ID
+        INNER JOIN ${table.study_program} ON ${table.user_study_program}.prog_ID = ${table.study_program}.prog_ID
+        INNER JOIN ${table.profile} ON NT.profile_ID = ${table.profile}.profile_ID`;
+
+        conn.query(get_role_query, [email.toLowerCase()], function (err, results) {
             if (err) return reject(err);
 
-            resolve(results[0] || []);
+            resolve(results);
         });
     });
 }
+
+
+// SELECT STUDY_PROGRAM.prog_name, USER_STUDY_PROGRAM.is_coordinator FROM
+// USER INNER JOIN USER_STUDY_PROGRAM ON USER.user_ID = USER_STUDY_PROGRAM.user_ID
+// INNER JOIN STUDY_PROGRAM ON USER_STUDY_PROGRAM.prog_ID = STUDY_PROGRAM.prog_ID
+// WHERE USER.user_ID = 5 AND USER_STUDY_PROGRAM.is_coordinator = 1;
+
 
 /**
  * is_admin Middleware to verify is user is admin

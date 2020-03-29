@@ -230,7 +230,8 @@ $(document).ready(function () {
             "outcome": "required",
             "rubric": "required",
             "term": "required",
-            "course": "required"
+            "course": "required",
+            "course_section": { required: true, minlength: 3, maxlength: 20, digits: true}
         },
         // Specify validation error messages
         messages: {
@@ -245,12 +246,17 @@ $(document).ready(function () {
             "outcome": "Select an Outcome",
             "rubric": "Select a Rubric",
             "term": "Select a Term",
-            "course": "Select a Course"
+            "course": "Select a Course",
+            "course_section": {
+                required: "Cannot be empty",
+                minlength: "Section is to short",
+                maxlength: "Section is to big",
+                digits: "Only numbers are accepted"
+            },
         },
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
         submitHandler: function (form) {
-            console.log("HERE");
             form.submit();
         }
     });
