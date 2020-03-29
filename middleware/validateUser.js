@@ -4,7 +4,8 @@
  * Class Description: middleware to validate the user seccion and roles
 */
 var { db } = require("../helpers/mysqlConnection"); //pool connection
-const { admin, professor, coordinator, profilesWithPrivilege, allProfiles } = require("../helpers/profiles");
+const { admin, profilesWithPrivilege, allProfiles } = require("../helpers/profiles");
+const table = require("../helpers/DatabaseTables");
 conn = db.mysql_pool;
 
 /**
@@ -12,7 +13,7 @@ conn = db.mysql_pool;
  * @param  {String} email email of the user
  * @return {Promise} resolve with results of database
  */
-async function get_user_role(email) {
+function get_user_role(email) {
 
     return new Promise(function (resolve, reject) {
 
@@ -20,8 +21,8 @@ async function get_user_role(email) {
             reject("invalid email");
 
         //Look for the email in the DB,if there is one, get the profile data 
-        let query = `SELECT * FROM (SELECT * FROM USER NATURAL JOIN USER_PROFILES WHERE USER.email = ?) as NT,
-        PROFILE WHERE NT.profile_ID = PROFILE.profile_ID;`;
+        let query = `SELECT * FROM (SELECT * FROM ${table.user} NATURAL JOIN ${table.user_profiles} WHERE ${table.user}.email = ?) as NT,
+        ${table.profile} WHERE NT.profile_ID = ${table.profile}.profile_ID;`;
 
         conn.query(query, [email.toLowerCase()], function (err, results) {
             if (err) return reject(err);
@@ -43,7 +44,7 @@ function is_admin(req, res, next) {
         if (sess.user_profile == admin) {
             return next();
         } else {
-            if (sess.user_profile == professor || sess.user_profile == coordinator) {
+            if (allProfiles.includes(sess.user_profile)) {
                 req.flash("error", "You don't have privileges");
                 return res.redirect("/professor");
             }
@@ -66,18 +67,15 @@ function hasAdminPrivilege(req, res, next) {
         if (profilesWithPrivilege.includes(sess.user_profile)) {
             return next();
         } else {
-            if (sess.user_profile == professor || sess.user_profile == coordinator) {
+            if (allProfiles.includes(sess.user_profile)) {
                 req.flash("error", "You don't have privileges");
                 return res.redirect("/professor");
             }
         }
     }
-
     req.flash("error", "You don't have admin privilege");
     res.redirect("back");
 }
-
-
 
 /**
  * is_professor middleware to verify is user is professor
@@ -123,12 +121,8 @@ function hasProfile(req, res, next) {
 
     if (sess != undefined && sess.user_email) {
 
-        let haveProfile = ((sess.user_profile == professor) ||
-            (sess.user_profile == admin) ||
-            (sess.user_profile == coordinator));
-
         // console.log("Have profile: ", haveProfile, sess.user_profile);
-        if (haveProfile) {
+        if (allProfiles.includes(sess.user_profile)) {
             next();
         } else {
             req.flash("error", "We don't have any record with your information.");

@@ -17,9 +17,16 @@ $(document).ready(function () {
 
     console.log("Validation Loaded");
 
+    //  LETTERS ONLY
     jQuery.validator.addMethod("lettersonly", function (value, element) {
         return this.optional(element) || /^[a-z\s]+$/i.test(value);
     }, "Only alphabetical characters");
+
+    // ONLY SPACES
+    jQuery.validator.addMethod("noSpace", function (value, element) {
+        return value.indexOf(" ") < 0 && value != "";
+    }, "ID cannot have spaces");
+
 
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
@@ -34,7 +41,8 @@ $(document).ready(function () {
             "interID": {
                 required: true,
                 minlength: 6,
-                maxlength: 20
+                maxlength: 20,
+                noSpace: true
             },
             "username": { required: true, lettersonly: true },
             "lastname": { required: true, lettersonly: true },

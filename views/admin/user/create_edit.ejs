@@ -5,15 +5,15 @@
 		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
 		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
-			<% if (index == breadcrumb.length -1) { %>
-				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
-			<% }else { %>
-				<li class="breadcrumb-item">
-					<a href="<%= breadcrumb[index].url %>">
-						<%= breadcrumb[index].name %>
-					</a>
-				</li>
-			<% } %>
+		<% if (index == breadcrumb.length -1) { %>
+		<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+		<% }else { %>
+		<li class="breadcrumb-item">
+			<a href="<%= breadcrumb[index].url %>">
+				<%= breadcrumb[index].name %>
+			</a>
+		</li>
+		<% } %>
 		<% } %>
 	</ol>
 </nav>
@@ -30,7 +30,11 @@
 				<div class="col-8">
 					<select id="profiles" type="text" name="<%= dropdown_name %>">
 						<% for (let profile of dropdown_options) {%>
-						<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+							<% if (profile.ID == user_profile) { %>
+								<option class="dropdown-item" selected value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+							<% }else{ %>
+								<option class="dropdown-item" value="<%=profile.ID%>"> <%= profile.NAME%> </option>
+							<% } %>
 						<% } %>
 					</select>
 					<input type="hidden" name="actual_profile" value="<%=user_profile %>">
@@ -41,32 +45,58 @@
 				<div class="col-2 align-self-center text-right"><strong>Study Program</strong></div>
 				<div class="col-8">
 					<div class="dropdown">
-						<button id="std_options" class="">Dropdown</button>
+						<button id="std_options">
+							<span class="btn_text">Select Study Program</span>
+						</button> <span id="err_std"></span>
+
 						<div id="myDropdown" class="dropdown-content">
-							<% study_program.forEach(element => { %>
-								<div>
-									<p> <%= element["prog_name"]%></p>
-									
-									<input type="checkbox" name="study_program" id="">
-									<input type="checkbox" name="isCoordinator" id="">
-								</div>
-							<% }) %>
+							<table class="std_table table-bordered table-hover">
+								<% study_program.forEach( (e, i) => { %>
+								<tr>
+
+									<!-- STD CHECK -->
+									<td> <%=e["prog_name"]%>: </td>
+									<td class="check">
+
+										<% if (std_ids.includes(e["prog_ID"])) { %>
+										<input type="checkbox" checked name="std[data<%=i%>]" value="<%=e["prog_ID"]%>">
+										<% }else{ %>
+										<input class="coordinator" type="checkbox" name="std[data<%=i%>]" value="<%=e["prog_ID"]%>">
+										<% } %>
+									</td>
+
+									<!-- COORDINATOR CHECK -->
+									<td class="separator"> Coordinator: </td>
+									<td class="check">
+
+										<% if (std_ids.includes(e["prog_ID"]) && is_coordinator[std_ids.indexOf(e["prog_ID"])]){ %>
+											<input type="checkbox" checked name="std[data<%=i%>]">
+										<% }else{ %>
+											<input class="coordinator" type="checkbox" name="std[data<%=i%>]">
+										<% } %>
+									</td>
+								</tr>
+								<% }); %>
+							</table>
+							<button id="done_std_program" class="btn btn-success">
+								Done
+							</button>
 						</div>
-					  </div>
+					</div>
 				</div>
 			</div>
 
 		</div>
 		<% } %>
 
-		<% inputs.forEach(element => { %>	
-			<div class="row my-4">
-				<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
-				<div class="col-8">
-					<input class="form-control" value="<%= element.value %>" type="text"
-						placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
-				</div>
+		<% inputs.forEach(element => { %>
+		<div class="row my-4">
+			<div class="col-2 align-self-center text-right"><strong><%= element.title %> </strong></div>
+			<div class="col-8">
+				<input class="form-control" value="<%= element.value %>" type="text"
+					placeholder="<%= element.placeHolder %>" name="<%= element.name %>">
 			</div>
+		</div>
 		<% }); %>
 
 		<div class="row my-4">
