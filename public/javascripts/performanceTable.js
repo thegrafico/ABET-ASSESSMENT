@@ -15,6 +15,7 @@ perfID = perfID.split(',');
 let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
 let allPerc;
+let labels = [];
 
 
 // Loads empty chart when page is load
@@ -23,7 +24,7 @@ window.onload = () => {
     data = getTableData();
 };
 
-$(document).ready(function () {
+$(document).ready(() => {
     if(hasInput == 'y') {
 		withValues(prevScores);
     } else {
@@ -31,40 +32,27 @@ $(document).ready(function () {
 	}
 	generateSideDisplay();
     
-    console.log("prevScores: ", prevScores);
-    $('#addRow').click(function () {
-		for(let i = 0; i < spinnerInput; i++) {
-			avgPerRow.push(0);
-			addRow();
-			updateIndex();
-		}
+    $('#addRow').click(() => {
+		avgPerRow.push(0);
+		addRow();
+		updateIndex();
 	});
 	
-	$('#delRow').click(function () {
+	$('#delRow').click(() => {
 		delRow();
 		updateIndex();
     });
     
-    $('#save').click(function() {
+    $('#save').click(() => {
         insertEvaluation(mapData(data, assessment_ID), assessment_ID);
-    });
-});
+	});
 
-/**
- * generateRowWithVal() -> function that creates tables with previous evaluation values.
-*/
-function generateRowWithVal(r, data) {
-    var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
-	for (let i = 1; i <= amountOfColumns; i++) { 
-        try {
-            markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='${data[r-1].scores[i-1]}' oninput='createChart()' required></td>`);
-        } catch(err) {
-            break;
-        }
-	}
-	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
-	$("#tableBody").append(markup);
-}
+	$('#clearAll').click(() => {
+		clearTableData();
+	});
+	
+	selectAll();
+});
 
 /**
  * noValues() -> function that creates the table if the query result return empty, 
@@ -96,11 +84,28 @@ function withValues(data) {
  * @param {number} -> Index to keep track of the index of the rows and data
 */
 function generateRow(r) {
-	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'> ${r} </th>`;
+	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
 		markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='' oninput='createChart()'></td>`);
 	}
-	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td><input type='checkbox' name='record' value="${r-1}"></td></tr>`);
+	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td></td></tr>`);
+	$("#tableBody").append(markup);
+}
+
+
+/**
+ * generateRowWithVal() -> function that creates tables with previous evaluation values.
+*/
+function generateRowWithVal(r, data) {
+    var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
+	for (let i = 1; i <= amountOfColumns; i++) { 
+        try {
+            markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='${data[r-1].scores[i-1]}' oninput='createChart()' required></td>`);
+        } catch(err) {
+            break;
+        }
+	}
+	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td><td></td></tr>`);
 	$("#tableBody").append(markup);
 }
 
@@ -113,7 +118,7 @@ function generateHeaderRow() {
 		$("#header").append(col);
 	}
 	$("#header").append(`<th class='headerRow'>${outcomeName}</th>`);
-	$("#header").append(`<th class='headerRow'></th>`);
+	$("#header").append(`<th class='headerRow'><input type="checkbox" id="selectAll"/><label for="selectAll">Select All</label></th>`);
 }
 
 /**
@@ -140,7 +145,8 @@ function delRow() {
 	$("#tableBody").find('input[name="record"]').each(function () {
 		if ($(this).is(":checked")) {
             $(this).parents("tr").remove();
-            avgPerRow.splice($(this).val(), 1);
+			avgPerRow.splice($(this).val(), 1);
+			console.log("This: ", $(this).val());
 		}
     });
     data = getTableData();
@@ -151,10 +157,9 @@ function delRow() {
 */
 function updateIndex() {
 	$('table tbody tr').each(function(index) {
-		$(this).find('th').text(index+1);
+		$(this).find('th span').text(index+1);
 		let newId = 'avg' + index;
 		$(this).find('td:nth-last-of-type(2)').attr('id', newId);
-		
 	});
 }
 
@@ -163,7 +168,6 @@ function updateIndex() {
 */
 function createChart() {
     // Creates labels for the x-axis of the chart
-    let labels = [];
 	for (let i = 0; i < performanceCriteria.length; i++) {
 		performanceCriteria[i] = parseInt(performanceCriteria[i]);
 		labels[i] = "PC " + performanceCriteria[i];
@@ -263,7 +267,6 @@ function createChart() {
  * @param {Number} -> Assessment ID of the current report
 */
 function insertEvaluation(entryData, assessment_id) {
-    console.log("Inserting: ", entryData);
 	$.ajax({
 		type: "POST",
 		url: `/professor/assessment/${assessment_id}/performancetable`,
@@ -307,7 +310,6 @@ function getTableData() {
 
     $(".performanceTable, input[type=number]").each(function (index) {
         let input = $(this);
-		console.log("Input: ", input);
         if(input.val() == '') {
             rowData.push(null);
         } else {
@@ -331,6 +333,12 @@ function getTableData() {
     return tableData;
 }
 
+function clearTableData() {
+	$(".performanceTable, input[type=number]").each(function (index) {
+		$(this).val('');
+    });
+}
+
 /**
  * inputValidation() ->  function which will check users input and make sure that follows the reg exp
  * @param {Number} -> User input
@@ -347,7 +355,13 @@ function inputValidation() {
 // Fix labels
 function generateSideDisplay() {
 	for (let i = 0; i < amountOfColumns; i++) {
-		let tRow = `<tr><th>Performance Criteria ${i+1}</th><td><span id="pc${i}"></span>%</td></tr>`;
+		let tRow = `<tr><th>PC ${i+1}</th><td><span id="pc${i}"></span>%</td></tr>`;
 		$('#outcomeResultTbody').append(tRow);
 	}
+}
+
+function selectAll() {
+	$("#selectAll").click(function(){
+		$('input:checkbox').not(this).prop('checked', this.checked);
+	});
 }
