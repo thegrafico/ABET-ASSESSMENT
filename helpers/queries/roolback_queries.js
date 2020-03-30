@@ -328,9 +328,12 @@ function transformInRowPerf(row_ids, performances) {
     for (let i = 0; i < row_ids.length; i++) {
         // iter all perfC and scores
         for (let j = 0; j < performances[i]["perfC"].length; j++) {
+            if (performances[i]["scores"][j] == -1) 
+                performances[i]["scores"][j] = null;
+                
             row_perf.push([row_ids[i], performances[i]["perfC"][j], performances[i]["scores"][j]]);
         }
     }
-
+    console.log("Entry Data: ", row_perf);
     return row_perf;
 }

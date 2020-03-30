@@ -10,7 +10,6 @@ try{
   console.log("ERROR IN /helpers/mysqlconnection. Credentials are missing");
 }
 
-
 /* For local database connection */ 
 var options = {
   host     : credentials.host,              //THIS IS THE SAME FOR YOUR
