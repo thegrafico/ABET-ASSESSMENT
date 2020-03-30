@@ -1,15 +1,10 @@
 /* Tables Content Styles */
+.perfomanceTable {
+	height: 35rem;
+}
+
 .outcomeInfo {
-	height: 800px;
-}
-
-.inputRow {
-	align-items: flex-end;
-}
-
-
-.rowInput {
-	flex-wrap: wrap;
+	height: 45rem;
 }
 
 .headerRow {
@@ -82,3 +77,55 @@ span {
 
 /* ============= */
 
+/* Content Above Table */
+
+h4 {
+	text-align: center;
+	margin: 8px 0 0 0;
+	/* margin-top: 1rem;
+	margin-bottom: 0rem; */
+}
+
+.input-group {
+	width: auto;
+	margin: 2px 0 0 0;
+	padding-left: 33.5%;
+}
+
+#numofRows {
+	width: 6em;
+}
+
+.mb-3 {
+	margin-bottom: 0rem!important;
+}
+
+/* =================== */
+
+/* Side Information */
+
+h2 {
+	text-align: center;
+}
+
+#performanceResults th {
+	font-size: 1.5em;
+}
+
+#perfHeader {
+	width: 30%;
+}
+
+.pcIndex, .percCell{
+	text-align: center;
+	font-size: 15px;
+}
+
+.resultHeader {
+	border-bottom: 2px solid #ddd;
+}
+
+.performanceResults {
+	padding-left: 1.5%!important;
+}
+/* ================ */
