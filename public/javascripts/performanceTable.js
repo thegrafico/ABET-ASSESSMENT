@@ -118,7 +118,7 @@ function generateHeaderRow() {
 		$("#header").append(col);
 	}
 	$("#header").append(`<th class='headerRow'>${outcomeName}</th>`);
-	$("#header").append(`<th class='headerRow'><input type="checkbox" id="selectAll"/><label for="selectAll">Select All</label></th>`);
+	$("#header").append(`<th class='headerRow'></th>`);
 }
 
 /**
