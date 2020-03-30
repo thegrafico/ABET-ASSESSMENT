@@ -129,7 +129,7 @@ app.use('/authorize', authorize);
 // ===== PROFESSOR =====
 app.use('/professor', middleware.is_login, middleware.is_professor, assessmentRouter);
 // ===== COORDINATOR =====
-app.use('/professor/coordinator', middleware.is_login, middleware.is_professor, coordinatorRoute);
+app.use('/professor/coordinator', middleware.is_login, middleware.hasAdminPrivilege, coordinatorRoute);
 // ===== Departments Section =====
 app.use(`${admin_route}/department`, middleware.is_login, middleware.is_admin, departmentRouter);
 // ===== Users Section =====

@@ -26,17 +26,29 @@ router.get('/', async function (req, res) {
     locals.title = "Professor";       
 	locals.assessment_in_progress = [];
 	locals.assessment_completed = [];
-	locals.assessment_archive = []
-
+    locals.assessment_archive = [];
 
 	// the user id is stored in session, thats why user need to be login
     let user_id = req.session.user_id;
-    
-    // get professors assessments
-    let assessments = await assessment_query.get_professors_assessments(user_id).catch((err) => {
-        console.error("Error getting assessments: ", err);
-    });
 
+    let assessment = null;
+
+    // if the user is admin
+    if (req.session.user_profile == admin){
+        
+        // get admin assessments for coordinator
+        assessments = await assessment_query.get_admin_assessments().catch((err) => {
+            console.error("Error getting assessments: ", err);
+        });
+
+    }else{
+
+        // get professors assessments for coordinator
+        assessments = await assessment_query.get_coordinator_assessments(user_id).catch((err) => {
+            console.error("Error getting assessments: ", err);
+        });
+    }
+    
     if (assessments != undefined || assessments.length > 0){
         
         assessments.map((each) => {
@@ -54,7 +66,7 @@ router.get('/', async function (req, res) {
     }
 
     locals.assessments = assessments;
-    console.log(assessments);
+    // console.log(assessments);
 
     //  render view
     res.render('professor/coordinator', locals);

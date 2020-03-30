@@ -20,73 +20,15 @@
             <% if (assessments.length > 0) { %>
             <% var counter = 1; %>
 
+                <!-- ASSESSMENT IN PROSESS -->
+                <%- include ('./modal/coordinator_table', {assessments: assessment_in_progress}) -%>
 
-            <!-- ASSESSMENT IN PROSESS -->
-            <% for( let i = 0; i < assessment_in_progress.length; i++, counter++ ) { %>
+                <!-- ASSESSMET COMPLETED -->
+                <%- include ('./modal/coordinator_table', {assessments: assessment_completed}) -%>
 
-            <tr>
-                <td> <%= counter %> </td>
-                <td> 
-                    <%=assessment_in_progress[i]["first_name"]%> <%= assessment_in_progress[i]["last_name"]%> 
-                    <br>
-                    <span class="interID">ID: <%=assessment_in_progress[i]["inter_ID"]%> </span>
-                </td>
-                <td> <%=assessment_in_progress[i]["name"]%> </td>
-                <td> <%=assessment_in_progress[i]["course_number"]%> </td>
-                <td> <%=assessment_in_progress[i]["outc_name"]%> </td>
-                <td> <%=assessment_in_progress[i]["term_name"]%> </td>
-
-                <td class="status <%=assessment_in_progress[i]["status"]["class"]%>">
-                    <%=assessment_in_progress[i]["status"]["name"]%>
-                </td>
-
-                <td>1</td>
-            </tr>
-            <% } %>
-
-            <!-- ASSESSMET COMPLETED -->
-            <% for( let i = 0; i < assessment_completed.length; i++, counter++ ) { %>
-            <tr>
-                <td> <%= counter %> </td>
-                <td> 
-                    <%=assessment_completed[i]["first_name"]%> <%= assessment_completed[i]["last_name"]%> 
-                    <br>
-                    <span class="interID">ID: <%=assessment_completed[i]["inter_ID"]%> </span>
-                </td>
-                <td> <%=assessment_completed[i]["name"]%> </td>
-                <td> <%=assessment_completed[i]["course_number"]%> </td>
-                <td> <%=assessment_completed[i]["outc_name"]%> </td>
-                <td> <%=assessment_completed[i]["term_name"]%> </td>
-                <td class="status <%=assessment_completed[i]["status"]["class"]%>">
-                    <%=assessment_completed[i]["status"]["name"]%>
-                </td>
-                <td>1</td>
-            </tr>
-            <% } %>
-
-            <!-- ASSESSMENT ARCHIVE -->
-            <% for( let i = 0; i < assessment_archive.length; i++, counter++ ) { %>
-            <tr>
-                <td> <%= counter %> </td>
-
-                <td > 
-                    <%=assessment_archive[i]["first_name"]%> <%= assessment_archive[i]["last_name"]%>
-                    <br>
-                    <span class="interID">ID: <%=assessment_archive[i]["inter_ID"]%> </span>
-                </td>
-                <td> <%=assessment_archive[i]["name"]%> </td>
-                <td> <%=assessment_archive[i]["course_number"]%> </td>
-                <td> <%=assessment_archive[i]["outc_name"]%> </td>
-                <td> <%=assessment_archive[i]["term_name"]%> </td>
-
-                <td class="status <%=assessment_archive[i]["status"]["class"]%>">
-                    <%=assessment_archive[i]["status"]["name"]%>
-                </td>
-
-                <td>1</td>
-            </tr>
-            <% } %>
-
+                <!-- ASSESSMENT ARCHIVE -->
+                <%- include ('./modal/coordinator_table', {assessments: assessment_archive}) -%>
+                
             <% } %>
         </tbody>
     </table>
@@ -178,6 +120,15 @@
         background-color: #6c757d;
     }
 </style>
+
+<script>
+    $(document).ready(function(){
+        $("tr td:first-child").each(function(index, value){
+            $(this).text((index+1));
+            console.log(index);
+        });
+    });
+</script>
 
 
 <!-- STYLES -->

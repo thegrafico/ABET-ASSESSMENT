@@ -103,7 +103,7 @@ router.get('/create', async function (req, res) {
 	locals.btn_title = "Create";
 
 	// get all profiles
-	let profiles = await queries.get_all_profiles().catch((err) => {
+	let profiles = await general_queries.get_table_info(table.profile).catch((err) => {
 		console.log("There is an error: ", err);
 	});
 

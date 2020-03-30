@@ -1,3 +1,5 @@
+
+const table = require("../DatabaseTables");
 var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
 
@@ -39,7 +41,7 @@ function get_perf_criterias(assessmentID) {
 */
 function deletePrevEntry(assessment_ID) {
 	return new Promise((resolve, reject) => {
-		let deletePrevEntry = `DELETE FROM EVALUATION_ROW WHERE EVALUATION_ROW.assessment_ID = ?;`;
+		let deletePrevEntry = `DELETE FROM ${table.evaluation_row} WHERE ${table.evaluation_row}.assessment_ID = ?;`;
 
 		conn.query(deletePrevEntry, assessment_ID, (err, results) => {
 			if (err) { reject(err); }
@@ -59,12 +61,14 @@ function getEvaluationByID(assessmentID) {
 			return reject("Error with the asessment ID");
 		}
 
-		let getEvaluation = `SELECT ROW_PERC.row_ID, perC_ID, row_perc_score, assessment_ID
-							 FROM ROW_PERC INNER JOIN EVALUATION_ROW
-							 WHERE ROW_PERC.row_ID = EVALUATION_ROW.row_ID AND EVALUATION_ROW.assessment_ID = ?;`;
+		let getEvaluation = `SELECT ${table.row_perc}.row_ID, perC_ID, row_perc_score, assessment_ID
+			FROM ${table.row_perc} INNER JOIN ${table.evaluation_row}
+			WHERE ${table.row_perc}.row_ID = ${table.evaluation_row}.row_ID AND ${table.evaluation_row}.assessment_ID = ?;`;
+
+		// exe query
 		conn.query(getEvaluation, [assessmentID], function (err, results) {
 			if (err)
-				reject(err || "Evaluation hasen't been done yet.");
+				reject(err);
 			else {
 				resolve(results);
 			}
@@ -79,38 +83,10 @@ function getEvaluationByID(assessmentID) {
 */
 function deleteRowWithAssessmentID(assessmentID) {
 	return new Promise(function (resolve, reject) {
-		let deleteData = `DELETE FROM EVALUATION_ROW WHERE assessment_ID = ?;`
+		let deleteData = `DELETE FROM ${table.evaluation_row} WHERE assessment_ID = ?;`
 		conn.query(deleteData, assessmentID, function (err, results) {
 			if (err) reject(err || "Wasn't able to delete data.");
 			else resolve(true);
-		});
-	});
-}
-
-/**
- * get_study_program_by_user_id - get all study program by user
- * @param {Number} id - Id of the user
- * @return {Promise} Resolve with all study programs
- */
-function get_study_program_by_user_id(id) {
-	return new Promise(function (resolve, reject) {
-
-		// verify user ID
-		if (id == undefined || isNaN(id)) {
-			return reject("User id only can be a number");
-		}
-
-		let std_query = `SELECT USER.user_ID, STUDY_PROGRAM.prog_ID, STUDY_PROGRAM.prog_name
-		FROM USER INNER JOIN USER_DEP USING (user_ID)
-		INNER JOIN STUDY_PROGRAM ON STUDY_PROGRAM.dep_ID = USER_DEP.dep_ID
-		WHERE USER.user_ID = ?
-		ORDER BY STUDY_PROGRAM.prog_name ASC`;
-
-		conn.query(std_query, [id], function (err, results) {
-			if (err)
-				reject(err);
-			else
-				resolve(results);
 		});
 	});
 }
@@ -200,7 +176,7 @@ function update_professor_input(id, grades, course_info) {
 			course_info.reflection,
 			course_info.improvement,
 			course_info.modification,
-			course_info.result_outcome,	
+			course_info.result_outcome,
 			id
 		];
 
@@ -270,7 +246,6 @@ function get_report_header(assessment_id) {
 module.exports.update_status = update_status;
 module.exports.get_report_header = get_report_header;
 module.exports.get_perf_criterias = get_perf_criterias;
-module.exports.get_study_program_by_user_id = get_study_program_by_user_id;
 module.exports.get_department_by_user_id = get_department_by_user_id;
 module.exports.deleteRowWithAssessmentID = deleteRowWithAssessmentID;
 module.exports.insert_professor_input = insert_professor_input;

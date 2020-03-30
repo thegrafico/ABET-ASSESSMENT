@@ -1,0 +1,26 @@
+<!-- ASSESSMENT IN PROSESS -->
+<% for( let i = 0; i < assessments.length; i++ ) { %>
+
+    <tr>
+        <td></td>
+        <td>
+            <%=assessments[i]["first_name"]%> <%= assessments[i]["last_name"]%>
+            <br>
+            <span class="interID">ID: <%=assessments[i]["inter_ID"]%> </span>
+        </td>
+        <td> <%=assessments[i]["name"]%> </td>
+        <td>
+            <%=assessments[i]["course_number"]%>
+            <br>
+            <%=assessments[i]["prog_name"]%>
+        </td>
+        <td> <%=assessments[i]["outc_name"]%> </td>
+        <td> <%=assessments[i]["term_name"]%> </td>
+
+        <td class="status <%=assessments[i]["status"]["class"]%>">
+            <%=assessments[i]["status"]["name"]%>
+        </td>
+
+        <td>1</td>
+    </tr>
+<% } %>

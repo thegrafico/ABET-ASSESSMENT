@@ -36,15 +36,16 @@ router.get('/', async function (req, res) {
 	let user_id = req.session.user_id;
 
 	// Get all departments
-	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+	let study_programs = await assessment_query.get_study_program_by_user_id(user_id).catch((err) => {
 		console.error("Error Study programs: ", err);
 	});
 
 	// Getting the term
-	let academic_term = await general_queries.get_table_info("ACADEMIC_TERM").catch((err) => {
+	let academic_term = await general_queries.get_table_info(table.academic_term).catch((err) => {
 		console.error("Error getting academic term: ", err);
 	});
 
+	// get all user assessment
 	let assessments = await assessment_query.get_assessment_by_user_id(user_id).catch((err) => {
 		console.error("Error getting user assessment: ", err);
 	});

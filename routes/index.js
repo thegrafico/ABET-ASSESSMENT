@@ -65,7 +65,7 @@ router.get("/auth", async function (req, res) {
 
 	let coordinator_programs = get_std_coordinator(user_information);
 
-	if (coordinator_programs.length > 0 && user_data.profile_Name.toLowerCase() != "admin") {
+	if (coordinator_programs.length > 0 && user_data.profile_Name.toLowerCase() != admin.toLowerCase()) {
 		req.session.user_profile = coordinator
 	} else {
 		req.session.user_profile = user_data.profile_Name.toLowerCase();
@@ -75,7 +75,7 @@ router.get("/auth", async function (req, res) {
 	req.session.user_email = userEmail;
 	req.session.user_id = user_data.user_ID;
 
-	if (user_data.profile_Name.toLowerCase().includes("admin") || user_data.user_profile == 1) {
+	if (user_data.profile_Name.toLowerCase().includes(admin) || user_data.user_profile == 1) {
 		return res.redirect("/admin");
 	}
 
@@ -83,7 +83,8 @@ router.get("/auth", async function (req, res) {
 });
 
 /**
- * is_coordinator
+ * get_std_coordinator - get all coordinator study programs
+ * @param {Object} user_information - user role information
 */
 function get_std_coordinator(user_information) {
 

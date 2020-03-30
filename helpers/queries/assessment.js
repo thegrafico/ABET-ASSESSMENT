@@ -1,3 +1,4 @@
+const table = require("../DatabaseTables");
 var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
 
@@ -13,7 +14,7 @@ module.exports.create_assessment = (assessment) => {
             return reject("Invalid Parameters");
         }
 
-        let query = `INSERT INTO ASSESSMENT (name, course_ID, term_ID, user_ID, rubric_ID)
+        let query = `INSERT INTO ${table.assessment} (name, course_ID, term_ID, user_ID, rubric_ID)
         VALUES (?, ?, ?, ?, ?)`
 
         let values = [
@@ -46,16 +47,17 @@ module.exports.get_assessment_by_user_id = (user_id) => {
             return reject("Invalid Parameters");
         }
 
-        let query = `SELECT ASSESSMENT.assessment_ID, ASSESSMENT.status, ASSESSMENT.name, COURSE.course_name, ACADEMIC_TERM.term_name, 
-        EVALUATION_RUBRIC.rubric_name, ASSESSMENT.creation_date, EVALUATION_RUBRIC.outc_ID,
-        STUDENT_OUTCOME.prog_ID, STUDY_PROGRAM.dep_ID, COURSE.course_ID, ASSESSMENT.term_ID, ASSESSMENT.rubric_ID
-        FROM ASSESSMENT INNER JOIN COURSE USING(course_ID)
-        INNER JOIN ACADEMIC_TERM ON ASSESSMENT.term_ID = ACADEMIC_TERM.term_ID
-        INNER JOIN EVALUATION_RUBRIC ON ASSESSMENT.rubric_ID = EVALUATION_RUBRIC.rubric_ID
-        INNER JOIN STUDENT_OUTCOME ON STUDENT_OUTCOME.outc_ID = EVALUATION_RUBRIC.outc_ID
-        INNER JOIN STUDY_PROGRAM ON STUDY_PROGRAM.prog_ID = STUDENT_OUTCOME.prog_ID
-        WHERE ASSESSMENT.user_ID = ?
-        ORDER BY ASSESSMENT.creation_date DESC`;
+        let query = `SELECT ${table.assessment}.assessment_ID, ${table.assessment}.status, ${table.assessment}.name,
+        ${table.course}.course_name, ${table.academic_term}.term_name, ${table.evaluation_rubric}.rubric_name,
+        ${table.assessment}.creation_date, ${table.evaluation_rubric}.outc_ID, ${table.student_outcome}.prog_ID, 
+        ${table.study_program}.dep_ID, ${table.course}.course_ID, ${table.assessment}.term_ID, ${table.assessment}.rubric_ID
+        FROM ${table.assessment} INNER JOIN ${table.course} USING(course_ID)
+        INNER JOIN ${table.academic_term} ON ${table.assessment}.term_ID = ${table.academic_term}.term_ID
+        INNER JOIN ${table.evaluation_rubric} ON ${table.assessment}.rubric_ID = ${table.evaluation_rubric}.rubric_ID
+        INNER JOIN ${table.student_outcome} ON ${table.student_outcome}.outc_ID = ${table.evaluation_rubric}.outc_ID
+        INNER JOIN ${table.study_program} ON ${table.study_program}.prog_ID = ${table.student_outcome}.prog_ID
+        WHERE ${table.assessment}.user_ID = ?
+        ORDER BY ${table.assessment}.creation_date DESC`;
 
         // EXe query
         conn.query(query, [user_id], function (err, results) {
@@ -83,7 +85,7 @@ module.exports.remove_assessment_by_id = (user_id, assessment_id) => {
         }
 
         // delete assessment
-        let query = `DELETE FROM ASSESSMENT WHERE ASSESSMENT.assessment_ID = ? and ASSESSMENT.user_ID = ?`;
+        let query = `DELETE FROM ${table.assessment} WHERE ${table.assessment}.assessment_ID = ? and ${table.assessment}.user_ID = ?`;
 
         // EXe query
         conn.query(query, [assessment_id, user_id], function (err, results) {
@@ -94,7 +96,6 @@ module.exports.remove_assessment_by_id = (user_id, assessment_id) => {
         });
     });
 }
-
 
 /***
  * update_assessment_by_id Update assessment by user id and asssessmentid
@@ -111,7 +112,7 @@ module.exports.update_assessment_by_id = (user_id, assessment_id, assessment) =>
         }
 
         // delete assessment
-        let query = `UPDATE ASSESSMENT SET name = ?, course_ID = ?, term_ID = ?, rubric_ID = ?
+        let query = `UPDATE ${table.assessment} SET name = ?, course_ID = ?, term_ID = ?, rubric_ID = ?
         WHERE assessment_ID = ? AND  user_ID = ?`;
 
         let data =  [assessment.name, assessment.course, assessment.term, assessment.rubric, assessment_id, user_id];
@@ -130,22 +131,23 @@ module.exports.update_assessment_by_id = (user_id, assessment_id, assessment) =>
  * @param {Number} user_id - user id
  * @returns {Promise} resolve with all assessments results 
  */
-module.exports.get_professors_assessments = (user_id) => {
+module.exports.get_coordinator_assessments = (user_id) => {
     
     return new Promise(function(resolve, reject){
 
         // Get all assessment from my departments
         let get_assessments = `SELECT * 
-        FROM ASSESSMENT
-        INNER JOIN EVALUATION_RUBRIC ON ASSESSMENT.rubric_ID = EVALUATION_RUBRIC.rubric_ID
-        INNER JOIN STUDENT_OUTCOME ON EVALUATION_RUBRIC.outc_ID = STUDENT_OUTCOME.outc_ID
-        INNER JOIN STUDY_PROGRAM ON STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
-        INNER JOIN DEPARTMENT ON STUDY_PROGRAM.dep_ID = DEPARTMENT.dep_ID
-        INNER JOIN COURSE ON ASSESSMENT.course_ID = COURSE.course_ID
-        INNER JOIN ACADEMIC_TERM ON ASSESSMENT.term_ID = ACADEMIC_TERM.term_ID
-        INNER JOIN USER ON USER.user_ID = ASSESSMENT.user_ID
-        WHERE DEPARTMENT.dep_ID IN (SELECT USER_DEP.dep_ID FROM USER_DEP WHERE USER_DEP.user_ID = ?)
-        ORDER BY ASSESSMENT.creation_date ASC`;
+        FROM ${table.assessment}
+        INNER JOIN ${table.evaluation_rubric} ON ${table.assessment}.rubric_ID = ${table.evaluation_rubric}.rubric_ID
+        INNER JOIN ${table.student_outcome} ON ${table.evaluation_rubric}.outc_ID = ${table.student_outcome}.outc_ID
+        INNER JOIN ${table.study_program} ON ${table.student_outcome}.prog_ID = ${table.study_program}.prog_ID
+        INNER JOIN ${table.department} ON ${table.study_program}.dep_ID = ${table.department}.dep_ID
+        INNER JOIN ${table.course} ON ${table.assessment}.course_ID = ${table.course}.course_ID
+        INNER JOIN ${table.academic_term} ON ${table.assessment}.term_ID = ${table.academic_term}.term_ID
+        INNER JOIN ${table.user} ON ${table.user}.user_ID = ${table.assessment}.user_ID
+        WHERE ${table.study_program}.prog_ID IN 
+        (SELECT ${table.user_study_program}.prog_ID FROM ${table.user_study_program} WHERE ${table.user_study_program}.user_ID = ?)
+        ORDER BY ${table.assessment}.creation_date ASC`;
 
         // EXe query
         conn.query(get_assessments, [user_id], function (err, results) {
@@ -155,6 +157,65 @@ module.exports.get_professors_assessments = (user_id) => {
                 resolve(results);
         });
     });
+}
+
+/**
+ * get_professors_assessments - get all professor's assessments
+ * @param {Number} user_id - user id
+ * @returns {Promise} resolve with all assessments results 
+ */
+module.exports.get_admin_assessments = () => {
+    
+    return new Promise(function(resolve, reject){
+
+        // Get all assessment from my departments
+        let get_assessments = `SELECT * 
+        FROM ${table.assessment}
+        INNER JOIN ${table.evaluation_rubric} ON ${table.assessment}.rubric_ID = ${table.evaluation_rubric}.rubric_ID
+        INNER JOIN ${table.student_outcome} ON ${table.evaluation_rubric}.outc_ID = ${table.student_outcome}.outc_ID
+        INNER JOIN ${table.study_program} ON ${table.student_outcome}.prog_ID = ${table.study_program}.prog_ID
+        INNER JOIN ${table.department} ON ${table.study_program}.dep_ID = ${table.department}.dep_ID
+        INNER JOIN ${table.course} ON ${table.assessment}.course_ID = ${table.course}.course_ID
+        INNER JOIN ${table.academic_term} ON ${table.assessment}.term_ID = ${table.academic_term}.term_ID
+        INNER JOIN ${table.user} ON ${table.user}.user_ID = ${table.assessment}.user_ID
+        ORDER BY ${table.assessment}.creation_date ASC`;
+
+        // EXe query
+        conn.query(get_assessments, [], function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(results);
+        });
+    });
+}
+
+/**
+ * get_study_program_by_user_id - get all study program by user
+ * @param {Number} id - Id of the user
+ * @return {Promise} Resolve with all study programs
+ */
+module.exports.get_study_program_by_user_id = function get_study_program_by_user_id(id) {
+	return new Promise(function (resolve, reject) {
+
+		// verify user ID
+		if (id == undefined || isNaN(id)) {
+			return reject("User id only can be a number");
+		}
+
+		let std_query = `SELECT ${table.study_program}.prog_ID, ${table.study_program}.prog_name
+		FROM ${table.user} INNER JOIN ${table.user_study_program} USING (user_ID)
+		INNER JOIN ${table.study_program} ON ${table.study_program}.prog_ID = ${table.user_study_program}.prog_ID
+		WHERE ${table.user}.user_ID = ?
+		ORDER BY ${table.study_program}.prog_name ASC`;
+
+		conn.query(std_query, [id], function (err, results) {
+			if (err)
+				reject(err);
+			else
+				resolve(results);
+		});
+	});
 }
 
 
