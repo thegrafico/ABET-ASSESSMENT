@@ -3,6 +3,7 @@
     background-color: #235952;
     color: #ffffff;
     border: none;
+    height: 40rem;
 }
 
 .side-bard button {
@@ -26,11 +27,23 @@
 }
 
 .side-bar-title {
-    /* border: 1px solid red; */
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
     border-bottom: 1px solid #706c61;
+}
+
+.side-bar-title p {
+    margin-bottom: 0;
+}
+
+.coordinatorOptions p {
+    margin: 0;
+    padding: 5%;
+}
+
+.coordinatorOptions {
+    border-top: 1px solid #706c61;
 }
 
 .mg-0,
@@ -38,11 +51,11 @@
     margin: 0;
 }
 
-.btn-create{
+.btn-create {
     width: 20%;
 }
 
-.btn-create button{
+.btn-create button {
     width: 100%;
     height: 100%;
 }
@@ -51,7 +64,7 @@ label {
     margin: 0;
 }
 
-.link-work{
+.link-work {
     padding: 2%;
 }
 
@@ -145,19 +158,37 @@ th {
     padding: 0;
 }
 
-.link-work{
+.link-work {
     padding: 4%;
 }
 
-th, td{
+th,
+td {
     width: 20%;
 }
 
-th:first-child{
+th:first-child {
     width: 5%;
 }
+
 /* END */
-.filter-box div, .filter-box div select{
+.filter-box div,
+.filter-box div select {
     /* margin-top: 10%; */
     height: 100%;
+}
+
+.coordinatorBtn a {
+    border-color: gray;
+    margin-top: 5%;
+    color: white;
+    padding: 5%;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.coordinatorBtn a:hover {
+    border-color: gray;
+    cursor: pointer;
+    background-color: #706c61;
 }

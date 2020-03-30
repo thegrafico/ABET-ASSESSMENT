@@ -13,7 +13,7 @@
                             width='32px' height='32px'>
                     </div>
 
-                    <!--Term Selection-->
+                    <!--ASSESSMENT NAME-->
                     <div class="form-group">
                         <label for="chooseStudyProgram" class="label_message">
                             Assessment Name:
@@ -22,21 +22,7 @@
                             placeholder="Assesment Name">
                     </div>
 
-                    <!-- SELECT OUTCOME -->
-                    <div class="form-group">
-                        <label for="chooseRubric" class="label_message">
-                            Choose Department
-                            <span class="invisible feedback_span" id="department_message"></span>
-                        </label>
-                        <select class="form-control" name="department_id" id="chooseDepartment">
-                            <option class="dropdown-item" disabled selected value=""> -- Select Department -- </option>
-                            <% departments.forEach(dpt => { %>
-                            <option class="dropdown-item" value="<%=dpt["dep_ID"] %>"><%=dpt["dep_name"] %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-
-                    <!--Term Selection-->
+                    <!-- SELECT STUDY PROGRAM -->
                     <div class="form-group">
                         <label for="chooseStudyProgram" class="label_message">
                             Choose Study Program
@@ -45,6 +31,9 @@
                         <select class="form-control" name="study_program" id="chooseStudyProgram">
                             <option class="dropdown-item" disabled selected value="">
                                 -- Select Study Program --
+                                <% study_programs.forEach(std => { %>
+                            <option class="dropdown-item" value="<%=std["prog_ID"] %>"><%=std["prog_name"] %></option>
+                            <% }) %>
                             </option>
                         </select>
                     </div>
@@ -69,7 +58,15 @@
                         <select class="form-control" name="course" id="chooseCourse">
                             <option class="dropdown-item" disabled selected value=""> -- Select Course -- </option>
                         </select>
+                    </div>
 
+                    <!-- COURSE SECTION -->
+                    <div class="form-group">
+                        <label for="chooseStudyProgram" class="label_message">
+                            Course Section:
+                        </label>
+                        <input value="" type="text" name="course_section" id="course_section" class="form-control"
+                            placeholder="Course Section">
                     </div>
 
                     <!-- Evaluation Rubric Selection -->
@@ -101,8 +98,8 @@
                 <div class="container">
                     <hr class="my-2">
                     <div style="width: 80%; margin-left: 10%; border-radius: 4%;">
-                        <button style="width: 100%; padding: 5px; font-size: 1.5em;" id="submitBtn" class="btn btn-success"
-                            type="submit">Create Assessment</button>
+                        <button style="width: 100%; padding: 5px; font-size: 1.5em;" id="submitBtn"
+                            class="btn btn-success" type="submit">Create Assessment</button>
                     </div>
                 </div>
             </form>

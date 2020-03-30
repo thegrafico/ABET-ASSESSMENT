@@ -1,5 +1,6 @@
 var { db, options } = require("../mysqlConnection");
 var mysql = require("mysql");
+const table = require("../DatabaseTables");
 var connection = mysql.createConnection(options);
 connection.connect();
 
@@ -14,10 +15,10 @@ async function get_user_list() {
     return new Promise(function (resolve, reject) {
 
         let userList = `SELECT *
-        FROM USER INNER JOIN USER_DEP USING (user_ID)
-        INNER JOIN DEPARTMENT ON USER_DEP.dep_ID = DEPARTMENT.dep_ID
-        INNER JOIN USER_PROFILES ON USER.user_ID = USER_PROFILES.user_ID
-        INNER JOIN PROFILE ON USER_PROFILES.profile_ID = PROFILE.profile_ID
+        FROM ${table.user} INNER JOIN ${table.user_study_program} USING (user_ID)
+        INNER JOIN ${table.study_program} ON ${table.user_study_program}.prog_ID = ${table.study_program}.prog_ID
+        INNER JOIN ${table.user_profiles} ON ${table.user}.user_ID = ${table.user_profiles}.user_ID
+        INNER JOIN ${table.profile} ON ${table.user_profiles}.profile_ID = ${table.profile}.profile_ID
         ORDER BY last_name ASC`;
 
         conn.query(userList, function (err, results) {
@@ -32,12 +33,30 @@ async function get_user_list() {
                 return users_id.indexOf(item) == pos;
             });
 
+            // store all users
             let users = [];
+
+            // iter all user id.
             users_id.forEach(ID => {
+
+                // find the user with the id of the loop
                 let temp_user = results.filter(e => e.user_ID == ID);
-                let dept = temp_user.map(e => e.dep_name);
-                temp_user[0].dep_name = dept 
-                users.push(temp_user[0])
+
+                // get all study program from the user selected
+                let std = temp_user.map(e => e.prog_name);
+
+                // remove duplicates
+                std = std.filter(function (item, pos) {
+                    return std.indexOf(item) == pos;
+                });
+
+                temp_user[0].prog_name = std;
+
+                if (temp_user[0]["phone_number"] == '' || temp_user[0]["phone_number"] == undefined) {
+                    temp_user[0]["phone_number"] = "Unknow";
+                }
+
+                users.push(temp_user[0]);
             });
 
             resolve(users);
@@ -56,7 +75,7 @@ function get_user_by_id(id) {
     return new Promise(function (resolve, reject) {
 
         // Get all user information, including department and profile
-        let query_user_info = `SELECT * FROM USER NATURAL JOIN USER_PROFILES WHERE USER.user_ID = ?`;
+        let query_user_info = `SELECT * FROM ${table.user} NATURAL JOIN ${table.user_profiles} WHERE ${table.user}.user_ID = ?`;
 
         conn.query(query_user_info, [id], function (err, results) {
 
@@ -73,37 +92,35 @@ function get_user_by_id(id) {
  * @param {Number} id id of the user 
  * @return {Promise} resolve with all departments
  */
-function get_user_department_by_id(id) {
+module.exports.get_user_study_programs_by_id =  function get_user_study_programs_by_id(id) {
 
     return new Promise(function (resolve, reject) {
 
         // Get all user information, including department and profile
-        let query_user_info = `SELECT dep_ID FROM USER_DEP WHERE user_ID = ?`;
+        let query_user_info = `SELECT prog_ID, is_coordinator FROM ${table.user_study_program} WHERE user_ID = ?`;
 
         conn.query(query_user_info, [id], function (err, results) {
 
             if (err) { return reject(err); }
 
-            let dept = [];
-
+            let study_programs = [];
             results.forEach((record) => {
-                dept.push(record["dep_ID"].toString());
+                study_programs.push( {"prog_ID": record["prog_ID"], "is_coordinator":  record["is_coordinator"]} );
             });
-
-            resolve(dept);
+            resolve(study_programs);
         });
     });
 }
 
-//GET user ID by email
+/**
+ * 
+ * @param {String} user email 
+ * @param {*} callback 
+ */
 function get_user_ID_by_email(email, callback) {
-    'Get user ID using the email'
     console.log("Getting user ID");
 
-    let slq_getID = `SELECT user_ID
-                    FROM USER
-                    WHERE email = ?
-                    LIMIT 1`;
+    let slq_getID = `SELECT user_ID FROM ${table.user} WHERE email = ? LIMIT 1`;
     conn.query(slq_getID, [email], function (err, results) {
 
         if (err) return callback(err, null);
@@ -112,28 +129,6 @@ function get_user_ID_by_email(email, callback) {
     });
 }
 
-/**
- * update_user - Update user in database
- * @param {Object} data -> {interID, username, lastname, email, phoneNumber, userID, "profile_id"} 
- * @return {Promise} resolve with all profiles
- */
-function update_user(data) {
-
-
-    return new Promise(function (resolve, reject) {
-
-        let user_data = [data.interID, data.username, data.lastname, data.email, data.phoneNumber, data.userID];
-
-        let updateUser = `UPDATE USER SET inter_ID = ?, first_name= ?, last_name= ?, email= ?, phone_number= ? WHERE user_ID = ? `;
-
-        conn.query(updateUser, user_data, function (err, results) {
-            if (err)
-                reject(err);
-            else
-                resolve(true);
-        });
-    });
-}
 
 /**
  * update_user_profile by id
@@ -144,7 +139,7 @@ function update_user(data) {
 function update_user_profile(user_id, profile_id) {
 
     return new Promise(function (resolve, reject) {
-        let update_profile_query = "UPDATE USER_PROFILES SET profile_ID = ? WHERE user_ID = ?";
+        let update_profile_query = `UPDATE ${table.user_profiles} SET profile_ID = ? WHERE user_ID = ?`;
         conn.query(update_profile_query, [profile_id, user_id], function (err, results) {
             if (err)
                 reject(err);
@@ -163,7 +158,7 @@ function delete_user_by_id(id) {
 
     return new Promise(function (resolve, reject) {
 
-        let deleteUser = `DELETE FROM USER WHERE user_ID = ?`;
+        let deleteUser = `DELETE FROM ${table.user} WHERE user_ID = ?`;
 
         //Exe query
         conn.query(deleteUser, [id], function (err, results, fields) {
@@ -186,7 +181,7 @@ function set_user_profile(user_id, profile_id) {
 
     return new Promise(function (resolve, reject) {
 
-        let querySetProfile = `INSERT INTO USER_PROFILES values(?, ?)`;
+        let querySetProfile = `INSERT INTO ${table.user_profiles} values(?, ?)`;
         conn.query(querySetProfile, [user_id, profile_id], function (error, results) {
             if (error)
                 reject(false);
@@ -196,60 +191,11 @@ function set_user_profile(user_id, profile_id) {
     });
 }
 
-/**
- * add_user_to_department - set the user department
- * @param {Number} user_id id of the user
- * @param {Array} dept_id array with all the dept_id
- * @return {Promise} resolve with true
- */
-function set_user_to_department(user_id, dept_id) {
-
-    return new Promise(function (resolve, reject) {
-
-        let values = [];
-        dept_id.forEach((department_id) => {
-            if (department_id != undefined && department_id.length != 0) {
-                values.push([user_id, department_id])
-            }
-        });
-
-        let query = "INSERT INTO USER_DEP (user_ID, dep_ID) VALUES ?";
-        conn.query(query, [values], function (error, results) {
-            if (error)
-                reject(error);
-            else
-                resolve(true);
-        });
-    });
-}
-
-
-/**
- * get_all_profiles get all profiles from database
- * @return {Promise} resolve with all profiles
- */
-async function get_all_profiles() {
-    return new Promise(function (resolve, reject) {
-        let query_profile = `Select * From PROFILE`;
-
-        //Database query
-        conn.query(query_profile, function (err, results) {
-            if (err)
-                reject(err);
-            else
-                resolve(results);
-        });
-    });
-}
 
 module.exports.get_user_list = get_user_list;
 module.exports.get_user_by_id = get_user_by_id;
-module.exports.update_user = update_user;
 module.exports.delete_user_by_id = delete_user_by_id;
 module.exports.get_user_ID_by_email = get_user_ID_by_email;
-module.exports.get_all_profiles = get_all_profiles;
-module.exports.set_user_to_department = set_user_to_department;
 module.exports.set_user_profile = set_user_profile;
-module.exports.get_user_department_by_id = get_user_department_by_id;
 module.exports.update_user_profile = update_user_profile;
 

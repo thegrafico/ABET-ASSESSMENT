@@ -5,7 +5,7 @@
 
         <div class="col-2 side-bard">
             <div class="side-bar-title">
-                <p> Options</p>
+                <p> My Assessments</p>
             </div>
 
             <div class="group-btn">
@@ -28,10 +28,26 @@
                 </button>
 
                 <!-- PROFESSOR ANALYSIS -->
-                <button class="btn btn-outline-primary" id="analysis">
+                <!-- <button class="btn btn-outline-primary" id="analysis">
                     Analysis &nbsp;<i id="analysis" class="fa fa-bar-chart"></i>
-                </button>
+                </button> -->
             </div>
+
+            <% if( HavePrivilege){ %>
+
+            <div class="side-bar-title coordinatorOptions">
+                <p> Coordinator</p>
+            </div>
+
+            <div class="group-btn coordinatorBtn">
+                <!-- ASSESSMENT IN PROGRESS -->
+                <a class="btn btn-outline-primary" href="<%=base_url%>/coordinator" id="assessment_view_professors">
+                    Professor's Assessments &nbsp; <i id="assessment_view_professors" class="fa fa-file-text-o"></i>
+                </a>
+            </div>
+
+            <%}%> 
+
         </div>
 
         <div class="col-10" style="padding: 0; max-width: 100%;">
@@ -61,56 +77,45 @@
                                 <select name="filter" class="form-control" id="filterBy" type="text">
                                     <option selected value=""> -- All -- </option>
                                     <% academic_term.forEach(term => { %>
-                                    <option value="<%=term["term_name"]%>"><%=term["term_name"]%></option>
-                                    <% }) %>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!--                         
-                        <div class="p-2 bd-highlight">
-
-                            <div class="form-group">
-                                <div>
-                                    <input name="filter" class="form-control" id="myInput" style="margin-top: 0;"
-                                        type="text" placeholder="Type what you're Looking for. Ex. Name or Date" back>
-                                </div>
-                            </div>
-                        </div> -->
-                    </div>
-                </div>
-
-                <!-- ASSESSMENT IN PROGRESS -->
-                <div class="col-12 header-table" id="progress">
-                    <%- include ('./modal/assessment_in_progress', {assessment: assessment_in_progress, academic_term}) -%>
-                </div>
-
-                <!-- ASSESSMENT COMPLETED -->
-                <div class="col-12 header-table d-none" id="completed">
-                    <%- include ('./modal/assessment_completed', {assessment: assessment_completed, academic_term}) -%>
-                </div>
-
-                <!-- ASSESSMENT ARCHIVE -->
-                <div class="col-12 header-table d-none" id="archive">
-                    <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term}) -%>
-                </div>
-            </div>
+            <option value="<%=term["term_name"]%>"><%=term["term_name"]%></option>
+            <% }) %>
+            </select>
         </div>
     </div>
 </div>
 
-<!-- MODAL CREATE -->
-<%- include ('./modal/create_assessment', {departments, academic_term}) -%>
+
+<!-- ASSESSMENT IN PROGRESS -->
+<div class="col-12 header-table" id="progress">
+    <%- include ('./modal/assessment_in_progress', {assessment: assessment_in_progress, academic_term, emptyMsg: "In Progress"}) -%>
+</div>
+
+<!-- ASSESSMENT COMPLETED -->
+<div class="col-12 header-table d-none" id="completed">
+    <%- include ('./modal/assessment_completed', {assessment: assessment_completed, academic_term, emptyMsg: "Completed"}) -%>
+</div>
+
+<!-- ASSESSMENT ARCHIVE -->
+<div class="col-12 header-table d-none" id="archive">
+    <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term, emptyMsg: "Archive"}) -%>
+</div>
+
+<!-- MODAL CREATE AND EDIT -->
+<%- include ('./modal/create_assessment', {study_programs, academic_term}) -%>
 
 <!-- MODAL DELETE -->
 <%- include ('./modal/delete_assessment') -%>
 
 <!-- FOOTER -->
+
+<!-- STYLES -->
 <link rel="stylesheet" href="/stylesheets/professor_index.css">
 <link rel="stylesheet" href="/stylesheets/professor_assessment.css">
-<script src="/javascripts/ajaxRequest.js"></script>
+<!-- FILTER -->
 <script src="/javascripts/filters/home.js"></script>
+<!-- STATIC HEADER -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
+<!-- MODAL -->
 <script src="/javascripts/modals/assessments.js"></script>
 
 <%- include ('../admin/partials/footer') -%>

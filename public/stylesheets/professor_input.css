@@ -39,7 +39,7 @@ p {
 }
 
 /* FINISH BTN */
-.submitBtn input:nth-child(2) {
+.submitBtn input:nth-child(2){
     background-color: #00833e;
     margin-left: 30%;
 }
@@ -58,4 +58,16 @@ p {
     -moz-box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
     box-shadow: 5px 5px 9px 0px rgba(0, 0, 0, 0.4);
     padding: 5% 0;
+}
+
+
+.errorMsg{
+    color: red;
+}
+
+#finishError{
+    padding-top: 5px;
+    width: 35%;
+    margin-left: 65%;
+    text-align: center;
 }

@@ -148,3 +148,7 @@ img {
 .btn-group.btn-group-toggle {
 	width: 20rem;
 }
+
+.dropdown-menu {
+	z-index: 999999;
+}

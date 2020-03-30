@@ -5,10 +5,10 @@ var express = require('express');
 var router = express.Router();
 var queries = require('../helpers/queries/user_queries');
 var general_queries = require("../helpers/queries/general_queries");
-var department_query = require("../helpers/queries/department_queries");
 var roolback_queries = require("../helpers/queries/roolback_queries");
 const { user_create_inputs } = require("../helpers/layout_template/create");
-var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
+const table = require("../helpers/DatabaseTables");
+var { validate_form} = require("../helpers/validation");
 
 const base_url = "/admin/users";
 var locals = {
@@ -19,7 +19,7 @@ var locals = {
 	form_id: "user_data",
 	api_get_url: "/api/get/user", // all api_url ends in the id
 	delete_redirect: null,
-	filter:true,
+	filter: true,
 	filter_title: "-- Department --",
 	feedback_message: "Number of users: "
 };
@@ -30,7 +30,7 @@ var locals = {
 */
 router.get('/', async function (req, res) {
 
-	locals.breadcrumb = [{"name": "Users", "url": base_url}];
+	locals.breadcrumb = [{ "name": "Users", "url": base_url }];
 
 	locals.results = [];
 
@@ -38,7 +38,7 @@ router.get('/', async function (req, res) {
 
 	// the last header is for position the button
 	locals.table_header = ["Inter ID", "Profile", "Name", "Last Name",
-		"Email", "Phone Number", "Department", ""
+		"Email", "Phone Number", "Study Program", ""
 	];
 
 	// Get all user from the database (callback)
@@ -47,13 +47,13 @@ router.get('/', async function (req, res) {
 	});
 
 	// Departments
-	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
-		console.error("ERROR GETTING DEPARTMENTS: ", err);
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+		console.error("ERROR GETTING study programs: ", err);
 	});
 
-	if (departments != undefined && departments.length > 0){
+	if (study_programs != undefined && study_programs.length > 0) {
 
-		locals.filter_value = departments.map( each => each.dep_name);
+		locals.filter_value = study_programs.map(each => each.prog_name);
 	}
 
 	let results = [];
@@ -71,7 +71,7 @@ router.get('/', async function (req, res) {
 					user["last_name"],
 					user["email"],
 					user["phone_number"],
-					user["dep_name"].join(", "),
+					user["prog_name"].join(", "),
 					"" // position the buttons of remove, and edit
 				]
 			});
@@ -88,8 +88,8 @@ router.get('/', async function (req, res) {
 router.get('/create', async function (req, res) {
 
 	locals.breadcrumb = [
-		{"name": "Users", "url": base_url},
-		{"name": "Create", "url": locals.url_create }
+		{ "name": "Users", "url": base_url },
+		{ "name": "Create", "url": locals.url_create }
 	];
 
 	// store all profiles
@@ -101,7 +101,6 @@ router.get('/create', async function (req, res) {
 	locals.title_action = "Create User";
 	locals.url_form_redirect = locals.url_create;
 	locals.btn_title = "Create";
-	locals.department = [];
 
 	// get all profiles
 	let profiles = await queries.get_all_profiles().catch((err) => {
@@ -115,24 +114,20 @@ router.get('/create', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
-	// get all deparments
-	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
-		console.log("Cannot get deparment information: ", err);
+	// Getting study program
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+		console.error("ERROR GETTING STD PROGRAM: ", err);
 	});
 
 	// verify is found any department
-	if (departments == undefined || departments.length == 0) {
-		console.log("There is not department created");
-		req.flash("error", "Please create a department before creating a user");
+	if (study_programs == undefined || study_programs.length == 0) {
+		console.error("Cannot find any study program");
+		req.flash("error", "Please create a Study program before creating a user");
 		return res.redirect(base_url);
 	}
 
-	departments.forEach((element) => {
-		locals.department.push({
-			label: element.dep_name,
-			value: element.dep_ID.toString()
-		});
-	});
+	// Study Programs
+	locals.study_program = study_programs;
 
 	// reset value to nothing when creating a new record
 	user_create_inputs.forEach((record) => {
@@ -148,8 +143,10 @@ router.get('/create', async function (req, res) {
 		});
 	});
 
-	locals.user_dept = [];
+	locals.user_profe = [];
 	locals.user_profile = -1;
+	locals.std_ids = [];
+	locals.is_coordinator = [];
 
 	res.render('admin/user/create_edit', locals);
 });
@@ -165,8 +162,9 @@ router.post('/create', async function (req, res) {
 		return res.redirect("back");
 	}
 
-	if (req.body.selected_values == undefined || req.body.selected_values.length < 2){
-		req.flash("error", "Department Cannot be empty");
+	let std = req.body.std;
+	if (!std || Object.keys(std).length === 0) {
+		req.flash("error", "Study Program Cannot be empty");
 		return res.redirect("back");
 	}
 
@@ -178,12 +176,11 @@ router.post('/create', async function (req, res) {
 		"email": "s",
 		// "phoneNumber": "s",
 		"profile_id": "n",
-		"selected_values": "s"
 	};
 
 	// if the values don't mach the type 
 	if (!validate_form(req.body, keys_types)) {
-		req.flash("error", "Error in the information of the user");
+		req.flash("error", "Error in the information you typed");
 		return res.redirect("back");
 	}
 
@@ -195,11 +192,8 @@ router.post('/create', async function (req, res) {
 		"phoneNumber": req.body.phoneNumber
 	}
 
-	// get all departments 
-	let departments = req.body.selected_values.split(",");
-
 	// promise -- adding user
-	roolback_queries.create_user(create_user_data, req.body.profile_id, departments).then((ok) => {
+	roolback_queries.create_user(create_user_data, req.body.profile_id, std).then((ok) => {
 		req.flash("success", "User created");
 		res.redirect(base_url);
 
@@ -218,7 +212,7 @@ router.post('/create', async function (req, res) {
 	--SHOW USERS EDIT--
  	GET /users/:id/edit
 */
-router.get('/:id/edit',  async function (req, res) {
+router.get('/:id/edit', async function (req, res) {
 
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)) {
@@ -228,8 +222,8 @@ router.get('/:id/edit',  async function (req, res) {
 
 	// Breadcrum for web
 	locals.breadcrumb = [
-		{"name": "Users", "url": base_url, "active": false},
-		{"name": "Edit", "url": ".", "active": true}
+		{ "name": "Users", "url": base_url, "active": false },
+		{ "name": "Edit", "url": ".", "active": true }
 	];
 
 	let user_id = req.params.id;
@@ -253,26 +247,31 @@ router.get('/:id/edit',  async function (req, res) {
 		req.flash("error", "Cannot find this user");
 		return res.redirect(base_url);
 	}
-	let user_departments = await queries.get_user_department_by_id(user_id).catch((err) => {
-		console.log("Error getting user department: ", err);
+
+	// get user study programs
+	let user_std = await queries.get_user_study_programs_by_id(user_id).catch((err) => {
+		console.log("Error getting user study program: ", err);
 	});
-	// assign user department if user don't have any
-	if (user_departments == undefined) user_departments = [];
+
+	// assign user std if user don't have any
+	if (user_std == undefined) user_departments = [];
 
 	// get all department from db
-	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
-		console.log("Cannot get deparment information: ", err);
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+		console.log("Cannot find any study program, please create one", err);
 	});
 
-	// verify departments
-	if (departments == undefined || departments.length == 0) {
-		console.log("There is not department created");
-		req.flash("error", "Please create a department before creating a user");
+	// verify study programs
+	if (study_programs == undefined || study_programs.length == 0) {
+		req.flash("error", "Please create a study program before creating a user");
 		return res.redirect(base_url);
 	}
 
+	locals.std_ids = user_std.map(each => each["prog_ID"]);
+	locals.is_coordinator = user_std.map(each => each["is_coordinator"]);
+
 	// get all profiles
-	let profiles = await queries.get_all_profiles().catch((err) => {
+	let profiles = await general_queries.get_table_info(table.profile).catch((err) => {
 		console.log("There is an error getting the profiles: ", err);
 	});
 
@@ -282,14 +281,6 @@ router.get('/:id/edit',  async function (req, res) {
 		req.flash("error", "Please create a profile before creating a user");
 		return res.redirect(base_url);
 	}
-
-	// Insert department in frondend
-	departments.forEach((element) => {
-		locals.department.push({
-			label: element.dep_name,
-			value: element.dep_ID.toString()
-		});
-	});
 
 	profiles.forEach((element) => {
 		locals.dropdown_options.push({
@@ -315,11 +306,10 @@ router.get('/:id/edit',  async function (req, res) {
 
 	// Dynamic EJS
 	locals.inputs = user_create_inputs;
-	locals.user_dept = user_departments;
+	locals.study_program = study_programs;
 	locals.user_profile = user_data.profile_ID;
 
 	res.render('admin/user/create_edit', locals);
-	// res.status(200).send("OK");
 });
 
 /*
@@ -333,13 +323,8 @@ router.put('/:id', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
-	if (req.body.selected_values == ","){
-		req.flash("error", "Department Cannot be empty");
-		return res.redirect("back");
-	}
-
 	let user_id = parseInt(req.params.id);
-	
+
 	// key with expected types (string, number);
 	let keys_types = {
 		"interID": "s",
@@ -348,8 +333,13 @@ router.put('/:id', async function (req, res) {
 		"email": "s",
 		// "phoneNumber": "s",
 		"profile_id": "n",
-		"actual_profile": "n",
 	};
+
+	let std = req.body.std;
+	if (!std || Object.keys(std).length === 0) {
+		req.flash("error", "Study Program Cannot be empty");
+		return res.redirect("back");
+	}
 
 	// if the values don't mach the type 
 	if (!validate_form(req.body, keys_types)) {
@@ -357,62 +347,20 @@ router.put('/:id', async function (req, res) {
 		return res.redirect("back");
 	}
 
-	req.body.userID = user_id;
-	if (req.body.selected_values == undefined || req.body.selected_values.length == 0 || req.body.selected_values == "")
-		req.body.selected_values = req.body.selected;
+	roolback_queries.update_user(user_id, req.body).then((ok) => {
+		req.flash("success", "User Updated!");
+		res.redirect(base_url);
+	}).catch((err) => {
 
-	let current_department = split_and_filter(req.body.selected, ",");
-	let selected_department = split_and_filter(req.body.selected_values, ",");
+		console.log(err);
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "There is a user with the same information");
+		else
+			req.flash("error", "Error updating the User");
 
-	let departments_for_update = get_data_for_update(current_department, selected_department);
-	// console.log("RESULTS: ", departments_for_update);
-
-	let error = undefined;
-	let user_was_updated = await queries.update_user(req.body).catch((err) => {
-		console.log("Error updating the user: ", err);
-		error = err;
+		res.redirect(base_url);
 	});
 
-	if (user_was_updated == undefined || !user_was_updated) {
-
-		if (error.code == "ER_DUP_ENTRY")
-			req.flash("error", "There is a user with the same Inter ID");
-		else
-			req.flash("error", "Cannot update the user information");
-		return res.redirect("back");
-	}
-
-	// update profile is changes
-	if (req.body.profile_id != req.body.actual_profile) {
-		await queries.update_user_profile(user_id, req.body.profile_id).catch((err) => {
-			console.log("Error updating the user profile: ", err);
-		});
-	}
-
-	// update the department if != undefined
-	if (departments_for_update != undefined) {
-
-		// remove element if there is any
-		if (departments_for_update["delete"].length > 0) {
-
-			await department_query.remove_user_department(user_id, departments_for_update["delete"]).catch((err) => {
-				console.log("There is an error Updating department: ", err);
-				throw err;
-			});
-		}
-
-		// remove element if there is any
-		if (departments_for_update["insert"].length > 0) {
-
-			await department_query.insert_user_department(user_id, departments_for_update["insert"]).catch((err) => {
-				console.log("There is an error Updating department: ", err);
-				throw err;
-			});
-		}
-	}
-
-	req.flash("success", "User edited");
-	res.redirect(base_url);
 });
 
 /* 

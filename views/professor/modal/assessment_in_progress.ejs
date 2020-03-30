@@ -55,9 +55,7 @@
                             <input type="hidden" name="term" value="<%=element.term_ID%>">
                             <input type="hidden" name="term_name" value="<%=element.term_name %>">
                         </button>
-                        <button class="REMOVE dropdown-item" value="<%=element["assessment_ID"]%>,<%=element["name"]%>">
-                            Archive Assessment &nbsp;<i class="fa fa-inbox"></i>
-                        </button>
+                       
                     </div>
                 </div>
             </td>
@@ -68,7 +66,7 @@
 
         <% }else{ %>
 
-        <h2 style="text-align: center;">You do not have any assessent in process!</h2>
+        <h2 style="text-align: center;">You do not have any Assessment in Progress!</h2>
 
         <% } %>
     </tbody>

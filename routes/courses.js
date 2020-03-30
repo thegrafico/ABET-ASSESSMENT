@@ -3,6 +3,7 @@ var query = require("../helpers/queries/course_queries");
 var general_queries = require("../helpers/queries/general_queries");
 var roolback_queries = require("../helpers/queries/roolback_queries");
 var router = express.Router();
+const table = require("../helpers/DatabaseTables");
 const { course_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form, split_and_filter, get_data_for_update } = require("../helpers/validation");
 
@@ -40,10 +41,19 @@ router.get('/', async function (req, res) {
 	let courses = await query.get_course_with_std_program().catch((err) => {
 		console.log("Error getting the courses with std program results: ", err);
 	});
+
+	let study_program = await general_queries.get_table_info(table.study_program).catch((err) =>{
+		console.error("Error getting study programs:", err);
+	});
+
+	// validate study program
+	if (study_program == undefined || study_program.length == 0){
+		res.flash("error", "cannot find study programs");
+		return res.redirect("/admin");
+	}
+	
 	let results = [];
 	if (courses != undefined && Object.keys(courses).length > 0) {
-
-		let std_program = [];
 
 		for (let key in courses) {
 
@@ -61,15 +71,9 @@ router.get('/', async function (req, res) {
 					""
 				]
 			});
-
-			std_program.push(courses[key]["prog_name"]);
 		}
-
 		// remove duplicates
-		locals.filter_value = std_program.filter(function (item, pos) {
-			return std_program.indexOf(item) == pos;
-		});
-
+		locals.filter_value = study_program.map(each => each["prog_name"]);
 		locals.results = results;
 	}
 	res.render('admin/layout/home', locals);

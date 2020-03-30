@@ -1,5 +1,6 @@
 var { options } = require("../mysqlConnection");
 var mysql = require("mysql");
+const table = require("../DatabaseTables");
 var connection = mysql.createConnection(options);
 connection.connect();
 
@@ -11,7 +12,7 @@ connection.connect();
  * @param {Array} departments_id ids of departments 
  * @return {Promise} resolve with all profiles
  */
-async function create_user(user, profile_id, departments_id) {
+module.exports.create_user = function create_user(user, profile_id, std) {
 
 
     // add user promise
@@ -21,7 +22,7 @@ async function create_user(user, profile_id, departments_id) {
             if (err) { return reject(err) }
 
             // query
-            let queryAddUser = `INSERT INTO USER (inter_ID, first_name, last_name, email, phone_number)
+            let queryAddUser = `INSERT INTO ${table.user} (inter_ID, first_name, last_name, email, phone_number)
              values( ?, ?, ?, ?, ?);`;
 
             connection.query(queryAddUser, [user.id, user.name, user.lastname, user.email.toLowerCase(), user.phoneNumber], function (error, results) {
@@ -29,23 +30,18 @@ async function create_user(user, profile_id, departments_id) {
                 if (error) return connection.rollback(function () { reject(error); });
 
                 let user_id = results.insertId;
-                let querySetProfile = `INSERT INTO USER_PROFILES values(?, ?)`;
+                let querySetProfile = `INSERT INTO ${table.user_profiles} values(?, ?)`;
 
                 connection.query(querySetProfile, [user_id, profile_id], function (error, results) {
                     if (error) return connection.rollback(function () { reject(error); });
 
-                    let values = [];
-                    departments_id.forEach((dept_id) => {
-                        if (dept_id != undefined && dept_id.length != 0 && !isNaN(dept_id)) {
-                            values.push([user_id, parseInt(dept_id)])
-                        }
-                    });
+                    let data = get_data_user_sdt_program(user_id, std);
 
-                    if (values.length == 0) { return connection.rollback(function () { reject("Not department found"); }); }
+                    if (data.length == 0) { return connection.rollback(function () { reject("Not study Program found"); }); }
 
-                    let set_dept_query = `INSERT INTO USER_DEP (user_ID, dep_ID) values ?;`;
+                    let inser_user_std = `INSERT INTO ${table.user_study_program} (user_ID, prog_ID, is_coordinator) values ?;`;
 
-                    connection.query(set_dept_query, [values], function (error, results) {
+                    connection.query(inser_user_std, [data], function (error, results) {
 
                         if (error) return connection.rollback(function () { reject(error); });
 
@@ -63,6 +59,101 @@ async function create_user(user, profile_id, departments_id) {
         });
     });
 }
+/**
+ * create_user get Create new user
+ * @param {Object} user -> {id, name, lastname, email, phoneNumber}
+ * @param {Number} profile_id id of the profile
+ * @param {Array} departments_id ids of departments 
+ * @return {Promise} resolve with all profiles
+ */
+module.exports.update_user = function update_user(user_id, user_data) {
+
+    // add user promise
+    return new Promise(function (resolve, reject) {
+
+        if (user_data == undefined || user.length == 0) {
+            return reject("Invalid Parameter");
+        }
+
+        let data = [
+            user_data.interID,
+            user_data.username,
+            user_data.lastname,
+            user_data.email,
+            user_data.phoneNumber,
+            user_id
+        ];
+
+        connection.beginTransaction(function (err) {
+            if (err) { return reject(err) }
+
+            // query
+            let update_query = `UPDATE ${table.user} SET inter_ID = ?, first_name =? , last_name = ?, email = ? , phone_number = ?
+                WHERE ${table.user}.user_ID = ?;`;
+
+            // update user basic information
+            connection.query(update_query, data, function (error, results) {
+                if (error) return connection.rollback(function () { reject(error); });
+
+                let query_update_profile = `UPDATE ${table.user_profiles} SET profile_ID = ? WHERE ${table.user_profiles}.user_ID = ?`;
+
+                // update user profile
+                connection.query(query_update_profile, [user_data.profile_id, user_id], function (error, results) {
+                    if (error) return connection.rollback(function () { reject(error); });
+
+                    let delete_std_programs = `DELETE FROM ${table.user_study_program} WHERE ${table.user_study_program}.user_ID = ?`
+
+                    // REMOVE ALL STUDY PROGRMS FROM USER
+                    connection.query(delete_std_programs, [user_id], function (error, results) {
+                        if (error) return connection.rollback(function () { reject(error); });
+
+                        // data structured with all study program for user
+                        let data = get_data_user_sdt_program(user_id, user_data.std);
+
+                        if (data.length == 0) { return connection.rollback(function () { reject("Not study Program found"); }); }
+
+                        let inser_user_std = `INSERT INTO ${table.user_study_program} (user_ID, prog_ID, is_coordinator) values ?;`;
+
+                        connection.query(inser_user_std, [data], function (error, results) {
+                            if (error) return connection.rollback(function () { reject(error); });
+
+                            connection.commit(function (err) {
+                                if (err) {
+                                    return connection.rollback(function () {
+                                        reject(err);
+                                    });
+                                }
+                                resolve(true);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
+
+/**
+ * 
+ * @param {Number} user_id - id of the user 
+ * @param {Object} std - all study programs for user
+ */
+function get_data_user_sdt_program(user_id, std) {
+    let data = [];
+    for (key in std) {
+        if (Array.isArray(std[key])) {
+            if (std[key][1] == 'on') {
+                data.push([user_id, std[key][0], true]);
+            } else {
+                data.push([user_id, std[key][0], false]);
+            }
+        } else {
+            data.push([user_id, std[key], false]);
+        }
+    }
+
+    return data;
+}
 
 /**
  * create_course create a course record
@@ -70,14 +161,14 @@ async function create_user(user, profile_id, departments_id) {
  * @param {Array} study_program_ids id of study programs
  * @return {Promise} resolve with all profiles
  */
-async function create_course(course) {
+module.exports.create_course = function create_course(course) {
 
     // add user promise
     return new Promise(function (resolve, reject) {
         connection.beginTransaction(function (err) {
             if (err) { return reject(err) }
 
-            let insert_query = `INSERT INTO COURSE 
+            let insert_query = `INSERT INTO ${table.course} 
             (course_number, course_name, course_description) 
             values(?, ?, ?);`;
 
@@ -96,7 +187,7 @@ async function create_course(course) {
 
                 if (values.length == 0) return reject("Cannot add any study program");
 
-                let insert_prog_course = `INSERT INTO PROG_COURSE (course_ID, prog_ID) values ?`;
+                let insert_prog_course = `INSERT INTO ${table.prog_course} (course_ID, prog_ID) values ?`;
 
                 connection.query(insert_prog_course, [values], function (error, results) {
                     if (error) return connection.rollback(function () { reject(error); });
@@ -121,14 +212,14 @@ async function create_course(course) {
  * @param {Object} rubric -> {name, description, outcome_id, performance}
  * @return {Promise} resolve with true
  */
-async function create_evaluation_rubric(rubric) {
+module.exports.create_evaluation_rubric = function create_evaluation_rubric(rubric) {
     return new Promise(function (resolve, reject) {
 
         connection.beginTransaction(function (err) {
             if (err) { return reject(err) }
 
             // insert rubric
-            let insert_query = `INSERT INTO EVALUATION_RUBRIC 
+            let insert_query = `INSERT INTO ${table.evaluation_rubric}
             (rubric_name, rubric_description, outc_ID) 
             VALUES(?, ?, ?);`;
 
@@ -145,7 +236,7 @@ async function create_evaluation_rubric(rubric) {
                     }
                 });
 
-                let query_performance_rubric = `INSERT INTO PERFORMANCE_RUBRIC (rubric_ID, perC_ID) VALUES ?`;
+                let query_performance_rubric = `INSERT INTO ${table.performance_rubric} (rubric_ID, perC_ID) VALUES ?`;
 
                 connection.query(query_performance_rubric, [values], function (error, results) {
                     if (error) return connection.rollback(function () { reject(error); });
@@ -170,7 +261,7 @@ async function create_evaluation_rubric(rubric) {
  * @param {Array} performances -> [null, Assessment id]
  * @returns {Boolean} -> returns true if successful.
 */
-function insertStudentScores(rows, performances, assessmentID) {
+module.exports.insertStudentScores = function insertStudentScores(rows, performances, assessmentID) {
 
     return new Promise((resolve, reject) => {
 
@@ -178,14 +269,14 @@ function insertStudentScores(rows, performances, assessmentID) {
             if (err) { return reject(err) }
 
             // query
-            let deletePrevEntry = `DELETE FROM EVALUATION_ROW WHERE EVALUATION_ROW.assessment_ID = ?`;
+            let deletePrevEntry = `DELETE FROM ${table.evaluation_row} WHERE ${table.evaluation_row}.assessment_ID = ?`;
 
             // delete previus entries
             connection.query(deletePrevEntry, [assessmentID], function (error, results) {
-                if (error) return connection.rollback(function () {return reject(error);});
+                if (error) return connection.rollback(function () { return reject(error); });
 
                 // query
-                let insert_evaluation_row = 'INSERT INTO EVALUATION_ROW(assessment_ID) VALUES ?';
+                let insert_evaluation_row = `INSERT INTO ${table.evaluation_row} (assessment_ID) VALUES ?`;
 
                 // insert new entries
                 connection.query(insert_evaluation_row, [rows], function (error, results) {
@@ -193,7 +284,7 @@ function insertStudentScores(rows, performances, assessmentID) {
                     if (error) return connection.rollback(function () { return reject(error); });
 
                     // get all row id in order
-                    let get_row_query = 'SELECT row_ID FROM EVALUATION_ROW WHERE assessment_ID = ? ORDER BY row_ID ASC';
+                    let get_row_query = `SELECT row_ID FROM ${table.evaluation_row} WHERE assessment_ID = ? ORDER BY row_ID ASC`;
 
                     connection.query(get_row_query, [assessmentID], async function (error, results) {
                         if (error) return connection.rollback(function () { return reject(error); });
@@ -205,7 +296,7 @@ function insertStudentScores(rows, performances, assessmentID) {
                         let row_perf = await transformInRowPerf(row_ids, performances);
 
                         // query
-                        let insert_row_performance = `INSERT INTO ROW_PERC(row_ID, perc_ID, row_perc_score) VALUES ?`;
+                        let insert_row_performance = `INSERT INTO ${table.row_perc} (row_ID, perc_ID, row_perc_score) VALUES ?`;
 
                         // insert student data
                         connection.query(insert_row_performance, [row_perf], function (error, results) {
@@ -214,7 +305,7 @@ function insertStudentScores(rows, performances, assessmentID) {
                             // save the changes
                             connection.commit(function (err) {
                                 if (err) return connection.rollback(function () { reject(err); });
-                                
+
                                 // Success
                                 resolve(true);
                             });
@@ -243,8 +334,3 @@ function transformInRowPerf(row_ids, performances) {
 
     return row_perf;
 }
-
-module.exports.insertStudentScores = insertStudentScores;
-module.exports.create_user = create_user;
-module.exports.create_course = create_course;
-module.exports.create_evaluation_rubric = create_evaluation_rubric;

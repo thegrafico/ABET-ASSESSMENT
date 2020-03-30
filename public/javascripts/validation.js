@@ -17,9 +17,16 @@ $(document).ready(function () {
 
     console.log("Validation Loaded");
 
+    //  LETTERS ONLY
     jQuery.validator.addMethod("lettersonly", function (value, element) {
         return this.optional(element) || /^[a-z\s]+$/i.test(value);
     }, "Only alphabetical characters");
+
+    // ONLY SPACES
+    jQuery.validator.addMethod("noSpace", function (value, element) {
+        return value.indexOf(" ") < 0 && value != "";
+    }, "ID cannot have spaces");
+
 
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
@@ -34,7 +41,8 @@ $(document).ready(function () {
             "interID": {
                 required: true,
                 minlength: 6,
-                maxlength: 20
+                maxlength: 20,
+                noSpace: true
             },
             "username": { required: true, lettersonly: true },
             "lastname": { required: true, lettersonly: true },
@@ -222,7 +230,8 @@ $(document).ready(function () {
             "outcome": "required",
             "rubric": "required",
             "term": "required",
-            "course": "required"
+            "course": "required",
+            "course_section": { required: true, minlength: 3, maxlength: 20, digits: true}
         },
         // Specify validation error messages
         messages: {
@@ -237,12 +246,17 @@ $(document).ready(function () {
             "outcome": "Select an Outcome",
             "rubric": "Select a Rubric",
             "term": "Select a Term",
-            "course": "Select a Course"
+            "course": "Select a Course",
+            "course_section": {
+                required: "Cannot be empty",
+                minlength: "Section is to short",
+                maxlength: "Section is to big",
+                digits: "Only numbers are accepted"
+            },
         },
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
         submitHandler: function (form) {
-            console.log("HERE");
             form.submit();
         }
     });

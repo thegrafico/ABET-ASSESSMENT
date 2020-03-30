@@ -1,0 +1,190 @@
+<%- include ('../admin/partials/header') -%>
+
+
+<div class="container-fluid">
+    <table id="table" class="table table-fixed table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Professor</th>
+                <th>Assessment</th>
+                <th>Course</th>
+                <th>Outcome</th>
+                <th>Term</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="filter">
+
+            <% if (assessments.length > 0) { %>
+            <% var counter = 1; %>
+
+
+            <!-- ASSESSMENT IN PROSESS -->
+            <% for( let i = 0; i < assessment_in_progress.length; i++, counter++ ) { %>
+
+            <tr>
+                <td> <%= counter %> </td>
+                <td> 
+                    <%=assessment_in_progress[i]["first_name"]%> <%= assessment_in_progress[i]["last_name"]%> 
+                    <br>
+                    <span class="interID">ID: <%=assessment_in_progress[i]["inter_ID"]%> </span>
+                </td>
+                <td> <%=assessment_in_progress[i]["name"]%> </td>
+                <td> <%=assessment_in_progress[i]["course_number"]%> </td>
+                <td> <%=assessment_in_progress[i]["outc_name"]%> </td>
+                <td> <%=assessment_in_progress[i]["term_name"]%> </td>
+
+                <td class="status <%=assessment_in_progress[i]["status"]["class"]%>">
+                    <%=assessment_in_progress[i]["status"]["name"]%>
+                </td>
+
+                <td>1</td>
+            </tr>
+            <% } %>
+
+            <!-- ASSESSMET COMPLETED -->
+            <% for( let i = 0; i < assessment_completed.length; i++, counter++ ) { %>
+            <tr>
+                <td> <%= counter %> </td>
+                <td> 
+                    <%=assessment_completed[i]["first_name"]%> <%= assessment_completed[i]["last_name"]%> 
+                    <br>
+                    <span class="interID">ID: <%=assessment_completed[i]["inter_ID"]%> </span>
+                </td>
+                <td> <%=assessment_completed[i]["name"]%> </td>
+                <td> <%=assessment_completed[i]["course_number"]%> </td>
+                <td> <%=assessment_completed[i]["outc_name"]%> </td>
+                <td> <%=assessment_completed[i]["term_name"]%> </td>
+                <td class="status <%=assessment_completed[i]["status"]["class"]%>">
+                    <%=assessment_completed[i]["status"]["name"]%>
+                </td>
+                <td>1</td>
+            </tr>
+            <% } %>
+
+            <!-- ASSESSMENT ARCHIVE -->
+            <% for( let i = 0; i < assessment_archive.length; i++, counter++ ) { %>
+            <tr>
+                <td> <%= counter %> </td>
+
+                <td > 
+                    <%=assessment_archive[i]["first_name"]%> <%= assessment_archive[i]["last_name"]%>
+                    <br>
+                    <span class="interID">ID: <%=assessment_archive[i]["inter_ID"]%> </span>
+                </td>
+                <td> <%=assessment_archive[i]["name"]%> </td>
+                <td> <%=assessment_archive[i]["course_number"]%> </td>
+                <td> <%=assessment_archive[i]["outc_name"]%> </td>
+                <td> <%=assessment_archive[i]["term_name"]%> </td>
+
+                <td class="status <%=assessment_archive[i]["status"]["class"]%>">
+                    <%=assessment_archive[i]["status"]["name"]%>
+                </td>
+
+                <td>1</td>
+            </tr>
+            <% } %>
+
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .container-fluid {
+        margin-top: 2%;
+        height: 500px;
+        overflow-y: scroll;
+        width: 99%;
+    }
+
+    tr,
+    th {
+        text-align: center;
+    }
+
+    /* # COLUM */
+    th:first-child,
+    td:first-child {
+        width: 2%;
+        text-align: center;
+    }
+
+    /* PROFESSOR NAME COLUM */
+    th:nth-child(2),
+    td:nth-child(2) {
+        width: 15%;
+    }
+
+    /* ASSESSMENT NAME */
+    th:nth-child(3),
+    td:nth-child(3) {
+        width: 12%;
+    }
+
+    /* COURSE */
+    th:nth-child(4),
+    td:nth-child(4) {
+        width: 20%;
+    }
+
+    /* OUTCOME */
+    th:nth-child(5),
+    td:nth-child(5) {
+        width: 10%;
+    }
+
+    /* TERM */
+    th:nth-child(6),
+    td:nth-child(6) {
+        width: 18%;
+    }
+
+    /* TERM */
+    th:nth-child(7),
+    td:nth-child(7) {
+        width: 13%;
+        text-align: center;
+    }
+
+    th:nth-child(8),
+    td:nth-child(8) {
+        width: 10%;
+        text-align: center;
+    }
+
+    .interID{
+        font-style: italic;
+        font-size: 0.8em;
+    }
+
+    td {
+        text-align: left;
+    }
+
+    .status {
+        color: white;
+        font-weight: bold;
+    }
+    .in_progress {
+        background-color: #d39e00;
+    }
+    .completed {
+        background-color: #28a745;
+    }
+    .archive {
+        background-color: #6c757d;
+    }
+</style>
+
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/stylesheets/professor_index.css">
+<!-- STATIC HEADER -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
+<!-- MODAL -->
+<script src="/javascripts/modals/assessments.js"></script>
+
+<%- include ('../admin/partials/footer') -%>

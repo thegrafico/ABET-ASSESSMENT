@@ -25,13 +25,9 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	<script src="/javascripts/bundle.min.js"></script>
 
-	<!-- SUPERNOTE -->
-	<link rel="stylesheet" href="/summernote-0.8.16-dist/summernote.min.css">
-	<script src="/summernote-0.8.16-dist/summernote.min.js"></script>
-	
 	<!-- MAKE AJAX GET REQUEST -->
 	<script src="/javascripts/ajaxRequest.js"></script>
-	
+
 	<!-- HEADER BACKGROUND -->
 	<style>
 		.inter-green {
@@ -39,8 +35,7 @@
 			color: #FFF !important;
 		}
 	</style>
-	<!-- Page Source css -->
-	<!-- <link rel="stylesheet" href="css/Evaluation_css.css"> -->
+
 	<title><%= title %></title>
 </head>
 
@@ -58,34 +53,24 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 
-				<% if (isAdmin) { %>
-				<li class="nav-item active">
-					<a class="nav-link" href="<%= admin_route %>">Admin<span class="sr-only">(current)</span></a>
-				</li>
+				<% if (hasAdminPrivilege) { %>
+					<li class="nav-item active">
+						<a class="nav-link" href="<%= admin_route %>">Admin<span class="sr-only">(current)</span></a>
+					</li>
 
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Sections
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="<%= admin_route %>/users">Users</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="<%= admin_route %>/courses">Courses</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="<%= admin_route %>/department">Departments</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="<%= admin_route %>/outcomes">Outcomes</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="<%= admin_route %>/evaluation">Evaluation Rubric</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="<%= admin_route %>/performanceCriteria">Performance Criteria</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="<%= admin_route %>/studyprograms">Study Program</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="<%= admin_route %>/term">Terms</a>
-					</div>
-				</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Sections
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+							<% adminOptions.forEach(option => { %>
+								<a class="dropdown-item" href="<%=option["url"]%>"><%=option["name"]%></a>
+								<div class="dropdown-divider"></div>
+							<% }); %>
+						</div>
+					</li>
 				<% } %>
 
 				<li class="nav-item">

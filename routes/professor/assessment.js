@@ -4,8 +4,11 @@ var general_queries = require('../../helpers/queries/general_queries');
 var queries = require('../../helpers/queries/perfTable_queries');
 var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
+const table = require("../../helpers/DatabaseTables");
 var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
 var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
+const { admin, coordinator, statusOfAssessment} = require("../../helpers/profiles");
+
 /* GLOBAL LOCALS */
 const base_url = '/professor';
 let locals = {
@@ -14,6 +17,11 @@ let locals = {
 	homeURL: base_url,
 	form_action: "/"
 };
+
+// Assessments status
+const progress = statusOfAssessment.in_progress;
+const completed = statusOfAssessment.completed;
+const archive = statusOfAssessment.archive;
 
 /*
 	- Get /professor
@@ -28,8 +36,8 @@ router.get('/', async function (req, res) {
 	let user_id = req.session.user_id;
 
 	// Get all departments
-	let departments = await queries.get_department_by_user_id(user_id).catch((err) => {
-		console.error("Error getting department: ", err);
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+		console.error("Error Study programs: ", err);
 	});
 
 	// Getting the term
@@ -53,14 +61,15 @@ router.get('/', async function (req, res) {
 			row.creation_date = `${row.creation_date.getMonth() + 1}/${row.creation_date.getDate()}/${row.creation_date.getFullYear()}`;
 		});
 
-		locals.assessment_in_progress = assessments.filter(each => each.status == "in_progress");
-		locals.assessment_completed = assessments.filter(each => each.status == "completed");
-		locals.assessment_archive = assessments.filter(each => each.status == "archive");
+		locals.assessment_in_progress = assessments.filter(each => each.status == progress);
+		locals.assessment_completed = assessments.filter(each => each.status == completed);
+		locals.assessment_archive = assessments.filter(each => each.status == archive);
 	}
 
 	// assign value of table info
-	locals.departments = departments || [];
+	locals.study_programs = study_programs || [];
 	locals.academic_term = academic_term || [];
+	locals.HavePrivilege = (req.session.user_profile == admin || req.session.user_profile == coordinator);
 	res.render('professor/index', locals);
 
 });
@@ -77,9 +86,6 @@ router.post("/assessment/create", async function (req, res) {
 	// key of the body params
 	let keys = {
 		name: "s",
-		// department_id: "n",
-		// study_program: "n",
-		// outcome: "n",
 		course: "n",
 		rubric: "n",
 		term: "n"
@@ -186,7 +192,7 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 	}
 	// get an array of index of the rows with the data good to insert
 	let indexs = getNumbersOfRows(performance_records);
-	
+
 	// to store each row || to store performances student
 	let rows = [], performances_student = [];
 
@@ -206,8 +212,6 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 		return res.json({ error: true, message: "data is undefined" });
 	});
 });
-
-
 
 /* 
 	- UPDATE AN ASSESSMENT INFORMATION - 
@@ -251,7 +255,7 @@ router.delete('/assessment/:assessmentID', async function (req, res) {
 	// getting the user id
 	let assessment_id = req.params.assessmentID;
 
-	queries.update_status(assessment_id, "archive").then((ok) => {
+	queries.update_status(assessment_id, archive).then((ok) => {
 		req.flash("success", "Assessment Moved to archive!");
 		res.redirect("back");
 	}).catch((err) => {
@@ -269,7 +273,6 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 
 	// assessment id
 	let id = req.params.assessmentID;
-
 
 	// For breadcrumb
 	locals.progressBar = (req.body.assessment.status == "completed") ? 100 : 75;
@@ -311,11 +314,11 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	locals.course_reflection = report["course_reflection"] || "";
 	locals.course_actions = report["course_actions"] || "";
 	locals.course_modification = report["course_modification"] || "";
+	locals.result_outcome = report["result_outcome"] || "";
 	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
 
 	res.render('assessment/professorInput', locals);
 });
-
 
 /**
  *  GET - Professor Input
@@ -323,19 +326,17 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
  */
 router.post('/assessment/:assessmentID/professorInput', middleware.validate_assessment, async function (req, res) {
 
-	// default status
-	let status = "in_progress";
-
-	// of the user press the finish btn
-	if (req.body.save == undefined) {
-		status = "completed";
-	}
 	// Assessment id
 	let id = req.params.assessmentID;
+
+	// if the user pressed finish assessment the status is completed
+	let status = (req.body.finish != undefined) ? completed : progress;
+
+	// verify is the assessment has data
 	let isUpdate = (req.body.have_data == "y");
 
 	// Only validate the data if the status is completed
-	if (status == "completed") {
+	if (status == completed) {
 
 		// keys for grades
 		let grades_keys = {
@@ -358,7 +359,8 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 			"results": "s",
 			"modification": "s",
 			"reflection": "s",
-			"improvement": "s"
+			"improvement": "s",
+			"result_outcome": 's'
 		};
 
 		// Validate professor input
@@ -368,16 +370,38 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		}
 	}
 
+	// Get performance table data
+	let performanceData = await queries.getEvaluationByID(id).catch((err) => {
+		console.log("ERROR GETTING PERFOMRNACE DATA: ", err);
+	});
+
+
 	// TODO: Roolback query is better option
 	if (isUpdate) {
 		// Update Data 
 		queries.update_professor_input(id, req.body, req.body.course).then(async (ok) => {
 
+			if (status == completed) {
+				// Validate performance
+				if (performanceData == undefined || performanceData.length == 0) {
+					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table is empty");
+					return res.redirect("back");
+				}
+			}
+
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-			req.flash("success", "Assessment was moved to completed section!");
-			res.redirect(`${base_url}/assessment/${id}/report`);
+
+			if (status == completed) {
+				req.flash("success", "Assessment was moved to completed section!");
+				res.redirect(`${base_url}/assessment/${id}/report`);
+
+			} else {
+				req.flash("success", "Assessment data was saved!");
+				res.redirect(base_url);
+			}
+
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
 			req.flash("error", "There is an error trying to update the data");
@@ -387,11 +411,26 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		// Insert data
 		queries.insert_professor_input(id, req.body, req.body.course).then(async (ok) => {
 
+			// Validate performance
+			if (status == completed) {
+				if (performanceData == undefined || performanceData.length == 0) {
+					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table is empty");
+					return res.redirect("back");
+				}
+			}
+
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-			req.flash("success", "Assessment was moved to the complete section!");
-			res.redirect(base_url);
+
+			if (status == completed) {
+				req.flash("success", "Assessment was moved to completed section!");
+				res.redirect(`${base_url}/assessment/${id}/report`);
+			} else {
+				req.flash("success", "Assessment data was saved!");
+				res.redirect(base_url);
+			}
+
 		}).catch((err) => {
 			console.log("ERROR ADDDING PROFESSOR INPUT: ", err);
 			req.flash("error", "There is an error trying to add the data");
@@ -475,7 +514,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 
 	// Validate performance
 	if (performanceData == undefined || performanceData.length == 0) {
-		req.flash("error", "This assessment does not have the performance criteria data, please recover the assessment and verify");
+		req.flash("error", "This assessment does not have the performance criteria data");
 		return res.redirect("back");
 	}
 

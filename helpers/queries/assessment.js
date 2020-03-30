@@ -125,5 +125,37 @@ module.exports.update_assessment_by_id = (user_id, assessment_id, assessment) =>
     });
 }
 
+/**
+ * get_professors_assessments - get all professor's assessments
+ * @param {Number} user_id - user id
+ * @returns {Promise} resolve with all assessments results 
+ */
+module.exports.get_professors_assessments = (user_id) => {
+    
+    return new Promise(function(resolve, reject){
+
+        // Get all assessment from my departments
+        let get_assessments = `SELECT * 
+        FROM ASSESSMENT
+        INNER JOIN EVALUATION_RUBRIC ON ASSESSMENT.rubric_ID = EVALUATION_RUBRIC.rubric_ID
+        INNER JOIN STUDENT_OUTCOME ON EVALUATION_RUBRIC.outc_ID = STUDENT_OUTCOME.outc_ID
+        INNER JOIN STUDY_PROGRAM ON STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
+        INNER JOIN DEPARTMENT ON STUDY_PROGRAM.dep_ID = DEPARTMENT.dep_ID
+        INNER JOIN COURSE ON ASSESSMENT.course_ID = COURSE.course_ID
+        INNER JOIN ACADEMIC_TERM ON ASSESSMENT.term_ID = ACADEMIC_TERM.term_ID
+        INNER JOIN USER ON USER.user_ID = ASSESSMENT.user_ID
+        WHERE DEPARTMENT.dep_ID IN (SELECT USER_DEP.dep_ID FROM USER_DEP WHERE USER_DEP.user_ID = ?)
+        ORDER BY ASSESSMENT.creation_date ASC`;
+
+        // EXe query
+        conn.query(get_assessments, [user_id], function (err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(results);
+        });
+    });
+}
+
 
 

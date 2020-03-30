@@ -8,7 +8,8 @@ $(document).ready(function () {
     const tag_course = "#chooseCourse";
     const tag_rubric = "#chooseRubric";
     const tag_term = "#chooseTerm";
-    const tags = [tag_study_program, tag_outcome, tag_course, tag_rubric];
+    const tag_course_section = "#course_section";
+    const tags = [tag_outcome, tag_course, tag_rubric, tag_course_section];
     const default_message = ["Study Program", "Outcome", "Course", "Rubric"];
 
     // TABLE STICKY HEADER
@@ -75,32 +76,28 @@ $(document).ready(function () {
         // Get all information from assessment to edit
         let assessment_id = $(this).find('input[name="id"]').attr('value');
         let assessment_name = $(this).find('input[name="name"]').attr('value');
-        let dept = $(this).find('input[name="department"]').attr('value');
         let std = $(this).find('input[name="studyprogram"]').attr('value');
         let outc = $(this).find('input[name="outcome"]').attr('value');
         let course = $(this).find('input[name="course"]').attr('value');
         let rubric = $(this).find('input[name="rubric"]').attr('value');
         let term = $(this).find('input[name="term"]').attr('value');
 
-        console.log(
-            `ID: ${assessment_id} \n
-            Name: ${assessment_name} \n
-            dept: ${dept}\n
-            std: ${std}\n
-            out: ${outc}\n
-            course: ${course}\n
-            rubric: ${rubric}\n
-            term: ${term}
-            `
-        );
+        // console.log(
+        //     `ID: ${assessment_id} \n
+        //     Name: ${assessment_name} \n
+        //     dept: ${dept}\n
+        //     std: ${std}\n
+        //     out: ${outc}\n
+        //     course: ${course}\n
+        //     rubric: ${rubric}\n
+        //     term: ${term}
+        //     `
+        // );
 
         // Change the name
         $(tag_name).val(assessment_name);
         // Change the term
         $(tag_term).val(term);
-        // Change the department
-        $(tag_department).val(dept);
-
 
         // Update the department and setup the value
         await update_departmet(dept).catch((err) => {
@@ -111,7 +108,6 @@ $(document).ready(function () {
         for (let i = 0; i < tags.length; i++) {
             $(tags[i]).prop("disabled", false);
         }
-
 
         // Change study program, and update all study program
         $(tag_study_program).val(std);
@@ -147,7 +143,7 @@ $(document).ready(function () {
         }
 
         // Clean department
-        $(tag_department).val(function () {
+        $(tag_study_program).val(function () {
             return this.defaultValue;
         });
 
@@ -165,21 +161,6 @@ $(document).ready(function () {
 
     tags.forEach(e => {
         $(e).prop("disabled", true);
-    });
-
-    // WHEN DEPARTMENT CHANGES
-    $(tag_department).change(async function () {
-        // department id
-        let dept_id = $(this).val();
-
-        $("#loader-modal").show();
-        await update_departmet(dept_id).then((ok) => {
-            console.log(ok);
-            $("#loader-modal").hide();
-        }).catch((err) => {
-            console.log(err);
-            $("#loader-modal").hide();
-        });
     });
 
 
@@ -325,8 +306,9 @@ $(document).ready(function () {
         return new Promise(async function (resolve, reject) {
 
             // clean all options when user change from department
-            $(tag_outcome).prop("disabled", false);
-            $(tag_course).prop("disabled", false);
+            $(tag_outcome).prop("disabled", true);
+            $(tag_course).prop("disabled", true);
+            $(tag_course_section).prop("disabled", true);
 
 
             // get all outcomes by study program
@@ -362,6 +344,10 @@ $(document).ready(function () {
 
             // FILL Course
             fill_select_option(courses["data"], "course_name", "course_ID", tag_course, "Course");
+            // clean all options when user change from department
+            $(tag_outcome).prop("disabled", false);
+            $(tag_course).prop("disabled", false);
+            $(tag_course_section).prop("disabled", false);
 
             resolve(true);
         });
