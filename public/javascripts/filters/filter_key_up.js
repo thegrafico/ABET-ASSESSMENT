@@ -3,7 +3,7 @@ try {
         console.log("Filter");
     }
 } catch (error) {
-    tr_visibles = $("#filter tr")
+    tr_visibles = $("#filter tr");
 }
 
 $(document).ready(function () {

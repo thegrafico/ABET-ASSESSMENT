@@ -1,7 +1,75 @@
 <%- include ('../admin/partials/header') -%>
 
+<!-- FILTERING HEADER -->
+<div class="container-fluid container-filter" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+    <!-- FILTERS -->
+    <div class="row">
 
-<div class="container-fluid">
+        <div class="col-1">
+            <h3>Filters: </h3>
+        </div>
+
+        <div class="col-4">
+            <div class="form-group">
+                <div>
+                    <input name="filter" class="form-control" id="filterProfessorName" style="margin-top: 0;" type="text"
+                        placeholder="Type Professor Name or ID." back>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="form-group">
+                <div>
+                    <input name="filter" class="form-control" id="filterCourse" style="margin-top: 0;" type="text"
+                        placeholder="Type Course Number. Ex COEN 2220" back>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="form-group">
+                <select class="form-control" id="filterStatus" type="text">
+                    <option selected value=""> -- Status -- </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-1">
+            <!-- <h3>Filters: </h3> -->
+        </div>
+
+        <div class="col-2">
+            <div class="form-group">
+                <select class="form-control" id="filterStudyProgram" type="text">
+                    <option selected value=""> -- Study Program -- </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="form-group">
+                <select class="form-control" id="filterOutcome" type="text">
+                    <option selected value=""> -- Outcome -- </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="form-group">
+                <select class="form-control" id="filterTerm" type="text">
+                    <option selected value=""> -- Academic Term -- </option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container-fluid tableContainer">
     <table id="table" class="table table-fixed table-hover table-bordered">
         <thead class="thead-dark">
             <tr>
@@ -15,10 +83,10 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody id="filter">
+        <tbody id="tableFilter">
 
             <% if (assessments.length > 0) { %>
-            <% var counter = 1; %>
+                <% var counter = 1; %>
 
                 <!-- ASSESSMENT IN PROSESS -->
                 <%- include ('./modal/coordinator_table', {assessments: assessment_in_progress}) -%>
@@ -28,18 +96,23 @@
 
                 <!-- ASSESSMENT ARCHIVE -->
                 <%- include ('./modal/coordinator_table', {assessments: assessment_archive}) -%>
-                
+
             <% } %>
         </tbody>
     </table>
 </div>
 
 <style>
-    .container-fluid {
+    .tableContainer {
         margin-top: 2%;
         height: 500px;
         overflow-y: scroll;
         width: 99%;
+    }
+
+    .container-filter {
+        width: 95%;
+        margin-top: 1.2%;
     }
 
     tr,
@@ -97,7 +170,7 @@
         text-align: center;
     }
 
-    .interID{
+    .interID {
         font-style: italic;
         font-size: 0.8em;
     }
@@ -110,26 +183,19 @@
         color: white;
         font-weight: bold;
     }
+
     .in_progress {
         background-color: #d39e00;
     }
+
     .completed {
         background-color: #28a745;
     }
+
     .archive {
         background-color: #6c757d;
     }
 </style>
-
-<script>
-    $(document).ready(function(){
-        $("tr td:first-child").each(function(index, value){
-            $(this).text((index+1));
-            console.log(index);
-        });
-    });
-</script>
-
 
 <!-- STYLES -->
 <link rel="stylesheet" href="/stylesheets/professor_index.css">
@@ -137,5 +203,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
 <!-- MODAL -->
 <script src="/javascripts/modals/assessments.js"></script>
-
+<!-- FILTERS -->
+<script src="/javascripts/filters/coordinator.js"></script>
+<!-- FOOTER -->
 <%- include ('../admin/partials/footer') -%>
