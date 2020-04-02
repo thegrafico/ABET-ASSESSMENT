@@ -1,7 +1,6 @@
 
 var tr_visibles = $("#tableFilter tr:visible");
-const all_columns = $("#tableFilter tr:visible");
-
+var key_up_tr = $("#tableFilter tr:visible");
 
 $(document).ready(function () {
 
@@ -15,11 +14,13 @@ $(document).ready(function () {
     const tag_outcome = "#filterOutcome";
     const tag_term = "#filterTerm";
 
-    // Filter by professor name and id
+    // =========================== FILTER BY PROFESSOR ===============================
     $(tag_professor).on("keyup", function () {
 
         // PROFESSOR IS THE SECOND COLUM
-        filter_by_colum(this, 2);
+        // filter_by_colum($(this).val(), 2);
+        filter_keyup($(this).val(), 2);
+
     });
 
     // Filter by professor name and id
@@ -30,40 +31,58 @@ $(document).ready(function () {
         }else{
             tr_visibles = $("#tableFilter tr:visible");
         }
-
+    });
+    
+    $(tag_professor).focusin(function(){
+        key_up_tr = $("#tableFilter tr:visible");
     });
 
-    // Filter by course colum
+    // =========================== FILTER BY COURSE ===============================
     $(tag_course).on("keyup", function () {
 
-        // PROFESSOR IS THE SECOND COLUM
-        filter_by_colum(this, 4);
+        let val = $(this).val();
+        // filter_by_colum(val, 4);
+        filter_keyup(val, 4);
+
     });
 
-     // Filter by professor name and id
      $(tag_course).focusout(function(){
 
         if ($(this).val().length == 0){
+
             tr_visibles = $("#tableFilter tr");
+
+            if ($(tag_status).val() != ""){
+                filter_by_colum($(tag_status).val(), 7);
+            }
         }else{
             tr_visibles = $("#tableFilter tr:visible");
         }
     });
 
+    $(tag_course).focusin(function(){
+        key_up_tr = $("#tableFilter tr:visible");
+    });
+
+    // =========================== FILTER BY STATUS ===============================
+    $(tag_status).change(function(){
+        
+        filter_by_colum($(this).val(), 7);
+    }); 
 });
 
 
 /**
  * filter_by_colum - filter tr by column number
- * @param {Object} element - element to search the value 
+ * @param {String} value - element to search the value 
  *  @param {Number} number - Number of the column to search the value 
  */
-function filter_by_colum(element, colum) {
+function filter_by_colum(value, colum) {
 
     // reset if the column is grater than 0
     if (colum < 0) colum = 1;
 
-    let user_input = $(element).val().toLowerCase();
+    let user_input = value.toLowerCase();
 
     tr_visibles.filter(function () {
 
@@ -86,4 +105,21 @@ function set_index() {
     $("tr td:first-child").each(function (index, value) {
         $(this).text((index + 1));
     });
+}
+
+function filter_keyup(value, colum){
+    // reset if the column is grater than 0
+    if (colum < 0) colum = 1;
+
+    let user_input = value.toLowerCase();
+
+    key_up_tr.filter(function () {
+
+        let text_to_search = $(this).find(`td:eq(${(colum - 1)})`).text();
+
+        $(this).toggle(text_to_search.toLowerCase().indexOf(user_input) > -1);
+    });
+
+    // update the number of quantity
+    $("#number").text($("#tableFilter tr:visible").length);
 }

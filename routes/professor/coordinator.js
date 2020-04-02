@@ -27,6 +27,7 @@ router.get('/', async function (req, res) {
 	locals.assessment_in_progress = [];
 	locals.assessment_completed = [];
     locals.assessment_archive = [];
+    locals.filterStatus = [];
 
 	// the user id is stored in session, thats why user need to be login
     let user_id = req.session.user_id;
@@ -62,7 +63,9 @@ router.get('/', async function (req, res) {
 
 		locals.assessment_in_progress = assessments.filter(each => each.status.class == statusOfAssessment.in_progress);
 		locals.assessment_completed = assessments.filter(each => each.status.class == statusOfAssessment.completed);
-		locals.assessment_archive = assessments.filter(each => each.status.class == statusOfAssessment.archive);
+        locals.assessment_archive = assessments.filter(each => each.status.class == statusOfAssessment.archive);
+        
+        locals.filterStatus = ["In Progress", "Completed", "Archive"];
     }
 
     locals.assessments = assessments;

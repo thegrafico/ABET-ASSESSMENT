@@ -31,6 +31,9 @@
             <div class="form-group">
                 <select class="form-control" id="filterStatus" type="text">
                     <option selected value=""> -- Status -- </option>
+                    <% filterStatus.forEach(status => { %>
+                        <option value="<%=status %>"> <%=status%> </option>
+                    <% }); %>
                 </select>
             </div>
         </div>
