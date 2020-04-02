@@ -49,6 +49,10 @@
             <div class="form-group">
                 <select class="form-control" id="filterStudyProgram" type="text">
                     <option selected value=""> -- Study Program -- </option>
+
+                    <% study_programs.forEach(std => { %>
+                        <option value="<%= std %>"> <%= std %></option>
+                    <% }); %>
                 </select>
             </div>
         </div>
@@ -65,6 +69,10 @@
             <div class="form-group">
                 <select class="form-control" id="filterTerm" type="text">
                     <option selected value=""> -- Academic Term -- </option>
+
+                    <% term.forEach(each => { %>
+                        <option value="<%= each["term_name"] %>"> <%= each["term_name"] %> </option>
+                    <% }) %>
                 </select>
             </div>
         </div>

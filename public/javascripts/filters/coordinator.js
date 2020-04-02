@@ -68,9 +68,13 @@ $(document).ready(function () {
     $(tag_status).change(function(){
         
         filter_by_colum($(this).val(), 7);
-    }); 
+    });
+    
+    // =========================== FILTER BY STUDY PROGRAM ===============================
+    $(tag_study_program).change(function(){ 
+        filter_by_colum($(this).val(), 4);
+    });
 });
-
 
 /**
  * filter_by_colum - filter tr by column number

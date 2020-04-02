@@ -1,12 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var general_queries = require('../../helpers/queries/general_queries');
-var queries = require('../../helpers/queries/perfTable_queries');
-var middleware = require('../../middleware/validate_assessment')
 var assessment_query = require("../../helpers/queries/assessment.js");
-var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
-var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
-const { admin, coordinator, assessmentStatus, statusOfAssessment} = require("../../helpers/profiles");
+const table = require("../../helpers/DatabaseTables");
+const { admin, assessmentStatus, statusOfAssessment} = require("../../helpers/profiles");
 
 /* GLOBAL LOCALS */
 const base_url = '/professor';
@@ -43,15 +40,27 @@ router.get('/', async function (req, res) {
         });
 
     }else{
-
         // get professors assessments for coordinator
         assessments = await assessment_query.get_coordinator_assessments(user_id).catch((err) => {
             console.error("Error getting assessments: ", err);
         });
     }
+
+    locals.term = await general_queries.get_table_info(table.academic_term).catch((err) => {
+        console.error("Error getting the term: ", err);
+    }) || [];
+
+    locals.study_programs = [];
     
     if (assessments != undefined || assessments.length > 0){
+
+        // get study programs
+        let study_programs = assessments.map(each => each.prog_name);
         
+        locals.study_programs = study_programs.filter(function (item, pos) {
+            return study_programs.indexOf(item) == pos;
+        });
+
         assessments.map((each) => {
 
             // format status
