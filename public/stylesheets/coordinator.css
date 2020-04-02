@@ -1,0 +1,92 @@
+.tableContainer {
+    margin-top: 2%;
+    height: 500px;
+    overflow-y: scroll;
+    width: 99%;
+}
+
+.container-filter {
+    width: 95%;
+    margin-top: 1.2%;
+}
+
+tr,
+th {
+    text-align: center;
+}
+
+/* # COLUM */
+th:first-child,
+td:first-child {
+    width: 2%;
+    text-align: center;
+}
+
+/* PROFESSOR NAME COLUM */
+th:nth-child(2),
+td:nth-child(2) {
+    width: 15%;
+}
+
+/* ASSESSMENT NAME */
+th:nth-child(3),
+td:nth-child(3) {
+    width: 12%;
+}
+
+/* COURSE */
+th:nth-child(4),
+td:nth-child(4) {
+    width: 20%;
+}
+
+/* OUTCOME */
+th:nth-child(5),
+td:nth-child(5) {
+    width: 10%;
+}
+
+/* TERM */
+th:nth-child(6),
+td:nth-child(6) {
+    width: 18%;
+}
+
+/* TERM */
+th:nth-child(7),
+td:nth-child(7) {
+    width: 13%;
+    text-align: center;
+}
+
+th:nth-child(8),
+td:nth-child(8) {
+    width: 10%;
+    text-align: center;
+}
+
+.interID {
+    font-style: italic;
+    font-size: 0.8em;
+}
+
+td {
+    text-align: left;
+}
+
+.status {
+    color: white;
+    font-weight: bold;
+}
+
+.in_progress {
+    background-color: #d39e00;
+}
+
+.completed {
+    background-color: #28a745;
+}
+
+.archive {
+    background-color: #6c757d;
+}

@@ -1,5 +1,7 @@
 
 var tr_visibles = $("#tableFilter tr:visible");
+const all_columns = $("#tableFilter tr:visible");
+
 
 $(document).ready(function () {
 
@@ -14,10 +16,21 @@ $(document).ready(function () {
     const tag_term = "#filterTerm";
 
     // Filter by professor name and id
-    $(filterProfessorName).on("keyup", function () {
+    $(tag_professor).on("keyup", function () {
 
         // PROFESSOR IS THE SECOND COLUM
         filter_by_colum(this, 2);
+    });
+
+    // Filter by professor name and id
+    $(tag_professor).focusout(function(){
+
+        if ($(this).val().length == 0){
+            tr_visibles = $("#tableFilter tr");
+        }else{
+            tr_visibles = $("#tableFilter tr:visible");
+        }
+
     });
 
     // Filter by course colum
@@ -25,6 +38,16 @@ $(document).ready(function () {
 
         // PROFESSOR IS THE SECOND COLUM
         filter_by_colum(this, 4);
+    });
+
+     // Filter by professor name and id
+     $(tag_course).focusout(function(){
+
+        if ($(this).val().length == 0){
+            tr_visibles = $("#tableFilter tr");
+        }else{
+            tr_visibles = $("#tableFilter tr:visible");
+        }
     });
 
 });
@@ -52,7 +75,7 @@ function filter_by_colum(element, colum) {
     });
 
     // update the number of quantity
-    $("#number").text($("#filter tr:visible").length);
+    $("#number").text($("#tableFilter tr:visible").length);
 }
 
 /**
