@@ -4,12 +4,10 @@
     overflow-y: scroll;
     width: 99%;
 }
-
 .container-filter {
     width: 95%;
     margin-top: 1.2%;
 }
-
 tr,
 th {
     text-align: center;
@@ -89,4 +87,11 @@ td {
 
 .archive {
     background-color: #6c757d;
+}
+
+#outcome_span{
+    position: absolute;
+    color:red;
+    font-size: 0.6em;
+    top: 0;
 }

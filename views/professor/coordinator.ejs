@@ -9,6 +9,7 @@
             <h3>Filters: </h3>
         </div>
 
+        <!-- FILTER PROFESSOR -->
         <div class="col-4">
             <div class="form-group">
                 <div>
@@ -18,6 +19,7 @@
             </div>
         </div>
 
+        <!-- FILTER COURSE -->
         <div class="col-4">
             <div class="form-group">
                 <div>
@@ -27,6 +29,7 @@
             </div>
         </div>
 
+        <!-- FILTER STATUS -->
         <div class="col-2">
             <div class="form-group">
                 <select class="form-control" id="filterStatus" type="text">
@@ -45,31 +48,34 @@
             <!-- <h3>Filters: </h3> -->
         </div>
 
+        <!-- FILTER STD PROGRAM -->
         <div class="col-2">
             <div class="form-group">
                 <select class="form-control" id="filterStudyProgram" type="text">
-                    <option selected value=""> -- Study Program -- </option>
+                    <option selected value="" data-std=""> -- Study Program -- </option>
 
-                    <% study_programs.forEach(std => { %>
-                        <option value="<%= std %>"> <%= std %></option>
+                    <% study_programs.forEach(each => { %>
+                        <option value="<%= each["prog_name"] %>, <%= each["prog_ID"]%>" > <%= each["prog_name"] %> </option>
                     <% }); %>
                 </select>
             </div>
         </div>
 
-        <div class="col-2">
+        <!-- FILTER OUTCOME -->
+        <div class="col-2" id="box_outcome">
             <div class="form-group">
-                <select class="form-control" id="filterOutcome" type="text">
+                <select class="form-control" id="filterOutcome" disabled type="text">
                     <option selected value=""> -- Outcome -- </option>
                 </select>
             </div>
+            <span id="outcome_span"></span>
         </div>
 
+        <!-- FILTER TERM -->
         <div class="col-2">
             <div class="form-group">
                 <select class="form-control" id="filterTerm" type="text">
                     <option selected value=""> -- Academic Term -- </option>
-
                     <% term.forEach(each => { %>
                         <option value="<%= each["term_name"] %>"> <%= each["term_name"] %> </option>
                     <% }) %>
@@ -96,7 +102,7 @@
         </thead>
         <tbody id="tableFilter">
 
-            <% if (assessments.length > 0) { %>
+            <% if (hasAssessments) { %>
                 <% var counter = 1; %>
 
                 <!-- ASSESSMENT IN PROSESS -->

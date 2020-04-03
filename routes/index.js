@@ -61,8 +61,10 @@ router.get("/auth", async function (req, res) {
 		return res.redirect("/");
 	}
 
+	// user information
 	user_data = user_information[0];
 
+	// programs for coordinator
 	let coordinator_programs = get_std_coordinator(user_information);
 
 	if (coordinator_programs.length > 0 && user_data.profile_Name.toLowerCase() != admin.toLowerCase()) {
@@ -71,6 +73,7 @@ router.get("/auth", async function (req, res) {
 		req.session.user_profile = user_data.profile_Name.toLowerCase();
 	}
 
+	req.session.study_programs_coordinator = coordinator_programs;
 	req.session.user_name = userName;
 	req.session.user_email = userEmail;
 	req.session.user_id = user_data.user_ID;
@@ -85,12 +88,23 @@ router.get("/auth", async function (req, res) {
 /**
  * get_std_coordinator - get all coordinator study programs
  * @param {Object} user_information - user role information
+ * @returns {Array} ids of study programs
 */
 function get_std_coordinator(user_information) {
 
-	let filtered_std = user_information.filter(each => each["is_coordinator"] == 1);
+	// filter only coordinator
+	let filtered_std = user_information.filter(each => each["is_coordinator"] == 1);	
 
-	return filtered_std.map(each => each["prog_name"]);
+	// if not coordinator
+	if (filtered_std.length == 0) return [];
+	
+	let programs = [];
+
+	filtered_std.forEach(each => {
+		programs.push({prog_name: each["prog_name"], prog_ID: each["prog_ID"]});
+	});
+
+	return programs;
 }
 
 module.exports = router;
