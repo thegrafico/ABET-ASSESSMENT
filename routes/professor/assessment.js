@@ -7,7 +7,7 @@ var assessment_query = require("../../helpers/queries/assessment.js");
 const table = require("../../helpers/DatabaseTables");
 var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
 var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
-const { admin, coordinator, statusOfAssessment} = require("../../helpers/profiles");
+const { admin, coordinator, statusOfAssessment } = require("../../helpers/profiles");
 
 /* GLOBAL LOCALS */
 const base_url = '/professor';
@@ -119,13 +119,19 @@ router.post("/assessment/create", async function (req, res) {
 	- GET PERFORMANCE TABLE ROUTE
 	professor/assessment/:id/performanceTable
 */
-router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment, async function (req, res) {
+router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
+
+	// Status of the assessment
+	if (req.body.assessment.status == archive){
+		req.flash("error", "Cannot edit assessment archive");
+		return res.redirect("/professor");
+	}
 
 	// assessment ID
 	locals.id = req.params.assessmentID;
 
 	// For breadcrumb
-	locals.progressBar = (req.body.assessment.status == "completed") ? 100 : 45;
+	locals.progressBar = (req.body.assessment.status == completed) ? 100 : 45;
 
 	// nav breadcrumb
 	locals.breadcrumb = [
@@ -174,8 +180,13 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
  * -- POST /professor/assessment/id/performancetable
  * TODO: the frontend is affecting the backed. if the data format changes, everything here changes. 
  */
-router.post('/assessment/:assessmentID/performancetable', middleware.validate_assessment, async function (req, res) {
+router.post('/assessment/:assessmentID/performancetable', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
 
+	// Status of the assessment
+	if (req.body.assessment.status == archive){
+		return res.json({ error: true, message: "Assessment is archive"});
+	}
+	
 	// validate data has data
 	if (req.body == undefined || req.body.data == undefined || isNaN(req.params.assessmentID)) {
 		return res.json({ error: true, message: "data is undefined" });
@@ -217,7 +228,13 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 /* 
 	- UPDATE AN ASSESSMENT INFORMATION - 
 */
-router.put('/assessment/:assessmentID', middleware.validate_assessment, function (req, res) {
+router.put('/assessment/:assessmentID', middleware.validate_assessment, middleware.isOwnerAssessment, function (req, res) {
+
+	// Status of the assessment
+	if (req.body.assessment.status == archive){
+		req.flash("error", "Cannot edit assessment archive");
+		return res.redirect("/professor");
+	}
 
 	if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
 		req.flash("error", "Cannot find the assessment");
@@ -246,13 +263,14 @@ router.put('/assessment/:assessmentID', middleware.validate_assessment, function
 /* 
 	- DELETE - DELETE assessment
 */
-router.delete('/assessment/:assessmentID', async function (req, res) {
+router.delete('/assessment/:assessmentID', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
 
-	if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
-		req.flash("error", "Cannot find the assessment");
-		return res.redirect("back");
+	// Status of the assessment
+	if (req.body.assessment.status == archive){
+		req.flash("error", "Assessment is archive");
+		return res.redirect("/professor");
 	}
-
+	
 	// getting the user id
 	let assessment_id = req.params.assessmentID;
 
@@ -270,7 +288,13 @@ router.delete('/assessment/:assessmentID', async function (req, res) {
  *  GET - Professor Input
  * 	GET - /professor/assessment/:id/professorInput
  */
-router.get('/assessment/:assessmentID/professorInput', middleware.validate_assessment, async function (req, res) {
+router.get('/assessment/:assessmentID/professorInput', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
+
+	// Status of the assessment
+	if (req.body.assessment.status == archive){
+		req.flash("error", "Cannot edit assessment archive");
+		return res.redirect("/professor");
+	}
 
 	// assessment id
 	let id = req.params.assessmentID;
@@ -325,7 +349,13 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
  *  GET - Professor Input
  * 	GET - /professor/assessment/:id/professorInput
  */
-router.post('/assessment/:assessmentID/professorInput', middleware.validate_assessment, async function (req, res) {
+router.post('/assessment/:assessmentID/professorInput', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
+
+	// Status of the assessment
+	if (req.body.assessment.status == archive){
+		req.flash("error", "Cannot edit assessment archive");
+		return res.redirect("/professor");
+	}
 
 	// Assessment id
 	let id = req.params.assessmentID;
@@ -444,8 +474,15 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
  *  UPDATE - UPDATE STATUS OF ASSESSMENT
  * 	GET - /professor/assessment/:id/professorInput
  */
-router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessment, function (req, res) {
+router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessment, middleware.isOwnerAssessment, function (req, res) {
 
+	
+	// Status of the assessment
+	if (req.body.assessment.status == archive){
+		req.flash("error", "Cannot edit assessment archive");
+		return res.redirect("/professor");
+	}
+	
 	// assessment id
 	let id = req.params.assessmentID;
 
@@ -468,24 +505,27 @@ router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessm
 router.get('/assessment/:assessmentID/report', middleware.validate_assessment, async function (req, res) {
 
 	// if assessment if completed
-	if (req.body.assessment.status != "completed") {
+	if (req.body.assessment.status == progress) {
 		req.flash("error", "Please complete the assessment first");
 		return res.redirect("back");
 	}
 
 	// assessment id
-	let id = req.params.assessmentID;
+	let assessment_id = req.params.assessmentID;
+
+	// Status of the assessment
+	locals.isArchive = (req.body.assessment.status == archive);
+	locals.belong_to_user = req.body.belong_to_user;
 
 	// nav breadcrumb
 	locals.breadcrumb = [
-		{ "name": "Performances Table", "url": `${base_url}/assessment/${id}/performanceTable`, "active": false },
-		{ "name": "Course Evaluation", "url": `${base_url}/assessment/${id}/professorInput`, "active": false },
-		{ "name": "Report", "url": `${base_url}/assessment/${id}/report`, "active": true }
+		{ "name": "Performances Table", "url": `${base_url}/assessment/${assessment_id}/performanceTable`, "active": false },
+		{ "name": "Course Evaluation", "url": `${base_url}/assessment/${assessment_id}/professorInput`, "active": false },
+		{ "name": "Report", "url": `${base_url}/assessment/${assessment_id}/report`, "active": true }
 	];
 
-
 	// get the department, pro name, course information and term
-	let reportHeader = await queries.get_report_header(id).catch((err) => {
+	let reportHeader = await queries.get_report_header(assessment_id).catch((err) => {
 		console.error("Error getting report header: ", err);
 	});
 
@@ -497,7 +537,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	locals.header = reportHeader[0];
 
 	// get the professor input data
-	let prof_query = { "from": "REPORTS", "where": "assessment_ID", "id": id }
+	let prof_query = { "from": "REPORTS", "where": "assessment_ID", "id": assessment_id }
 	let professor_input = await general_queries.get_table_info_by_id(prof_query).catch((err) => {
 		console.error("Cannot get the professor input data: ", err);
 	});
@@ -509,7 +549,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	}
 
 	// Get performance table data
-	let performanceData = await queries.getEvaluationByID(id).catch((err) => {
+	let performanceData = await queries.getEvaluationByID(assessment_id).catch((err) => {
 		console.log("ERROR GETTING PERFOMRNACE DATA: ", err);
 	});
 

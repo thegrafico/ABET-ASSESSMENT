@@ -14,39 +14,43 @@
     <tbody id="filter">
         <% if (assessment.length != 0) { %>
 
-            <% assessment.forEach((element, index) => { %>
-                <tr class="table-row">
-                    
-                    <th scope="row">
-                        <%=(index+1)%> 
-                    </th>
-                    <th scope="row">
-                        <%= element["name"] %> <br>
-                        <span class="date-format"><%= element["creation_date"] %></span>
-                    </th>
+        <% assessment.forEach((element, index) => { %>
+        <tr class="table-row">
 
-                    <td><%= element["course_name"] %></td>
-                    <td><%= element["rubric_name"] %></td>
-                    <td><%= element["term_name"] %></td>
+            <th scope="row">
+                <%=(index+1)%>
+            </th>
+            <th scope="row">
+                <%= element["name"] %> <br>
+                <span class="date-format"><%= element["creation_date"] %></span>
+            </th>
 
-                    <td>
-                        <div class="col dropdown">
-                            <button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
-                                data-toggle="dropdown">
-                                Actions
-                            </button>
-                            <div class="dropdown-menu">
+            <td><%= element["course_name"] %></td>
+            <td><%= element["rubric_name"] %></td>
+            <td><%= element["term_name"] %></td>
 
-                                <button class="DOWNLOAD dropdown-item" value="<%=element["assessment_ID"]%>">
+            <td>
+                <div class="col dropdown">
+                    <button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
+                        data-toggle="dropdown">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu">
+
+                        <a class="dropdown-item" target="_blank"
+                            href="<%=base_url%>/assessment/<%=element.assessment_ID %>/report">
+                            Assessment Report
+                        </a>
+                        <!-- <button class="DOWNLOAD dropdown-item" value="element["assessment_ID"]%>">
                                     Download report &nbsp; <i class="fa fa-download"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                                </button> -->
+                    </div>
                 </div>
+            </td>
+        </tr>
+        </div>
 
-            <% }); %>
+        <% }); %>
 
         <% }else{ %>
 

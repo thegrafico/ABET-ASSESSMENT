@@ -21,6 +21,21 @@
             <%=assessments[i]["status"]["name"]%>
         </td>
 
-        <td>1</td>
+        <td>
+            <% if (assessments[i]["status"]["class"] != "in_progress") { %>
+                <span class="report-link">
+                    <a href="<%=base_url%>/assessment/<%=assessments[i]["assessment_ID"]%>/report" target="_blank">
+                        View Report
+                    </a>
+                </span>
+                
+            <% }else { %>
+                <span class="link-disabled">
+                    <a href="#">
+                        View Report
+                    </a>
+                </span>
+            <% } %>
+        </td>
     </tr>
 <% } %>

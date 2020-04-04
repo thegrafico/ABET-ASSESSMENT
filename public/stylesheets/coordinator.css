@@ -95,3 +95,16 @@ td {
     font-size: 0.6em;
     top: 0;
 }
+
+.report-link a{
+    padding: 10% 15%;
+    vertical-align: middle;
+}
+
+span.link-disabled{
+    pointer-events: none;
+}
+
+span.link-disabled a{
+    color: gray;
+}

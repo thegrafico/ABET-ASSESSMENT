@@ -11,7 +11,7 @@ conn = db.mysql_pool;
  * validate_outcome validate the outcomes
  * @return {Void}
  */
-module.exports.validate_assessment = async function validate_assessment(req, res, next) {
+ async function validate_assessment(req, res, next) {
 
     // Validate ID
     if (req.params.assessmentID == undefined || isNaN(req.params.assessmentID)) {
@@ -29,9 +29,35 @@ module.exports.validate_assessment = async function validate_assessment(req, res
         req.flash("error", "Cannot find the assessment you're looking for");
         return res.redirect("/professor");
     }
+    
+    // get the assessment
+    assessment = assessment[0];
 
-    req.body.assessment = assessment[0];
+    // the assessment don't belong to the user
+    req.body.belong_to_user = false;
+
+    // if the assessment was created by the user login
+    if (assessment["user_ID"] == req.session.user_id){
+        req.body.belong_to_user = true; 
+    }
+
+    req.body.assessment = assessment;
     next();
 }
 
+function isOwnerAssessment(req, res, next){
+    
+    // if exits and belong to user
+    if (req.body.belong_to_user != undefined && req.body.belong_to_user){
+        next();
+    }else{
+        req.flash("error", "This assessments belong to other user");
+        res.redirect("/professor");
+    }
+}
+
+
+// validate if assessment exits and belong to the user
+module.exports.validate_assessment = validate_assessment; 
+module.exports.isOwnerAssessment = isOwnerAssessment; 
 
