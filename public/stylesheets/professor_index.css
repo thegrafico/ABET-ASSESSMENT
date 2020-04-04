@@ -183,6 +183,7 @@ th:first-child {
     margin-top: 5%;
     color: white;
     padding: 5%;
+    width: 100%;
     text-transform: uppercase;
     font-weight: bold;
 }
