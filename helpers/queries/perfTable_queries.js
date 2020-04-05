@@ -2,6 +2,7 @@
 const table = require("../DatabaseTables");
 var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
+let tables = require("../DatabaseTables");
 
 /***
  * Return perfomance criterias being evaluated for an Assessment report
@@ -242,6 +243,62 @@ function get_report_header(assessment_id) {
 	});
 }
 
+/**
+ * addGraph() => Function that insert base_64 code to GRAPH table
+ * @param {Number} assessment_ID => assessment ID
+ * @param {String} base_64 => base_64 code of the graph
+ * @return {Promise} Resolve with true
+*/
+function addGraph(assessment_ID, base_64) {
+	return new Promise((resolve, reject) => {
+		let addGraph = `INSERT INTO ASSESSMENT_GRAPH (assessment_ID, base_64) VALUES (?, ?);`;
+
+		conn.query(addGraph, [assessment_ID, base_64], (err, results) => {
+			if(err)
+				reject(false);
+			else
+				resolve(true);
+		});
+	});
+}
+
+/**
+ * updateGraph() => Function that updates the base_64 for the assessment
+ * @param {Number} assessment_ID => assessment ID
+ * @param {String} base_64 => base_64 code of the graph
+ * @return {Promise} Resolve with true
+*/
+function updateGraph(assessment_ID, base_64) {
+	return new Promise((resolve, reject) => {
+		let updateGraph = `UPDATE ${tables.assessment_graph} SET base_64 = ? WHERE assessment_ID = ?;`;
+
+		conn.query(updateGraph, [base_64, assessment_ID], (err, results) => {
+			if(err)
+				reject(err);
+			else
+				resolve(true);
+		});
+	});
+}
+
+/**
+ * getGraph() => Function that returns assessment base_64 of the graph
+ * @param {Number} assessment_ID => assessment ID
+ * @returns {Promise} => Returns base_64 code of the assessment ID
+*/
+function getGraph(assessment_ID) {
+	return new Promise((resolve, reject) => {
+		let getGraph = `SELECT base_64 FROM ASSESSMENT_GRAPH WHERE assessment_ID = ?;`;
+
+		conn.query(getGraph, [assessment_ID], function(err, results) {
+			if(err)
+				reject(err);
+			else {
+				resolve(results);
+			}
+		});
+	});
+}
 
 module.exports.update_status = update_status;
 module.exports.get_report_header = get_report_header;
@@ -252,3 +309,6 @@ module.exports.insert_professor_input = insert_professor_input;
 module.exports.update_professor_input = update_professor_input;
 module.exports.deletePrevEntry = deletePrevEntry;
 module.exports.getEvaluationByID = getEvaluationByID;
+module.exports.addGraph = addGraph;
+module.exports.updateGraph = updateGraph;
+module.exports.getGraph = getGraph;
