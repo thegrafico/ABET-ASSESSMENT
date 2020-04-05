@@ -149,6 +149,20 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		console.error("ERROR: ", err);
 	});
 
+	let getGraph = await queries.getGraph(locals.id).catch((err) => {
+		console.error("ERROR: ", err);
+	});
+
+	let hasGraph = 'y';
+
+	console.log("Grq: ", getGraph.length);
+
+	if(getGraph.length <= 0) {
+		hasGraph = 'n';
+	}
+
+	console.log(hasGraph);
+
 	// Validation
 	let results = [];
 	let hasValue = 'n';
@@ -157,6 +171,7 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		hasValue = 'y';
 	}
 
+	locals.hasGraph = hasGraph;
 	locals.hasValue = hasValue;
 	locals.prevScores = JSON.stringify(results);
 	locals.colNums = perf_criterias.length;
@@ -186,6 +201,24 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 	// performance data
 	let performance_records = req.body.data;
 
+	// 
+	let has_graph = (req.body.hasGraph == 'y');
+
+	//
+	let base_64 = req.body.graph;
+
+	if(has_graph) {
+		let updateGraph = await queries.updateGraph(assessment_id, base_64).catch((err) => {
+			console.log("Error: ", err);
+		});
+		console.log("Updated Base_64");
+	} else {
+		let addGraph = await queries.addGraph(assessment_id, base_64).catch((err) => {
+			console.log("Error: ", err);
+		});
+		console.log("Add new Base 64");
+	}
+
 	// validate there is data available
 	if (performance_records.length <= 0) {
 		return res.json({ error: true, message: "data is undefined" });
@@ -204,13 +237,16 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 		performances_student.push(performance_records[index]);
 	});
 
+	let isNext = (req.body.ifNext != undefined);
+
 	insertStudentScores(rows, performances_student, assessment_id).then((success) => {
-		console.log("Data was successfully added");
-		return res.json({ error: false, message: "success" });
+		console.log("Data was successfully added.");
+		return res.json({ error: false, message: "success", isNext: isNext});
 	}).catch((err) => {
 		console.log("Error Performance table: ", err);
 		return res.json({ error: true, message: "data is undefined" });
 	});
+		
 });
 
 /* 
@@ -482,6 +518,16 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		{ "name": "Report", "url": `${base_url}/assessment/${id}/report`, "active": true }
 	];
 
+	let getGraph = await queries.getGraph(id).catch((err) => {
+		console.error("ERROR: ", err);
+	});
+
+	if(getGraph.length <= 0) {
+		locals.graph = 'n';
+	} else {
+		locals.graph = getGraph[0].base_64;
+	}
+
 
 	// get the department, pro name, course information and term
 	let reportHeader = await queries.get_report_header(id).catch((err) => {
@@ -520,9 +566,10 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 
 	// student performance criteria evaluation
 	locals.performanceData = mapData(performanceData);
-
 	locals.performanceResults = get_performance_criteria_results(locals.performanceData);
-
+	let tempOb = locals.performanceResults;
+	tempOb.header = reportHeader[0];
+	locals.perfResults = JSON.stringify(tempOb);
 	locals.performance_criteria = reportHeader.map(each => each["perC_Desk"]);
 	professor_input = professor_input[0];
 

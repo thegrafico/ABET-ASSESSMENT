@@ -16,7 +16,7 @@ let performanceCriteria = $('#perfCrit').val();
 performanceCriteria = performanceCriteria.split(',');
 let allPerc;
 let labels = [];
-
+let graph;
 
 // Loads empty chart when page is load
 window.onload = () => {
@@ -47,7 +47,13 @@ $(document).ready(() => {
     });
     
     $('#save').click(() => {
-        insertEvaluation(mapData(data, assessment_ID), assessment_ID);
+		insertEvaluation(mapData(data, assessment_ID), assessment_ID, 's');
+		console.log("Inserting!!");
+	});
+
+	$('#next').click(() => {
+		insertEvaluation(mapData(data, assessment_ID), assessment_ID, 'n');
+		console.log("Inserting!!");
 	});
 
 	$('#clearAll').click(() => {
@@ -94,7 +100,6 @@ function generateRow(r) {
 	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td></tr>`);
 	$("#tableBody").append(markup);
 }
-
 
 /**
  * generateRowWithVal() -> function that creates tables with previous evaluation values.
@@ -164,7 +169,7 @@ function updateIndex() {
 	$('table tbody tr').each(function(index) {
 		$(this).find('th span').text(index+1);
 		let newId = 'avg' + index;
-		$(this).find('td:nth-last-of-type(2)').attr('id', newId);
+		$(this).find('td:nth-last-of-type(1)').attr('id', newId);
 	});
 }
 
@@ -226,9 +231,6 @@ function createChart() {
 		$('#pc'+ i).text(graphData[i]);
 	}
 
-	console.log("Entry Data: ", mapData(data, assessment_ID));
-
-    let graph;
 	let myChart = new Chart(canvas, {
 		type: 'bar',
 		data: {
@@ -271,14 +273,35 @@ function createChart() {
  * @param {Array} -> Array of arrays containing the scores per row
  * @param {Number} -> Assessment ID of the current report
 */
-function insertEvaluation(entryData, assessment_id) {
+function insertEvaluation(entryData, assessment_id, buttonPressed) {
 	console.log("Saving this DATA: ", entryData);
+	let hasGraph = $('#hasGraph').val();
+	let isNext = (buttonPressed == 'n');
+	console.log("Is Next: ", isNext);
+
 	$.ajax({
 		type: "POST",
 		url: `/professor/assessment/${assessment_id}/performancetable`,
-     data: {data: entryData},
+     	data:{
+			 	data: entryData,
+				graph: graph,
+				hasGraph: hasGraph,
+				ifNext: isNext
+			},
 		dataType: 'json',
-		success: () => {
+		success: (request) => {
+			console.log("Req: ", request);
+			if(request.message == 'success') {
+				$('#alertDiv').append('<div class="alert alert-success alert-dismissible fade show" role="alert">Data was saved!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+			}
+			else if(request.error == true) {
+				$('#alertDiv').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">Data was not saved!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+			}
+
+			if(request.isNext == true) {
+				window.location.href = `/professor/assessment/${assessment_id}/professorInput`;
+			}
+					
 		}
 	});
 }
@@ -387,3 +410,4 @@ function selectAll() {
 		$('input:checkbox').not(this).prop('checked', this.checked);
 	});
 }
+

@@ -11,7 +11,8 @@
 <input type="hidden" id="perfID" name="perfID" value="<%= perf_ID %>">
 <input type="hidden" id="prevScores" name="prevScores" value="<%= prevScores %>">
 <input type="hidden" id="hasValue" name="hasValue" value="<%= hasValue %>">
-
+<input type="hidden" id="hasGraph" name="hasGraph" value="<%= hasGraph %>">
+<div id="alertDiv"></div>
 <div class="container-fluid outcomeInfo">
 	<div class="row">
 		<div class="col-5">
@@ -62,8 +63,8 @@
 				</tbody>
 			</table>
 			<div id="saveOrNext">
-				<a id="save" class="btn btn-outline-success" href="" role="button">Save</a>
-				<a id="save" class="btn btn-outline-success" href="<%=base_url%>/assessment/<%=id%>/professorInput" role="button">Next</a>
+				<a id="save" class="btn btn-outline-success" role="button" >Save</a>
+				<a id="next" class="btn btn-outline-success" role="button" >Next</a>
 			</div>
 		</div>
 	</div>

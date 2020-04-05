@@ -1,7 +1,9 @@
 <%- include ('../admin/partials/header') -%>
 <%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar: 100, hasValue: 'y'}) -%>
-
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<input id="perfResults" type="hidden" value="<%= perfResults %>">
+<input id="header" type="hidden" value="<%= header %>">
+<input id="graph" type="hidden" value="<%= graph %>">
 <div id="exportContent" class="container" style="margin-top: 10px;">
 
     <style>
@@ -239,12 +241,9 @@
 
                 <div>
                     <p>
-
                         <strong>5. Graph goes here </strong>
                         <br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rem esse doloremque atque sunt id
-                        illum
-                        neque a. Rerum expedita animi sint. Iusto possimus iure soluta animi eum expedita dicta amet.
+                        <img id="chart" src="" alt="Outcome Graph">
                     </p>
 
 
@@ -324,10 +323,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
 
 <script>
+    let perfResults = JSON.parse($('#perfResults').val());
+    let graph = $('#graph').val();
+        
     $(document).ready(function () {
-
-        // tags for dynamic info
         let tag_course_info = ["#course_results", "#course_modification", "#course_reflection", "#course_actions"];
+        
+        if(graph == 'n'){
+
+        } else {
+            $('#chart').attr('src', graph);
+        }
 
         tag_course_info.forEach(each => {
             let text = $(each).text();
@@ -354,8 +360,8 @@
             let document_name = `Assessment_${course_number}_${term_name}`;
             $('#exportContent').wordExport(document_name);
         });
-
     });
+
 </script>
 
 

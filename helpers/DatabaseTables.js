@@ -18,4 +18,4 @@ module.exports.study_program = "ABET.STUDY_PROGRAM";
 module.exports.user = "ABET.USER";
 module.exports.user_study_program = "ABET.USER_STUDY_PROGRAM";
 module.exports.user_profiles = "ABET.USER_PROFILES";
-
+module.exports.assessment_graph = "ABET.ASSESSMENT_GRAPH";
