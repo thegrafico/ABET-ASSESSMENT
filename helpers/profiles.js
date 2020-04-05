@@ -14,14 +14,14 @@ module.exports.allProfiles = [admin, professor, coordinator];
 
 // Admin Routes
 const adminOptions = [
-    { url: "admin/department", name: "Departments" },
-    { url: "admin/users", name: "Users" },
-    { url: "admin/studyprograms", name: "Study Programs" },
-    { url: "admin/courses", name: "Courses" },
-    { url: "admin/outcomes", name: "Outcomes" },
-    { url: "admin/evaluation", name: "Evaluation Rubric" },
-    { url: "admin/term", name: "School Term" },
-    { url: "admin/courseMapping", name: "Course Mapping" },
+    { url: "/admin/department", name: "Departments" },
+    { url: "/admin/users", name: "Users" },
+    { url: "/admin/studyprograms", name: "Study Programs" },
+    { url: "/admin/courses", name: "Courses" },
+    { url: "/admin/outcomes", name: "Outcomes" },
+    { url: "/admin/evaluation", name: "Evaluation Rubric" },
+    { url: "/admin/term", name: "School Term" },
+    { url: "/admin/courseMapping", name: "Course Mapping" },
 ];
 
 // COORDINATOR ROUTES

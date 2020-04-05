@@ -122,19 +122,18 @@
             let outcome_id = $(tag_outcome).val();
             let term_id = $(tag_term).val();
 
-            if (std_id == ""){
+            if (std_id == undefined || std_id == ""){
                 modal_message("Please Select Study Program");
                 return;
-            }else if(outcome_id == ""){
+            }else if(outcome_id == undefined ||  outcome_id == ""){
                 modal_message("Please Select an Outcome");
                 return;
-            }else if(term_id == ""){
+            }else if(term_id == undefined ||  term_id == ""){
                 modal_message("Please Select Academic Term");
                 return;
             }
         });
     });
-
 
     /**
      * @param {String} message - message for the modal 

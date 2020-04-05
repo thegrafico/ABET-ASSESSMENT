@@ -112,6 +112,7 @@ app.use(function (req, res, next) {
 		// load admin options
 		if (res.locals.hasAdminPrivilege){
 			res.locals.adminOptions = routes[req.session.user_profile];
+			console.log(res.locals.adminOptions);
 		}
 
 	}else{
