@@ -2,7 +2,6 @@
 $(document).ready(function () {
 
     const tag_name = "#assessment_name";
-    const tag_department = "#chooseDepartment";
     const tag_study_program = "#chooseStudyProgram";
     const tag_outcome = "#chooseOutcome";
     const tag_course = "#chooseCourse";
@@ -85,7 +84,6 @@ $(document).ready(function () {
         // console.log(
         //     `ID: ${assessment_id} \n
         //     Name: ${assessment_name} \n
-        //     dept: ${dept}\n
         //     std: ${std}\n
         //     out: ${outc}\n
         //     course: ${course}\n
@@ -99,10 +97,6 @@ $(document).ready(function () {
         // Change the term
         $(tag_term).val(term);
 
-        // Update the department and setup the value
-        await update_departmet(dept).catch((err) => {
-            console.log("Error updating the department: ", err);
-        });
 
         // disable all options - after set department
         for (let i = 0; i < tags.length; i++) {
@@ -163,7 +157,6 @@ $(document).ready(function () {
         $(e).prop("disabled", true);
     });
 
-
     // WHEN THE USER CHANGE THE STUDY PROGRAM -> UPDATE STUDY PROGRAM AND COURSES
     $(tag_study_program).change(async function () {
         // get the study program id
@@ -177,7 +170,6 @@ $(document).ready(function () {
             console.log(err);
             $("#loader-modal").hide();
         });
-
     });
 
     // WHE USER CHANGES THE OUTCOME -> UPDATE RUBRIC

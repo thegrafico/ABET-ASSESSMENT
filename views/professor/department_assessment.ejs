@@ -1,0 +1,159 @@
+<%- include ('../admin/partials/header') -%>
+
+<link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+        <% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+
+        <% if (index == breadcrumb.length -1) { %>
+        <li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+        <% }else { %>
+        <li class="breadcrumb-item">
+            <a href="<%= breadcrumb[index].url %>">
+                <%= breadcrumb[index].name %>
+            </a>
+        </li>
+        <% } %>
+
+        <% } %>
+    </ol>
+</nav>
+
+<!-- FILTERING HEADER -->
+<div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="d-flex flex-row bd-highlight">
+
+                <div class="p-2 bd-highlight">
+                    <h3>Select: </h3>
+                </div>
+
+                <div class="p-2 bd-highlight">
+
+                    <div class="form-group">
+                        <select class="form-control" id="std_program" name="department" type="text">
+                            <option selected disabled value=""> -- Study Program -- </option>
+                            <% study_program.forEach(each => { %>
+                            <option value="<%= each["prog_ID"] %>"> <%= each["prog_name"] %> </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-2 bd-highlight">
+
+                    <div class="form-group">
+                        <select class="form-control" disabled id="outcomes" type="text" name="outcome">
+                            <option selected disabled value=""> -- Outcome -- </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-2 bd-highlight">
+                    <div class="form-group">
+                        <select id="academic_term" disabled class="form-control" type="text" name="term">
+                            <option selected disabled value="">-- Academic Term --</option>
+                            <% term.forEach(each => { %>
+                            <option value="<%= each["term_ID"] %>"> <%= each["term_name"] %> </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-2 bd-highlight" style="width: 15%;">
+                    <button id="btn_submit" style="width: 100%;" class="btn btn-primary"> Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL FOR FEEDBACK -->
+<%- include ('./modal/feedback') -%>
+
+<script>
+    // tags select
+    const tag_studyProgram = "#std_program";
+    const tag_outcome = "#outcomes";
+    const tag_term = "#academic_term";
+    const tag_modal = "#professor_feedback";
+    const tag_span_feedback = "#spanFeedback";
+    const tag_btn_submit = "#btn_submit";
+
+    $(document).ready(function () {
+
+        // STUDY PROGRAM
+        $(tag_studyProgram).change(async function () {
+
+            // disable options
+            $(tag_outcome).prop("disabled", true);
+            $(tag_term).prop("disabled", true);
+
+            let std_id = $(this).val();
+
+            // get outcomes
+            let outcomes = await make_request(`/api/get/outcomesByStudyProgramID/${std_id}`).catch((err) => {
+                console.error("Error getting outcomes: ", err);
+            });
+
+            // validate outcomes
+            if (outcomes == undefined || outcomes.length == 0) {
+                modal_message("Cannot find any Outcome");
+                return;
+            }
+
+            console.log(outcomes);
+
+            // enable outcomes
+            $(tag_outcome).prop("disabled", false);
+            $(tag_term).prop("disabled", false);
+            $(tag_outcome).empty().append('<option selected disabled value=""> -- Outcome -- </option>');
+            fill_select(tag_outcome, outcomes);
+        });
+
+        // when click submit
+        $(tag_btn_submit).click(function () {
+
+            let std_id = $(tag_studyProgram).val();
+            let outcome_id = $(tag_outcome).val();
+            let term_id = $(tag_term).val();
+
+            if (std_id == ""){
+                modal_message("Please Select Study Program");
+                return;
+            }else if(outcome_id == ""){
+                modal_message("Please Select an Outcome");
+                return;
+            }else if(term_id == ""){
+                modal_message("Please Select Academic Term");
+                return;
+            }
+        });
+    });
+
+
+    /**
+     * @param {String} message - message for the modal 
+     */
+    function modal_message(message) {
+        $(tag_modal).modal("show");
+        $(tag_span_feedback).text(message);
+    }
+
+    /**
+     * 
+     * @param {String} tag - tag name - ID 
+     * @param {Array} values - values for tag name
+     */
+    function fill_select(tag, values) {
+        values.forEach(each => {
+            $(tag).append(`<option value="${each['values']}"> ${each['name']}</option>`);
+        });
+    }
+</script>
+
+<%- include ('../admin/partials/footer') -%>

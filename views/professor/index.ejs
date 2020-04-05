@@ -40,10 +40,17 @@
             </div>
 
             <div class="group-btn coordinatorBtn">
-                <!-- ASSESSMENT IN PROGRESS -->
-                <a class="btn btn-outline-primary" href="<%=base_url%>/coordinator" id="assessment_view_professors">
+
+                <!-- DEPARTMENT ASSESSMENT -->
+                <a class="btn btn-outline-primary" href="<%=base_url%>/coordinator/departmentAssessments" id="assessment_view_department">
+                    Department <br> Assessments &nbsp; <i id="assessment_view_department" class="fa fa-book"></i> 
+                </a>
+
+                <!-- PROFESSOR ASSESSMENTS -->
+                <a class="btn btn-outline-primary" href="<%=base_url%>/coordinator/professorAssessment" id="assessment_view_professors">
                     Professor's <br> Assessments &nbsp; <i id="assessment_view_professors" class="fa fa-file-text-o"></i>
                 </a>
+                
             </div>
             <%}%> 
         </div>
@@ -103,8 +110,6 @@
 
 <!-- MODAL DELETE -->
 <%- include ('./modal/delete_assessment') -%>
-
-<!-- FOOTER -->
 
 <!-- STYLES -->
 <link rel="stylesheet" href="/stylesheets/professor_index.css">
