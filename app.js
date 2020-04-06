@@ -80,7 +80,7 @@ app.use(session({
 	store: sessionStore,
 	resave: false,
 	saveUninitialized: false,
-	cookie: { maxAge: 3600000 } // 30 minutes ultil sessions ends
+	cookie: { maxAge: 7000000 } // 30 minutes ultil sessions ends
 }));
 
 
@@ -110,10 +110,8 @@ app.use(function (req, res, next) {
 		res.locals.hasAdminPrivilege = (req.session.user_profile == admin || req.session.user_profile == coordinator);
 
 		// load admin options
-		if (res.locals.hasAdminPrivilege){
+		if (res.locals.hasAdminPrivilege)
 			res.locals.adminOptions = routes[req.session.user_profile];
-			console.log(res.locals.adminOptions);
-		}
 
 	}else{
 		res.locals.hasAdminPrivilege = false;

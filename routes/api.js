@@ -6,9 +6,9 @@ var router = express.Router();
 const api_queries = require("../helpers/queries/api");
 const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
+const assessmentQuery = require("../helpers/queries/assessment");
 const {get_user_by_id} = require("../helpers/queries/user_queries");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
-
 
 // =============================== PERFORMANCES CRITERIA ==================================
 /*
@@ -499,6 +499,42 @@ router.get('/get/schoolterm/:id', async function (req, res) {
 
 	res.json(record);
 });
+
+
+// ======================================== COORDINATOR DEPARTMENT =======================================
+/**
+ * GET Coordinator assessments results
+ * GET /api/get/departmentAssessment 
+*/
+router.get('/get/departmentAssessment', async function (req, res) {
+	
+	// validate data
+	if (req.query == undefined || req.query.data == undefined)
+		return res.json({error: true, message: "Cannot find the data sent"});
+	
+	let data = req.query.data;
+
+
+	let isInvalid = (data.study_program_id == undefined || data.study_program_id == "" || isNaN(data.study_program_id)) || 
+	(data.outcome_id == undefined ||   data.outcome_id == "" || isNaN(data.outcome_id) ) || 
+	(data.term_id == undefined || data.term_id == "" || isNaN(data.term_id)); 
+
+	// validate data
+	if (isInvalid){
+		return res.json({error: true, message: "Invalid Data"});
+	}
+
+	let agregado = await assessmentQuery.get_agregado_by(data.outcome_id, data.term_id).catch((err) => {
+		console.error("Error getting agregado: ", err);
+	});
+
+	if (agregado == undefined || agregado.length == 0){
+		return res.json({error: true, message: "Cannot find any data"});
+	}
+
+	return res.json({error: false, message: "Success", data: agregado});
+});
+
 // ======================================== COURSE MAPPING =======================================
 /**
  *  GET course_mapping data

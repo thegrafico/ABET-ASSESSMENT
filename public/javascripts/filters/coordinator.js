@@ -9,6 +9,7 @@ const tag_status = "#filterStatus";
 const tag_study_program = "#filterStudyProgram";
 const tag_outcome = "#filterOutcome";
 const tag_term = "#filterTerm";
+const tag_loader_img = "#loader";
 
 const tag_colums = {
     "#filterProfessorName": 2,
@@ -63,6 +64,8 @@ $(document).ready(function () {
     $(tag_study_program).change(async function () {
 
         filter_all();
+        $(tag_loader_img).show();
+
 
         $(tag_outcome).empty().append(`<option selected value=""> -- Outcome -- </option>`);
         $(tag_outcome).prop("disabled", true);
@@ -74,6 +77,7 @@ $(document).ready(function () {
     
         // if cannot find an outcome
         if (outcomes == undefined || outcomes.length == 0){
+            $(tag_loader_img).show();
             alert("Cannot find any outcome for this study program");
             return;
         }
@@ -82,6 +86,8 @@ $(document).ready(function () {
 
         // enable the outcome
         $(tag_outcome).prop("disabled", false);
+
+        $(tag_loader_img).show();
 
     });
 

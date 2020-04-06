@@ -83,11 +83,15 @@
     const tag_modal = "#professor_feedback";
     const tag_span_feedback = "#spanFeedback";
     const tag_btn_submit = "#btn_submit";
+    const tag_loader_img = "#loader";
 
     $(document).ready(function () {
 
         // STUDY PROGRAM
         $(tag_studyProgram).change(async function () {
+
+            // load image: loading
+            $(tag_loader_img).show();
 
             // disable options
             $(tag_outcome).prop("disabled", true);
@@ -102,13 +106,13 @@
 
             // validate outcomes
             if (outcomes == undefined || outcomes.length == 0) {
+                $(tag_loader_img).hide();
                 modal_message("Cannot find any Outcome");
                 return;
             }
 
-            console.log(outcomes);
-
             // enable outcomes
+            $(tag_loader_img).hide();
             $(tag_outcome).prop("disabled", false);
             $(tag_term).prop("disabled", false);
             $(tag_outcome).empty().append('<option selected disabled value=""> -- Outcome -- </option>');
@@ -118,29 +122,65 @@
         // when click submit
         $(tag_btn_submit).click(function () {
 
+            $(tag_loader_img).show();
+
             let std_id = $(tag_studyProgram).val();
             let outcome_id = $(tag_outcome).val();
             let term_id = $(tag_term).val();
 
-            if (std_id == undefined || std_id == ""){
-                modal_message("Please Select Study Program");
-                return;
-            }else if(outcome_id == undefined ||  outcome_id == ""){
-                modal_message("Please Select an Outcome");
-                return;
-            }else if(term_id == undefined ||  term_id == ""){
-                modal_message("Please Select Academic Term");
+            let message = undefined;
+
+            if (std_id == undefined || std_id == "")
+                message = "Please Select Study Program";
+            else if (outcome_id == undefined || outcome_id == "")
+                message = "Please Select an Outcome";
+            else if (term_id == undefined || term_id == "")
+                message = "Please Select Academic Term"; 
+            
+            if (message != undefined){
+                $(tag_loader_img).hide();
+                modal_message(false, message);
                 return;
             }
+
+            // data for request
+            let dept_assessment_data = { "study_program_id": std_id, "outcome_id": outcome_id, "term_id": term_id };
+
+            // make request
+            $.ajax({
+                type: "GET",
+                url: "/api/get/departmentAssessment",
+                data: { "data": dept_assessment_data },
+                success: (response) => {
+                    $(tag_loader_img).hide();
+
+                    if (response != undefined && response.error == false) {
+                        modal_message(true, "Data was sent");
+                        console.log(response.data);
+                    }
+                },
+                dataType: "json"
+            });
+
+            $(tag_loader_img).hide();
         });
     });
 
     /**
+     * @param {bool} error - add class green or red 
      * @param {String} message - message for the modal 
      */
-    function modal_message(message) {
+    function modal_message(success, message) {
         $(tag_modal).modal("show");
+
+        if (success) {
+            $(tag_span_feedback).css({ "color": "green" });
+        } else {
+            $(tag_span_feedback).css({ "color": "red" });
+        }
+
         $(tag_span_feedback).text(message);
+
     }
 
     /**
@@ -150,7 +190,7 @@
      */
     function fill_select(tag, values) {
         values.forEach(each => {
-            $(tag).append(`<option value="${each['values']}"> ${each['name']}</option>`);
+            $(tag).append(`<option value="${each['value']}"> ${each['name']}</option>`);
         });
     }
 </script>
