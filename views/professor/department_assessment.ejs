@@ -72,10 +72,107 @@
     </div>
 </div>
 
+<div class="container-fluid" id="tableContainer">
+    <!-- <div class="container mt-4">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th colspan="4" scope="col">Assessment name - Outocome Name - Study Program</th>
+                </tr>
+
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div> -->
+</div>
+
 <!-- MODAL FOR FEEDBACK -->
 <%- include ('./modal/feedback') -%>
 
+<style>
+    table thead{
+        text-align: center;
+    }
+</style>
+
 <script>
+
+
+    /**
+    * Create table 
+    */
+    function createTable(data, outcome, std) {
+
+        let html = undefined;
+        let performances = data["performances"];
+        let numColums = performances.length;
+        let scoreLen = performances[0]["scores"].length;
+
+        // =========================== TABLE CONTAINER =============================
+
+        // Container
+        html = `<div class="container mt-4">`;
+
+        // table & header
+        html += `<table class="table table-bordered">`;
+
+        html += `<thead class="thead-dark">`;
+
+        // =========================== FIRST HEADER =============================
+        // + 2 because we add student and outcome result colums
+        // first header
+        html += `<tr>`;
+        html += `<th colspan = "${(numColums + 2)}" scope = "col"> ${data["name"]} - ${outcome} - ${std}</th>`;
+        // end first header
+        html += `<tr>`;
+
+        // =========================== SECOND HEADER =============================
+        // second header
+        html += `<tr>`;
+        html += `<th scope = "col"> Student # </th>`;
+        console.log(data["performances"][0]);
+        for (let i = 0; i < numColums; i++) {
+
+            html += `<th scope = "col"> ${data["performances"][i]["description"]}</th>`;
+        }
+        html += `<th scope = "col"> Outcome Result</th>`;
+
+        // end second header
+        html += `<tr>`;
+
+        // end header
+        html += `</thead>`;
+        
+        // =========================== BODY DATA =============================
+        // table body
+        html += `<tbody>`;
+
+        for (let i = 0; i < scoreLen + 1; i++) {
+
+        }
+
+
+
+        // end table body
+        html += `</tbody>`;
+        // =========================== END TABLE =============================
+        // end table
+        html += `</table>`;
+
+        // end container
+        html += `</div>`;
+
+        $("#tableContainer").html(html);
+    }
+
+
     // tags select
     const tag_studyProgram = "#std_program";
     const tag_outcome = "#outcomes";
@@ -128,6 +225,9 @@
             let outcome_id = $(tag_outcome).val();
             let term_id = $(tag_term).val();
 
+            let outcomeName = $(tag_outcome).children("option:selected").text();
+            let studyProgramName = $(tag_studyProgram).children("option:selected").text();
+
             let message = undefined;
 
             if (std_id == undefined || std_id == "")
@@ -135,9 +235,9 @@
             else if (outcome_id == undefined || outcome_id == "")
                 message = "Please Select an Outcome";
             else if (term_id == undefined || term_id == "")
-                message = "Please Select Academic Term"; 
-            
-            if (message != undefined){
+                message = "Please Select Academic Term";
+
+            if (message != undefined) {
                 $(tag_loader_img).hide();
                 modal_message(false, message);
                 return;
@@ -156,7 +256,9 @@
 
                     if (response != undefined && response.error == false) {
                         modal_message(true, "Data was sent");
-                        console.log(response.data);
+                        createTable(response.data[0], outcomeName, studyProgramName);
+                    } else {
+                        modal_message(false, "we couldn't find the data you're looking");
                     }
                 },
                 dataType: "json"
@@ -174,17 +276,17 @@
         $(tag_modal).modal("show");
 
         if (success) {
+            $("#feedbackTitle").text("Success!");
             $(tag_span_feedback).css({ "color": "green" });
         } else {
+            $("#feedbackTitle").text("Sorry!");
             $(tag_span_feedback).css({ "color": "red" });
         }
 
         $(tag_span_feedback).text(message);
-
     }
 
     /**
-     * 
      * @param {String} tag - tag name - ID 
      * @param {Array} values - values for tag name
      */
@@ -193,6 +295,8 @@
             $(tag).append(`<option value="${each['value']}"> ${each['name']}</option>`);
         });
     }
+
+
 </script>
 
 <%- include ('../admin/partials/footer') -%>

@@ -92,6 +92,7 @@ router.get('/professorAssessment', async function (req, res) {
 router.get('/departmentAssessments', async function (req, res) {
 
     locals.title = "Department Assessment";
+    locals.form_action = base_url + "/departmentAssessments"
 
     locals.breadcrumb = [
         { "name": "Department Assessment", "url": "#" }

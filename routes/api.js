@@ -7,7 +7,7 @@ const api_queries = require("../helpers/queries/api");
 const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 const assessmentQuery = require("../helpers/queries/assessment");
-const {get_user_by_id} = require("../helpers/queries/user_queries");
+const { get_user_by_id } = require("../helpers/queries/user_queries");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
 
 // =============================== PERFORMANCES CRITERIA ==================================
@@ -44,7 +44,7 @@ router.get('/department/get/studyPrograms/:departmentId', async function (req, r
 	// validating id 
 	if (req.params.departmentId == undefined || isNaN(req.params.departmentId)) {
 		return res.end();
-    }
+	}
 
 	let dept_ID = req.params.departmentId;
 
@@ -60,14 +60,14 @@ router.get('/department/get/studyPrograms/:departmentId', async function (req, r
 		return res.end();
 	}
 
-    let record = [];
-    
-    // convert in dt
+	let record = [];
+
+	// convert in dt
 	study_programs.forEach(row => {
 		record.push({ "name": row["prog_name"], "value": row["prog_ID"] });
 	});
 
-    // return
+	// return
 	res.json(record);
 });
 
@@ -127,7 +127,7 @@ router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res)
 	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})
-	
+
 	if (outcomes == undefined || outcomes.length == 0) {
 		return res.json([]);
 	}
@@ -171,21 +171,21 @@ router.get('/get/rubricByOutcome/:outcome_id', async function (req, res) {
 
 	// validate if rubric_id is good
 	if (req.params.outcome_id == undefined || isNaN(req.params.outcome_id)) {
-		return res.json({error: true, message: "Invalid Study Program ID"});
+		return res.json({ error: true, message: "Invalid Study Program ID" });
 	}
 
-    let rubric_query = {"from": "EVALUATION_RUBRIC", "where": "outc_ID", "id": req.params.outcome_id};
-    
-    let rubrics = await general_queries.get_table_info_by_id(rubric_query).catch((err) => {
+	let rubric_query = { "from": "EVALUATION_RUBRIC", "where": "outc_ID", "id": req.params.outcome_id };
+
+	let rubrics = await general_queries.get_table_info_by_id(rubric_query).catch((err) => {
 		console.error(err);
-    });
+	});
 
 	// verify is user data is good
 	if (rubrics == undefined || rubrics.length == 0) {
-		return res.json({error: true, message: "Cannot find any rubric"});
+		return res.json({ error: true, message: "Cannot find any rubric" });
 	}
 
-	res.json({error: false, message:"Success", data: rubrics});
+	res.json({ error: false, message: "Success", data: rubrics });
 });
 
 // ================================================= USER ==================================
@@ -239,22 +239,22 @@ router.get('/get/user/:id', async function (req, res) {
 router.get('/get/studyprogram/:id', async function (req, res) {
 
 	// validating id 
-	if (req.params.id == undefined || isNaN(req.params.id)){
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "This Study program does not exits");
 		return res.redirect("back");
 	}
 
 	let std_program_id = req.params.id;
 
-	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": std_program_id};
-	
+	let data = { "from": "STUDY_PROGRAM", "where": "prog_ID", "id": std_program_id };
+
 	// get std program
 	let std_program_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("ERROR: ", err);
 	})
 
 	// validate std program
-	if( std_program_to_remove == undefined || std_program_to_remove.length == 0){
+	if (std_program_to_remove == undefined || std_program_to_remove.length == 0) {
 		req.flash("error", "Cannot find study program, Please create one");
 		return res.redirect(base_url);
 	}
@@ -262,14 +262,14 @@ router.get('/get/studyprogram/:id', async function (req, res) {
 
 	let date = new Date(std_program_to_remove.date_created);
 	date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-	
+
 	// header of inputs
 	let names = ["Name", "Department", "Date created"];
-	let values = [ std_program_to_remove.prog_name, std_program_to_remove.dep_ID, date];
+	let values = [std_program_to_remove.prog_name, std_program_to_remove.dep_ID, date];
 
 	let record = [];
 	for (let index = 0; index < names.length; index++)
-		record.push({"name": names[index], "value": values[index]})
+		record.push({ "name": names[index], "value": values[index] })
 
 	res.json(record);
 });
@@ -280,7 +280,7 @@ router.get('/get/studyprogram/:id', async function (req, res) {
 */
 router.get('/get/outcomeByStudyProgram/:id', async function (req, res) {
 
-    if (req.params.id == undefined || isNaN(req.params.id)) {
+	if (req.params.id == undefined || isNaN(req.params.id)) {
 		req.flash("error", "Cannot find the outcome");
 		return res.redirect(base_url);
 	}
@@ -297,7 +297,7 @@ router.get('/get/outcomeByStudyProgram/:id', async function (req, res) {
 	// verify
 	if (outcomes == undefined || outcomes.length == 0) {
 		return res.json([]);
-    }
+	}
 
 	// send response if it's good
 	res.json(outcomes);
@@ -353,19 +353,19 @@ router.get('/get/coursesbystudyprogram/:std_id', async function (req, res) {
 
 	// validate if rubric_id is good
 	if (req.params.std_id == undefined || isNaN(req.params.std_id)) {
-		return res.json({error: true, message: "Invalid Study Program ID"});
+		return res.json({ error: true, message: "Invalid Study Program ID" });
 	}
 
 	let courses = await api_queries.get_courses_by_study_program_id(req.params.std_id).catch((err) => {
 		console.error(err);
-    });
-    
+	});
+
 	// verify is user data is good
 	if (courses == undefined || courses.length == 0) {
-		return res.json({error: true, message: "Cannot find any course"});
+		return res.json({ error: true, message: "Cannot find any course" });
 	}
 
-	res.json({error: false, message:"Success", data: courses});
+	res.json({ error: false, message: "Success", data: courses });
 });
 
 // =========================================== OUTCOME ===============================================
@@ -378,8 +378,8 @@ router.get('/get/outcome/:id', async function (req, res) {
 
 	if (req.params.id == undefined || isNaN(req.params.id)) {
 		return res.end();
-    }
-    
+	}
+
 	let outcome_query = {
 		"from": "STUDENT_OUTCOME",
 		"join": "STUDY_PROGRAM",
@@ -507,33 +507,139 @@ router.get('/get/schoolterm/:id', async function (req, res) {
  * GET /api/get/departmentAssessment 
 */
 router.get('/get/departmentAssessment', async function (req, res) {
-	
+
 	// validate data
 	if (req.query == undefined || req.query.data == undefined)
-		return res.json({error: true, message: "Cannot find the data sent"});
-	
+		return res.json({ error: true, message: "Cannot find the data sent" });
+
 	let data = req.query.data;
 
 
-	let isInvalid = (data.study_program_id == undefined || data.study_program_id == "" || isNaN(data.study_program_id)) || 
-	(data.outcome_id == undefined ||   data.outcome_id == "" || isNaN(data.outcome_id) ) || 
-	(data.term_id == undefined || data.term_id == "" || isNaN(data.term_id)); 
+	let isInvalid = (data.study_program_id == undefined || data.study_program_id == "" || isNaN(data.study_program_id)) ||
+		(data.outcome_id == undefined || data.outcome_id == "" || isNaN(data.outcome_id)) ||
+		(data.term_id == undefined || data.term_id == "" || isNaN(data.term_id));
 
 	// validate data
-	if (isInvalid){
-		return res.json({error: true, message: "Invalid Data"});
+	if (isInvalid) {
+		return res.json({ error: true, message: "Invalid Data" });
 	}
 
 	let agregado = await assessmentQuery.get_agregado_by(data.outcome_id, data.term_id).catch((err) => {
 		console.error("Error getting agregado: ", err);
 	});
 
-	if (agregado == undefined || agregado.length == 0){
-		return res.json({error: true, message: "Cannot find any data"});
+	if (agregado == undefined || agregado.length == 0) {
+		return res.json({ error: true, message: "Cannot find any data" });
+	}
+	
+	try {
+		agregado = get_structure(agregado, "assessment_ID");		
+	} catch (error) {
+		agregado = [];
 	}
 
-	return res.json({error: false, message: "Success", data: agregado});
+	console.log(agregado);
+
+	return res.json({ error: false, message: "Success", data: agregado });
 });
+
+/**
+ * @param {Array[Object]} data - data to convert
+ * @param {String} keyId - Principal ID
+ * @returns {Array[Object]}  
+ */
+function get_structure(data, keyId) {
+
+	let ids = get_unique(data, keyId);
+
+	let masterArray = []; // store all assessments
+	let tempAssessments = []; // store each assessment. 
+
+	// get all data from assessment individual
+	ids.forEach(_id => {
+
+		data.forEach(each => {
+
+			// if id of the assessment if = to the unique id im looking for
+			if (each[keyId] == _id) {
+
+				// add the assessmet to temp assessment
+				tempAssessments.push(each);
+			}
+		});
+
+		// add all assessment with the same id to the master array
+		masterArray.push(tempAssessments);
+
+		// reset tempAssessment
+		tempAssessments = [];
+	});
+
+
+	masterArray.forEach( (eachAssessment, index) => {
+
+		let masterPerformance = [];
+		let tempPerformance = [];
+		eachAssessment[0]["performances"] = undefined;
+
+		let perc = get_unique(eachAssessment, "perC_ID");
+
+		// iter through unique performance id
+		perc.forEach(_pID => {
+
+			// performance description
+			let description = undefined;
+
+			// verify all assessment looking for the performance id
+			eachAssessment.forEach(each => {
+				
+				if (each["perC_ID"] == _pID) {
+
+					// add performance score to an array
+					tempPerformance.push(each["row_perc_score"]);
+
+					// update description
+					description = each["perC_Desk"];
+				}
+			});
+
+			masterPerformance.push({ "performanceId": _pID, "scores": tempPerformance, "description": description });
+			tempPerformance = [];
+		});
+
+		// add all the important data into performances key
+		eachAssessment[0]["performances"] = masterPerformance;
+		
+		// remove these elements from the object
+		delete eachAssessment[0]["perC_ID"];
+		delete eachAssessment[0]["row_ID"];
+		delete eachAssessment[0]["perC_Desk"];
+		delete eachAssessment[0]["row_perc_score"];
+
+		// just save the firts assessment template
+		masterArray[index] = eachAssessment[0];
+	});
+
+	return masterArray;
+}
+
+/**
+ * get_unique - return an array with unique values
+ * @param {Array[Object]} data - data to iter through
+ * @param {String} target - key value to get unique
+ */
+function get_unique(data, target) {
+
+	// iter through all assessment
+	let elements = data.map(each => each[target]);
+
+	// remove duplicates perc_ID
+	elements = elements.filter(function (item, pos) {
+		return elements.indexOf(item) == pos;
+	});
+
+	return elements;
+}
 
 // ======================================== COURSE MAPPING =======================================
 /**
@@ -548,18 +654,18 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 
 	let mapping = await courseMappingQuery.get_mapping_by_study_program(req.params.programId).catch((err) => {
 		console.error("ERROR: ", err);
-    });
+	});
 
-    // getting the outcome mapping
-    let outcome_course = await courseMappingQuery.get_course_mapping(req.params.programId).catch((err) =>{
-        console.error("ERROR: ", err);
-    });
+	// getting the outcome mapping
+	let outcome_course = await courseMappingQuery.get_course_mapping(req.params.programId).catch((err) => {
+		console.error("ERROR: ", err);
+	});
 
-    mapping = transformdt(mapping);
-    current_mapping = current_course_mapping(outcome_course)
-    outcome_course = transform_outcome_courses(outcome_course);
+	mapping = transformdt(mapping);
+	current_mapping = current_course_mapping(outcome_course)
+	outcome_course = transform_outcome_courses(outcome_course);
 
-	res.json({mapping, outcome_course, current_mapping});
+	res.json({ mapping, outcome_course, current_mapping });
 });
 
 /**
@@ -568,33 +674,33 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
  * @returns {Array} array of object
  */
 function transform_outcome_courses(outcome_course) {
-    let temp = [];
-    outcome_course.forEach(e => {
-        temp.push(`${e["outc_ID"]},${e["course_ID"]}`);
-    });
-    return temp;
+	let temp = [];
+	outcome_course.forEach(e => {
+		temp.push(`${e["outc_ID"]},${e["course_ID"]}`);
+	});
+	return temp;
 }
 
 function current_course_mapping(outcome_course) {
-    let courses_id = outcome_course.map(e => e.course_ID);
+	let courses_id = outcome_course.map(e => e.course_ID);
 
-    // remove duplicates
-    courses_id = courses_id.filter(function (item, pos) {
-        return courses_id.indexOf(item) == pos;
-    });
+	// remove duplicates
+	courses_id = courses_id.filter(function (item, pos) {
+		return courses_id.indexOf(item) == pos;
+	});
 
-    let temp = [];
-    let arr = [];
-    courses_id.forEach(ID => {
-        temp  = [];
-        for (let i = 0; i < outcome_course.length; i++) {
-            if (ID == outcome_course[i]["course_ID"]){
-                temp.push(outcome_course[i]["outc_ID"]);
-            }
-        }
-        arr.push({"course_id": ID, "outcomes": temp});
-    });
-    return arr;
+	let temp = [];
+	let arr = [];
+	courses_id.forEach(ID => {
+		temp = [];
+		for (let i = 0; i < outcome_course.length; i++) {
+			if (ID == outcome_course[i]["course_ID"]) {
+				temp.push(outcome_course[i]["outc_ID"]);
+			}
+		}
+		arr.push({ "course_id": ID, "outcomes": temp });
+	});
+	return arr;
 }
 
 /**
@@ -603,83 +709,83 @@ function current_course_mapping(outcome_course) {
  * @returns {Array} order in ascendent
  */
 function transformdt(outcomes) {
-    // getting all ids
-    let ids = outcomes.map(row => row.prog_ID);
+	// getting all ids
+	let ids = outcomes.map(row => row.prog_ID);
 
-    // remove duplicates
-    ids = ids.filter(function (item, pos) {
-        return ids.indexOf(item) == pos;
-    })
+	// remove duplicates
+	ids = ids.filter(function (item, pos) {
+		return ids.indexOf(item) == pos;
+	})
 
-    // sort elements in ascendent order NUMBERS
-    ids.sort(function (a, b) { return a - b });
+	// sort elements in ascendent order NUMBERS
+	ids.sort(function (a, b) { return a - b });
 
-    let temp = [];
-    ids.forEach((ID) => {
-        let row_outcomes = [];
-        let courses_name = [];
+	let temp = [];
+	ids.forEach((ID) => {
+		let row_outcomes = [];
+		let courses_name = [];
 
-        // filter only outcomes that belown to specific study program (Still we got the object)
-        row_outcomes = outcomes.filter(row => row.prog_ID == ID);
+		// filter only outcomes that belown to specific study program (Still we got the object)
+		row_outcomes = outcomes.filter(row => row.prog_ID == ID);
 
-        //sort by name
-        row_outcomes.sort((a, b) => (a.outc_name > b.outc_name) ? 1 : -1)
+		//sort by name
+		row_outcomes.sort((a, b) => (a.outc_name > b.outc_name) ? 1 : -1)
 
-        // get only the outcomes ids
-        outcomes_ids = row_outcomes.map(row => row.outc_ID);
+		// get only the outcomes ids
+		outcomes_ids = row_outcomes.map(row => row.outc_ID);
 
-        // remove duplicates outcomes
-        outcomes_ids = outcomes_ids.filter(function (item, pos) {
-            return outcomes_ids.indexOf(item) == pos;
-        });
+		// remove duplicates outcomes
+		outcomes_ids = outcomes_ids.filter(function (item, pos) {
+			return outcomes_ids.indexOf(item) == pos;
+		});
 
-        //get outcome_names
-        outcomes_names = row_outcomes.map(row => [row.outc_name, row.outc_ID]);
+		//get outcome_names
+		outcomes_names = row_outcomes.map(row => [row.outc_name, row.outc_ID]);
 
-        // Getting only the name. Como ya todo está sort, los nombres que me dan aqui estan sort.
-        let names = [];
-        outcomes_ids.forEach(ID => {
-            let i = 0;
-            while (i < outcomes_names.length) {
-                if (outcomes_names[i][1] == ID) {
-                    names.push(outcomes_names[i][0]);
-                    break;
-                }
-                i++;
-            }
-        });
+		// Getting only the name. Como ya todo está sort, los nombres que me dan aqui estan sort.
+		let names = [];
+		outcomes_ids.forEach(ID => {
+			let i = 0;
+			while (i < outcomes_names.length) {
+				if (outcomes_names[i][1] == ID) {
+					names.push(outcomes_names[i][0]);
+					break;
+				}
+				i++;
+			}
+		});
 
-        // get only the name of the courses
-        courses_name = row_outcomes.map(row => row.course_name);
+		// get only the name of the courses
+		courses_name = row_outcomes.map(row => row.course_name);
 
-        // remove duplicates outcomes
-        courses_name = courses_name.filter(function (item, pos) {
-            return courses_name.indexOf(item) == pos;
-        });
+		// remove duplicates outcomes
+		courses_name = courses_name.filter(function (item, pos) {
+			return courses_name.indexOf(item) == pos;
+		});
 
-        // get course name and id in two dimentional array
-        let courses_id_name = row_outcomes.map(row => [row.course_ID, row.course_name]);
+		// get course name and id in two dimentional array
+		let courses_id_name = row_outcomes.map(row => [row.course_ID, row.course_name]);
 
-        // Getting only the name. Como ya todo está sort, los nombres que me dan aqui estan sort.
-        let courses_id = [];
-        courses_name.forEach(NAME => {
-            let i = 0;
-            while (i < courses_id_name.length) {
-                if (courses_id_name[i][1] == NAME) {
-                    courses_id.push(courses_id_name[i][0]);
-                    break;
-                }
-                i++;
-            }
-        });
+		// Getting only the name. Como ya todo está sort, los nombres que me dan aqui estan sort.
+		let courses_id = [];
+		courses_name.forEach(NAME => {
+			let i = 0;
+			while (i < courses_id_name.length) {
+				if (courses_id_name[i][1] == NAME) {
+					courses_id.push(courses_id_name[i][0]);
+					break;
+				}
+				i++;
+			}
+		});
 
-        temp.push({
-            "prog_ID": ID,
-            "outcomes": {"ids": outcomes_ids, "names":names },
-            "courses": {"names": courses_name, "ids":courses_id},
-        });
-    });
-    return temp;
+		temp.push({
+			"prog_ID": ID,
+			"outcomes": { "ids": outcomes_ids, "names": names },
+			"courses": { "names": courses_name, "ids": courses_id },
+		});
+	});
+	return temp;
 }
 
 
