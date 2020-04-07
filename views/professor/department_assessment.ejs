@@ -97,11 +97,17 @@
 <%- include ('./modal/feedback') -%>
 
 <style>
-    table thead{
+    table thead {
         text-align: center;
+    }
+
+    .table-cont {
+        margin-top: 4%;
+        margin-bottom: 4%;
     }
 </style>
 
+// TODO: Calculate outcome result and add a final column to the table
 <script>
 
 
@@ -112,13 +118,13 @@
 
         let html = undefined;
         let performances = data["performances"];
-        let numColums = performances.length;
-        let scoreLen = performances[0]["scores"].length;
+        const numColums = performances.length;
+        const scoreLen = performances[0]["scores"].length;
 
         // =========================== TABLE CONTAINER =============================
 
         // Container
-        html = `<div class="container mt-4">`;
+        html = `<div class="container mt-4 table-cont">`;
 
         // table & header
         html += `<table class="table table-bordered">`;
@@ -149,16 +155,26 @@
 
         // end header
         html += `</thead>`;
-        
+
         // =========================== BODY DATA =============================
         // table body
         html += `<tbody>`;
+        let tr = `<tr>`;
+        for (let i = 0; i < scoreLen; i++) {
+            tr = `<tr>`;
+            tr += `<th> ${i + 1} </th>`
 
-        for (let i = 0; i < scoreLen + 1; i++) {
+            let j = 0;
+            while (j < numColums) {
+                console.log(j);
+                tr += `<td> ${performances[j]["scores"][i]} </td>`
+                j++;
+            }
 
+            tr += `<td> 0 </td>`;
+
+            html += tr;
         }
-
-
 
         // end table body
         html += `</tbody>`;
@@ -169,7 +185,9 @@
         // end container
         html += `</div>`;
 
-        $("#tableContainer").html(html);
+        html += `<hr>`;
+
+        $("#tableContainer").append(html);
     }
 
 
@@ -256,7 +274,10 @@
 
                     if (response != undefined && response.error == false) {
                         modal_message(true, "Data was sent");
-                        createTable(response.data[0], outcomeName, studyProgramName);
+
+                        response.data.forEach(each => {
+                            createTable(each, outcomeName, studyProgramName);
+                        });
                     } else {
                         modal_message(false, "we couldn't find the data you're looking");
                     }
