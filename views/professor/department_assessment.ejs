@@ -93,6 +93,10 @@
     </div> -->
 </div>
 
+<button id="btnExcel" class="btn btn-success">
+    Export
+</button>
+
 <!-- MODAL FOR FEEDBACK -->
 <%- include ('./modal/feedback') -%>
 
@@ -107,7 +111,27 @@
     }
 </style>
 
-// TODO: Calculate outcome result and add a final column to the table
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="/javascripts/jquery.table2excel.min.js"></script>
+
+<script>
+    $(function () {
+        $("#btnExcel").click(function (e) {
+            var table = $(".table");
+            if (table && table.length) {
+                $(table).table2excel({
+                    exclude: ".noExl",
+                    name: "Excel Document Name",
+                    filename: "myFileName.xlsx",
+                    fileext: ".xlsx",
+                    preserveColors: true
+                });
+            }
+        });
+    });
+</script>
+
 <script>
 
 
@@ -118,7 +142,7 @@
 
         let html = undefined;
         let performances = data["performances"];
-        const numColums = performances.length;
+        const numPerformances = performances.length;
         const scoreLen = performances[0]["scores"].length;
 
         // =========================== TABLE CONTAINER =============================
@@ -135,7 +159,7 @@
         // + 2 because we add student and outcome result colums
         // first header
         html += `<tr>`;
-        html += `<th colspan = "${(numColums + 2)}" scope = "col"> ${data["name"]} - ${outcome} - ${std}</th>`;
+        html += `<th colspan = "${(numPerformances + 2)}" scope = "col"> ${data["name"]} - ${outcome} - ${std}</th>`;
         // end first header
         html += `<tr>`;
 
@@ -144,7 +168,7 @@
         html += `<tr>`;
         html += `<th scope = "col"> Student # </th>`;
         console.log(data["performances"][0]);
-        for (let i = 0; i < numColums; i++) {
+        for (let i = 0; i < numPerformances; i++) {
 
             html += `<th scope = "col"> ${data["performances"][i]["description"]}</th>`;
         }
@@ -160,21 +184,59 @@
         // table body
         html += `<tbody>`;
         let tr = `<tr>`;
+        let outcome_results = []; // store outcome result per row
         for (let i = 0; i < scoreLen; i++) {
             tr = `<tr>`;
             tr += `<th> ${i + 1} </th>`
 
             let j = 0;
-            while (j < numColums) {
-                console.log(j);
-                tr += `<td> ${performances[j]["scores"][i]} </td>`
+            let outcomeAvg = 0;
+            while (j < numPerformances) {
+                outcomeAvg += performances[j]["scores"][i];
+
+                tr += `<td> ${performances[j]["scores"][i]} </td>`;
                 j++;
             }
 
-            tr += `<td> 0 </td>`;
+            let outcomeAvgRow = (outcomeAvg / numPerformances).toFixed(2);
+            outcome_results.push(outcomeAvgRow);
 
+            // row outcome result
+            tr += `<td> ${outcomeAvgRow} </td>`;
+
+            html += `</tr>`;
             html += tr;
         }
+
+        tr = `<tr>`;
+        tr += `<th> % Student with 3 or more </th>`
+
+        // LAST ROW AVG RESULT
+        const acceptedVal = 3;
+        for (let i = 0; i < numPerformances; i++) {
+
+            let score = performances[i]["scores"];
+
+            // sum each column of score
+            let avg = 0;
+            score.map(each => {
+                // if the value if grater or equal than the accepted value
+                if (each >= acceptedVal) avg++;
+            });
+
+            // get percent of student with 3 or more (Only one decimal place)
+            avg = ((avg / scoreLen) * 100).toFixed(2);
+
+            tr += `<th> ${avg}% </th>`;
+        }
+
+        let otucome_gt_accepted = outcome_results.filter(val => val >= 3).length;
+        let outcomeAvgResult = ((otucome_gt_accepted / scoreLen) * 100).toFixed(2);
+
+        tr += `<th> ${outcomeAvgResult}% </th>`;
+        html += tr;
+        html += `</tr>`;
+
 
         // end table body
         html += `</tbody>`;

@@ -112,7 +112,7 @@ module.exports.get_performance_criteria_results = function get_performance_crite
 		});
 
 		// get percent of student with 3 or more (Only one decimal place)
-		sum = ((sum / student_tam) * 100).toFixed(1);
+		sum = ((sum / student_tam) * 100).toFixed(2);
 
 		results.push(sum);
 	}
@@ -129,7 +129,7 @@ module.exports.get_performance_criteria_results = function get_performance_crite
 	outcomeRowAVG.map(each => {
 		if (each >= acceptedVal) sum++;
 	});
-	outResult = (sum / student_tam * 100).toFixed(1);
+	outResult = (sum / student_tam * 100).toFixed(2);
 	results.push(outResult);
 		
 	// console.log("OUTCOME AVG: ", outcomeRowAVG);

@@ -280,8 +280,9 @@
                             <th scope="col" style="width: 10%;"> <%= (i+1) %> </th>
 
                             <% performanceData[i]["scores"].forEach(each => {%>
-                            <td><%=each%></td>
+                                <td><%=each%></td>
                             <% }); %>
+                            
                             <th><%= performanceResults["outcomeRowAVG"][i] %> </th>
                         </tr>
                         <% } %>
