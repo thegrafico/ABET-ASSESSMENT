@@ -14,8 +14,10 @@ module.exports.create_assessment = (assessment) => {
             return reject("Invalid Parameters");
         }
 
-        let query = `INSERT INTO ${table.assessment} (name, course_ID, term_ID, user_ID, rubric_ID)
-        VALUES (?, ?, ?, ?, ?)`
+        console.log(assessment);
+
+        let query = `INSERT INTO ${table.assessment} (name, course_ID, term_ID, user_ID, rubric_ID, course_section)
+        VALUES (?, ?, ?, ?, ?, ?)`
 
         let values = [
             assessment.name,
@@ -23,6 +25,7 @@ module.exports.create_assessment = (assessment) => {
             assessment.term,
             assessment.user_id,
             assessment.rubric,
+            assessment.course_section
         ];
 
         // EXe query

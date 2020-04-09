@@ -89,6 +89,7 @@ router.post("/assessment/create", async function (req, res) {
 		name: "s",
 		course: "n",
 		rubric: "n",
+		course_section: "n",
 		term: "n"
 	};
 
