@@ -17,6 +17,8 @@ performanceCriteria = performanceCriteria.split(',');
 let allPerc;
 let labels = [];
 let graph;
+let amountStud;
+
 
 // Loads empty chart when page is load
 window.onload = () => {
@@ -25,10 +27,38 @@ window.onload = () => {
 };
 
 $(document).ready(() => {
+
     if(hasInput == 'y') {
 		withValues(prevScores);
     } else {
-		noValues();
+		$('#studModal').modal('show');
+		$('#enterStudent').click((e) => {
+			if($('#amountOfStudent').val() == "" || isNaN($('#amountOfStudent').val())) {
+				// VALIDATION
+				$('#feedback span.message').text("Empty Input.");
+				$('#feedback').show();
+				setInterval(() => {
+					$('#feedback').hide(2000, () => {
+						$('#feedback span.message').text("");
+					});
+				}, 3000);
+			} 
+			else if($('#amountOfStudent').val() <= 0 || $('#amountOfStudent').val() > 200) {
+				// VALIDATION
+				$('#feedback span.message').text("Input is not with range of 1 to 200.");
+				$('#feedback').show();
+				setInterval(() => {
+					$('#feedback').hide(2000, () => {
+						$('#feedback span.message').text("");
+					});
+				}, 3000);
+			}
+			else {
+				amountStud = $('#amountOfStudent').val();
+				$('#studModal').modal('hide');
+				noValues();
+			}
+		});
 	}
 	generateSideDisplay();
     
@@ -48,12 +78,36 @@ $(document).ready(() => {
     
     $('#save').click(() => {
 		insertEvaluation(mapData(data, assessment_ID), assessment_ID, 's');
-		console.log("Inserting!!");
 	});
 
-	$('#next').click(() => {
-		insertEvaluation(mapData(data, assessment_ID), assessment_ID, 'n');
-		console.log("Inserting!!");
+	
+
+	$('#next').click((e) => {
+		let validate = false;
+
+		data.forEach((element) => {
+			for(let i = 0; i < element.length; i++) {
+				if(element[i] == null || element[i] == '' || element[i] == undefined) 
+					validate = true;
+				else if(element[i] < 0 || element[i] > 4)
+					validate = true;
+			}
+		});
+
+		if(data[0] == undefined) {
+			// VALIDATION
+			alertMessage('Empty Inmput.');
+			e.preventDefault();
+		} else {
+			if(validate) {
+				// VALIDATION
+				alertMessage('Make sure that the table is full completely and that all inputs are in range of 0 to 4.');
+				validateTable();
+				e.preventDefault();
+			} else {
+				insertEvaluation(mapData(data, assessment_ID), assessment_ID, 'n');
+			}
+		}
 	});
 
 	$('#clearAll').click(() => {
@@ -63,13 +117,17 @@ $(document).ready(() => {
 	selectAll();
 });
 
+
+
+
+
 /**
  * noValues() -> function that creates the table if the query result return empty, 
  *               meaning that there was no previous evaluation done to the report.
 */
 function noValues() {
     generateHeaderRow();
-	for (let i = 0; i <= 9; i++) {
+	for (let i = 0; i < amountStud; i++) {
 		avgPerRow.push(0);
 		addRow();
 	}
@@ -292,10 +350,16 @@ function insertEvaluation(entryData, assessment_id, buttonPressed) {
 		success: (request) => {
 			console.log("Req: ", request);
 			if(request.message == 'success') {
-				$('#alertDiv').append('<div class="alert alert-success alert-dismissible fade show" role="alert">Data was saved!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+				$('#success span').text('Successfully added data.');
+				$('#success').show();
+				setInterval(() => {
+					$('#success').hide(3000, () => {
+						$('#success span').text("");
+					});
+				}, 3000);
 			}
 			else if(request.error == true) {
-				$('#alertDiv').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">Data was not saved!<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+				alertMessage('Data was not saved!');
 			}
 
 			if(request.isNext == true) {
@@ -385,15 +449,6 @@ function clearTableData() {
 }
 
 /**
- * inputValidation() ->  function which will check users input and make sure that follows the reg exp
- * @param {Number} -> User input
- * @returns {Boolean} -> Return True if the input is valid, return false if its not
-*/
-function inputValidation() {
-
-}
-
-/**
  * generateSideDisplay() -> function that creates the side display panel.
 */
 // TODO: 
@@ -411,3 +466,32 @@ function selectAll() {
 	});
 }
 
+function validateTable() {
+	$(".performanceTable, input[type=number]").each(function(i) {
+		let input = $(this);
+        if(input.val() == '') {
+			input.css({
+				"border" : "2px solid red"
+			});
+			setInterval(() => {
+				input.css("border", "");
+			}, 3500);
+		} 
+		else if(!(input.val() >= 0 && input.val() <= 4)) {
+			input.css("border", "2px solid red");
+			setInterval(() => {
+				input.css("border", "");
+			}, 3500);
+		} 
+	});
+}
+
+function alertMessage(message) {
+	$('#alertDiv span').text(message);
+	$('#alertDiv').show();
+	setInterval(() => {
+		$('#alertDiv').hide(3000, () => {
+			$('#alertDiv span').text("");
+		});
+	}, 3000);
+}

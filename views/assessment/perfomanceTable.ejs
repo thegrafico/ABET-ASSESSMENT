@@ -12,7 +12,35 @@
 <input type="hidden" id="prevScores" name="prevScores" value="<%= prevScores %>">
 <input type="hidden" id="hasValue" name="hasValue" value="<%= hasValue %>">
 <input type="hidden" id="hasGraph" name="hasGraph" value="<%= hasGraph %>">
-<div id="alertDiv"></div>
+
+<div class="modal fade" id="studModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel">Please enter the amount of student in the course</h5>
+		</div>
+
+		<div id="feedback" style="display: none;"><div class="alert alert-danger alert-dismissible fade show" role="alert"><span class="message"></span></div></div>
+		
+		<div class="modal-body">
+			<div class="form-group">
+			  <label for="amountOfStudent" class="col-form-label">Number Of Student:</label>
+			  <input type="text" class="form-control" id="amountOfStudent" required>
+			</div>
+		</div>
+		<div class="modal-footer">
+		  <button id="enterStudent" type="button" class="btn btn-success">Enter</button>
+		</div>
+	  </div>
+	</div>
+</div>
+
+
+
+<div id="alertDiv" style="display: none;"><div class="alert alert-danger alert-dismissible fade show" role="alert"><span></span></div></div>
+<div id="success" style="display: none;"><div class="alert alert-success alert-dismissible fade show" role="alert"><span></span></div></div>
+
+
 <div class="container-fluid outcomeInfo">
 	<div class="row">
 		<div class="col-5">
@@ -63,8 +91,8 @@
 				</tbody>
 			</table>
 			<div id="saveOrNext">
-				<a id="save" class="btn btn-outline-success" role="button" >Save</a>
-				<a id="next" class="btn btn-outline-success" role="button" >Next</a>
+				<a id="save" class="btn btn-outline-success" role="button">Save</a>
+				<a id="next" class="btn btn-outline-success" role="button">Next</a>
 			</div>
 		</div>
 	</div>
@@ -83,6 +111,7 @@
 
 <!-- jQuery script -->
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/javascripts/notify.js"></script>
 <script type="text/javascript" src="/javascripts/performanceTable.js"></script>
 
 <!-- STYLE FOR PROGRESS BAR -->
