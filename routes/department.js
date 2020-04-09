@@ -5,6 +5,7 @@ var query = require("../helpers/queries/department_queries");
 var general_queries = require("../helpers/queries/general_queries");
 const { department_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
+const table = require("../helpers/DatabaseTables");
 
 
 // base url
@@ -33,7 +34,7 @@ router.get('/', async function (req, res) {
 	];
 
 	//Getting the  DEPARTMENT information from db
-	let all_deparment = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+	let all_deparment = await general_queries.get_table_info(table.department).catch((err) => {
 		console.error("Error getting deparment information: ", err);
 	});
 
@@ -61,7 +62,7 @@ router.get('/', async function (req, res) {
 		});
 	}
 	locals.results = results;
-	res.render('admin/layout/home', locals);
+	res.render('layout/home', locals);
 });
 
 /*
@@ -87,7 +88,7 @@ router.get('/create', function (req, res) {
 
 	locals.inputs = department_create_inputs;
 	locals.description_box = { name: "description", text: "Department Description", value: "" }
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 
 /* 
@@ -153,7 +154,7 @@ router.get('/:id/edit', async function (req, res) {
 	locals.title_action = "Editing Department";
 	locals.btn_title = "Submit";
 
-	let tabla_data = { "from": "DEPARTMENT", "where": "dep_ID", "id": dept_id };
+	let tabla_data = { "from": table.department, "where": "dep_ID", "id": dept_id };
 
 	let dept_data = await general_queries.get_table_info_by_id(tabla_data).catch((err) => {
 		console.log("Error: ", err);
@@ -182,7 +183,7 @@ router.get('/:id/edit', async function (req, res) {
 	locals.description_box = { name: "description", text: "Department Description", value: dept_data.dep_description }
 	locals.inputs = department_create_inputs;
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 
 /*
@@ -232,7 +233,8 @@ router.delete('/:id', function (req, res, next) {
 		req.flash("error", "Cannot find the department");
 		return res.redirect(base_url);
 	}
-	let tabla_data = { "from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
+	
+	let tabla_data = { "from": table.department, "where": "dep_ID", "id": req.params.id };
 
 	general_queries.delete_record_by_id(tabla_data).then((was_deleted) => {
 		console.log("Record delete");
@@ -243,6 +245,7 @@ router.delete('/:id', function (req, res, next) {
 		req.flash("error", "Cannot remove the department");
 		res.redirect("/");
 	});
+
 });
 
 

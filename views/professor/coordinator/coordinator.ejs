@@ -1,4 +1,4 @@
-<%- include ('../admin/partials/header') -%>
+<%- include ('../../partials/header') -%>
 
 <!-- FILTERING HEADER -->
 <div class="container-fluid container-filter" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
@@ -105,13 +105,13 @@
                 <% var counter = 1; %>
 
                 <!-- ASSESSMENT IN PROSESS -->
-                <%- include ('./modal/coordinator_table', {assessments: assessment_in_progress}) -%>
+                <%- include ('../modal/coordinator_table', {assessments: assessment_in_progress}) -%>
 
                 <!-- ASSESSMET COMPLETED -->
-                <%- include ('./modal/coordinator_table', {assessments: assessment_completed}) -%>
+                <%- include ('../modal/coordinator_table', {assessments: assessment_completed}) -%>
 
                 <!-- ASSESSMENT ARCHIVE -->
-                <%- include ('./modal/coordinator_table', {assessments: assessment_archive}) -%>
+                <%- include ('../modal/coordinator_table', {assessments: assessment_archive}) -%>
 
             <% } %>
         </tbody>
@@ -128,4 +128,4 @@
 <!-- FILTERS -->
 <script src="/javascripts/filters/coordinator.js"></script>
 <!-- FOOTER -->
-<%- include ('../admin/partials/footer') -%>
+<%- include ('../../partials/footer') -%>

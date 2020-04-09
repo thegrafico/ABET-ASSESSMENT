@@ -13,6 +13,7 @@ var { get_outcome_by_study_program } = require("../helpers/queries/outcomes_quer
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
 var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
+const table = require("../helpers/DatabaseTables");
 
 const base_url = "/admin/evaluation";
 //Paramns to routes links
@@ -43,14 +44,14 @@ router.get('/', async function (req, res) {
 	});
 
 	// getting all study programs
-	let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
+	let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
 		console.error("Error getting study programs: ", err);
 	});
 
 	locals.study_programs = study_programs || [];
 
 	// getting all outcomes
-	let outcomes = await general_queries.get_table_info("STUDENT_OUTCOME").catch((err) => {
+	let outcomes = await general_queries.get_table_info(table.student_outcome).catch((err) => {
 		console.error("Error getting outcomes: ", err);
 	});
 
@@ -92,7 +93,7 @@ router.get('/create', async function (req, res) {
 		{ "name": "Create", "url": "." },
 	];
 
-	let std_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
+	let std_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
 		console.error("Error getting std_programs", err);
 	});
 
@@ -179,7 +180,7 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 	locals.btn_title = "Edit";
 
 
-	let std_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
+	let std_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
 		console.error("Error getting std_programs", err);
 	});
 
@@ -212,7 +213,7 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 	// 	req.flash("error", "Cannot find any outcomes, Please create one");
 	// 	return res.redirect(base_url);
 	// }
-	let criteria_query = { "from": "PERF_CRITERIA", "where": "outc_ID", "id": locals.outcome_selected };
+	let criteria_query = { "from": table.performance_criteria, "where": "outc_ID", "id": locals.outcome_selected };
 
 	let performance_criteria = await general_queries.get_table_info_by_id(criteria_query).catch((err) => {
 		console.error("ERROR getting performance Criteria: ", err);
@@ -325,7 +326,7 @@ router.put('/:r_id', validate_evaluation_rubric, async function (req, res) {
 router.delete('/:r_id', validate_evaluation_rubric, function (req, res) {
 
 	let rubric_id = req.params.r_id;
-	let rubric_for_query = { "from": "EVALUATION_RUBRIC", "where": "rubric_ID", "id": rubric_id };
+	let rubric_for_query = { "from": table.evaluation_rubric, "where": "rubric_ID", "id": rubric_id };
 
 	general_queries.delete_record_by_id(rubric_for_query).then((ok) => {
 		req.flash("success", "Rubric removed");

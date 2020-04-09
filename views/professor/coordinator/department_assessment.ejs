@@ -1,4 +1,4 @@
-<%- include ('../admin/partials/header') -%>
+<%- include ('../../partials/header') -%>
 
 <link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
 <nav aria-label="breadcrumb">
@@ -73,8 +73,8 @@
 </div>
 
 <div class="container-fluid" id="tableContainer">
-    <!-- <div class="container mt-4">
-        <table class="table">
+    <div class="container mt-4">
+        <table class="table" id="mytable">
             <thead class="thead-dark">
                 <tr>
                     <th colspan="4" scope="col">Assessment name - Outocome Name - Study Program</th>
@@ -88,17 +88,73 @@
                 </tr>
             </thead>
             <tbody>
+                <td>
+                    1
+                </td>
+                <td>
+                    1
+                </td>
+                <td>
+                    1
+                </td>
+                <td>
+                    1
+                </td>
+
+            </tbody>
+
+
+            <tr>
+                <th colspan="4" scope="col"></th>
+            </tr>
+
+            <thead class="thead-dark">
+
+                <tr>
+                    <th colspan="5" scope="col">Assessment name - Outocome Name - Study Program</th>
+                </tr>
+
+                <tr >
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                    <th scope="col">Handle</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <td>
+                    1
+                </td>
+
+                <td>
+                    1
+                </td>
+                <td>
+                    1
+                </td>
+                <td>
+                    1
+                </td>
+                <td>
+                    1
+                </td>
+
             </tbody>
         </table>
-    </div> -->
+    </div>
 </div>
+
+
+<button id="button-a">Create Excel</button>
 
 <button id="btnExcel" class="btn btn-success">
     Export
 </button>
 
 <!-- MODAL FOR FEEDBACK -->
-<%- include ('./modal/feedback') -%>
+<%- include ('../modal/feedback') -%>
 
 <style>
     table thead {
@@ -112,8 +168,25 @@
 </style>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-<script src="/javascripts/jquery.table2excel.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
+<script src="/javascripts/libraries/jquery.table2excel.min.js"></script>
+<script src="/javascripts/libraries/xlsx.full.min.js"></script>
+<script src="/javascripts/libraries/FileSaver.js"></script>
+
+<script>
+    var wb = XLSX.utils.table_to_book(document.getElementById('mytable'), { sheet: "Sheet JS" });
+    var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+    $("#button-a").click(function () {
+        saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'test.xlsx');
+    });
+
+</script>
 
 <script>
     $(function () {
@@ -123,8 +196,8 @@
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "myFileName.xlsx",
-                    fileext: ".xlsx",
+                    filename: "myFileName.xls",
+                    fileext: ".xls",
                     preserveColors: true
                 });
             }
@@ -161,7 +234,7 @@
         html += `<tr>`;
         html += `<th colspan = "${(numPerformances + 2)}" scope = "col"> ${data["name"]} - ${outcome} - ${std}</th>`;
         // end first header
-        html += `<tr>`;
+        html += `</tr>`;
 
         // =========================== SECOND HEADER =============================
         // second header
@@ -175,7 +248,7 @@
         html += `<th scope = "col"> Outcome Result</th>`;
 
         // end second header
-        html += `<tr>`;
+        html += `</tr>`;
 
         // end header
         html += `</thead>`;
@@ -378,8 +451,6 @@
             $(tag).append(`<option value="${each['value']}"> ${each['name']}</option>`);
         });
     }
-
-
 </script>
 
-<%- include ('../admin/partials/footer') -%>
+<%- include ('../../partials/footer') -%>

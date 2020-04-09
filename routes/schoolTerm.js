@@ -54,7 +54,7 @@ router.get('/', async function (req, res) {
 	}
 	locals.table_header = ["Name", ""];
 
-	res.render('admin/layout/home', locals);
+	res.render('layout/home', locals);
 });
 
 /* 
@@ -82,7 +82,7 @@ router.get('/create', function (req, res) {
 	// set the input for user
 	locals.inputs = academic_term;
 
-	res.render("admin/layout/create", locals);
+	res.render("layout/create", locals);
 });
 
 router.post('/create', function (req, res) {
@@ -167,7 +167,7 @@ router.get('/:id/edit', async function (req, res) {
 		index++;
 	});
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 
 /* 

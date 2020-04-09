@@ -77,7 +77,7 @@ $(document).ready(function () {
     
         // if cannot find an outcome
         if (outcomes == undefined || outcomes.length == 0){
-            $(tag_loader_img).show();
+            $(tag_loader_img).hide();
             alert("Cannot find any outcome for this study program");
             return;
         }
@@ -87,7 +87,7 @@ $(document).ready(function () {
         // enable the outcome
         $(tag_outcome).prop("disabled", false);
 
-        $(tag_loader_img).show();
+        $(tag_loader_img).hide();
 
     });
 

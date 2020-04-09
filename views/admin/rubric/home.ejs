@@ -1,4 +1,4 @@
-<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+<%- include ('../../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
 <nav aria-label="breadcrumb">
 	<ol class="breadcrumb">
@@ -128,12 +128,12 @@
 
 
 <!-- REMOVE PARTIAL -->
-<%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
-<%- include ('../partials/modal_view', {delete_redirect: delete_redirect || ""}) -%>
+<%- include ('../../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+<%- include ('../../partials/modal_view', {delete_redirect: delete_redirect || ""}) -%>
 
 <!-- MODAL FOR VIEW RUBRIC  -->
 <script src="/javascripts/modals/evaluationRubric.js"></script>
 <!-- FILTERS -->
 <script src="/javascripts/filters/rubric.js"></script>
 
-<%- include ('../partials/footer') -%>
+<%- include ('../../partials/footer') -%>

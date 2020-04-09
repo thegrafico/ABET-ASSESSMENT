@@ -1,4 +1,4 @@
-<%- include ('../admin/partials/header') -%>
+<%- include ('../../partials/header') -%>
 
 <% if (!isArchive && belong_to_user) { %>
     <%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar: 100, hasValue: 'y'}) -%> 
@@ -321,11 +321,15 @@
     <a href="<%=base_url%>">Go back to Assessments</a>
 </div>
 
-<script src="/javascripts/jquery-1.11.1.min.js"></script>
-<script src="/javascripts/FileSaver.js"></script>
-<script src="/javascripts/jquery.wordexport.js"></script>
+<!-- JQUERY NEEDED FOR WORD DOCUMENT -->
+<script src="/javascripts/libraries/jquery-1.11.1.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+<!-- FILE SAVER -->
+<script src="/javascripts/libraries/FileSaver.js"></script>
+<script src="/javascripts/libraries/jquery.wordexport.js"></script>
+
+<!-- FOR PDF GENERATION -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script> -->
 
 <script>
     let perfResults = JSON.parse($('#perfResults').val());
@@ -370,7 +374,7 @@
 </script>
 
 
-<%- include ('../admin/partials/footer') -%>
+<%- include ('../../partials/footer') -%>
 
 <!--
 <script>

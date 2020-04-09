@@ -152,7 +152,7 @@ router.get('/create', async function (req, res) {
 		});
 	});
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 /*
 	-- CREATE NEW OUTCOMES-- 
@@ -286,7 +286,7 @@ router.get('/:id/edit', async function (req, res) {
 	});
 
 	locals.dropdown_option_selected = outcome_to_edit.prog_ID;
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 /* 
 	-- Update the outcome -- 

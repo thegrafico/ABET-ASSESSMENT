@@ -187,7 +187,7 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	locals.outc_name = perf_criterias[0].outc_name;
 	locals.perf_ID = perf_criterias.map(e => e.perC_ID);
 
-	res.render('assessment/perfomanceTable', locals);
+	res.render('professor/assessment/perfomanceTable', locals);
 });
 
 
@@ -381,7 +381,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	locals.result_outcome = report["result_outcome"] || "";
 	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
 
-	res.render('assessment/professorInput', locals);
+	res.render('professor/assessment/professorInput', locals);
 });
 
 /**
@@ -638,7 +638,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	locals.profesor_input = professor_input;
 	locals.grades = grades;
 
-	res.render('assessment/report', locals);
+	res.render('professor/assessment/report', locals);
 });
 
 /**

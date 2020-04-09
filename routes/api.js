@@ -9,6 +9,7 @@ const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 const assessmentQuery = require("../helpers/queries/assessment");
 const { get_user_by_id } = require("../helpers/queries/user_queries");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
+const table = require("../helpers/DatabaseTables");
 
 // =============================== PERFORMANCES CRITERIA ==================================
 /*
@@ -48,7 +49,7 @@ router.get('/department/get/studyPrograms/:departmentId', async function (req, r
 
 	let dept_ID = req.params.departmentId;
 
-	let data = { "from": "STUDY_PROGRAM", "where": "dep_ID", "id": dept_ID };
+	let data = { "from": table.study_program, "where": "dep_ID", "id": dept_ID };
 
 	// get std program
 	let study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
@@ -83,7 +84,7 @@ router.get('/get/department/:id', async function (req, res) {
 		// return res.redirect(base_url);
 	}
 
-	let tabla_data = { "from": "DEPARTMENT", "where": "dep_ID", "id": req.params.id };
+	let tabla_data = { "from": table.department, "where": "dep_ID", "id": req.params.id };
 
 	let department = await general_queries.get_table_info_by_id(tabla_data).catch((err) => {
 		console("ERROR: ", err);
@@ -123,7 +124,7 @@ router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res)
 		return res.json([]);
 	}
 
-	let outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": req.params.programID };
+	let outcomes_query = { "from": table.student_outcome, "where": "prog_ID", "id": req.params.programID };
 	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})
@@ -174,7 +175,7 @@ router.get('/get/rubricByOutcome/:outcome_id', async function (req, res) {
 		return res.json({ error: true, message: "Invalid Study Program ID" });
 	}
 
-	let rubric_query = { "from": "EVALUATION_RUBRIC", "where": "outc_ID", "id": req.params.outcome_id };
+	let rubric_query = { "from": table.evaluation_rubric, "where": "outc_ID", "id": req.params.outcome_id };
 
 	let rubrics = await general_queries.get_table_info_by_id(rubric_query).catch((err) => {
 		console.error(err);
@@ -246,7 +247,7 @@ router.get('/get/studyprogram/:id', async function (req, res) {
 
 	let std_program_id = req.params.id;
 
-	let data = { "from": "STUDY_PROGRAM", "where": "prog_ID", "id": std_program_id };
+	let data = { "from": table.study_program, "where": "prog_ID", "id": std_program_id };
 
 	// get std program
 	let std_program_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
@@ -287,7 +288,7 @@ router.get('/get/outcomeByStudyProgram/:id', async function (req, res) {
 
 	// id of the study program
 	let study_program_id = req.params.id;
-	let get_outcomes_query = { "from": "STUDENT_OUTCOME", "where": "prog_ID", "id": study_program_id };
+	let get_outcomes_query = { "from": table.student_outcome, "where": "prog_ID", "id": study_program_id };
 
 	// fetching data from db
 	let outcomes = await general_queries.get_table_info_by_id(get_outcomes_query).catch((err) => {
@@ -319,7 +320,7 @@ router.get('/get/course/:id', async function (req, res) {
 	let course_id = req.params.id;
 
 	// for query
-	let data = { "from": "COURSE", "where": "course_ID", "id": course_id, "join": "PROG_COURSE" };
+	let data = { "from": table.course, "where": "course_ID", "id": course_id, "join": "PROG_COURSE" };
 
 	// getting course information from db
 	let course = await general_queries.get_table_info_by_id_naturalJoin(data).catch((err) => {
@@ -381,8 +382,8 @@ router.get('/get/outcome/:id', async function (req, res) {
 	}
 
 	let outcome_query = {
-		"from": "STUDENT_OUTCOME",
-		"join": "STUDY_PROGRAM",
+		"from": table.student_outcome,
+		"join": table.study_program,
 		"using": "prog_ID",
 		"where": "outc_ID",
 		"id": req.params.id
@@ -436,7 +437,7 @@ router.get("/get/performancesByOutcome/:outcome_id", async function (req, res) {
 
 	// query format
 	let performance_query = {
-		"from": "PERF_CRITERIA",
+		"from": table.performance_criteria,
 		"where": "outc_ID",
 		"id": req.params.outcome_id
 	};
@@ -476,7 +477,7 @@ router.get('/get/schoolterm/:id', async function (req, res) {
 	}
 
 	let term_id = req.params.id;
-	let data = { "from": "ACADEMIC_TERM", "where": "term_ID", "id": term_id };
+	let data = { "from": table.academic_term, "where": "term_ID", "id": term_id };
 
 	let term_to_remove = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("Error getting the term: ", err);
@@ -656,16 +657,26 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 		console.error("ERROR: ", err);
 	});
 
+	// validate mapping
+	if (mapping == undefined || mapping.length == 0){
+		return res.json({error: true, "message": "Cannot find any mapping data"});
+	}
+
 	// getting the outcome mapping
 	let outcome_course = await courseMappingQuery.get_course_mapping(req.params.programId).catch((err) => {
 		console.error("ERROR: ", err);
 	});
 
+	// validate outcome
+	if (outcome_course == undefined || outcome_course.length == 0){
+		return res.json({error: true, "message": "missing outcome"});
+	}
+
 	mapping = transformdt(mapping);
 	current_mapping = current_course_mapping(outcome_course)
 	outcome_course = transform_outcome_courses(outcome_course);
 
-	res.json({ mapping, outcome_course, current_mapping });
+	res.json({error: false, message:"success", mapping, outcome_course, current_mapping });
 });
 
 /**

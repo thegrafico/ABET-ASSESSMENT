@@ -78,7 +78,7 @@ router.get('/', async function (req, res) {
 		});
 		locals.results = results;
 	}
-	res.render('admin/layout/home', locals);
+	res.render('layout/home', locals);
 });
 
 /* 	
