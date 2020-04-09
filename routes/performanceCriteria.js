@@ -3,6 +3,7 @@ var router = express.Router();
 var general_queries = require('../helpers/queries/general_queries');
 var queries = require('../helpers/queries/performanceCriteria_queries');
 const { performance_criteria_create_input } = require("../helpers/layout_template/create");
+const table = require("../helpers/DatabaseTables");
 var { validate_outcome, validate_performance_criteria } = require("../middleware/validate_outcome");
 
 const title = "Evaluating Perfomance Criteria - ";
@@ -32,7 +33,7 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
 	let performance_query = {
-		"from": "perf_criteria".toUpperCase(),
+		"from": table.performance_criteria,
 		"where": "outc_ID",
 		"id": req.params.outc_id,
 	}
@@ -62,7 +63,7 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 		});
 		locals.results = results;
 	}
-	res.render('admin/layout/home', locals);
+	res.render('layout/home', locals);
 });
 
 /* 
@@ -92,7 +93,7 @@ router.get("/:outc_id/performanceCriteria/create", validate_outcome, async funct
 	locals.description_box = { name: "description", text: "Criteria Description", value: "" };
 
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 
 router.post("/:outc_id/performanceCriteria/create", validate_outcome, async function (req, res) {
@@ -150,7 +151,7 @@ router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, vali
 	locals.inputs = performance_criteria_create_input;
 	locals.description_box = { name: "description", text: "Criteria Description", value: req.body.rubric.perC_Desk };
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 
 /* 

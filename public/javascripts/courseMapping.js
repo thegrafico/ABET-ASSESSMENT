@@ -58,8 +58,10 @@ $(document).ready(function () {
             console.log("Error getting the mapping: ", err);
         });
 
-        if (mapping_data != undefined || mapping_data.length > 0) {
-
+        if (mapping_data == undefined || mapping_data.length > 0) {
+            alert("Error: Cannot find mapping data")
+            return;
+        }
             previus_val = mapping_data.current_mapping;
             let mapping = mapping_data.mapping[0];
 
@@ -70,7 +72,6 @@ $(document).ready(function () {
 
             //create the body of table
             create_body(mapping, selected_mapping);
-        }
     });
 
     $("#clickme").click(function () {

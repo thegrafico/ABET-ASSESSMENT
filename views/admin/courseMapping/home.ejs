@@ -1,6 +1,5 @@
-<%- include ('../partials/header') -%>
+<%- include ('../../partials/header') -%>
 
-<link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
@@ -84,19 +83,21 @@
     </div>
 </div>
 
-<%- include ('../partials/modal_success') -%>
+<!-- MODAL FOR SUCCESS -->
+<%- include ('../../partials/modal_success') -%>
 
 <div class="container-fluid">
     <hr class="mt-5">
     <p>&copy; 2019 - Universidad Interamericana de Puerto Rico - Bayam&oacute;n Campus</p>
 </div>
 
+
+<link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
+
 <!-- COURSE MAPPING LOGIG -->
 <script src="/javascripts/courseMapping.js"></script>
 
-<!-- LOADING JQUERY -->
-<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-    crossorigin="anonymous"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
     integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"

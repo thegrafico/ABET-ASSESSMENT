@@ -80,7 +80,7 @@ router.get('/', async function(req, res) {
 		});
 		locals.results = results;
 	}
-	res.render('admin/layout/home', locals);
+	res.render('layout/home', locals);
 });
 
 
@@ -133,7 +133,7 @@ router.get('/create', async function(req, res) {
 		});
 	});
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 
 /* 	
@@ -260,7 +260,7 @@ router.get('/:id/edit', async function(req, res) {
 
 	locals.dropdown_option_selected = std_program_to_edit.dep_ID;
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 
 /* 

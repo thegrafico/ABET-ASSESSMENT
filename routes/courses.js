@@ -76,7 +76,7 @@ router.get('/', async function (req, res) {
 		locals.filter_value = study_program.map(each => each["prog_name"]);
 		locals.results = results;
 	}
-	res.render('admin/layout/home', locals);
+	res.render('layout/home', locals);
 });
 
 

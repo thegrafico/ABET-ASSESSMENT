@@ -89,6 +89,7 @@ router.post("/assessment/create", async function (req, res) {
 		name: "s",
 		course: "n",
 		rubric: "n",
+		course_section: "n",
 		term: "n"
 	};
 
@@ -127,6 +128,8 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		return res.redirect("/professor");
 	}
 
+	locals.title = "Performance Table";
+
 	// assessment ID
 	locals.id = req.params.assessmentID;
 
@@ -162,7 +165,6 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 
 	let hasGraph = 'y';
 
-	console.log("Grq: ", getGraph.length);
 
 	if(getGraph.length <= 0) {
 		hasGraph = 'n';
@@ -186,7 +188,7 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	locals.outc_name = perf_criterias[0].outc_name;
 	locals.perf_ID = perf_criterias.map(e => e.perC_ID);
 
-	res.render('assessment/perfomanceTable', locals);
+	res.render('professor/assessment/perfomanceTable', locals);
 });
 
 
@@ -332,6 +334,8 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 		return res.redirect("/professor");
 	}
 
+	locals.title = "Professor Input";
+
 	// assessment id
 	let id = req.params.assessmentID;
 
@@ -345,7 +349,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 		{ "name": "Report", "url": `${base_url}/assessment/${id}/report`, "active": false }
 	];
 
-	let report_query = { "from": "REPORTS", "where": "assessment_ID", "id": id }
+	let report_query = { "from": table.reports, "where": "assessment_ID", "id": id }
 	let report = await general_queries.get_table_info_by_id(report_query).catch((err) => {
 		console.log("ERROR GETTING report");
 	});
@@ -378,7 +382,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 	locals.result_outcome = report["result_outcome"] || "";
 	locals.form_action = `${base_url}/assessment/${id}/professorInput`;
 
-	res.render('assessment/professorInput', locals);
+	res.render('professor/assessment/professorInput', locals);
 });
 
 /**
@@ -392,7 +396,6 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		req.flash("error", "Cannot edit assessment archive");
 		return res.redirect("/professor");
 	}
-
 
 	// Assessment id
 	let id = req.params.assessmentID;
@@ -546,6 +549,8 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		return res.redirect("back");
 	}
 
+	locals.title = "Assessment Report";
+
 	// assessment id
 	let assessment_id = req.params.assessmentID;
 
@@ -634,7 +639,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	locals.profesor_input = professor_input;
 	locals.grades = grades;
 
-	res.render('assessment/report', locals);
+	res.render('professor/assessment/report', locals);
 });
 
 /**

@@ -82,7 +82,7 @@ router.get('/professorAssessment', async function (req, res) {
 
         locals.hasAssessments = true;
     }
-    res.render('professor/coordinator', locals);
+    res.render('professor/coordinator/coordinator', locals);
 });
 
 /**
@@ -92,6 +92,7 @@ router.get('/professorAssessment', async function (req, res) {
 router.get('/departmentAssessments', async function (req, res) {
 
     locals.title = "Department Assessment";
+    locals.form_action = base_url + "/departmentAssessments"
 
     locals.breadcrumb = [
         { "name": "Department Assessment", "url": "#" }
@@ -119,7 +120,7 @@ router.get('/departmentAssessments', async function (req, res) {
     locals.study_program = study_program;
     locals.term = term;
     
-    res.render('professor/department_assessment', locals);
+    res.render('professor/coordinator/department_assessment', locals);
 });
 
 module.exports = router;

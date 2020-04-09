@@ -1,4 +1,4 @@
-<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+<%- include ('../../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
 <nav aria-label="breadcrumb">
 	<ol class="breadcrumb">
@@ -59,9 +59,9 @@
 									<td class="check">
 
 										<% if (std_ids.includes(e["prog_ID"])) { %>
-										<input type="checkbox" checked name="std[data<%=i%>]" value="<%=e["prog_ID"]%>">
+											<input type="checkbox" checked name="std[data<%=i%>]" value="<%=e["prog_ID"]%>">
 										<% }else{ %>
-										<input class="coordinator" type="checkbox" name="std[data<%=i%>]" value="<%=e["prog_ID"]%>">
+											<input class="coordinator" type="checkbox" name="std[data<%=i%>]" value="<%=e["prog_ID"]%>">
 										<% } %>
 									</td>
 
@@ -112,4 +112,4 @@
 <!-- JS -->
 <script src="/javascripts/user_create.js"></script>
 
-<%- include ('../partials/footer') -%>
+<%- include ('../../partials/footer') -%>

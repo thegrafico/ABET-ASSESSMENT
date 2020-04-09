@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var general_queries = require("../helpers/queries/general_queries");
 var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
-
+const table = require("../helpers/DatabaseTables");
 
 const base_url = '/admin/courseMapping';
 let locals = {
@@ -27,7 +27,7 @@ router.get('/', async function (req, res) {
         console.error("ERROR: ", err);
     });
 
-    let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+    let departments = await general_queries.get_table_info(table.department).catch((err) => {
         console.error("ERROR GETTING DEPARTMENTS: ", err);
     });
 
@@ -38,7 +38,7 @@ router.get('/', async function (req, res) {
 
     locals.departments = departments;
 
-    let study_programs = await general_queries.get_table_info("STUDY_PROGRAM").catch((err) => {
+    let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
         console.error("ERROR: ", err);
     });
 
@@ -50,15 +50,9 @@ router.get('/', async function (req, res) {
 
     locals.mapping = transformdt(mapping);
 
-    // console.log(locals.mapping);
-    // console.log(locals.mapping[0].outcomes);
-    // console.log(locals.mapping[0].courses);
-
     res.render('admin/courseMapping/home', locals);
 });
 
-/* 
-*/
 
 router.post('/addMapping', async function (req, res) {
 

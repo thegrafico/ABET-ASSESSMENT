@@ -8,11 +8,11 @@ $(document).ready(function () {
 
     $(".check :checkbox").click(function () {
         let name = $(this).attr("name");
-        let isCoordinator = $(this).hasClass("coordinator");
+        let isCoordinator = isNaN($(this).val());
         let isCheck; // check if the actual btn is checked
         let isNotCheck; // check is the first btn is not checkt
 
-        // if its coordinator
+        // if the user click the checkbox of coordinator
         if (isCoordinator) {
 
             // iter all tr
@@ -32,6 +32,8 @@ $(document).ready(function () {
                     $(this).prop('checked', true);
                 }
             });
+
+        // if the user press the normal checkbox
         } else {
 
             $(`input[name='${name}']`).each(function (index, value) {

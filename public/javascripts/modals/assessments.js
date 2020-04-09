@@ -13,7 +13,8 @@ $(document).ready(function () {
 
     // TABLE STICKY HEADER
     $('#table').floatThead();
-    $('#table').trigger('reflow')
+    $('#table').trigger('reflow');
+
 
     // REMOVE ASSESSMENT
     $(".REMOVE").click(function () {

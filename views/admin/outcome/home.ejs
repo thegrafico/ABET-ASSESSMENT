@@ -1,4 +1,4 @@
-<%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+<%- include ('../../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
@@ -137,7 +137,7 @@
 
 
 <!-- REMOVE PARTIAL -->
-<%- include ('../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+<%- include ('../../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
 
 <!-- MAKE AJAX GET REQUEST -->
 <script src="/javascripts/ajaxRequest.js"></script>
@@ -155,4 +155,4 @@
         width: 10%;
     }
 </style>
-<%- include ('../partials/footer') -%>
+<%- include ('../../partials/footer') -%>

@@ -152,7 +152,7 @@ router.get('/create', async function (req, res) {
 		});
 	});
 
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 /*
 	-- CREATE NEW OUTCOMES-- 
@@ -191,10 +191,12 @@ router.post('/create', function (req, res) {
 		req.flash("success", "Outcome Created");
 		res.redirect(base_url);
 	}).catch((err) => {
+		console.log(err);
+		
 		if (err.code == "ER_DUP_ENTRY")
 			req.flash("error", "Duplicate Outcome");
 		else
-			req.flash("error", "Cannot edit the outcome");
+			req.flash("error", "Cannot Create the outcome");
 
 		res.redirect(base_url);
 	});
@@ -286,7 +288,7 @@ router.get('/:id/edit', async function (req, res) {
 	});
 
 	locals.dropdown_option_selected = outcome_to_edit.prog_ID;
-	res.render('admin/layout/create', locals);
+	res.render('layout/create', locals);
 });
 /* 
 	-- Update the outcome -- 

@@ -1,4 +1,4 @@
-<%- include ('../admin/partials/header') -%>
+<%- include ('../../partials/header') -%>
 
 <% if (!isArchive && belong_to_user) { %>
     <%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar: 100, hasValue: 'y'}) -%> 
@@ -235,9 +235,9 @@
                     <p>
                         <strong>4. Results of the outcome </strong>
                         <br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rem esse doloremque atque sunt id
-                        illum
-                        neque a. Rerum expedita animi sint. Iusto possimus iure soluta animi eum expedita dicta amet.
+                        <span id="result_outcome" class="sp-data">
+                            <%= profesor_input["result_outcome"] %>
+                        </span>
                     </p>
                 </div>
 
@@ -280,8 +280,9 @@
                             <th scope="col" style="width: 10%;"> <%= (i+1) %> </th>
 
                             <% performanceData[i]["scores"].forEach(each => {%>
-                            <td><%=each%></td>
+                                <td><%=each%></td>
                             <% }); %>
+                            
                             <th><%= performanceResults["outcomeRowAVG"][i] %> </th>
                         </tr>
                         <% } %>
@@ -320,18 +321,22 @@
     <a href="<%=base_url%>">Go back to Assessments</a>
 </div>
 
-<script src="/javascripts/jquery-1.11.1.min.js"></script>
-<script src="/javascripts/FileSaver.js"></script>
-<script src="/javascripts/jquery.wordexport.js"></script>
+<!-- JQUERY NEEDED FOR WORD DOCUMENT -->
+<script src="/javascripts/libraries/jquery-1.11.1.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+<!-- FILE SAVER -->
+<script src="/javascripts/libraries/FileSaver.js"></script>
+<script src="/javascripts/libraries/jquery.wordexport.js"></script>
+
+<!-- FOR PDF GENERATION -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script> -->
 
 <script>
     let perfResults = JSON.parse($('#perfResults').val());
     let graph = $('#graph').val();
         
     $(document).ready(function () {
-        let tag_course_info = ["#course_results", "#course_modification", "#course_reflection", "#course_actions"];
+        let tag_course_info = ["#course_results", "#course_modification", "#course_reflection", "#course_actions", "#result_outcome"];
         
         if(graph == 'n'){
 
@@ -369,7 +374,7 @@
 </script>
 
 
-<%- include ('../admin/partials/footer') -%>
+<%- include ('../../partials/footer') -%>
 
 <!--
 <script>
