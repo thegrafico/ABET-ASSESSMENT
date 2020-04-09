@@ -149,7 +149,8 @@ module.exports.get_coordinator_assessments = (user_id) => {
         INNER JOIN ${table.academic_term} ON ${table.assessment}.term_ID = ${table.academic_term}.term_ID
         INNER JOIN ${table.user} ON ${table.user}.user_ID = ${table.assessment}.user_ID
         WHERE ${table.study_program}.prog_ID IN 
-        (SELECT ${table.user_study_program}.prog_ID FROM ${table.user_study_program} WHERE ${table.user_study_program}.user_ID = ?)
+        (SELECT ${table.user_study_program}.prog_ID FROM ${table.user_study_program} WHERE ${table.user_study_program}.user_ID = ?
+            AND ${table.user_study_program}.is_coordinator = 1)
         ORDER BY ${table.assessment}.creation_date ASC`;
 
         // EXe query
