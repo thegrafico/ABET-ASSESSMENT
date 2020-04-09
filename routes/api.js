@@ -127,7 +127,7 @@ router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res)
 	let outcomes_query = { "from": table.student_outcome, "where": "prog_ID", "id": req.params.programID };
 	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
 		console.log("Error getting performance: ", err);
-	})
+	});
 
 	if (outcomes == undefined || outcomes.length == 0) {
 		return res.json([]);

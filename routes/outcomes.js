@@ -191,10 +191,12 @@ router.post('/create', function (req, res) {
 		req.flash("success", "Outcome Created");
 		res.redirect(base_url);
 	}).catch((err) => {
+		console.log(err);
+		
 		if (err.code == "ER_DUP_ENTRY")
 			req.flash("error", "Duplicate Outcome");
 		else
-			req.flash("error", "Cannot edit the outcome");
+			req.flash("error", "Cannot Create the outcome");
 
 		res.redirect(base_url);
 	});

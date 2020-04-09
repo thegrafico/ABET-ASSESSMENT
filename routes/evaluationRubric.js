@@ -9,7 +9,7 @@ var router = express.Router();
 var rubric_query = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
 var roolback_queries = require("../helpers/queries/roolback_queries");
-var { get_outcome_by_study_program } = require("../helpers/queries/outcomes_queries");
+var { get_outcomes_by_department } = require("../helpers/queries/outcomes_queries");
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
 var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
@@ -205,14 +205,17 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 	// the outcome selected
 	locals.outcome_selected = rubric.outc_ID;
 
-	let outcomes = await get_outcome_by_study_program(locals.study_program_id).catch((err) => {
-		console.error("Error getting: ", err);
+	let outcomes_query = { "from": table.student_outcome, "where": "prog_ID", "id": rubric.prog_ID };
+	let outcomes = await general_queries.get_table_info_by_id(outcomes_query).catch((err) => {
+		console.log("Error getting outcome: ", err);
 	});
 
-	// if (outcomes == undefined || outcomes.length == 0) {
-	// 	req.flash("error", "Cannot find any outcomes, Please create one");
-	// 	return res.redirect(base_url);
-	// }
+	if (outcomes == undefined || outcomes.length == 0) {
+		req.flash("error", "Cannot find any outcomes, Please create one");
+		return res.redirect(base_url);
+	}
+
+
 	let criteria_query = { "from": table.performance_criteria, "where": "outc_ID", "id": locals.outcome_selected };
 
 	let performance_criteria = await general_queries.get_table_info_by_id(criteria_query).catch((err) => {

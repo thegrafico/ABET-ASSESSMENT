@@ -165,7 +165,10 @@ $(document).ready(function () {
         },
         messages: {
             "department_id": "Please select a department",
-            "std_name": "Cannot be empty",
+            "std_name": {
+                required: "Cannot be empty.",
+                lettersonly: "Study Program cannot have any number."
+            },
         },
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
@@ -231,7 +234,7 @@ $(document).ready(function () {
             "rubric": "required",
             "term": "required",
             "course": "required",
-            "course_section": { required: true, minlength: 3, maxlength: 20, digits: true}
+            "course_section": { required: true, minlength: 3, maxlength: 20, digits: true }
         },
         // Specify validation error messages
         messages: {

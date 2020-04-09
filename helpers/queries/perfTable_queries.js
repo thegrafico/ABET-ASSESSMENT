@@ -127,8 +127,8 @@ function insert_professor_input(id, grades, course_info) {
 
 		let insert_query = `INSERT INTO REPORTS 
 		(grade_A, grade_B, grade_C, grade_D, grade_F, UW, 
-		course_results, course_reflection, course_actions, course_modification, assessment_ID)
-		values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+		course_results, course_reflection, course_actions, course_modification, result_outcome, assessment_ID)
+		values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 		let data = [
 			grades.A,
@@ -141,6 +141,7 @@ function insert_professor_input(id, grades, course_info) {
 			course_info.reflection,
 			course_info.improvement,
 			course_info.modification,
+			course_info.result_outcome,
 			id
 		];
 

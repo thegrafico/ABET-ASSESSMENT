@@ -1,22 +1,22 @@
 <%- include ('../../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
 <nav aria-label="breadcrumb">
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
-		<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+        <% for( let index = 0; index < breadcrumb.length; index++ ) { %>
 
-			<% if (index == breadcrumb.length -1) { %>
-				<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
-			<% }else { %>
-				<li class="breadcrumb-item">
-					<a href="<%= breadcrumb[index].url %>">
-						<%= breadcrumb[index].name %>
-					</a>
-				</li>
-			<% } %>
+        <% if (index == breadcrumb.length -1) { %>
+        <li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+        <% }else { %>
+        <li class="breadcrumb-item">
+            <a href="<%= breadcrumb[index].url %>">
+                <%= breadcrumb[index].name %>
+            </a>
+        </li>
+        <% } %>
 
-		<% } %>
-	</ol>
+        <% } %>
+    </ol>
 </nav>
 <div class="container-fluid">
     <h2>Edit Evaluation Rubric</h2>
@@ -86,15 +86,15 @@
         <% }) %>
 
         <% if (description_box != undefined) { %>
-	
-			<div class="row my-4">
-				<div class="col-2 align-self-center text-right"><strong>Description</strong></div>
-				<div class="col-8">
-					<textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
-					placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
-				</div>
-			</div>
-		<% } %>
+
+        <div class="row my-4">
+            <div class="col-2 align-self-center text-right"><strong>Description</strong></div>
+            <div class="col-8">
+                <textarea class="form-control" name="<%= description_box["name"]%>" rows="4"
+                    placeholder="<%=description_box["text"]%>"><%= description_box["value"]%></textarea>
+            </div>
+        </div>
+        <% } %>
 
         <div class="row my-4">
             <div class="col-2"></div>
@@ -109,8 +109,102 @@
     $(document).ready(() => {
 
         var multi = new SelectPure(".multi-select2", {
-                options: criterias,
-                value: criterias_selected,
+            options: criterias,
+            value: criterias_selected,
+            multiple: true,
+            icon: "fa fa-times",
+            placeholder: "-- Please Select --",
+            onChange: value => { },
+            classNames: {
+                select: "select-pure__select",
+                dropdownShown: "select-pure__select--opened",
+                multiselect: "select-pure__select--multiple",
+                label: "select-pure__label",
+                placeholder: "select-pure__placeholder",
+                dropdown: "select-pure__options",
+                option: "select-pure__option",
+                selectedLabel: "select-pure__selected-label",
+                selectedOption: "select-pure__option--selected",
+                placeholderHidden: "select-pure__placeholder--hidden",
+                optionHidden: "select-pure__option--hidden",
+            }
+        });
+
+        $('#multi_selection').bind("DOMSubtreeModified", function () {
+            let values = [];
+            $(".fa-times").each(function () {
+                $.each(this.attributes, function () {
+
+                    if (this.name.includes("data") || this.name.includes("value")) {
+                        values.push(this.value);
+                    }
+                });
+            });
+            $("#multiple_performance").attr("value", values);
+            return;
+        });
+
+
+        // change the data when user select study program
+        $("#study_program").change(async function () {
+
+            // clean outcomes data
+            $('#outcomes').empty().append('<option disabled selected value> -- Select Outcome -- </option>');
+            $("#multi_selection").empty();
+            // get the selected id of the study program to make the request
+            var study_program_id = $(this).children("option:selected").val();
+
+            let outcomes = await make_request(`/api/get/outcomesByStudyProgramID/${study_program_id}`).catch((err) => {
+                console.log("Error getting outcomes");
+            });
+
+            if (outcomes == undefined || outcomes.length == 0) {
+                alert("cannot find the outcomes");
+                return;
+            }
+
+            // populate the options
+            outcomes.forEach(element => {
+                $('#outcomes').append(`<option value='${element.value}'>${element.name}</option>`);
+            });
+        });
+
+        // add performance Rubric
+
+        // change the data when user select study program
+        $("#outcomes").change(async function () {
+
+            mult = [];
+
+            // clean performance data
+            $('#performance').empty().append('<option disabled selected value> -- Please Select -- </option>');
+
+            // get the selected id of the outcome to make the request
+            var outcome_id = $(this).children("option:selected").val();
+
+
+            let performances = await make_request(`/api/get/performancesByOutcome/${outcome_id}`).catch((err) => {
+                console.log("Sorry, Cannot find the performances");
+            });
+
+            if (performances == undefined || performances.length == 0) {
+                alert("Sorry, Cannot find the performances criteria...");
+                return;
+            }
+
+            $(".multi-select2").remove();
+            $("#multi_selection").empty();
+            $("#multi_selection").append(`<span class="multi-select"></span>`);
+
+            let mult_values = [];
+            // populate the options
+            performances.forEach(element => {
+                mult_values.push({ label: element.name, value: element.value.toString() })
+            });
+
+            var multi = new SelectPure(".multi-select", {
+                options: mult_values,
+                value: [],
                 multiple: true,
                 icon: "fa fa-times",
                 placeholder: "-- Please Select --",
@@ -130,97 +224,6 @@
                 }
             });
 
-        $('#multi_selection').bind("DOMSubtreeModified", function () {
-            let values = [];
-            $(".fa-times").each(function () {
-                $.each(this.attributes, function () {
-
-                    if (this.name.includes("data") || this.name.includes("value")) {
-                        values.push(this.value);
-                    }
-                });
-            });
-            $("#multiple_performance").attr("value", values);
-            return;
-        });
-
-
-        // change the data when user select study program
-        $("#study_program").change(function () {
-
-            // clean outcomes data
-            $('#outcomes').empty().append('<option disabled selected value> -- Select Outcome -- </option>');
-            $("#multi_selection").empty();
-            // get the selected id of the study program to make the request
-            var study_program_id = $(this).children("option:selected").val();
-
-            $.ajax({
-                'url': `/admin/outcomes/${study_program_id}/getStudyProgram`,
-                type: 'GET',
-                dataType: 'json',
-                success: (data) => {
-
-                    // populate the options
-                    data.forEach(element => {
-                        $('#outcomes').append(`<option value='${element.outc_ID}'>${element.outc_name}</option>`);
-                    });
-                }
-            });
-        });
-
-        // add performance Rubric
-
-        // change the data when user select study program
-        $("#outcomes").change(function () {
-
-            mult = [];
-
-            // clean performance data
-            $('#performance').empty().append('<option disabled selected value> -- Please Select -- </option>');
-
-            // get the selected id of the outcome to make the request
-            var outcome_id = $(this).children("option:selected").val();
-            console.log("selected: ", outcome_id);
-
-            $.ajax({
-                'url': `/admin/outcomes/get/performances/${outcome_id}`,
-                type: 'GET',
-                dataType: 'json',
-                success: (data) => {
-
-                    $(".multi-select2").remove();
-                    $("#multi_selection").empty();
-                    $("#multi_selection").append(`<span class="multi-select"></span>`);
-
-                    let mult_values = [];
-                    // populate the options
-                    data.forEach(element => {
-                        mult_values.push({ label: element.name, value: element.value.toString() })
-                    });
-
-                    var multi = new SelectPure(".multi-select", {
-                        options: mult_values,
-                        value: [],
-                        multiple: true,
-                        icon: "fa fa-times",
-                        placeholder: "-- Please Select --",
-                        onChange: value => { },
-                        classNames: {
-                            select: "select-pure__select",
-                            dropdownShown: "select-pure__select--opened",
-                            multiselect: "select-pure__select--multiple",
-                            label: "select-pure__label",
-                            placeholder: "select-pure__placeholder",
-                            dropdown: "select-pure__options",
-                            option: "select-pure__option",
-                            selectedLabel: "select-pure__selected-label",
-                            selectedOption: "select-pure__option--selected",
-                            placeholderHidden: "select-pure__placeholder--hidden",
-                            optionHidden: "select-pure__option--hidden",
-                        }
-                    });
-                }
-            });
         });
     });
 </script>
