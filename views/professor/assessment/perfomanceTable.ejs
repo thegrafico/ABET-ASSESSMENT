@@ -53,9 +53,9 @@
 					<div class="input-group-append">
 						  <button class="btn btn-outline-secondary" type="button" id="addRow">Add</button>
 					</div>
-					<div class="input-group-append">
+					<!-- <div class="input-group-append">
 						<button class="btn btn-outline-secondary" type="button" id="delRow">Remove</button>
-					</div>
+					</div> -->
 					<div class="input-group-append">
 						<button class="btn btn-outline-secondary" type="button" id="clearAll">Clear All</button>
 					</div>
@@ -71,7 +71,7 @@
 			<table id="table" class="table">
 				<thead>
 					<tr id="header">
-						<th scope="col" class="headerRow"><input type="checkbox" id="selectAll"/><label for="selectAll"></label> <span>Student</span></th>
+						<th scope="col" class="headerRow"><button class="btn btn-outline-secondary" type="button" id="delRow">Remove</button><input type="checkbox" id="selectAll"/><label for="selectAll"></label> <span>Student</span></th>
 					</tr>
 				</thead>
 				<tbody id="tableBody">
@@ -92,7 +92,7 @@
 			</table>
 			<div id="saveOrNext">
 				<a id="save" class="btn btn-outline-success" role="button">Save</a>
-				<a id="next" class="btn btn-outline-success" role="button">Next</a>
+				<a id="next" class="btn btn-success" role="button">Next</a>
 			</div>
 		</div>
 	</div>

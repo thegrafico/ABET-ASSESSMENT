@@ -1,5 +1,5 @@
 <%- include ('../../partials/header') -%>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <link rel="stylesheet" type="text/css" href="/stylesheets/courseMappingStyle.css">
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -107,6 +107,10 @@
 
 <button id="button-a">Create Excel</button>
 
+<div class="container">
+    <canvas id="myChart" width="400" height="400"></canvas>
+</div>
+
 <!-- MODAL FOR FEEDBACK -->
 <%- include ('../modal/feedback') -%>
 
@@ -161,7 +165,8 @@
 </script>
 
 <script>
-
+    const canvas = document.getElementById('myChart')
+    let ctx = canvas.getContext('2d');
 
     /**
     * Create table 
@@ -376,6 +381,8 @@
             });
 
             $(tag_loader_img).hide();
+
+            createTable(80, outcomeName, outcomeName);
         });
     });
 
@@ -406,6 +413,43 @@
             $(tag).append(`<option value="${each['value']}"> ${each['name']}</option>`);
         });
     }
+
+
+    function createTable(graphData, labels, title) {
+        let myChart = new Chart(canvas, {
+		type: 'bar',
+		data: {
+			labels: labels,
+			datasets: [
+				{
+					label: title,
+					data: graphData,
+					backgroundColor: 'rgba(58, 166, 87, 0.2)', // Need to make where now matter the amount of PC it can make amou
+				},
+			]
+		},
+		showTooltips: false,
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true,
+						max: 100
+					}
+				}]
+			},
+			responsive: true,
+			animation: {
+				duration: 1,
+				onComplete: () => {
+					// graph = myChart.toBase64Image();
+				}
+			}
+		}	
+	});
+    }
+
+
 </script>
 
 <%- include ('../../partials/footer') -%>
