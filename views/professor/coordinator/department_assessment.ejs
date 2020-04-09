@@ -102,56 +102,10 @@
                 </td>
 
             </tbody>
-
-
-            <tr>
-                <th colspan="4" scope="col"></th>
-            </tr>
-
-            <thead class="thead-dark">
-
-                <tr>
-                    <th colspan="5" scope="col">Assessment name - Outocome Name - Study Program</th>
-                </tr>
-
-                <tr >
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                    <th scope="col">Handle</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <td>
-                    1
-                </td>
-
-                <td>
-                    1
-                </td>
-                <td>
-                    1
-                </td>
-                <td>
-                    1
-                </td>
-                <td>
-                    1
-                </td>
-
-            </tbody>
-        </table>
     </div> -->
-</div>
-
+</div> 
 
 <button id="button-a">Create Excel</button>
-
-<button id="btnExcel" class="btn btn-success">
-    Export
-</button>
 
 <!-- MODAL FOR FEEDBACK -->
 <%- include ('../modal/feedback') -%>
@@ -183,7 +137,7 @@
     $("#button-a").click(function () {
         var wb = XLSX.utils.table_to_book(document.getElementById('mytable'), { sheet: "Sheet JS" });
         var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
-    
+
         saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'test.xlsx');
     });
 
