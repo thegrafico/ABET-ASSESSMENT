@@ -539,8 +539,6 @@ router.get('/get/departmentAssessment', async function (req, res) {
 		agregado = [];
 	}
 
-	console.log(agregado);
-
 	return res.json({ error: false, message: "Success", data: agregado });
 });
 

@@ -63,22 +63,26 @@ router.get("/auth", async function (req, res) {
 
 	// user information
 	user_data = user_information[0];
+	req.session.profileName = undefined;
 
 	// programs for coordinator
 	let coordinator_programs = get_std_coordinator(user_information);
 
 	if (coordinator_programs.length > 0 && user_data.profile_Name.toLowerCase() != admin.toLowerCase()) {
 		req.session.user_profile = coordinator
+		req.session.profileName = "Professor / Coordinator";
 	} else {
 		req.session.user_profile = user_data.profile_Name.toLowerCase();
+		req.session.profileName = "Professor";
 	}
 
 	req.session.study_programs_coordinator = coordinator_programs;
-	req.session.user_name = userName;
+	req.session.user_name = userName || "";
 	req.session.user_email = userEmail;
 	req.session.user_id = user_data.user_ID;
 
 	if (user_data.profile_Name.toLowerCase().includes(admin) || user_data.user_profile == 1) {
+		req.session.profileName = "Administrator";
 		return res.redirect("/admin");
 	}
 

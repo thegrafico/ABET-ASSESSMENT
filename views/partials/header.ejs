@@ -46,7 +46,9 @@
 
 	<nav class="navbar navbar-expand-lg navbar-dark shadow inter-green">
 
-		<a class="navbar-brand" href="">ABET Assessment</a>
+		<div class="navbar-header">
+			<a class="navbar-brand" href="">ABET Assessment</a>
+		</div>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,36 +59,45 @@
 			<ul class="navbar-nav mr-auto">
 
 				<% if (hasAdminPrivilege) { %>
-					<li class="nav-item active">
-						<a class="nav-link" href="<%= admin_route %>">Admin<span class="sr-only">(current)</span></a>
-					</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="<%= admin_route %>">Admin<span class="sr-only">(current)</span></a>
+				</li>
 
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Sections
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Sections
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+						<% adminOptions.forEach(option => { %>
+						<a class="dropdown-item" href="<%=option["url"]%>">
+							<%=option["name"]%>
 						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-							<% adminOptions.forEach(option => { %>
-								<a class="dropdown-item" href="<%=option["url"]%>">
-									<%=option["name"]%>
-								</a>
-								
-								<div class="dropdown-divider"></div>
-							<% }); %>
-						</div>
-					</li>
+						<div class="dropdown-divider"></div>
+						<% }); %>
+					</div>
+				</li>
 				<% } %>
 
 				<li class="nav-item">
 					<a class="nav-link" href="/professor">Professor</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="<%= signOutUrl %>">Logout</a>
-				</li>
 			</ul>
 		</div>
+
+		<ul class="nav navbar-nav navbar-right">
+			<span class="nav-link disabled" style="color: white;"> 
+				<%= userName%>: 
+				<span style="font-style: italic; font-size: 0.9em;">
+					<%=profileName%></span>
+				</span>
+			<span class="nav-link disabled">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+
+			<!-- <a class="nav-link" disabled href="#"> </a> -->
+			<a class="nav-link" href="<%= signOutUrl %>">Logout <i class="fa fa-sign-out"></i></a>
+		</ul>
 	</nav>
 
 	<% if((error && error.length > 0) || (success && success.length > 0) ){ %>

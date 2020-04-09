@@ -19,6 +19,8 @@ router.get('/', async function (req, res) {
         { "name": "Course Mapping", "url": "." },
     ];
 
+    locals.title = "Course Mapping";
+    
     locals.selected_program = 0;
     if (req.query.progID != undefined)
         locals.selected_program = parseInt(req.query.progID);

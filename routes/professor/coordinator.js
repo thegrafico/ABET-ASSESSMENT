@@ -98,10 +98,21 @@ router.get('/departmentAssessments', async function (req, res) {
         { "name": "Department Assessment", "url": "#" }
     ];
 
-    let study_program = await general_queries.get_table_info(table.study_program).catch((err) => {
-        console.error("Error getting study program: ", err);
-    });
+    let study_program = undefined;
 
+    // if the user is admin
+    if (req.session.user_profile == admin) {
+
+        // get admin study programs for coordinator
+        study_program = await general_queries.get_table_info(table.study_program).catch((err) => {
+            console.error("Error getting study program: ", err);
+        });
+    } else {
+        study_program = req.session.study_programs_coordinator || [];
+    }
+
+    console.log(study_program);
+  
     // if cannot find department
     if (study_program == undefined || study_program.length == 0) {
         req.flash("error", "Cannot find any Study Program");

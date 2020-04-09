@@ -38,6 +38,9 @@ router.get('/', async function (req, res) {
 		{ "name": "Evaluation Rubric", "url": base_url },
 	];
 
+	locals.title = "Evaluation Rubric";
+
+
 	// getting evaluation rubric from db
 	let eval_rubric = await rubric_query.get_all_evaluations_rubric().catch((err) => {
 		console.log("Error getting all evaluation rubric: ", err);
@@ -92,6 +95,9 @@ router.get('/create', async function (req, res) {
 		{ "name": "Evaluation Rubric", "url": base_url },
 		{ "name": "Create", "url": "." },
 	];
+
+	locals.title = "Create Evaluation Rubric";
+
 
 	let std_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
 		console.error("Error getting std_programs", err);
@@ -173,6 +179,9 @@ router.get('/:r_id/edit', validate_evaluation_rubric, async function (req, res) 
 		{ "name": "Evaluation Rubric", "url": base_url },
 		{ "name": "Edit", "url": "." },
 	];
+
+	locals.title = "Edit Evaluation Rubric";
+
 
 	locals.std_options = [];
 	locals.outcomes = [];

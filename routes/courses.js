@@ -27,13 +27,14 @@ let locals = {
 /*
 	--HOME PAGE--
 	GET /courses
-	// TODO: FIX ERROR WITH DATE
 */
 router.get('/', async function (req, res) {
 
 	locals.breadcrumb = [
 		{ "name": "Courses", "url": base_url },
 	];
+
+	locals.title = "Courses";
 
 	locals.table_header = ["Course Name", "Course Number", "Study Program", "Date Created", ""];
 	locals.results = [];
@@ -90,6 +91,9 @@ router.get('/create', async function (req, res, next) {
 		{ "name": "Courses", "url": base_url },
 		{ "name": "Create", "url": locals.url_create }
 	];
+
+	locals.title = "Create Course";
+
 
 	locals.have_dropdown = true;
 	locals.dropdown_options = [];
@@ -185,6 +189,9 @@ router.get('/:id/edit', async function (req, res) {
 		req.flash("error", "This course does not exits");
 		return res.redirect(base_url);
 	}
+
+	locals.title = "Edit Course";
+
 
 	locals.breadcrumb = [
 		{ "name": "Courses", "url": base_url },

@@ -35,10 +35,20 @@ router.get('/', async function (req, res) {
 	// the user id is stored in session, thats why user need to be login
 	let user_id = req.session.user_id;
 
-	// Get all departments
-	let study_programs = await assessment_query.get_study_program_by_user_id(user_id).catch((err) => {
-		console.error("Error Study programs: ", err);
-	});
+	let study_programs = undefined;
+	// if the user is admin
+	if (req.session.user_profile == admin) {
+
+		// get admin study programs for coordinator
+		study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
+			console.error("Error getting study program: ", err);
+		});
+	} else {
+		study_programs = await assessment_query.get_study_program_by_user_id(user_id).catch((err) => {
+			console.error("Error gettign study program: ", err);
+		});
+	}
+
 
 	// Getting the term
 	let academic_term = await general_queries.get_table_info(table.academic_term).catch((err) => {
@@ -123,7 +133,7 @@ router.post("/assessment/create", async function (req, res) {
 router.get('/assessment/:assessmentID/performanceTable', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
 
 	// Status of the assessment
-	if (req.body.assessment.status == archive){
+	if (req.body.assessment.status == archive) {
 		req.flash("error", "Cannot edit assessment archive");
 		return res.redirect("/professor");
 	}
@@ -166,7 +176,7 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	let hasGraph = 'y';
 
 
-	if(getGraph.length <= 0) {
+	if (getGraph.length <= 0) {
 		hasGraph = 'n';
 	}
 
@@ -200,10 +210,10 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 router.post('/assessment/:assessmentID/performancetable', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
 
 	// Status of the assessment
-	if (req.body.assessment.status == archive){
-		return res.json({ error: true, message: "Assessment is archive"});
+	if (req.body.assessment.status == archive) {
+		return res.json({ error: true, message: "Assessment is archive" });
 	}
-	
+
 	// validate data has data
 	if (req.body == undefined || req.body.data == undefined || isNaN(req.params.assessmentID)) {
 		return res.json({ error: true, message: "data is undefined" });
@@ -221,7 +231,7 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 	//
 	let base_64 = req.body.graph;
 
-	if(has_graph) {
+	if (has_graph) {
 		let updateGraph = await queries.updateGraph(assessment_id, base_64).catch((err) => {
 			console.log("Error: ", err);
 		});
@@ -255,12 +265,12 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 
 	insertStudentScores(rows, performances_student, assessment_id).then((success) => {
 		console.log("Data was successfully added.");
-		return res.json({ error: false, message: "success", isNext: isNext});
+		return res.json({ error: false, message: "success", isNext: isNext });
 	}).catch((err) => {
 		console.log("Error Performance table: ", err);
 		return res.json({ error: true, message: "data is undefined" });
 	});
-		
+
 });
 
 /* 
@@ -269,7 +279,7 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 router.put('/assessment/:assessmentID', middleware.validate_assessment, middleware.isOwnerAssessment, function (req, res) {
 
 	// Status of the assessment
-	if (req.body.assessment.status == archive){
+	if (req.body.assessment.status == archive) {
 		req.flash("error", "Cannot edit assessment archive");
 		return res.redirect("/professor");
 	}
@@ -304,11 +314,11 @@ router.put('/assessment/:assessmentID', middleware.validate_assessment, middlewa
 router.delete('/assessment/:assessmentID', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
 
 	// Status of the assessment
-	if (req.body.assessment.status == archive){
+	if (req.body.assessment.status == archive) {
 		req.flash("error", "Assessment is archive");
 		return res.redirect("/professor");
 	}
-	
+
 	// getting the user id
 	let assessment_id = req.params.assessmentID;
 
@@ -329,7 +339,7 @@ router.delete('/assessment/:assessmentID', middleware.validate_assessment, middl
 router.get('/assessment/:assessmentID/professorInput', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
 
 	// Status of the assessment
-	if (req.body.assessment.status == archive){
+	if (req.body.assessment.status == archive) {
 		req.flash("error", "Cannot edit assessment archive");
 		return res.redirect("/professor");
 	}
@@ -392,7 +402,7 @@ router.get('/assessment/:assessmentID/professorInput', middleware.validate_asses
 router.post('/assessment/:assessmentID/professorInput', middleware.validate_assessment, middleware.isOwnerAssessment, async function (req, res) {
 
 	// Status of the assessment
-	if (req.body.assessment.status == archive){
+	if (req.body.assessment.status == archive) {
 		req.flash("error", "Cannot edit assessment archive");
 		return res.redirect("/professor");
 	}
@@ -516,13 +526,13 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
  */
 router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessment, middleware.isOwnerAssessment, function (req, res) {
 
-	
+
 	// Status of the assessment
-	if (req.body.assessment.status == archive){
+	if (req.body.assessment.status == archive) {
 		req.flash("error", "Cannot edit assessment archive");
 		return res.redirect("/professor");
 	}
-	
+
 	// assessment id
 	let id = req.params.assessmentID;
 
@@ -569,7 +579,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		console.error("ERROR: ", err);
 	});
 
-	if(getGraph.length <= 0) {
+	if (getGraph.length <= 0) {
 		locals.graph = 'n';
 	} else {
 		locals.graph = getGraph[0].base_64;

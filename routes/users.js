@@ -32,6 +32,8 @@ router.get('/', async function (req, res) {
 
 	locals.breadcrumb = [{ "name": "Users", "url": base_url }];
 
+	locals.title = "Users";
+
 	locals.results = [];
 
 	locals.delete_redirect = "/users";
@@ -91,6 +93,9 @@ router.get('/create', async function (req, res) {
 		{ "name": "Users", "url": base_url },
 		{ "name": "Create", "url": locals.url_create }
 	];
+
+	locals.title = "Create User";
+
 
 	// store all profiles
 	locals.profiles = [];
@@ -219,6 +224,8 @@ router.get('/:id/edit', async function (req, res) {
 		req.flash("error", "This user don't exits");
 		return res.redirect(base_url);
 	}
+
+	locals.title = "Edit User";
 
 	// Breadcrum for web
 	locals.breadcrumb = [

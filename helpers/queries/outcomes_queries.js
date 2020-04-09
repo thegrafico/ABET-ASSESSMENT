@@ -49,7 +49,7 @@ function update_outcome(data) {
  * @param {Number} dept_id - id of the department 
  */
 function get_outcomes_by_department(dept_id) {
-    
+
     return new Promise(function (resolve, reject) {
 
         let outcomes_by_dept = `SELECT * FROM ${table.student_outcome} WHERE ${table.student_outcome}.prog_ID IN 
@@ -63,6 +63,35 @@ function get_outcomes_by_department(dept_id) {
     });
 }
 
+
+
+/**
+ * get_outcomes_by_department - get all outoces by departmen
+ * @returns {Array}
+ */
+function get_outcomes_with_study_program() {
+
+    return new Promise(function (resolve, reject) {
+
+        let outcomes_by_stds = `SELECT ${table.student_outcome}.outc_ID, ${table.student_outcome}.outc_name, 
+            ${table.student_outcome}.outc_description, ${table.student_outcome}.date_created, ${table.study_program}.prog_ID, 
+            ${table.study_program}.prog_name  
+            FROM 
+            STUDENT_OUTCOME INNER JOIN ${table.study_program} ON ${table.student_outcome}.prog_ID = ${table.study_program}.prog_ID`;
+        
+        // exce
+        conn.query(outcomes_by_stds, function (err, results) {
+            if (err) return reject(err);
+            
+            results.forEach(element => {
+                console.log(`${element.date_created}`);
+            });
+            resolve(results);
+        });
+    });
+}
+
+
 // insert outcomes
 module.exports.insert_outcome = insert_outcome;
 
@@ -71,3 +100,6 @@ module.exports.update_outcome = update_outcome;
 
 // get outcomes by department
 module.exports.get_outcomes_by_department = get_outcomes_by_department;
+
+// get outcomes with study programs
+module.exports.get_outcomes_with_study_program = get_outcomes_with_study_program;
