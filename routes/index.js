@@ -46,6 +46,7 @@ router.get("/auth", async function (req, res) {
 	const userName = req.cookies.graph_user_name;
 	const userEmail = req.cookies.graph_user_email;
 
+
 	if (userEmail == undefined) {
 		req.flash("error", "Cannot find the user email");
 		return res.redirect("/");
@@ -85,7 +86,7 @@ router.get("/auth", async function (req, res) {
 		req.session.profileName = "Administrator";
 		return res.redirect("/admin");
 	}
-
+	
 	res.redirect("/professor");
 });
 
