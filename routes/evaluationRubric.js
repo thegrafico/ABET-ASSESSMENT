@@ -163,7 +163,12 @@ router.post("/create", function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.error("ERROR: ", err);
-		req.flash("error", "Cannot create Evaluation Rubric");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Evaluation Rubric with the same information does already exits");
+		else
+			req.flash("error", "Cannot create Evaluation Rubric");
+
 		res.redirect(base_url);
 	});
 });
@@ -326,7 +331,12 @@ router.put('/:r_id', validate_evaluation_rubric, async function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log(err);
-		req.flash("error", "Error updating the Evaluation Rubric");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Evaluation Rubric with the same information does already exits");
+		else
+			req.flash("error", "Error updating the Evaluation Rubric");
+
 		res.redirect(base_url);
 	});
 });

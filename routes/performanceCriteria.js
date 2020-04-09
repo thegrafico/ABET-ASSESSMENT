@@ -119,7 +119,12 @@ router.post("/:outc_id/performanceCriteria/create", validate_outcome, async func
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("Error: ", err);
-		req.flash("error", "Error Creating the Performance rubric!");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Performance Criteria with the same information does already exits");
+		else
+			req.flash("error", "Error Creating the Performance rubric!");
+
 		res.redirect(base_url);
 	});
 });
@@ -185,7 +190,12 @@ router.put("/:outc_id/performanceCriteria/:perf_id", validate_outcome, validate_
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("Error: ", err);
-		req.flash("error", "Error updating the Performance Criteria!");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Performance Criteria with the same information does already exits");
+		else
+			req.flash("error", "Error updating the Performance Criteria!");
+
 		res.redirect(base_url);
 	});
 });

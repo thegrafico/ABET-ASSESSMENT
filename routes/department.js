@@ -131,7 +131,12 @@ router.post('/create', function (req, res) {
 	}).catch((err) => {
 		// flash message [ERRO]
 		console.error("Error: ", err);
-		req.flash("error", "Cannot Department created");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Departmetn with the same information does already exits");
+		else
+			req.flash("error", "Cannot Department created");
+
 		res.redirect(base_url);
 	});
 });
@@ -225,7 +230,12 @@ router.put('/:id', function (req, res, next) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("ERROR: ", err);
-		req.flash("error", "Cannot Edit department");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Departmetn with the same information does already exits");
+		else
+			req.flash("error", "Cannot Edit department");
+
 		res.redirect(base_url);
 	});
 });
@@ -241,7 +251,7 @@ router.delete('/:id', function (req, res, next) {
 		req.flash("error", "Cannot find the department");
 		return res.redirect(base_url);
 	}
-	
+
 	let tabla_data = { "from": table.department, "where": "dep_ID", "id": req.params.id };
 
 	general_queries.delete_record_by_id(tabla_data).then((was_deleted) => {

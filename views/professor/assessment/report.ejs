@@ -101,7 +101,10 @@
                 <span class="header-course-information">
                     Faculty Course Assessment Report
                     <br>
-                    <span id="course_number"><%= header["course_number"] %></span> - <%= header["course_name"] %>
+                    <span id="course_number">
+                        <%= header["course_number"] %>
+                    </span> 
+                    - <%= header["course_name"] %> - Section: <%= header["course_section"] %>
                     <br>
                     <span id="term_name"> <%= header["term_name"] %></span> - Prof. <%= header["first_name"] %>
                     <%= header["last_name"] %>
@@ -245,7 +248,7 @@
 
                 <div>
                     <p>
-                        <strong>5. Graph goes here </strong>
+                        <strong>5. Graph Distribution </strong>
                         <br>
                         <img id="chart" src="" alt="Outcome Graph">
                     </p>

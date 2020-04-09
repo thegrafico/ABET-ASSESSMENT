@@ -124,12 +124,10 @@ $(document).ready(function () {
 
                     //======================================
 
-                    // TODO: NOAH SHOULD WORK HERE
+                    // TODO: NOAH YOU SHOULD WORK FROM HERE
                     console.log(OUTCOME_AVG_ROW);
 
-
                     //======================================
-
                 } else {
                     modal_message(false, "we couldn't find the data you're looking");
                 }

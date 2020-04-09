@@ -43,16 +43,16 @@ router.get('/', async function (req, res) {
 		console.log("Error getting the courses with std program results: ", err);
 	});
 
-	let study_program = await general_queries.get_table_info(table.study_program).catch((err) =>{
+	let study_program = await general_queries.get_table_info(table.study_program).catch((err) => {
 		console.error("Error getting study programs:", err);
 	});
 
 	// validate study program
-	if (study_program == undefined || study_program.length == 0){
+	if (study_program == undefined || study_program.length == 0) {
 		res.flash("error", "cannot find study programs");
 		return res.redirect("/admin");
 	}
-	
+
 	let results = [];
 	if (courses != undefined && Object.keys(courses).length > 0) {
 
@@ -173,7 +173,12 @@ router.post('/create', async function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("ERROR: ", err);
-		req.flash("error", "Error creating the course, Contact the Admin");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Course with the same information does already exits");
+		else
+			req.flash("error", "Error creating the course, Contact the Admin");
+
 		return res.redirect(base_url);
 	});
 });

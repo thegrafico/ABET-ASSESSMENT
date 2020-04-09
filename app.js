@@ -5,7 +5,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var methodOverride = require("method-override");
 var bodyParser = require('body-parser');
-var indexRouter = require('./routes/index');
 var authHelper = require('./helpers/auth');
 var flash = require("connect-flash");
 const middleware = require("./middleware/validateUser");
