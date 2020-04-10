@@ -10,6 +10,7 @@ const tag_loader_img = "#loader";
 
 // store all outcomes avg per row
 let OUTCOME_AVG_ROW = [];
+let TABLES_IDS = [];
 
 // STORE THE PREVIUS STATE TO NOT REPEATE DATA
 let PREVIUS_STUDY_PROGRAM = undefined;
@@ -82,7 +83,9 @@ $(document).ready(function () {
             return;
         }
 
-        if (PREVIUS_STUDY_PROGRAM == std_id && PREVIUS_OUTCOME == outcome_id && PREVIUS_TERM == term_id) {
+        let ids = std_id + '' + outcome_id + '' +  term_id;
+
+        if (TABLES_IDS.includes(ids)) {
             $(tag_loader_img).hide();
             return;
         }
@@ -91,6 +94,7 @@ $(document).ready(function () {
             if (PREVIUS_STUDY_PROGRAM != std_id) {
                 // reset the outcome AVG
                 OUTCOME_AVG_ROW = [];
+                TABLES_IDS = [];
                 $("#tableContainer").empty();
             }
         }
@@ -120,8 +124,8 @@ $(document).ready(function () {
 
                     // asign current value
                     PREVIUS_STUDY_PROGRAM = std_id;
-                    PREVIUS_OUTCOME = outcome_id;
-                    PREVIUS_TERM = term_id;
+        
+                    TABLES_IDS.push(ids);
 
                     //======================================
 
@@ -139,6 +143,8 @@ $(document).ready(function () {
         $(tag_loader_img).hide();
     });
 });
+
+
 
 /**
  * @param {bool} error - add class green or red 
