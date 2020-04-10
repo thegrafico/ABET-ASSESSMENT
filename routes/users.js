@@ -20,7 +20,7 @@ var locals = {
 	api_get_url: "/api/get/user", // all api_url ends in the id
 	delete_redirect: null,
 	filter: true,
-	filter_title: "-- Department --",
+	filter_title: "-- Study Program --",
 	feedback_message: "Number of users: "
 };
 

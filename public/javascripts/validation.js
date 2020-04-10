@@ -38,43 +38,38 @@ $(document).ready(function () {
             // of an input field. Validation rules are defined
             // on the right side
             "profile_id": "required",
-            "interID": {
-                required: true,
-                minlength: 6,
-                maxlength: 20,
-                noSpace: true
-            },
-            "username": { required: true, lettersonly: true },
-            "lastname": { required: true, lettersonly: true },
-            "email": {
-                required: true,
-                email: true
-            },
-            "phoneNumber": {
-                required: false,
-                digits: true,
-                minlength: 5,
-                maxlength: 11
-            }
+            "interID": { required: true, minlength: 6, maxlength: 20, noSpace: true },
+            "username": { required: true, lettersonly: true, minlength: 2, maxlength: 30, },
+            "lastname": { required: true, lettersonly: true, minlength: 2, maxlength: 40, },
+            "email": { required: true, email: true, maxlength: 100 },
+            "phoneNumber": { required: false, digits: true, minlength: 5, maxlength: 11 }
         },
         // Specify validation error messages
         messages: {
+            "profile_id": "Please select a profile",
             "interID": {
                 required: "Cannot be empty",
                 minlength: "Have to be greater than 5",
-                maxlength: "Inter ID is to big"
+                maxlength: "Inter ID is to big",
+                noSpace: "Inter ID cannot have space"
             },
-            "profile_id": "Please select a profile",
             "username": {
                 required: "Cannot be empty",
-                lettersonly: "Name cannot have any number or symbol"
+                lettersonly: "Name cannot have any number or symbol",
+                maxlength: "Name is to big",
+                minlength: "Name is to short"
             },
             "lastname": {
                 required: "Cannot be empty",
-                lettersonly: "Name cannot have any number or symbol"
+                lettersonly: "Name cannot have any number or symbol",
+                maxlength: "Last name is to big",
+                minlength: "Last Name is to short"
             },
             "phoneNumber": "Please provide a valid number",
-            "email": "Please enter a valid email address"
+            "email": {
+                required: "Cannot be empty",
+                maxlength: "Email is to big",
+            }
         },
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
@@ -87,22 +82,25 @@ $(document).ready(function () {
     $("#course_data").validate({
         // Specify validation rules
         rules: {
-            "data[number]": "required",
-            "data[name]": "required",
-            "data[description]": "required"
+            "data[number]": {required: true, minlength: 4, maxlength: 20},
+            "data[name]": {required: true, minlength: 2, maxlength: 50},
+            "data[description]": {required: true, minlength: 5, maxlength: 500 }
         },
         messages: {
             "data[number]": {
                 required: "Cannot be empty",
-                minlength: "Have to be greater than 3"
+                minlength: "Cannot be so short",
+                maxlength: "Cannot be to big"
             },
             "data[name]": {
                 required: "Cannot be empty",
-                minlength: "Have to be greater than 3"
+                minlength: "Course Name is to short",
+                maxlength: "Course Name is to big"
             },
             "data[description]": {
                 required: "Cannot be empty",
-                minlength: "Have to be greater than 3"
+                minlength: "Please enter no more than 5 characters",
+                maxlength: "Please enter no more than 500 characters."
             }
         },
         // Make sure the form is submitted to the destination defined
@@ -116,17 +114,19 @@ $(document).ready(function () {
     $("#department_data").validate({
         // Specify validation rules
         rules: {
-            "name": { required: true, lettersonly: true },
-            "description": { required: true, minlength: 3 },
+            "name": { required: true, lettersonly: true, maxlength: 70 },
+            "description": { required: true, minlength: 3, maxlength: 300 },
         },
         messages: {
             "name": {
                 required: "Cannot be empty",
-                lettersonly: "Only letters"
+                lettersonly: "Only letters",
+                maxlength: "Name is to big"
             },
             "description": {
                 required: "Cannot be empty",
-                minlength: "Greater than 3 characters"
+                minlength: "Greater than 3 characters",
+                maxlength: "Description is to big."
             },
         },
         // Make sure the form is submitted to the destination defined
@@ -141,13 +141,13 @@ $(document).ready(function () {
         // Specify validation rules
         rules: {
             "std_program": "required",
-            "outcome_name": "required",
-            "outcome_description": "required",
+            "outcome_name": {required: true, minlength: 3, maxlength: 50},
+            "outcome_description": {required: true, minlength: 5, maxlength: 500},
         },
         messages: {
             "std_program": "Please select a study program",
-            "outcome_name": "Cannot be empty",
-            "outcome_description": "Cannot be empty",
+            "outcome_name": {required: "Cannot be empty"},
+            "outcome_description": {required: "Cannot be empty"},
         },
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
@@ -161,13 +161,15 @@ $(document).ready(function () {
         // Specify validation rules
         rules: {
             "department_id": "required",
-            "std_name": { required: true, lettersonly: true },
+            "std_name": { required: true, lettersonly: true, minlength: 5, maxlength: 100 },
         },
         messages: {
             "department_id": "Please select a department",
             "std_name": {
                 required: "Cannot be empty.",
-                lettersonly: "Study Program cannot have any number."
+                lettersonly: "Study Program cannot have any number.",
+                minlength: "Study Program is to short",
+                maxlength: "Study Program is to big"
             },
         },
         // Make sure the form is submitted to the destination defined
@@ -268,7 +270,7 @@ $(document).ready(function () {
     $("#criteria_data").validate({
         // Specify validation rules
         rules: {
-            "description": { required: true, minlength: 5 },
+            "description": { required: true, minlength: 5, maxlength: 400 },
             "order": { required: true, digits: true }
         },
         messages: {
@@ -278,7 +280,6 @@ $(document).ready(function () {
             },
             "description": {
                 required: "Cannot be empty",
-                minlength: "Please define more, a least 5 characters"
             }
         },
         // Make sure the form is submitted to the destination defined

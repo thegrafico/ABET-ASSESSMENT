@@ -13,8 +13,8 @@ var locals = {
 	title: 'ABET Assessment',
 	subtitle: 'Perfomance Criteria',
 	url_create: "/perfomanceCriteria/create",
-	"form_id": "criteria_data",
-	"api_get_url": "/admin/outcomes/performanceCriteria",
+	form_id: "criteria_data",
+	api_get_url: "/admin/outcomes/performanceCriteria/get",
 	delete_redirect: null,
 	feedback_message: "Number of Performance Criteria: ",
 };
@@ -97,7 +97,6 @@ router.get("/:outc_id/performanceCriteria/create", validate_outcome, async funct
 
 	locals.inputs = performance_criteria_create_input;
 	locals.description_box = { name: "description", text: "Criteria Description", value: "" };
-
 
 	res.render('layout/create', locals);
 });
@@ -211,7 +210,7 @@ router.get("/performanceCriteria/get/:perf_id", async function (req, res) {
 	if (req.params.perf_id == undefined || isNaN(req.params.perf_id)) {
 		return res.json([]);
 	}
-	let performance_query = { "from": "perf_criteria", "where": "perC_ID", "id": req.params.perf_id };
+	let performance_query = { "from": table.performance_criteria, "where": "perC_ID", "id": req.params.perf_id };
 	let performance = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
 		console.log("Error getting performance: ", err);
 	})
@@ -235,13 +234,13 @@ router.get("/performanceCriteria/get/:perf_id", async function (req, res) {
 	return res.json(record);
 });
 
-router.delete("/performanceCriteria/:perf_id", async function (req, res) {
+router.delete("/:outc_id/performanceCriteria/:perf_id", async function (req, res) {
 
 	if (req.params.perf_id == undefined || isNaN(req.params.perf_id)) {
 		req.flash("error", "Error removing the Performance Criteria!");
 		return res.redirect("back");
 	}
-	general_queries.delete_record_by_id({ "from": "perf_criteria", "where": "perC_ID", "id": req.params.perf_id }).then((ok) => {
+	general_queries.delete_record_by_id({ "from": table.performance_criteria, "where": "perC_ID", "id": req.params.perf_id }).then((ok) => {
 		req.flash("success", "Performance Criteria removed!");
 		res.redirect("back");
 	}).catch((err) => {

@@ -105,6 +105,7 @@ $(document).ready(function () {
             success: (response) => {
                 $(tag_loader_img).hide();
 
+                // validating response
                 if (response != undefined && response.error == false) {
 
                     // creat modal message
