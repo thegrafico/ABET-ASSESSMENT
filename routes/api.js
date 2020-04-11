@@ -648,12 +648,14 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 
 	// validate ID
 	if (req.params.programId == undefined || isNaN(req.params.programId)) {
-		return res.end();
+		return res.json({error: true, "message": "Invalid Study Program"});
 	}
 
 	let mapping = await courseMappingQuery.get_mapping_by_study_program(req.params.programId).catch((err) => {
 		console.error("ERROR: ", err);
 	});
+
+	console.log(mapping);
 
 	// validate mapping
 	if (mapping == undefined || mapping.length == 0){
@@ -665,14 +667,16 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 		console.error("ERROR: ", err);
 	});
 
+
 	// validate outcome
 	if (outcome_course == undefined || outcome_course.length == 0){
-		return res.json({error: true, "message": "missing outcome"});
+		outcome_course = [];
+	}else{
+		outcome_course = transform_outcome_courses(outcome_course);
 	}
 
 	mapping = transformdt(mapping);
 	current_mapping = current_course_mapping(outcome_course)
-	outcome_course = transform_outcome_courses(outcome_course);
 
 	res.json({error: false, message:"success", mapping, outcome_course, current_mapping });
 });

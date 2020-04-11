@@ -58,20 +58,25 @@ $(document).ready(function () {
             console.log("Error getting the mapping: ", err);
         });
 
-        if (mapping_data == undefined || mapping_data.length > 0) {
-            alert("Error: Cannot find mapping data")
+        if (mapping_data == undefined || mapping_data.mapping == undefined || mapping_data.mapping.length == 0) {
+            console.log(mapping_data);
+            modal_message(false, "We didn't find the data you're looking.");
             return;
         }
-            previus_val = mapping_data.current_mapping;
-            let mapping = mapping_data.mapping[0];
 
-            let selected_mapping = mapping.outcome_course;
+        console.log(mapping_data);
 
-            // create the header table
-            create_header(mapping);
+        // update the previus val
+        previus_val = mapping_data.current_mapping;
 
-            //create the body of table
-            create_body(mapping, selected_mapping);
+        // create table
+        let mapping = mapping_data.mapping[0];        
+
+        // create the header table
+        create_header(mapping);
+
+        //create the body of table
+        create_body(mapping, mapping_data.outcome_course);
     });
 
     $("#clickme").click(function () {
@@ -81,6 +86,7 @@ $(document).ready(function () {
             pair = $(this).val().trim().split(",");
             selected.push(pair);
         });
+
         let all_courses = selected.map(e => e[1]);
 
         // remove duplicates outcomes
@@ -145,12 +151,12 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (response) {
-                // console.log(response);
+
                 if (response != undefined && response.status == 200) {
 
                     // RESET EVERYTHING
                     let id = $("#study_program").val();
-                    $("#study_program").val("").change();
+                    // $("#study_program").val("").change();
                     $("#study_program").val(id).change();
 
                     let msgTitle;
@@ -178,21 +184,33 @@ $(document).ready(function () {
                         clean_list("#addedElements");
                     }
 
-                    $("#modalTitle").text(msgTitle);
-                    $("#modalMessage").text(msgBody)
-                    $('#view_performances').modal('toggle');
+                    modal_message(true, msgBody);
                 }
             },
             error: function () {
-                location.reload(true);
-                $("#modalTitle").text("Error");
-                $("#modalMessage").text("There is an error updating the mapping");
-                $('#view_performances').modal('toggle');
+                modal_message(false, "Sorry, Something went wrong.");
             }
         });
     });
 
 });
+
+/**
+ * 
+ * @param {Bool} success - if the message is a success or an error 
+ * @param {String} message - message for the modal
+ */
+function modal_message(success, message){
+
+    if (success){
+        $("#feedbackTitle").text("Success").css({"color": "green"});
+    }else{
+        $("#feedbackTitle").text("Sorry").css({"color": "red"});
+    }
+    $("#feedbackBody").text(message);
+    $('#feedbackContainer').modal('toggle');
+}
+
 
 function create_list(tag, title, elements) {
     $(tag).empty().append(`<h4>${title}</h4>`);
@@ -240,6 +258,8 @@ function get_data_for_update(current, selected_for_update) {
  */
 function create_body(mapping, current_selected) {
 
+    console.log("CURRENT SELECTED: ", current_selected);
+
     // console.log("CURRENT: ", current_selected);
     //clean the body
     $("#filter").empty();
@@ -274,7 +294,7 @@ function create_body(mapping, current_selected) {
     }
 
     //  check the values with the value specified
-    if (current_selected != undefined && current_selected.length > 0){
+    if (current_selected != undefined && current_selected.length > 0) {
         current_selected.forEach(e => {
             $(`input[value='${e}']`).attr("checked", "checked");
         });
