@@ -32,6 +32,12 @@ router.get('/', async function (req, res) {
 
 	locals.title = "Professor";
 
+	// current assessment active
+	locals.active = progress;
+	if (req.query != undefined && req.query.active != undefined) {
+		locals.active = req.query.active;
+	}
+
 	// the user id is stored in session, thats why user need to be login
 	let user_id = req.session.user_id;
 
@@ -59,6 +65,8 @@ router.get('/', async function (req, res) {
 	let assessments = await assessment_query.get_assessment_by_user_id(user_id).catch((err) => {
 		console.error("Error getting user assessment: ", err);
 	});
+
+	console.log(assessments);
 
 	// assessment 
 	locals.assessment_in_progress = [];
@@ -329,7 +337,7 @@ router.delete('/assessment/:assessmentID', middleware.validate_assessment, middl
 
 	queries.update_status(assessment_id, archive).then((ok) => {
 		req.flash("success", "Assessment Moved to archive!");
-		res.redirect("back");
+		res.redirect(`${base_url}?&active='completed'`);
 	}).catch((err) => {
 		console.log("Cannot Remove the assessment: ", err);
 		req.flash("error", "Cannot Remove the assessment!");
@@ -476,9 +484,9 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 				}
 
 				// check is null
-				let hasNullValues = performanceData.some(each => each["row_perc_score"] == null );
-				
-				if (hasNullValues){
+				let hasNullValues = performanceData.some(each => each["row_perc_score"] == null);
+
+				if (hasNullValues) {
 					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table is missing values");
 					return res.redirect(`/professor/assessment/${id}/performanceTable`);
 				}

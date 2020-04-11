@@ -10,6 +10,7 @@ const tag_study_program = "#filterStudyProgram";
 const tag_outcome = "#filterOutcome";
 const tag_term = "#filterTerm";
 const tag_loader_img = "#loader";
+const tag_number_rows = "#numberOfRows";
 
 const tag_colums = {
     "#filterProfessorName": 2,
@@ -24,9 +25,15 @@ $(document).ready(function () {
 
     set_index();
 
+    $(tag_number_rows).text($("#tableFilter tr:visible").length);
+
+
     // =========================== FILTER BY PROFESSOR ===============================
     $(tag_professor).on("keyup", function () {
         filter_keyup($(this).val(), 2);
+
+        $(tag_number_rows).text($("#tableFilter tr:visible").length);
+
     });
 
     // Filter by professor name and id
@@ -44,6 +51,8 @@ $(document).ready(function () {
         let val = $(this).val();
         // filter_by_colum(val, 4);
         filter_keyup(val, 4);
+
+        $(tag_number_rows).text($("#tableFilter tr:visible").length);
 
     });
 
@@ -78,7 +87,6 @@ $(document).ready(function () {
         // if cannot find an outcome
         if (outcomes == undefined || outcomes.length == 0){
             $(tag_loader_img).hide();
-            alert("Cannot find any outcome for this study program");
             return;
         }
         
@@ -137,9 +145,6 @@ function filter_by_colum(value, colum) {
 
         $(this).toggle(text_to_search.toLowerCase().indexOf(user_input) > -1);
     });
-
-    // update the number of quantity
-    $("#number").text($("#tableFilter tr:visible").length);
 }
 
 /**
@@ -208,4 +213,6 @@ function filter_all() {
     if (!hasFilter) {
         tr_visibles.show();
     }
+
+    $(tag_number_rows).text($("#tableFilter tr:visible").length);
 }

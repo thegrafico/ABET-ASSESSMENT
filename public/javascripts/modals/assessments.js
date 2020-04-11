@@ -15,12 +15,17 @@ $(document).ready(function () {
     $('#table').floatThead();
     $('#table').trigger('reflow');
 
+    let active = $("#active").val().toLowerCase();
+    
+    if ( active == "completed"){
+        $("#assessmentCompleted").click();
+    }
 
     // REMOVE ASSESSMENT
     $(".REMOVE").click(function () {
         let data = {
-            title: "Removing Assessment",
-            bodyMsg: "Are you sure you want to remove Assessment with the name: ",
+            title: "Archive Assessment",
+            bodyMsg: "You wont be able to work again in this assessment, Are you sure you want to archive Assessment with the name: ",
             btnText: "Remove Assessment",
             action: "D"
         }
@@ -426,7 +431,7 @@ function update_modal_data(element, data) {
         .append(`<p>${data["bodyMsg"]}<strong>${assessment_name}</strong>?</p>`);
 
     // Button text
-    $("#remove_submit").text(`${data["btnText"]}`);
+    $("#remove_submit").text(`Move Assessment to Archive`);
 
     if (data["action"] == 'D') {
         $("#formDelete").attr("action", `/professor/assessment/${assessment_id}?_method=DELETE`);

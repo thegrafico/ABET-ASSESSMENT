@@ -51,7 +51,7 @@ module.exports.get_assessment_by_user_id = (user_id) => {
         }
 
         let query = `SELECT ${table.assessment}.assessment_ID, ${table.assessment}.status, ${table.assessment}.name,
-        ${table.course}.course_name, ${table.academic_term}.term_name, ${table.evaluation_rubric}.rubric_name,
+        ${table.assessment}.course_section, ${table.course}.course_name, ${table.academic_term}.term_name, ${table.evaluation_rubric}.rubric_name,
         ${table.assessment}.creation_date, ${table.evaluation_rubric}.outc_ID, ${table.student_outcome}.prog_ID, 
         ${table.study_program}.dep_ID, ${table.course}.course_ID, ${table.assessment}.term_ID, ${table.assessment}.rubric_ID
         FROM ${table.assessment} INNER JOIN ${table.course} USING(course_ID)
