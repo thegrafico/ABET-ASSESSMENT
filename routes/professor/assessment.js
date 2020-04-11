@@ -8,6 +8,8 @@ const table = require("../../helpers/DatabaseTables");
 var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
 var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
 const { admin, coordinator, statusOfAssessment } = require("../../helpers/profiles");
+var moment = require("moment");
+
 
 /* GLOBAL LOCALS */
 const base_url = '/professor';
@@ -55,7 +57,6 @@ router.get('/', async function (req, res) {
 		});
 	}
 
-
 	// Getting the term
 	let academic_term = await general_queries.get_table_info(table.academic_term).catch((err) => {
 		console.error("Error getting academic term: ", err);
@@ -66,8 +67,6 @@ router.get('/', async function (req, res) {
 		console.error("Error getting user assessment: ", err);
 	});
 
-	console.log(assessments);
-
 	// assessment 
 	locals.assessment_in_progress = [];
 	locals.assessment_completed = [];
@@ -77,7 +76,9 @@ router.get('/', async function (req, res) {
 
 		// Change the date of all assessment
 		assessments.map(row => {
-			row.creation_date = `${row.creation_date.getMonth() + 1}/${row.creation_date.getDate()}/${row.creation_date.getFullYear()}`;
+			let date = moment(row.creation_date, "YYYYMMDD");
+
+			row.creation_date = date.fromNow();	
 		});
 
 		locals.assessment_in_progress = assessments.filter(each => each.status == progress);
