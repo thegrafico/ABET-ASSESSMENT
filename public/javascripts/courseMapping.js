@@ -150,6 +150,11 @@ $(document).ready(function () {
 
                 if (response != undefined && response.status == 200) {
 
+                    
+                    let id = $("#study_program").val();
+                    $("#study_program").val("").change();
+                    $("#study_program").val(id).change();
+
                     let msgTitle;
                     let msgBody;
                     if (response.wasUpdated) {
