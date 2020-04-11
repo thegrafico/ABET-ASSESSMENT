@@ -655,8 +655,6 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 		console.error("ERROR: ", err);
 	});
 
-	console.log(mapping);
-
 	// validate mapping
 	if (mapping == undefined || mapping.length == 0){
 		return res.json({error: true, "message": "Cannot find any mapping data"});
@@ -667,16 +665,13 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 		console.error("ERROR: ", err);
 	});
 
+	// get the course mapping - current
+	current_mapping = current_course_mapping(outcome_course);
 
 	// validate outcome
-	if (outcome_course == undefined || outcome_course.length == 0){
-		outcome_course = [];
-	}else{
-		outcome_course = transform_outcome_courses(outcome_course);
-	}
+	outcome_course = (outcome_course == undefined || outcome_course.length == 0) ? [] : transform_outcome_courses(outcome_course);
 
 	mapping = transformdt(mapping);
-	current_mapping = current_course_mapping(outcome_course)
 
 	res.json({error: false, message:"success", mapping, outcome_course, current_mapping });
 });
@@ -695,6 +690,7 @@ function transform_outcome_courses(outcome_course) {
 }
 
 function current_course_mapping(outcome_course) {
+	
 	let courses_id = outcome_course.map(e => e.course_ID);
 
 	// remove duplicates

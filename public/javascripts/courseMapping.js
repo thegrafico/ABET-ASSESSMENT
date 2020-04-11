@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var previus_val = undefined;
+    var CURRENT_MAPPING = undefined;
     let pair = undefined;
 
     let dept_val = $("#departments").val();
@@ -15,7 +15,6 @@ $(document).ready(function () {
 
         // disable study program
         $('#study_program').prop("disabled", true);
-
 
         //clean the body
         $("#filter").empty();
@@ -53,24 +52,25 @@ $(document).ready(function () {
     $("#study_program").change(async function () {
 
         let std_id = $(this).val();
+        
+        if (std_id == undefined || std_id == "-1"){
+            return;
+        }
 
         let mapping_data = await make_request(`/api/courseMapping/get/${std_id}`).catch((err) => {
             console.log("Error getting the mapping: ", err);
         });
 
         if (mapping_data == undefined || mapping_data.mapping == undefined || mapping_data.mapping.length == 0) {
-            console.log(mapping_data);
-            modal_message(false, "We didn't find the data you're looking.");
+            modal_message(false, "We couldn't find any outcome for this study program");
             return;
         }
 
-        console.log(mapping_data);
-
         // update the previus val
-        previus_val = mapping_data.current_mapping;
+        CURRENT_MAPPING = mapping_data.current_mapping;
 
         // create table
-        let mapping = mapping_data.mapping[0];        
+        let mapping = mapping_data.mapping[0];
 
         // create the header table
         create_header(mapping);
@@ -105,13 +105,13 @@ $(document).ready(function () {
             arr.push({ "course_id": ID, "outcomes": temp, "isNew": true });
             temp = [];
         });
-        previus_val.sort((a, b) => (a.course_id > b.course_id) ? 1 : -1);
+        CURRENT_MAPPING.sort((a, b) => (a.course_id > b.course_id) ? 1 : -1);
         arr.sort((a, b) => (a.course_id > b.course_id) ? 1 : -1);
 
         // COMPARING BOTH DT - TO UPDATE OR ELIMINATE THE CHECKBOX SELECTED
         let update_data = [];
         let found = false;
-        previus_val.forEach(past => {
+        CURRENT_MAPPING.forEach(past => {
             found = false;
             arr.forEach(present => {
                 let to_update = undefined;
@@ -139,10 +139,6 @@ $(document).ready(function () {
             update_data.push({ "course_id": e.course_id, "update": to_update });
         });
 
-        // console.log("PREVIUS VALUE: ", previus_val);
-        // console.log("CURRENT VALUE:", arr);
-        // console.log("NEW VALUES: ", update_data);
-
         $.ajax({
             type: "POST",
             url: '/admin/courseMapping/addMapping',
@@ -153,11 +149,6 @@ $(document).ready(function () {
             success: function (response) {
 
                 if (response != undefined && response.status == 200) {
-
-                    // RESET EVERYTHING
-                    let id = $("#study_program").val();
-                    // $("#study_program").val("").change();
-                    $("#study_program").val(id).change();
 
                     let msgTitle;
                     let msgBody;
@@ -184,7 +175,7 @@ $(document).ready(function () {
                         clean_list("#addedElements");
                     }
 
-                    modal_message(true, msgBody);
+                    modal_message_for_mapping(msgTitle, msgBody, response.wasUpdated);
                 }
             },
             error: function () {
@@ -196,19 +187,35 @@ $(document).ready(function () {
 });
 
 /**
- * 
  * @param {Bool} success - if the message is a success or an error 
  * @param {String} message - message for the modal
  */
-function modal_message(success, message){
+function modal_message(success, message) {
 
-    if (success){
-        $("#feedbackTitle").text("Success").css({"color": "green"});
-    }else{
-        $("#feedbackTitle").text("Sorry").css({"color": "red"});
+    if (success) {
+        $("#feedbackTitle").text("Success").css({ "color": "green" });
+    } else {
+        $("#feedbackTitle").text("Sorry").css({ "color": "red" });
     }
     $("#feedbackBody").text(message);
     $('#feedbackContainer').modal('toggle');
+}
+
+/**
+ * @param {String} title - Tittle 
+ * @param {String} message - message for the modal
+ */
+function modal_message_for_mapping(title, message, isSuccess = true) {
+    
+    if (isSuccess){
+        $("#modalTitle").css({"color": "green"});
+    }else{
+        $("#modalTitle").css({"color": "black"});
+    }
+
+    $("#modalTitle").text(title);
+    $("#modalMessage").text(message)
+    $('#view_performances').modal('toggle');
 }
 
 
@@ -258,7 +265,6 @@ function get_data_for_update(current, selected_for_update) {
  */
 function create_body(mapping, current_selected) {
 
-    console.log("CURRENT SELECTED: ", current_selected);
 
     // console.log("CURRENT: ", current_selected);
     //clean the body
