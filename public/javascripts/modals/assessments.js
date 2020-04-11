@@ -12,7 +12,11 @@ $(document).ready(function () {
     const default_message = ["Study Program", "Outcome", "Course", "Rubric"];
 
     // TABLE STICKY HEADER
-    $('#table').floatThead();
+    $('#table').floatThead({
+        position: 'fixed',
+        scrollContainer: true
+    });
+    
     $('#table').trigger('reflow');
 
     let active = $("#active").val().toLowerCase();
