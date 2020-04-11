@@ -1,7 +1,7 @@
 <%- include ('../../partials/header') -%>
 
 <% if (!isArchive && belong_to_user) { %>
-    <%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar: 100, hasValue: 'y'}) -%> 
+<%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar: 100, hasValue: 'y'}) -%>
 <% } %>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -103,7 +103,7 @@
                     <br>
                     <span id="course_number">
                         <%= header["course_number"] %>
-                    </span> 
+                    </span>
                     - <%= header["course_name"] %> - Section: <%= header["course_section"] %>
                     <br>
                     <span id="term_name"> <%= header["term_name"] %></span> - Prof. <%= header["first_name"] %>
@@ -247,13 +247,12 @@
                 <!-- <br style="page-break-before: always"> -->
 
                 <div>
-                    <p>
+                    <p style="max-width: 300px;">
                         <strong>5. Graph Distribution </strong>
                         <br>
                         <img id="chart" src="" alt="Outcome Graph">
                     </p>
-
-
+                    
                     <p>
                         <strong>
                             Table. Student data results for <%= header["outc_name"] %>
@@ -283,16 +282,16 @@
                             <th scope="col" style="width: 10%;"> <%= (i+1) %> </th>
 
                             <% performanceData[i]["scores"].forEach(each => {%>
-                                <td><%=each%></td>
+                            <td><%=each%></td>
                             <% }); %>
-                            
+
                             <th><%= performanceResults["outcomeRowAVG"][i] %> </th>
                         </tr>
                         <% } %>
                         <tr>
                             <th scope="col" style="width: 10%;"> % Student with 3 or more</th>
                             <% performanceResults["results"].forEach(element => { %>
-                                <th><%= element %>%</th>
+                            <th><%= element %>%</th>
                             <% }); %>
                         </tr>
                     </table>
@@ -335,13 +334,15 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script> -->
 
 <script>
+
+
     let perfResults = JSON.parse($('#perfResults').val());
     let graph = $('#graph').val();
-        
+
     $(document).ready(function () {
         let tag_course_info = ["#course_results", "#course_modification", "#course_reflection", "#course_actions", "#result_outcome"];
-        
-        if(graph == 'n'){
+
+        if (graph == 'n') {
 
         } else {
             $('#chart').attr('src', graph);
@@ -362,7 +363,6 @@
         setInterval(function () {
             $(".sp-data p").each(function () {
                 $(this).css({ 'margin-left': '3%', "margin-top": "0" });
-
             });
         }, 300);
 

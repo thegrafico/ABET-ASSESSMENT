@@ -31,7 +31,7 @@ router.get('/', async function (req, res) {
 	];
 
 	locals.title = "Academic Term";
-
+	locals.css_table = "academic_term.css";
 
 	locals.results = [];
 

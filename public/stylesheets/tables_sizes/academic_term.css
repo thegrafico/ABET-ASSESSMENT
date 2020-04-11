@@ -1,0 +1,7 @@
+table tr td:first-child{
+    width: 80%;
+}
+
+table tr td:last-child{
+    text-align: center;
+}

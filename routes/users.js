@@ -34,6 +34,8 @@ router.get('/', async function (req, res) {
 
 	locals.title = "Users";
 
+	locals.css_table = "user.css";
+
 	locals.results = [];
 
 	locals.delete_redirect = "/users";

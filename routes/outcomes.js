@@ -5,7 +5,7 @@ var general_queries = require("../helpers/queries/general_queries");
 const { outcome_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
 const table = require("../helpers/DatabaseTables");
-
+var moment = require("moment");
 
 const base_url = '/admin/outcomes';
 
@@ -34,6 +34,8 @@ router.get('/', async function (req, res) {
 
 	locals.results = [];
 	locals.title = "Outcomes";
+	locals.css_table = "outcomes.css";
+
 
 	//Getting all the entries for the dropdown
 	let stud_outcomes = await outcome_query.get_outcomes_with_study_program().catch((err) => {
@@ -77,9 +79,7 @@ router.get('/', async function (req, res) {
 				}
 			}
 
-			// change date format 
-			let date = new Date(outcome.date_created);
-			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+			let date = moment(outcome.date_created).format('MMMM Do YYYY');
 
 			results.push({
 				"ID": outcome["outc_ID"],

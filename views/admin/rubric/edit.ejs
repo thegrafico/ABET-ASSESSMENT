@@ -150,7 +150,8 @@
 
             // clean outcomes data
             $('#outcomes').empty().append('<option disabled selected value> -- Select Outcome -- </option>');
-            $("#multi_selection").empty();
+            $('#multi_selection').empty().append('<option disabled selected value> -- Please, Select Outcome -- </option>');
+
             // get the selected id of the study program to make the request
             var study_program_id = $(this).children("option:selected").val();
 

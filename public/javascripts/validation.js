@@ -82,9 +82,9 @@ $(document).ready(function () {
     $("#course_data").validate({
         // Specify validation rules
         rules: {
-            "data[number]": {required: true, minlength: 4, maxlength: 20},
-            "data[name]": {required: true, minlength: 2, maxlength: 50},
-            "data[description]": {required: true, minlength: 5, maxlength: 500 }
+            "data[number]": { required: true, minlength: 4, maxlength: 20 },
+            "data[name]": { required: true, minlength: 2, maxlength: 50 },
+            "data[description]": { required: true, minlength: 5, maxlength: 500 }
         },
         messages: {
             "data[number]": {
@@ -141,13 +141,13 @@ $(document).ready(function () {
         // Specify validation rules
         rules: {
             "std_program": "required",
-            "outcome_name": {required: true, minlength: 3, maxlength: 50},
-            "outcome_description": {required: true, minlength: 5, maxlength: 500},
+            "outcome_name": { required: true, minlength: 3, maxlength: 50 },
+            "outcome_description": { required: true, minlength: 5, maxlength: 500 },
         },
         messages: {
             "std_program": "Please select a study program",
-            "outcome_name": {required: "Cannot be empty"},
-            "outcome_description": {required: "Cannot be empty"},
+            "outcome_name": { required: "Cannot be empty" },
+            "outcome_description": { required: "Cannot be empty" },
         },
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
@@ -183,12 +183,11 @@ $(document).ready(function () {
     $("#term_data").validate({
         // Specify validation rules
         rules: {
-            "name": { required: true, minlength: 4 },
+            "name": { required: true, minlength: 4, maxlength: 100},
         },
         messages: {
             "name": {
                 required: "Cannot be empty",
-                minlength: "Greater than 4"
             }
         },
         // Make sure the form is submitted to the destination defined
@@ -202,18 +201,15 @@ $(document).ready(function () {
     $("#rubric_data").validate({
         // Specify validation rules
         rules: {
-            "name": { required: true, minlength: 3 },
-            "description": { required: true, minlength: 8 },
-
+            "name": { required: true, minlength: 2, maxlength: 50 },
+            "description": { required: true, minlength: 5, maxlength: 200 },
         },
         messages: {
             "name": {
                 required: "Cannot be empty",
-                minlength: "Greater than 3"
             },
             "description": {
                 required: "Cannot be empty",
-                minlength: "Please define more, a least 8 characters"
             }
         },
         // Make sure the form is submitted to the destination defined
