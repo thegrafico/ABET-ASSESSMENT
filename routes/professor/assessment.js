@@ -78,7 +78,7 @@ router.get('/', async function (req, res) {
 		assessments.map(row => {
 			let date = moment(row.creation_date, "YYYYMMDD");
 
-			row.creation_date = date.fromNow();	
+			row.creation_date = date.fromNow();
 		});
 
 		locals.assessment_in_progress = assessments.filter(each => each.status == progress);
@@ -521,6 +521,14 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 				if (performanceData == undefined || performanceData.length == 0) {
 					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table is empty");
 					return res.redirect("back");
+				}
+
+				// check is null
+				let hasNullValues = performanceData.some(each => each["row_perc_score"] == null);
+
+				if (hasNullValues) {
+					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table is missing values");
+					return res.redirect(`/professor/assessment/${id}/performanceTable`);
 				}
 			}
 
