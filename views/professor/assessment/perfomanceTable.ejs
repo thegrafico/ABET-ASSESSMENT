@@ -42,71 +42,62 @@
 
 
 <div class="container-fluid outcomeInfo">
-	<div class="row">
-		<div class="col-5">
-			<h4>Insert Criteria Values for each Student</h4>
+	<div class="row" >
+		<div class="col-7" style="padding-right: 0px;">
+			<button class="btn btn-outline-secondary" type="button" id="delRow" style="width: 15%;">Remove</button>
+			<h4 style="float: right;">Insert Criteria Values for each Student</h4>
 		</div> 
-		<div class="col-4">
-			<div class="row rowInput" >
-				<div class="input-group mb-3">
-					<input type="text" class="form-control" placeholder="# of rows" id="numofRows">
-					<div class="input-group-append">
-						  <button class="btn btn-outline-secondary" type="button" id="addRow">Add</button>
-					</div>
-					<!-- <div class="input-group-append">
-						<button class="btn btn-outline-secondary" type="button" id="delRow">Remove</button>
-					</div> -->
-					<div class="input-group-append">
-						<button class="btn btn-outline-secondary" type="button" id="clearAll">Clear All</button>
-					</div>
+		<div class="col-5">
+			<div class="input-group rowInput">
+				<input type="text" class="form-control" placeholder="# of rows" id="numofRows">
+				<div class="input-group-append" id="button-addon4">
+					<button class="btn btn-outline-secondary" type="button" id="addRow">Add</button>
+					<button class="btn btn-outline-secondary" type="button" id="clearAll">Clear All</button>
 				</div>
 			</div>
 		</div>
-		<div class="col-3">
-			<h2>Outcome Results</h2>
-		</div>
 	</div>
-	<div class="row">
-		<div class="col-9 perfomanceTable">
-			<table id="table" class="table">
-				<thead>
-					<tr id="header">
-						<th scope="col" class="headerRow"><button class="btn btn-outline-secondary" type="button" id="delRow">Remove</button><input type="checkbox" id="selectAll"/><label for="selectAll"></label> <span>Student</span></th>
-					</tr>
-				</thead>
-				<tbody id="tableBody">
-				</tbody>
-			</table>		
-		</div>	
-		<div class="col-3 performanceResults">
-			<table id="perfResultTable">
-				<thead>
-					<tr id="header2">
-						<th scope="col" id="perfHeader" class="headerRow resultHeader">Perf. Crit.</th>
-						<th scope="col" class="headerRow resultHeader">% Student with 3 or more in <%= outc_name %></th>
-					</tr>
-				</thead>
-				<tbody id="outcomeResultTbody">
-
-				</tbody>
-			</table>
-			<div id="saveOrNext">
-				<a id="save" class="btn btn-outline-success" role="button">Save</a>
-				<a id="next" class="btn btn-success" role="button">Next</a>
-			</div>
-		</div>
+	<div class="row" id="tableRow">
+		<table id="table" class="table">
+			<thead>
+				<tr id="header" class="sticky">
+					<th scope="col" class="headerRow" id="headerStudent"><label class="contain">Student<input type="checkbox" id="selectAll"/><span class="checkmark"></span></label></th>
+				</tr>
+			</thead>
+			<tbody id="tableBody">
+			</tbody>
+		</table>		
+	</div>
+	<div class="row" id="saveOrNext">
+		<a id="save" class="btn btn-outline-success bottomBtnRow" role="button">Save</a>
+		<a id="next" style="float: right;" class="btn btn-success bottomBtnRow" role="button">Next</a>
 	</div>
 </div>
 
 <div class="container graphcontainer">
-	<input type="hidden" id="graph" name="graph" value="">
-	<h2 style="text-align: center;">% Student with 3 or more in <%= outc_name %></h2>
-	<canvas id="myChart" role="img"></canvas>
+	<div>
+		<input type="hidden" id="graph" name="graph" value="">
+		<h2 style="text-align: center;">% Student with 3 or more in <%= outc_name %></h2>
+		<canvas id="myChart" role="img"></canvas>
+	</div>
+	<div>
+		<table id="perfResultTable">
+			<thead>
+				<tr id="header2">
+					<th scope="col" id="perfHeader" class="headerRow resultHeader">Perf. Crit.</th>
+					<th scope="col" class="headerRow resultHeader">% Student with 3 or more in <%= outc_name %></th>
+				</tr>
+			</thead>
+			<tbody id="outcomeResultTbody">
+
+			</tbody>
+		</table>
+	</div>
 </div>
 
 
 <!-- Stylesheet for Performance Table -->
-<link rel="stylesheet" type="text/css" href="/stylesheets/performanceTableStyle.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/performance_table.css">
 
 
 <!-- jQuery script -->

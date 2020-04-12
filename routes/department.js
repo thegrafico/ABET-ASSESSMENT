@@ -32,6 +32,8 @@ router.get('/', async function (req, res) {
 	locals.breadcrumb = [
 		{ "name": "Department", "url": base_url },
 	];
+	locals.title = "Departments";
+
 
 	//Getting the  DEPARTMENT information from db
 	let all_deparment = await general_queries.get_table_info(table.department).catch((err) => {
@@ -75,6 +77,9 @@ router.get('/create', function (req, res) {
 		{ "name": "Department", "url": base_url },
 		{ "name": "Create", "url": "." }
 	];
+
+	locals.title = "Create Department";
+
 
 	locals.have_dropdown = false;
 	locals.title_action = "Create Department";
@@ -141,6 +146,9 @@ router.get('/:id/edit', async function (req, res) {
 		{ "name": "Department", "url": base_url },
 		{ "name": "Edit", "url": "." }
 	];
+
+	locals.title = "Edit Department";
+
 
 	// validating
 	if (req.params.id == undefined || isNaN(req.params.id)) {

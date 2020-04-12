@@ -4,6 +4,7 @@ var outcome_query = require("../helpers/queries/outcomes_queries");
 var general_queries = require("../helpers/queries/general_queries");
 const { outcome_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
+const table = require("../helpers/DatabaseTables");
 
 
 const base_url = '/admin/outcomes';
@@ -32,25 +33,20 @@ router.get('/', async function (req, res) {
 	];
 
 	locals.results = [];
-
-	let performance_query = {
-		"from": "STUDENT_OUTCOME",
-		"join": "STUDY_PROGRAM",
-		"using": "prog_ID",
-	}
+	locals.title = "Outcomes";
 
 	//Getting all the entries for the dropdown
-	let stud_outcomes = await general_queries.get_table_info_inner_join(performance_query).catch((err) => {
+	let stud_outcomes = await outcome_query.get_outcomes_with_study_program().catch((err) => {
 		console.log("Error getting the outcomes information: ", err);
 	});
 
 	// getting departments for filter
-	let departments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
+	let departments = await general_queries.get_table_info(table.department).catch((err) => {
 		console.error("THERE IS AN ERROR GETTING DEPARTMENTS: ", err);
 	});
 
 	// get all evaluation rubric
-	let evaluation_rubric = await general_queries.get_table_info("PERF_CRITERIA").catch((err) => {
+	let evaluation_rubric = await general_queries.get_table_info(table.performance_criteria).catch((err) => {
 		console.error("ERROR GETTING EVALUATION RUBRIC: ", err);
 	});
 
@@ -71,6 +67,7 @@ router.get('/', async function (req, res) {
 
 	if (stud_outcomes != undefined && stud_outcomes.length > 0) {
 		let results = [];
+		
 		stud_outcomes.forEach(outcome => {
 			let hasPerformance = false;
 
@@ -113,6 +110,8 @@ router.get('/create', async function (req, res) {
 		{ "name": "Outcomes", "url": base_url },
 		{ "name": "Create", "url": locals.url_create }
 	];
+
+	locals.title = "Create Outcome";
 
 	// store all profiles
 	locals.profiles = [];
@@ -214,6 +213,7 @@ router.get('/:id/edit', async function (req, res) {
 		return res.redirect(base_url);
 	}
 
+	locals.title = "Edit Outcome";
 
 	locals.breadcrumb = [
 		{ "name": "Outcomes", "url": base_url },

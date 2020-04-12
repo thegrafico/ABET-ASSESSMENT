@@ -36,6 +36,9 @@ router.get('/', async function(req, res) {
 		// {"name": "Edit", "url": ".", "active": true}
 	];
 
+	locals.title = "Study Programs";
+
+
 	locals.results = [];
 	let all_std_query = {
 		"from": "DEPARTMENT",
@@ -95,6 +98,9 @@ router.get('/create', async function(req, res) {
 		{"name": "Study Programs", "url": base_url},
 		{"name": "Create", "url": "."}
 	];
+
+
+	locals.title = "Create Study Program";
 
 	let deparments = await general_queries.get_table_info("DEPARTMENT").catch((err) => {
 		console.log("Error getting deparments: ", err);
@@ -194,6 +200,9 @@ router.get('/:id/edit', async function(req, res) {
 		{"name": "Study Programs", "url": base_url},
 		{"name": "Edit", "url": "."}
 	];
+
+	locals.title = "Edit Study Program";
+
 
 	// validating id 
 	if (req.params.id == undefined || isNaN(req.params.id)){

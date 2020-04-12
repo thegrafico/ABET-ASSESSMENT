@@ -1,4 +1,4 @@
-const canvas = document.getElementById('myChart')
+const canvas = document.getElementById('myChart');
 let ctx = canvas.getContext('2d');
 let amountOfColumns = $('#amountOfCol').val();
 let assessment_ID = $('#assessmentID').val();
@@ -151,7 +151,7 @@ function withValues(data) {
  * @param {number} -> Index to keep track of the index of the rows and data
 */
 function generateRow(r) {
-	var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
+	var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
 		markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='' oninput='createChart()'></td>`);
 	}
@@ -163,7 +163,7 @@ function generateRow(r) {
  * generateRowWithVal() -> function that creates tables with previous evaluation values.
 */
 function generateRowWithVal(r, data) {
-    var markup = `<tr><th id='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
+    var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
 	for (let i = 1; i <= amountOfColumns; i++) { 
         try {
 			if(data[r-1].scores[i-1] == null) 
@@ -451,8 +451,7 @@ function clearTableData() {
 /**
  * generateSideDisplay() -> function that creates the side display panel.
 */
-// TODO: 
-// Fix labels
+
 function generateSideDisplay() {
 	for (let i = 0; i < amountOfColumns; i++) {
 		let tRow = `<tr><th class='pcIndex'>PC ${i+1}</th><td class='percCell'><span id="pc${i}"></span>%</td></tr>`;

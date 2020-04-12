@@ -29,6 +29,9 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 		{ "name": "Performance Criteria", "url": '.' }
 	];
 
+	locals.title = "Performances Criteria";
+
+
 	locals.subtitle = title + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
@@ -77,6 +80,9 @@ router.get("/:outc_id/performanceCriteria/create", validate_outcome, async funct
 		{ "name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria` },
 		{ "name": "Create", "url": '.' }
 	];
+
+	locals.title = "Create Performances Criteria";
+
 
 	locals.title_action = (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.have_dropdown = false;
@@ -130,6 +136,8 @@ router.get("/:outc_id/performanceCriteria/:perf_id/edit", validate_outcome, vali
 		{ "name": "Performance Criteria", "url": `${base_url}/${req.params.outc_id}/performanceCriteria` },
 		{ "name": "Edit", "url": '.' }
 	];
+
+	locals.title = "Edit Performances Criteria";
 
 	let message = "Edit Performance Criteria for: ";
 	locals.title_action = message + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
