@@ -68,7 +68,8 @@ app.set('view engine', 'ejs');
 app.use(flash());
 app.use(methodOverride("_method"));
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

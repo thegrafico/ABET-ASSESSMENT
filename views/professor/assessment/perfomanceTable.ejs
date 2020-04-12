@@ -43,25 +43,30 @@
 
 <div class="container-fluid outcomeInfo">
 	<div class="row" >
-		<div class="col-7" style="padding-right: 0px;">
-			<button class="btn btn-outline-secondary" type="button" id="delRow" style="width: 15%;">Remove</button>
+		<div class="col-9" style="padding-right: 0px;">
+			<button class="btn btn-outline-danger" id="delRow">Delete Selected</button><img src="/images/bin_black.png" alt="">
 			<h4 style="float: right;">Insert Criteria Values for each Student</h4>
 		</div> 
-		<div class="col-5">
+		<div class="col-3">
 			<div class="input-group rowInput">
 				<input type="text" class="form-control" placeholder="# of rows" id="numofRows">
 				<div class="input-group-append" id="button-addon4">
-					<button class="btn btn-outline-secondary" type="button" id="addRow">Add</button>
+					<button class="btn btn-outline-success" type="button" id="addRow">Add</button>
 					<button class="btn btn-outline-secondary" type="button" id="clearAll">Clear All</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row" id="tableRow">
-		<table id="table" class="table">
+		<table id="table" class="table" align="center">
 			<thead>
 				<tr id="header" class="sticky">
-					<th scope="col" class="headerRow" id="headerStudent"><label class="contain">Student<input type="checkbox" id="selectAll"/><span class="checkmark"></span></label></th>
+					<th scope="col" class="headerRow" id="headerStudent">
+						<label class="contain">Student
+							<input type="checkbox" id="selectAll"/>
+							<span class="checkmark"></span>
+						</label>
+					</th>
 				</tr>
 			</thead>
 			<tbody id="tableBody">
@@ -69,8 +74,8 @@
 		</table>		
 	</div>
 	<div class="row" id="saveOrNext">
-		<a id="save" class="btn btn-outline-success bottomBtnRow" role="button">Save And Finish Later</a>
-		<a id="next" style="float: right;" class="btn btn-success bottomBtnRow" role="button">Save And Continue</a>
+		<a id="save" class="btn btn-outline-success bottomBtnRow float-right" role="button">Save And Finish Later</a>
+		<a id="next" style="float: right;" class="btn btn-success bottomBtnRow float-right" role="button">Save And Continue</a>
 	</div>
 </div>
 

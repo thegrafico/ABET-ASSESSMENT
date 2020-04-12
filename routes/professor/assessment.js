@@ -270,6 +270,7 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 		performances_student.push(performance_records[index]);
 	});
 
+	console.log("If Next: ", req.body.ifNext);
 	let isNext = (req.body.ifNext != undefined);
 
 	insertStudentScores(rows, performances_student, assessment_id).then(async (success) => {

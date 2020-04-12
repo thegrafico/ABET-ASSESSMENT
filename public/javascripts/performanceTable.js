@@ -28,6 +28,8 @@ window.onload = () => {
 
 $(document).ready(() => {
 
+	console.log("Amount of Columns: ", amountOfColumns);
+
     if(hasInput == 'y') {
 		withValues(prevScores);
     } else {
@@ -151,30 +153,33 @@ function withValues(data) {
  * @param {number} -> Index to keep track of the index of the rows and data
 */
 function generateRow(r) {
-	var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
+	var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}' align="middle"><label class="contain"><input type="checkbox" id="selectAll"/><span class="checkmark" name='record' value="${r-1}"></span></label><span class="indexNumber">${r}</span></th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
-		markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='' oninput='createChart()'></td>`);
+		markup = markup.concat(`<td align="middle"><input class="studInput" type='number' name='rowValue' value='' oninput='createChart()' align="middle"></td>`);
 	}
-	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td></tr>`);
+	markup = markup.concat(`<td class="avgRow" id="avg${r-1}" align="middle"></td></tr>`);
 	$("#tableBody").append(markup);
 }
+
+
+
 
 /**
  * generateRowWithVal() -> function that creates tables with previous evaluation values.
 */
 function generateRowWithVal(r, data) {
-    var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}'><input type='checkbox' name='record' value="${r-1}"><label for="selectAll"></label><span>${r}</span></th>`;
+    var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}' align="middle"><label class="contain"><input type="checkbox" id="selectAll"/><span class="checkmark" name='record' value="${r-1}"></span></label><span class="indexNumber">${r}</span></th>`;
 	for (let i = 1; i <= amountOfColumns; i++) { 
         try {
 			if(data[r-1].scores[i-1] == null) 
 				data[r-1].scores[i-1] = '';
 
-            markup = markup.concat(`<td><input class="studInput" type='number' name='rowValue' value='${data[r-1].scores[i-1]}' oninput='createChart()' required></td>`);
+            markup = markup.concat(`<td align="middle"><input class="studInput" type='number' name='rowValue' value='${data[r-1].scores[i-1]}' oninput='createChart()' align="middle"></td>`);
         } catch(err) {
             break;
         }
 	}
-	markup = markup.concat(`<td class="avgRow" id="avg${r-1}"></td></tr>`);
+	markup = markup.concat(`<td class="avgRow" id="avg${r-1}" align="middle"></td></tr>`);
 	$("#tableBody").append(markup);
 }
 
@@ -225,7 +230,7 @@ function delRow() {
 */
 function updateIndex() {
 	$('table tbody tr').each(function(index) {
-		$(this).find('th span').text(index+1);
+		$(this).find('th .indexNumber').text(index+1);
 		let newId = 'avg' + index;
 		$(this).find('td:nth-last-of-type(1)').attr('id', newId);
 	});
@@ -364,6 +369,8 @@ function insertEvaluation(entryData, assessment_id, buttonPressed) {
 
 			if(request.isNext == true) {
 				window.location.href = `/professor/assessment/${assessment_id}/professorInput`;
+			} else {
+				window.location.href = `/professor`;
 			}
 					
 		}
@@ -489,7 +496,7 @@ function alertMessage(message) {
 	$('#alertDiv span').text(message);
 	$('#alertDiv').show();
 	setInterval(() => {
-		$('#alertDiv').hide(3000, () => {
+		$('#alertDiv').hide(() => {
 			$('#alertDiv span').text("");
 		});
 	}, 3000);
