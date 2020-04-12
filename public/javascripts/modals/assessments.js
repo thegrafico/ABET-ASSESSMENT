@@ -11,14 +11,6 @@ $(document).ready(function () {
     const tags = [tag_outcome, tag_course, tag_rubric, tag_course_section];
     const default_message = ["Study Program", "Outcome", "Course", "Rubric"];
 
-    // TABLE STICKY HEADER
-    $('#table').floatThead({
-        position: 'fixed',
-        scrollContainer: true
-    });
-    
-    $('#table').trigger('reflow');
-
     let active = $("#active").val().toLowerCase();
     
     if ( active == "completed"){

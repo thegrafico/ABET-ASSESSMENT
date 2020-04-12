@@ -30,6 +30,7 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 	];
 
 	locals.title = "Performances Criteria";
+	locals.css_table  = "";
 
 
 	locals.subtitle = title + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
