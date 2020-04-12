@@ -24,7 +24,6 @@ var session = require("express-session")
 var MySQLStore = require('express-mysql-session')(session);
 var sessionStore = new MySQLStore(options);
 
-
 // =============================== ADMIN ROUTES ===================================
 // ===== Index Route =====
 var indexRouter = require('./routes/index');

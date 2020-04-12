@@ -82,10 +82,6 @@ function get_outcomes_with_study_program() {
         // exce
         conn.query(outcomes_by_stds, function (err, results) {
             if (err) return reject(err);
-            
-            results.forEach(element => {
-                console.log(`${element.date_created}`);
-            });
             resolve(results);
         });
     });
