@@ -23,52 +23,47 @@
 <!-- FILTERING HEADER -->
 <div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
     <div class="row">
+        
+        <div class="col-1">
+            <h3>Filters: </h3>
+        </div>
 
-        <div class="col-12">
+        <div class="col-2">
 
-            <div class="d-flex flex-row bd-highlight">
+            <div class="form-group">
+                <select class="form-control" id="departments" type="text">
+                    <option selected value=""> -- Department -- </option>
+                    <% departments.forEach(dep => { %>
+                    <option value="<%= dep["value"] %>"><%= dep["name"] %></option>
+                    <% }) %>
+                </select>
+                <input type="hidden" id="dept_selected" value="">
+            </div>
+        </div>
 
-                <div class="p-2 bd-highlight">
-                    <h3>Filters: </h3>
-                </div>
+        <div class="col-2">
+            <div class="form-group">
+                <select class="form-control" id="study_program" disabled type="text">
+                    <option selected value=""> -- Study Program -- </option>
+                </select>
+            </div>
+        </div>
 
-                <div class="p-2 bd-highlight">
+        <div class="col-3">
 
-                    <div class="form-group">
-                        <select class="form-control" id="departments" type="text">
-                            <option selected value=""> -- Department -- </option>
-                            <% departments.forEach(dep => { %>
-                            <option value="<%= dep["value"] %>"><%= dep["name"] %></option>
-                            <% }) %>
-                        </select>
-
-                        <input type="hidden" id="dept_selected" value="">
-                    </div>
-                </div>
-                <div class="p-2 bd-highlight">
-                    <div class="form-group">
-                        <select class="form-control" id="study_program" disabled type="text">
-                            <option selected value=""> -- Study Program -- </option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="p-2 bd-highlight" style="width: 30%;">
-
-                    <div class="form-group">
-                        <div>
-                            <input name="filter" class="form-control" id="myInput" style="margin-top: 0;" type="text"
-                                placeholder="Filter by anything. Ex. Name or Date" back>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-2 bd-highlight">
-                    <h4><%= feedback_message %>  <span id="number"></span> </h4>
+            <div class="form-group">
+                <div>
+                    <input name="filter" class="form-control" id="myInput" style="margin-top: 0;" type="text"
+                        placeholder="Filter by anything. Ex. Name or Date" back>
                 </div>
             </div>
         </div>
+
+        <div class="col-3">
+            <h4><%= feedback_message %> <span id="number"></span> </h4>
+        </div>
     </div>
+</div>
 </div>
 
 <div class="container-fluid my-2" id="divTable">
@@ -88,7 +83,7 @@
                 <% for( let index = 0; index < element["values"].length; index++ ) { %>
                 <!-- IF NOT last position -->
                 <% if((index == (element["values"].length -2) )) { %>
-                <th>
+                <td>
                     <% if (!element["hasPerformance"]) { %>
                     <a href="<%= base_url %>/<%= element["ID"]%>/performanceCriteria"
                         class="btn btn-secondary bg-warning text-dark">
@@ -100,12 +95,14 @@
                         Administrate
                     </a>
                     <% }%>
-                </th>
+                </td>
+
                 <% }else if (index != (element["values"].length -1) ) { %>
 
-                <th> <%=element["values"][index]%></th>
+                <td> <%=element["values"][index]%></td>
                 <% }else{ %>
-                <th> <%=element["values"][index]%>
+
+                <td> <%=element["values"][index]%>
                     <div class="col dropdown">
                         <button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
                             data-toggle="dropdown">
@@ -117,7 +114,8 @@
                                 data-target="#exampleModal">Remove
                             </button>
                         </div>
-                </th>
+                    </div>
+                </td>
                 <% } %>
                 <% } %>
             </tr>
@@ -144,15 +142,7 @@
 <!-- FITER OPTIONS -->
 <script src="/javascripts/filters/outcomes.js"></script>
 
-<style>
-    th:nth-child(4),
-    th:nth-child(1) {
-        width: 10%;
-        text-align: center;
-    }
+<!-- DYNAMIC CSS -->
+<link rel="stylesheet" href="/stylesheets/tables_sizes/<%=css_table %>">
 
-    th:nth-child(2) {
-        width: 10%;
-    }
-</style>
 <%- include ('../../partials/footer') -%>

@@ -81,42 +81,43 @@
 		<thead class="thead-dark">
 			<tr>
 				<% for (let header of table_header) { %>
-				<th scope="col"><%= header %></th>
+					<th scope="col">
+						<%= header %>
+					</th>
 				<% } %>
 			</tr>
 		</thead>
 		<tbody id="filter">
 			<% if (results.length == 0) { %>
-			<div style="text-align: center;">
-				<h1>You don't have Information Created yet.</h1>
-			</div>
+				<div style="text-align: center;">
+					<h1>You don't have Information Created yet.</h1>
+				</div>
 			<% }else { %>
 
-			<% results.forEach(element => { %>
-
-			<tr>
-				<% for( let index = 0; index < element["values"].length; index++ ) { %>
-					<!-- IF NOT last position -->
-					<% if (index != (element["values"].length -1) ) { %>
-						<th> <%=element["values"][index]%></th>
-					<% } else { %>
-						<th> <%=element["values"][index]%>
-							<div class="col dropdown">
-								<button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
-									Actions
-								</button>
-								<div class="dropdown-menu">
-									<a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
-										EDIT
-									</a>
-									<button class="REMOVE dropdown-item" value="<%=element["ID"]%>" data-toggle="modal" data-target="#exampleModal"> Remove </button>
-								</div>
-							</div>
-						</th>
-					<% } %>
-				<% } %>
-			</tr>
-			<% }); %>
+				<% results.forEach(element => { %>
+					<tr>
+						<% for( let index = 0; index < element["values"].length; index++ ) { %>
+							<!-- IF NOT last position -->
+							<% if (index != (element["values"].length -1) ) { %>
+								<td> <%=element["values"][index]%></td>
+							<% } else { %>
+								<td> <%=element["values"][index]%>
+									<div class="col dropdown">
+										<button class="btn inter-green inter-green-btn dropdown-toggle" type="button" data-toggle="dropdown">
+											Actions
+										</button>
+										<div class="dropdown-menu">
+											<a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
+												EDIT
+											</a>
+											<button class="REMOVE dropdown-item" value="<%=element["ID"]%>" data-toggle="modal" data-target="#exampleModal"> Remove </button>
+										</div>
+									</div>
+								</td>
+							<% } %>
+						<% } %>
+					</tr>
+				<% }); %>
 			<% } %>
 		</tbody>
 	</table>
@@ -133,4 +134,8 @@
 <script src="/javascripts/filters/home.js"></script>
 <!-- FILTER UP KEY -->
 <script src="/javascripts/filters/filter_key_up.js"></script>
+
+<!-- Dynamic CSS -->
+<link rel="stylesheet" href="/stylesheets/tables_sizes/<%=css_table %>">
+
 <%- include ('../partials/footer') -%>

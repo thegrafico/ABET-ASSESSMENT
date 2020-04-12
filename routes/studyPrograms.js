@@ -4,6 +4,8 @@ var general_queries = require("../helpers/queries/general_queries");
 var router = express.Router();
 const { study_program_create_input } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
+var moment = require("moment");
+
 
 
 // for redirtect
@@ -37,7 +39,7 @@ router.get('/', async function(req, res) {
 	];
 
 	locals.title = "Study Programs";
-
+	locals.css_table = "study_program.css";
 
 	locals.results = [];
 	let all_std_query = {
@@ -67,9 +69,7 @@ router.get('/', async function(req, res) {
 		let results = [];
 		study_programs.forEach(std_program => {			
 
-			// change date format 
-			let date = new Date(std_program.date_created);
-			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+			let date = moment(std_program.date_created).format('MMMM Do YYYY');
 
 			results.push({
 				"ID": std_program["prog_ID"],

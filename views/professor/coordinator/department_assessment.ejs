@@ -74,22 +74,29 @@
     </div>
 </div>
 
+
+<div class="container mt-4" id="feedbackContainer" style="display: none;">
+    <div class="row">
+        <div class="col-8">
+            <!-- BTN -->
+            <h3>Numbers of Assessments Founds: <span id="sNumber"></span> </h3>
+        </div>
+
+        <div class="col-4">
+            <!-- BTN -->
+            <button class="btn btn-secondary" id="button-a">Export tables as Excel file</button>
+        </div>
+
+    </div>
+</div>
+
 <!-- TABLES GOES HERES -->
 <div class="container-fluid" id="tableContainer">
 
 </div>
 
-<!-- BTN -->
-<button id="button-a">Create Excel</button>
-
-<div class="container">
-    <canvas id="myChart" width="400" height="400"></canvas>
-</div>
-
 <!-- MODAL FOR FEEDBACK -->
 <%- include ('../modal/feedback') -%>
-
-
 
 <!-- STYLES -->
 <style>

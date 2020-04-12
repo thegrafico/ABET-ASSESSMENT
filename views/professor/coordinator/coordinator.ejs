@@ -13,8 +13,8 @@
         <div class="col-4">
             <div class="form-group">
                 <div>
-                    <input name="filter" class="form-control" id="filterProfessorName" style="margin-top: 0;" type="text"
-                        placeholder="Type Professor Name or ID." back>
+                    <input name="filter" class="form-control" id="filterProfessorName" style="margin-top: 0;"
+                        type="text" placeholder="Type Professor Name or ID." back>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
                 <select class="form-control" id="filterStatus" type="text">
                     <option selected value=""> -- Status -- </option>
                     <% filterStatus.forEach(status => { %>
-                        <option value="<%=status %>"> <%=status%> </option>
+                    <option value="<%=status %>"> <%=status%> </option>
                     <% }); %>
                 </select>
             </div>
@@ -55,7 +55,7 @@
                     <option selected value="" data-std=""> -- Study Program -- </option>
 
                     <% study_programs.forEach(each => { %>
-                        <option value="<%= each["prog_name"] %>, <%= each["prog_ID"]%>" > <%= each["prog_name"] %> </option>
+                    <option value="<%= each["prog_name"] %>, <%= each["prog_ID"]%>"> <%= each["prog_name"] %> </option>
                     <% }); %>
                 </select>
             </div>
@@ -77,55 +77,62 @@
                 <select class="form-control" id="filterTerm" type="text">
                     <option selected value=""> -- Academic Term -- </option>
                     <% term.forEach(each => { %>
-                        <option value="<%= each["term_name"] %>"> <%= each["term_name"] %> </option>
+                    <option value="<%= each["term_name"] %>"> <%= each["term_name"] %> </option>
                     <% }) %>
                 </select>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="container-fluid tableContainer">
-    <table id="table" class="table table-fixed table-hover table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>Professor</th>
-                <th>Assessment</th>
-                <th>Course</th>
-                <th>Outcome</th>
-                <th>Term</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="tableFilter">
+        <div class="col-2">
+            <div class="form-group">
+                <div>
+                    <h4>Number of Row: <span id="numberOfRows"></span></h4>
+                </div>
+            </div>
+        </div>
 
-            <% if (hasAssessments) { %>
-                <% var counter = 1; %>
+        <div class="container-fluid tableContainer">
+            <table id="table" class="table table-fixed table-hover table-bordered sticky">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Professor</th>
+                        <th>Assessment</th>
+                        <th>Course</th>
+                        <th>Outcome</th>
+                        <th>Term</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tableFilter">
 
-                <!-- ASSESSMENT IN PROSESS -->
-                <%- include ('../modal/coordinator_table', {assessments: assessment_in_progress}) -%>
+                    <% if (hasAssessments) { %>
+                    <% var counter = 1; %>
 
-                <!-- ASSESSMET COMPLETED -->
-                <%- include ('../modal/coordinator_table', {assessments: assessment_completed}) -%>
+                    <!-- ASSESSMENT IN PROSESS -->
+                    <%- include ('../modal/coordinator_table', {assessments: assessment_in_progress}) -%>
 
-                <!-- ASSESSMENT ARCHIVE -->
-                <%- include ('../modal/coordinator_table', {assessments: assessment_archive}) -%>
+                    <!-- ASSESSMET COMPLETED -->
+                    <%- include ('../modal/coordinator_table', {assessments: assessment_completed}) -%>
 
-            <% } %>
-        </tbody>
-    </table>
-</div>
+                    <!-- ASSESSMENT ARCHIVE -->
+                    <%- include ('../modal/coordinator_table', {assessments: assessment_archive}) -%>
 
-<!-- STYLES -->
-<link rel="stylesheet" href="/stylesheets/professor_index.css">
-<link rel="stylesheet" href="/stylesheets/coordinator.css">
-<!-- STATIC HEADER -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
-<!-- MODAL -->
-<script src="/javascripts/modals/assessments.js"></script>
-<!-- FILTERS -->
-<script src="/javascripts/filters/coordinator.js"></script>
-<!-- FOOTER -->
-<%- include ('../../partials/footer') -%>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/stylesheets/professor_index.css">
+        <link rel="stylesheet" href="/stylesheets/coordinator.css">
+        <!-- STATIC HEADER -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
+        <!-- MODAL -->
+        <script src="/javascripts/modals/assessments.js"></script>
+        <!-- FILTERS -->
+        <script src="/javascripts/filters/coordinator.js"></script>
+        <!-- FOOTER -->
+        <%- include ('../../partials/footer') -%>

@@ -1,5 +1,6 @@
 var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
+const table = require("../DatabaseTables");
 
 
 /**

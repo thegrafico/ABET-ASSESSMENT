@@ -20,7 +20,7 @@ var locals = {
 	api_get_url: "/api/get/user", // all api_url ends in the id
 	delete_redirect: null,
 	filter: true,
-	filter_title: "-- Department --",
+	filter_title: "-- Study Program --",
 	feedback_message: "Number of users: "
 };
 
@@ -33,6 +33,8 @@ router.get('/', async function (req, res) {
 	locals.breadcrumb = [{ "name": "Users", "url": base_url }];
 
 	locals.title = "Users";
+
+	locals.css_table = "user.css";
 
 	locals.results = [];
 

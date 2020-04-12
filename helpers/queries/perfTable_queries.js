@@ -93,30 +93,6 @@ function deleteRowWithAssessmentID(assessmentID) {
 }
 
 /**
- * get_department_by_user_id - get all departments by user
- * @param {Number} id - Id of the user
- * @return {Promise} Resolve with all departments
- */
-function get_department_by_user_id(user_id) {
-	return new Promise(function (resolve, reject) {
-		if (user_id == undefined || isNaN(user_id)) {
-			return reject("Invalid user id");
-		}
-
-		let user_dep_query = `SELECT DEPARTMENT.dep_ID, DEPARTMENT.dep_name FROM USER INNER JOIN USER_DEP USING(user_ID)
-		INNER JOIN DEPARTMENT ON USER_DEP.dep_ID = DEPARTMENT.dep_ID
-		WHERE USER.user_ID = ?;`
-
-		conn.query(user_dep_query, [user_id], function (err, results) {
-			if (err)
-				reject(err);
-			else
-				resolve(results);
-		});
-	});
-}
-
-/**
  * insert_professor_input - Create a new report with the course information
  * @param {Object} grades - all grades {"A", "B", "C", "D", "F", "UW"}
  * @param {Object} course_info - course information {results, modification, reflection, improvement}
@@ -200,7 +176,7 @@ function update_professor_input(id, grades, course_info) {
 function update_status(id, status) {
 	return new Promise(function (resolve, reject) {
 
-		let update_query = `UPDATE ASSESSMENT SET status = ? WHERE assessment_ID = ?`;
+		let update_query = `UPDATE ${tables.assessment} SET status = ? WHERE assessment_ID = ?`;
 
 		conn.query(update_query, [status, id], function (err, results) {
 			if (err)
@@ -219,7 +195,7 @@ function update_status(id, status) {
 function get_report_header(assessment_id) {
 	return new Promise(function (resolve, reject) {
 
-		let get_query = `SELECT ASSESSMENT.name, USER.first_name, COURSE.course_name, 
+		let get_query = `SELECT ASSESSMENT.name, ASSESSMENT.course_section, USER.first_name, COURSE.course_name, 
 		EVALUATION_RUBRIC.rubric_name, STUDENT_OUTCOME.outc_name, STUDENT_OUTCOME.outc_description,
 		STUDY_PROGRAM.prog_name, DEPARTMENT.dep_name, ACADEMIC_TERM.term_name, 
 		COURSE.course_number, USER.last_name, COURSE.course_description, PERF_CRITERIA.perC_Desk
@@ -252,7 +228,7 @@ function get_report_header(assessment_id) {
 */
 function addGraph(assessment_ID, base_64) {
 	return new Promise((resolve, reject) => {
-		let addGraph = `INSERT INTO ASSESSMENT_GRAPH (assessment_ID, base_64) VALUES (?, ?);`;
+		let addGraph = `INSERT INTO ${tables.assessment_graph} (assessment_ID, base_64) VALUES (?, ?);`;
 
 		conn.query(addGraph, [assessment_ID, base_64], (err, results) => {
 			if(err)
@@ -289,7 +265,7 @@ function updateGraph(assessment_ID, base_64) {
 */
 function getGraph(assessment_ID) {
 	return new Promise((resolve, reject) => {
-		let getGraph = `SELECT base_64 FROM ASSESSMENT_GRAPH WHERE assessment_ID = ?;`;
+		let getGraph = `SELECT base_64 FROM ${tables.assessment_graph} WHERE assessment_ID = ?;`;
 
 		conn.query(getGraph, [assessment_ID], function(err, results) {
 			if(err)
@@ -304,7 +280,6 @@ function getGraph(assessment_ID) {
 module.exports.update_status = update_status;
 module.exports.get_report_header = get_report_header;
 module.exports.get_perf_criterias = get_perf_criterias;
-module.exports.get_department_by_user_id = get_department_by_user_id;
 module.exports.deleteRowWithAssessmentID = deleteRowWithAssessmentID;
 module.exports.insert_professor_input = insert_professor_input;
 module.exports.update_professor_input = update_professor_input;

@@ -8,6 +8,8 @@ const table = require("../../helpers/DatabaseTables");
 var { validate_form, get_performance_criteria_results, getNumbersOfRows } = require("../../helpers/validation");
 var { insertStudentScores } = require("../../helpers/queries/roolback_queries");
 const { admin, coordinator, statusOfAssessment } = require("../../helpers/profiles");
+var moment = require("moment");
+
 
 /* GLOBAL LOCALS */
 const base_url = '/professor';
@@ -32,6 +34,12 @@ router.get('/', async function (req, res) {
 
 	locals.title = "Professor";
 
+	// current assessment active
+	locals.active = progress;
+	if (req.query != undefined && req.query.active != undefined) {
+		locals.active = req.query.active;
+	}
+
 	// the user id is stored in session, thats why user need to be login
 	let user_id = req.session.user_id;
 
@@ -48,7 +56,6 @@ router.get('/', async function (req, res) {
 			console.error("Error gettign study program: ", err);
 		});
 	}
-
 
 	// Getting the term
 	let academic_term = await general_queries.get_table_info(table.academic_term).catch((err) => {
@@ -69,7 +76,9 @@ router.get('/', async function (req, res) {
 
 		// Change the date of all assessment
 		assessments.map(row => {
-			row.creation_date = `${row.creation_date.getMonth() + 1}/${row.creation_date.getDate()}/${row.creation_date.getFullYear()}`;
+			let date = moment(row.creation_date, "YYYYMMDD");
+
+			row.creation_date = date.fromNow();	
 		});
 
 		locals.assessment_in_progress = assessments.filter(each => each.status == progress);
@@ -263,7 +272,12 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 
 	let isNext = (req.body.ifNext != undefined);
 
-	insertStudentScores(rows, performances_student, assessment_id).then((success) => {
+	insertStudentScores(rows, performances_student, assessment_id).then(async (success) => {
+
+		await queries.update_status(assessment_id, progress).catch((err) => {
+			console.log("Cannot update the status of the assessment: ", err);
+		});
+
 		console.log("Data was successfully added.");
 		return res.json({ error: false, message: "success", isNext: isNext });
 	}).catch((err) => {
@@ -324,7 +338,7 @@ router.delete('/assessment/:assessmentID', middleware.validate_assessment, middl
 
 	queries.update_status(assessment_id, archive).then((ok) => {
 		req.flash("success", "Assessment Moved to archive!");
-		res.redirect("back");
+		res.redirect(`${base_url}?&active='completed'`);
 	}).catch((err) => {
 		console.log("Cannot Remove the assessment: ", err);
 		req.flash("error", "Cannot Remove the assessment!");
@@ -462,17 +476,27 @@ router.post('/assessment/:assessmentID/professorInput', middleware.validate_asse
 		queries.update_professor_input(id, req.body, req.body.course).then(async (ok) => {
 
 			if (status == completed) {
+
+
 				// Validate performance
 				if (performanceData == undefined || performanceData.length == 0) {
-					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table is empty");
-					return res.redirect("back");
+					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table Empty");
+					return res.redirect(`/professor/assessment/${id}/performanceTable`);
 				}
+
+				// check is null
+				let hasNullValues = performanceData.some(each => each["row_perc_score"] == null);
+
+				if (hasNullValues) {
+					req.flash("error", "Data was Saved, but cannot completed the assessment due to Performance Criteria table is missing values");
+					return res.redirect(`/professor/assessment/${id}/performanceTable`);
+				}
+
 			}
 
 			await queries.update_status(id, status).catch((err) => {
 				console.log("Cannot update the status of the assessment: ", err);
 			});
-
 
 			if (status == completed) {
 				req.flash("success", "Assessment was moved to completed section!");
@@ -536,7 +560,7 @@ router.put('/assessment/changeStatus/:assessmentID', middleware.validate_assessm
 	// assessment id
 	let id = req.params.assessmentID;
 
-	queries.update_status(id, "in_progress").then((ok) => {
+	queries.update_status(id, progress).then((ok) => {
 		req.flash("success", "Assessment now is in progress section!");
 		res.redirect("back");
 	}).catch((err) => {
@@ -555,18 +579,13 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 
 	// if assessment if completed
 	if (req.body.assessment.status == progress) {
-		req.flash("error", "Please complete the assessment first");
+		req.flash("error", "Please finish the assessment first to view the report");
 		return res.redirect("back");
 	}
 
-	locals.title = "Assessment Report";
-
 	// assessment id
 	let assessment_id = req.params.assessmentID;
-
-	// Status of the assessment
-	locals.isArchive = (req.body.assessment.status == archive);
-	locals.belong_to_user = req.body.belong_to_user;
+	locals.title = "Assessment Report";
 
 	// nav breadcrumb
 	locals.breadcrumb = [
@@ -574,6 +593,10 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		{ "name": "Course Evaluation", "url": `${base_url}/assessment/${assessment_id}/professorInput`, "active": false },
 		{ "name": "Report", "url": `${base_url}/assessment/${assessment_id}/report`, "active": true }
 	];
+
+	// Status of the assessment
+	locals.isArchive = (req.body.assessment.status == archive);
+	locals.belong_to_user = req.body.belong_to_user;
 
 	let getGraph = await queries.getGraph(assessment_id).catch((err) => {
 		console.error("ERROR: ", err);
@@ -595,10 +618,11 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		req.flash("error", "Cannot find the information of the assessment");
 		return res.redirect(base_url);
 	}
+
 	locals.header = reportHeader[0];
 
 	// get the professor input data
-	let prof_query = { "from": "REPORTS", "where": "assessment_ID", "id": assessment_id }
+	let prof_query = { "from": table.reports, "where": "assessment_ID", "id": assessment_id }
 	let professor_input = await general_queries.get_table_info_by_id(prof_query).catch((err) => {
 		console.error("Cannot get the professor input data: ", err);
 	});

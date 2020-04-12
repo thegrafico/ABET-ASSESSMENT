@@ -110,8 +110,6 @@ router.get('/departmentAssessments', async function (req, res) {
     } else {
         study_program = req.session.study_programs_coordinator || [];
     }
-
-    console.log(study_program);
   
     // if cannot find department
     if (study_program == undefined || study_program.length == 0) {

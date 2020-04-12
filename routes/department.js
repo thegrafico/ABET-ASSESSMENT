@@ -4,9 +4,9 @@ var router = express.Router();
 var query = require("../helpers/queries/department_queries");
 var general_queries = require("../helpers/queries/general_queries");
 const { department_create_inputs } = require("../helpers/layout_template/create");
-var { validate_form } = require("../helpers/validation");
+var { validate_form } = require("../helpers/validation")
+var moment = require("moment");
 const table = require("../helpers/DatabaseTables");
-
 
 // base url
 const base_url = '/admin/department';
@@ -32,9 +32,13 @@ router.get('/', async function (req, res) {
 	locals.breadcrumb = [
 		{ "name": "Department", "url": base_url },
 	];
+
+	// page title
 	locals.title = "Departments";
 
-
+	// css style
+	locals.css_table = "department.css";
+	
 	//Getting the  DEPARTMENT information from db
 	let all_deparment = await general_queries.get_table_info(table.department).catch((err) => {
 		console.error("Error getting deparment information: ", err);
@@ -48,9 +52,7 @@ router.get('/', async function (req, res) {
 
 		all_deparment.forEach(deparment => {
 
-			// change date format 
-			let date = new Date(deparment.date_created);
-			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+			let date = moment(deparment.date_created).format('MMMM Do YYYY');
 
 			results.push({
 				"ID": deparment.dep_ID,
@@ -131,7 +133,12 @@ router.post('/create', function (req, res) {
 	}).catch((err) => {
 		// flash message [ERRO]
 		console.error("Error: ", err);
-		req.flash("error", "Cannot Department created");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Departmetn with the same information does already exits");
+		else
+			req.flash("error", "Cannot Department created");
+
 		res.redirect(base_url);
 	});
 });
@@ -225,7 +232,12 @@ router.put('/:id', function (req, res, next) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("ERROR: ", err);
-		req.flash("error", "Cannot Edit department");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Departmetn with the same information does already exits");
+		else
+			req.flash("error", "Cannot Edit department");
+
 		res.redirect(base_url);
 	});
 });
@@ -241,7 +253,7 @@ router.delete('/:id', function (req, res, next) {
 		req.flash("error", "Cannot find the department");
 		return res.redirect(base_url);
 	}
-	
+
 	let tabla_data = { "from": table.department, "where": "dep_ID", "id": req.params.id };
 
 	general_queries.delete_record_by_id(tabla_data).then((was_deleted) => {

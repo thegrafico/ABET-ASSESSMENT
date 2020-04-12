@@ -9,7 +9,6 @@ var router = express.Router();
 var rubric_query = require('../helpers/queries/evaluation_queries');
 var general_queries = require('../helpers/queries/general_queries');
 var roolback_queries = require("../helpers/queries/roolback_queries");
-var { get_outcomes_by_department } = require("../helpers/queries/outcomes_queries");
 const { evaluation_rubric_input } = require("../helpers/layout_template/create");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
 var { validate_form, get_data_for_update, split_and_filter } = require("../helpers/validation");
@@ -39,6 +38,7 @@ router.get('/', async function (req, res) {
 	];
 
 	locals.title = "Evaluation Rubric";
+	locals.css_table = "evaluation_rubric.css";
 
 
 	// getting evaluation rubric from db
@@ -163,7 +163,12 @@ router.post("/create", function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.error("ERROR: ", err);
-		req.flash("error", "Cannot create Evaluation Rubric");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Evaluation Rubric with the same information does already exits");
+		else
+			req.flash("error", "Cannot create Evaluation Rubric");
+
 		res.redirect(base_url);
 	});
 });
@@ -326,7 +331,12 @@ router.put('/:r_id', validate_evaluation_rubric, async function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log(err);
-		req.flash("error", "Error updating the Evaluation Rubric");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Evaluation Rubric with the same information does already exits");
+		else
+			req.flash("error", "Error updating the Evaluation Rubric");
+
 		res.redirect(base_url);
 	});
 });

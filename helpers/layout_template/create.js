@@ -39,7 +39,7 @@ module.exports.user_create_inputs = [
 module.exports.course_create_inputs = [
     {
         "title": "Number",
-        "placeHolder": "Course Number",
+        "placeHolder": "Course Number. Ex COEN 2020",
         "name": "data[number]",
         "value": "",
     },

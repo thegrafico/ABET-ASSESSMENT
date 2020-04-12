@@ -6,6 +6,8 @@ var router = express.Router();
 const table = require("../helpers/DatabaseTables");
 const { course_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form, split_and_filter, get_data_for_update } = require("../helpers/validation");
+var moment = require("moment");
+
 
 
 // var authHelper = require('../helpers/auth');
@@ -35,6 +37,8 @@ router.get('/', async function (req, res) {
 	];
 
 	locals.title = "Courses";
+	locals.css_table = "course.css";
+
 
 	locals.table_header = ["Course Name", "Course Number", "Study Program", "Date Created", ""];
 	locals.results = [];
@@ -43,24 +47,22 @@ router.get('/', async function (req, res) {
 		console.log("Error getting the courses with std program results: ", err);
 	});
 
-	let study_program = await general_queries.get_table_info(table.study_program).catch((err) =>{
+	let study_program = await general_queries.get_table_info(table.study_program).catch((err) => {
 		console.error("Error getting study programs:", err);
 	});
 
 	// validate study program
-	if (study_program == undefined || study_program.length == 0){
+	if (study_program == undefined || study_program.length == 0) {
 		res.flash("error", "cannot find study programs");
 		return res.redirect("/admin");
 	}
-	
+
 	let results = [];
 	if (courses != undefined && Object.keys(courses).length > 0) {
 
 		for (let key in courses) {
 
-			date = new Date(courses[key].date_created);
-			// change date format 
-			date = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+			let date = moment(courses[key].date_created).format('MMMM Do YYYY');
 
 			results.push({
 				"ID": courses[key]["course_ID"],
@@ -173,7 +175,12 @@ router.post('/create', async function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("ERROR: ", err);
-		req.flash("error", "Error creating the course, Contact the Admin");
+
+		if (err.code == "ER_DUP_ENTRY")
+			req.flash("error", "A Course with the same information does already exits");
+		else
+			req.flash("error", "Error creating the course, Contact the Admin");
+
 		return res.redirect(base_url);
 	});
 });

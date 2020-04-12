@@ -223,7 +223,7 @@ module.exports.create_evaluation_rubric = function create_evaluation_rubric(rubr
             (rubric_name, rubric_description, outc_ID) 
             VALUES(?, ?, ?);`;
 
-            connection.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id, new Date()], function (error, results) {
+            connection.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id], function (error, results) {
 
                 if (error) return connection.rollback(function () { reject(error); });
 

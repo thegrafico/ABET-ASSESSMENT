@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var previus_val = undefined;
+    var CURRENT_MAPPING = undefined;
     let pair = undefined;
 
     let dept_val = $("#departments").val();
@@ -15,7 +15,6 @@ $(document).ready(function () {
 
         // disable study program
         $('#study_program').prop("disabled", true);
-
 
         //clean the body
         $("#filter").empty();
@@ -53,25 +52,31 @@ $(document).ready(function () {
     $("#study_program").change(async function () {
 
         let std_id = $(this).val();
+        
+        if (std_id == undefined || std_id == "-1"){
+            return;
+        }
 
         let mapping_data = await make_request(`/api/courseMapping/get/${std_id}`).catch((err) => {
             console.log("Error getting the mapping: ", err);
         });
 
-        if (mapping_data == undefined || mapping_data.length > 0) {
-            alert("Error: Cannot find mapping data")
+        if (mapping_data == undefined || mapping_data.mapping == undefined || mapping_data.mapping.length == 0) {
+            modal_message(false, "We couldn't find any outcome for this study program");
             return;
         }
-            previus_val = mapping_data.current_mapping;
-            let mapping = mapping_data.mapping[0];
 
-            let selected_mapping = mapping.outcome_course;
+        // update the previus val
+        CURRENT_MAPPING = mapping_data.current_mapping;
 
-            // create the header table
-            create_header(mapping);
+        // create table
+        let mapping = mapping_data.mapping[0];
 
-            //create the body of table
-            create_body(mapping, selected_mapping);
+        // create the header table
+        create_header(mapping);
+
+        //create the body of table
+        create_body(mapping, mapping_data.outcome_course);
     });
 
     $("#clickme").click(function () {
@@ -81,6 +86,7 @@ $(document).ready(function () {
             pair = $(this).val().trim().split(",");
             selected.push(pair);
         });
+
         let all_courses = selected.map(e => e[1]);
 
         // remove duplicates outcomes
@@ -99,13 +105,13 @@ $(document).ready(function () {
             arr.push({ "course_id": ID, "outcomes": temp, "isNew": true });
             temp = [];
         });
-        previus_val.sort((a, b) => (a.course_id > b.course_id) ? 1 : -1);
+        CURRENT_MAPPING.sort((a, b) => (a.course_id > b.course_id) ? 1 : -1);
         arr.sort((a, b) => (a.course_id > b.course_id) ? 1 : -1);
 
         // COMPARING BOTH DT - TO UPDATE OR ELIMINATE THE CHECKBOX SELECTED
         let update_data = [];
         let found = false;
-        previus_val.forEach(past => {
+        CURRENT_MAPPING.forEach(past => {
             found = false;
             arr.forEach(present => {
                 let to_update = undefined;
@@ -133,10 +139,6 @@ $(document).ready(function () {
             update_data.push({ "course_id": e.course_id, "update": to_update });
         });
 
-        // console.log("PREVIUS VALUE: ", previus_val);
-        // console.log("CURRENT VALUE:", arr);
-        // console.log("NEW VALUES: ", update_data);
-
         $.ajax({
             type: "POST",
             url: '/admin/courseMapping/addMapping',
@@ -145,10 +147,10 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (response) {
-                // console.log(response);
+
                 if (response != undefined && response.status == 200) {
 
-                    // RESET EVERYTHING
+                    
                     let id = $("#study_program").val();
                     $("#study_program").val("").change();
                     $("#study_program").val(id).change();
@@ -178,21 +180,49 @@ $(document).ready(function () {
                         clean_list("#addedElements");
                     }
 
-                    $("#modalTitle").text(msgTitle);
-                    $("#modalMessage").text(msgBody)
-                    $('#view_performances').modal('toggle');
+                    modal_message_for_mapping(msgTitle, msgBody, response.wasUpdated);
                 }
             },
             error: function () {
-                location.reload(true);
-                $("#modalTitle").text("Error");
-                $("#modalMessage").text("There is an error updating the mapping");
-                $('#view_performances').modal('toggle');
+                modal_message(false, "Sorry, Something went wrong.");
             }
         });
     });
 
 });
+
+/**
+ * @param {Bool} success - if the message is a success or an error 
+ * @param {String} message - message for the modal
+ */
+function modal_message(success, message) {
+
+    if (success) {
+        $("#feedbackTitle").text("Success").css({ "color": "green" });
+    } else {
+        $("#feedbackTitle").text("Sorry").css({ "color": "red" });
+    }
+    $("#feedbackBody").text(message);
+    $('#feedbackContainer').modal('toggle');
+}
+
+/**
+ * @param {String} title - Tittle 
+ * @param {String} message - message for the modal
+ */
+function modal_message_for_mapping(title, message, isSuccess = true) {
+    
+    if (isSuccess){
+        $("#modalTitle").css({"color": "green"});
+    }else{
+        $("#modalTitle").css({"color": "black"});
+    }
+
+    $("#modalTitle").text(title);
+    $("#modalMessage").text(message)
+    $('#view_performances').modal('toggle');
+}
+
 
 function create_list(tag, title, elements) {
     $(tag).empty().append(`<h4>${title}</h4>`);
@@ -240,6 +270,7 @@ function get_data_for_update(current, selected_for_update) {
  */
 function create_body(mapping, current_selected) {
 
+
     // console.log("CURRENT: ", current_selected);
     //clean the body
     $("#filter").empty();
@@ -274,7 +305,7 @@ function create_body(mapping, current_selected) {
     }
 
     //  check the values with the value specified
-    if (current_selected != undefined && current_selected.length > 0){
+    if (current_selected != undefined && current_selected.length > 0) {
         current_selected.forEach(e => {
             $(`input[value='${e}']`).attr("checked", "checked");
         });

@@ -65,6 +65,7 @@ router.post('/addMapping', async function (req, res) {
     // set data
     let data = req.body.data;
 
+
     let mapping_insert = [];
     let mapping_remove = [];
     let can_insert = false, can_remove = false;
@@ -123,7 +124,7 @@ router.post('/addMapping', async function (req, res) {
             "deleted": removed_elements, "added": update_elements
         });
     } else {
-        res.end('{"success" : "Data keep the same", "status" : 200, "wasUpdated": false}');
+        res.json({"success" : "Data keep the same", "status" : 200, "wasUpdated": false});
     }
 });
 
