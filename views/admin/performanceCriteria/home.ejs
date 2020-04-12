@@ -1,0 +1,356 @@
+<%- include ('../../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<div class="font-up-bold text-uppercase">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
+			<% for( let index = 0; index < breadcrumb.length; index++ ) { %>
+
+			<% if (index == breadcrumb.length -1) { %>
+			<li class="breadcrumb-item active" aria-current="page"><%= breadcrumb[index].name %></li>
+			<% }else { %>
+			<li class="breadcrumb-item">
+				<a href="<%= breadcrumb[index].url %>">
+					<%= breadcrumb[index].name %>
+				</a>
+			</li>
+			<% } %>
+
+			<% } %>
+		</ol>
+	</nav>
+
+</div>
+
+<!-- FILTERING HEADER -->
+<div class="container-fluid mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
+
+	<div class="row">
+
+		<div class="col-8">
+
+			<div class="d-flex flex-row bd-highlight">
+
+				<div class="p-2 bd-highlight">
+					<h3>Filters: </h3>
+				</div>
+
+				<div class="p-2 bd-highlight" style="width: 40%;">
+
+					<div class="form-group">
+						<div>
+							<input name="filter" class="form-control" id="myInput" style="margin-top: 0;" type="text"
+								placeholder="Type what you're Looking for. Ex. Name or Date" back>
+						</div>
+					</div>
+				</div>
+
+				<div class="p-2 bd-highlight" style=" margin-left:3%;">
+					<h5> <%=feedback_message%> <span id="number"></span> </h5>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-4">
+			<div class="d-flex flex-row-reverse">
+				<button id="editOrderBtn" class="btn btn-primary">Edit Performance Order</button>
+
+			</div>
+		</div>
+	</div>
+	<div class="row">
+
+		<div class="col-8">
+		</div>
+
+		<div class="col-2" style="text-align: center;">
+
+			<button id="cancelBtn" class="btn btn-warning invisible">
+				Cancel Changes
+			</button>
+		</div>
+
+		<div class="col-2">
+			<button id="saveOrderBtn" class="btn btn-success invisible">
+				Save Changes
+			</button>
+		</div>
+
+	</div>
+</div>
+
+<button id="url" class="invisible" value="<%= api_get_url %>"></button>
+<button id="base_url" class="invisible" value="<%= base_url %>"></button>
+
+<div class="container-fluid my-2" id="divTable">
+
+	<table id="table" class="table table-bordered table-striped">
+		<thead class="thead-dark">
+			<tr>
+				<% for (let header of table_header) { %>
+				<th scope="col">
+					<%= header %>
+				</th>
+				<% } %>
+			</tr>
+		</thead>
+		<tbody id="filter">
+			<% if (results.length == 0) { %>
+			<div style="text-align: center;">
+				<h1>You don't have Information Created yet.</h1>
+			</div>
+			<% }else { %>
+
+			<% results.forEach(element => { %>
+			<tr>
+				<% for( let index = 0; index < element["values"].length; index++ ) { %>
+				<!-- IF NOT last position -->
+
+				<% if (index != (element["values"].length -1) ) { %>
+
+
+				<% if (index == (element["values"].length -2) ) { %>
+
+				<td class="trEditable" id=<%= element["ID"] %>>
+					<span class="editable"> <%=element["values"][index]%> </span>
+				</td>
+
+				<% } else { %>
+
+				<td> <%=element["values"][index]%> </td>
+
+				<% } %>
+
+
+				<% } else { %>
+				<td> <%=element["values"][index]%>
+					<div class="col dropdown">
+						<button class="btn inter-green inter-green-btn dropdown-toggle" type="button"
+							data-toggle="dropdown">
+							Actions
+						</button>
+						<div class="dropdown-menu">
+							<a class="EDIT dropdown-item" href="<%=base_url%>/<%=element["ID"]%>/edit">
+								EDIT
+							</a>
+							<button class="REMOVE dropdown-item" value="<%=element["ID"]%>" data-toggle="modal"
+								data-target="#exampleModal"> Remove </button>
+						</div>
+					</div>
+				</td>
+				<% } %>
+				<% } %>
+			</tr>
+			<% }); %>
+			<% } %>
+		</tbody>
+	</table>
+</div>
+
+<div class="container">
+	<div class="col-4" style="margin-left: 30%;">
+		<a style="width: 100%;" href="<%= base_url %>/create" class="btn inter-green inter-green-btn"
+			role="button">Create New </a>
+	</div>
+</div>
+<!-- REMOVE PARTIAL -->
+<%- include ('../../partials/modal_remove', {delete_redirect: delete_redirect || ""}) -%>
+
+<!-- FEEDBACK PARTIAL -->
+<%- include ('../../partials/modal_feedback') -%>
+
+<!-- FILTERING -->
+<script src="/javascripts/filters/home.js"></script>
+<!-- FILTER UP KEY -->
+<script src="/javascripts/filters/filter_key_up.js"></script>
+
+<!-- Dynamic CSS -->
+<link rel="stylesheet" href="/stylesheets/tables_sizes/<%=css_table %>">
+
+<!-- STATIC HEADER -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/2.1.4/jquery.floatThead.min.js"></script>
+<!-- Sticky Table -->
+<script src="/javascripts/tableSticky.js"></script>
+
+
+
+<script>
+	const tag_loader = "#loader";
+	const tag_change_btn = "#editOrderBtn";
+	const tag_save_btn = "#saveOrderBtn";
+	const tag_cancel = "#cancelBtn";
+
+	let default_class = "btn btn-primary";
+	let default_text = "Edit Performance Order";
+	let warning_class = "btn btn-warning";
+
+
+	let PREVIUS_VALUES = [];
+	let CURRENT_VALUES = [];
+
+	$(document).ready(function () {
+
+		// User press change order btn
+		$(tag_change_btn).click(function () {
+			PREVIUS_VALUES = [];
+
+			// disable the edit bnt until the user choose one option
+			$(this).attr("disabled", true);
+
+
+			$(".editable").each(function () {
+
+				PREVIUS_VALUES.push($(this).text().trim());
+
+				var $input = $('<input/>').val($(this).text().trim());
+				$(this).replaceWith($input);
+			});
+
+			$(tag_save_btn).removeClass("invisible");
+			$(tag_cancel).removeClass("invisible");
+
+		});
+
+		// user press cancel button
+		$(tag_cancel).click(function () {
+
+			change_to_text(PREVIUS_VALUES, this);
+
+		});
+
+		// when user press
+
+		// user press cancel button
+		$(tag_save_btn).click(async function () {
+			
+			$(tag_loader).show();
+
+			let request = [];
+			CURRENT_VALUES = [];
+
+			let hasInvalid = false;
+
+			await $(".trEditable").each(function (index) {
+
+				let percID = $(this).attr("id");
+
+				let val = $(this).children("input").val();
+
+				// validate is number and ranges
+				if (val == undefined || val == "" || isNaN(val) || val <= 0 || val > $(".trEditable").length){
+					hasInvalid = true;
+				}
+
+				CURRENT_VALUES.push(val);
+
+				request.push({ "performance_id": percID, "order": val });
+			});
+
+			if (CURRENT_VALUES.length != PREVIUS_VALUES.length){
+				modal_message(false, "Invalid Input, There is a missing value");
+				return;
+			}
+
+
+			// validate elements are different from original
+			let oneIsDifferent = false;
+			for (let i = 0; i < CURRENT_VALUES.length; i++) {
+				if (CURRENT_VALUES[i] !=  PREVIUS_VALUES[i]){
+					oneIsDifferent = true;
+					break;
+				}
+			}
+
+			// validate numbers are not repeated
+			let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+			if (findDuplicates(CURRENT_VALUES).length > 0){
+				$(tag_loader).hide();
+				modal_message(false, "There is more than one performance with the same order, order has to be unique.");
+				return;
+			}
+
+
+			if (!hasInvalid){
+
+				if (oneIsDifferent){
+					submit_order(request, CURRENT_VALUES);
+					$(tag_loader).hide();
+				}else{
+					$(tag_loader).hide();
+					modal_message(false, "You did not change any order");
+				}
+
+			}else{
+				$(tag_loader).hide();
+				modal_message(false, `Invalid Input, Order can only be positive numbers between 1 and ${$(".trEditable").length}`);
+			}
+		});
+	});
+
+	function submit_order(request, current) {
+		$.ajax({
+			type: "POST",
+			url: `/api/updatePerformanceOrder`,
+			data: { request },
+			dataType: 'json',
+			success: (response) => {
+				$(tag_loader).hide();
+
+				console.log(response);
+
+				if (response != undefined && response.error != undefined && !response.error) {
+					modal_message(true, "Order was change successfully");
+					change_to_text(current);
+				} else {
+					modal_message(false, "We couldn't change the order of the performances, Please edit the performance one by one");
+				}
+
+			},
+			error: () => {
+				modal_message(false, "We couldn't change the order of the performances, Please edit the performance one by one");
+			}
+		});
+	}
+
+	/**
+	 * @param {Array} values -values
+	*/
+	function change_to_text(values) {
+
+		$(".trEditable").each(function (index) {
+
+			let td = `<span class="editable"> ${values[index]} </span>`;
+			$(this).empty().append(td);
+		});
+
+		$(tag_change_btn).attr("disabled", false);
+
+		$(tag_save_btn).addClass("invisible");
+		$(tag_cancel).addClass("invisible");
+	}
+
+	/**
+	 * @param {Bool} success - if the message is a success or an error 
+	 * @param {String} message - message for the modal
+	*/
+	function modal_message(success, message) {
+
+		if (success) {
+			$("#feedbackTitle").text("Success").css({ "color": "green" });
+		} else {
+			$("#feedbackTitle").text("Sorry").css({ "color": "red" });
+		}
+		$("#feedbackBody").text(message);
+		$('#feedbackContainer').modal('toggle');
+	}
+</script>
+
+<style>
+	input {
+		max-width: 100%;
+		text-align: center;
+	}
+</style>
+
+
+<%- include ('../../partials/footer') -%>

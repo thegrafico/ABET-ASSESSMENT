@@ -1,5 +1,6 @@
 var { db } = require("../mysqlConnection"); //pool connection
 var conn = db.mysql_pool;
+const table = require("../DatabaseTables");
 
 /**
  * create_performance ->  Create a new record of performance Criteria
@@ -43,7 +44,30 @@ function update_performance(rubric) {
 	});
 }
 
+/**
+ * get performance criteria by outcome id
+ * @param {Number} outcome_id - id of the outcome
+ * @returns {Promise} - resolve with results
+ */
+function get_performance_by_outcome_id(outcome_id) {
+
+	return new Promise(function (resolve, reject) {
+
+		let find_dep_query = `SELECT * FROM ${table.performance_criteria} WHERE outc_ID = ? 
+		ORDER BY ${table.performance_criteria}.	perC_order ASC;`;
+
+		conn.query(find_dep_query, [outcome_id], function (err, results) {
+			if (err)
+				reject(err);
+			else
+				resolve(results);
+		});
+	});
+}
+
 // module.exports.insert_perC = insert_perC;
 // module.exports.findOrder = findOrder;
 module.exports.create_performance = create_performance;
 module.exports.update_performance = update_performance;
+module.exports.get_performance_by_outcome_id = get_performance_by_outcome_id;
+

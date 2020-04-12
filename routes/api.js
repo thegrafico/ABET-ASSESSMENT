@@ -8,6 +8,8 @@ const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 const assessmentQuery = require("../helpers/queries/assessment");
 const { get_user_by_id } = require("../helpers/queries/user_queries");
+
+const {update_performances_order} = require("../helpers/queries/performance_order");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
 const { coordinator } = require("../helpers/profiles");
 const table = require("../helpers/DatabaseTables");
@@ -91,7 +93,6 @@ router.get('/get/department/:id', async function (req, res) {
 	// validating
 	if (req.params.id == undefined || isNaN(req.params.id)) {
 		return res.end();
-		// return res.redirect(base_url);
 	}
 
 	let tabla_data = { "from": table.department, "where": "dep_ID", "id": req.params.id };
@@ -151,6 +152,27 @@ router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res)
 	return res.json(record);
 });
 
+// ======================================== PERFORMANCE =======================================
+
+router.post("/updatePerformanceOrder", async function(req, res){
+	console.log(req.body);
+
+	if (req.body == undefined || req.body.request == undefined || !req.body.request.length){
+		return	res.json({error: true, message: "Invalid Data"});
+	}
+	
+	let wasUpdate = await update_performances_order(req.body.request).catch((err) => {
+		console.error("Cannot update the performance: ", err);
+	});
+
+	if (wasUpdate == undefined || wasUpdate == false){
+		return	res.json({error: true, message: "Cannot update the performances order"});
+	}
+
+	console.log("Performance Order was update: ", wasUpdate);
+
+	res.json({error: false, message: "success"});
+});
 // ======================================== EVALUATION RUBRIC =======================================
 
 /**
