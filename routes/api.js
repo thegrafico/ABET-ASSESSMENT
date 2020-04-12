@@ -9,6 +9,7 @@ const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 const assessmentQuery = require("../helpers/queries/assessment");
 const { get_user_by_id } = require("../helpers/queries/user_queries");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
+const { coordinator } = require("../helpers/profiles");
 const table = require("../helpers/DatabaseTables");
 
 // =============================== PERFORMANCES CRITERIA ==================================
@@ -48,13 +49,22 @@ router.get('/department/get/studyPrograms/:departmentId', async function (req, r
 	}
 
 	let dept_ID = req.params.departmentId;
+	let study_programs = undefined;
+	
+	if (req.session.user_profile == coordinator) {
 
-	let data = { "from": table.study_program, "where": "dep_ID", "id": dept_ID };
+		study_programs = req.session.study_programs_coordinator.filter(each => each["dept_id"] == dept_ID );
 
-	// get std program
-	let study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
-		console.log("ERROR: ", err);
-	});
+	} else {
+
+		let data = { "from": table.study_program, "where": "dep_ID", "id": dept_ID };
+
+		// get std program
+		study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
+			console.log("ERROR: ", err);
+		});
+
+	}
 
 	// validate std program
 	if (study_programs == undefined || study_programs.length == 0) {
@@ -532,9 +542,9 @@ router.get('/get/departmentAssessment', async function (req, res) {
 	if (agregado == undefined || agregado.length == 0) {
 		return res.json({ error: true, message: "Cannot find any data" });
 	}
-	
+
 	try {
-		agregado = get_structure(agregado, "assessment_ID");		
+		agregado = get_structure(agregado, "assessment_ID");
 	} catch (error) {
 		agregado = [];
 	}
@@ -575,7 +585,7 @@ function get_structure(data, keyId) {
 	});
 
 
-	masterArray.forEach( (eachAssessment, index) => {
+	masterArray.forEach((eachAssessment, index) => {
 
 		let masterPerformance = [];
 		let tempPerformance = [];
@@ -591,7 +601,7 @@ function get_structure(data, keyId) {
 
 			// verify all assessment looking for the performance id
 			eachAssessment.forEach(each => {
-				
+
 				if (each["perC_ID"] == _pID) {
 
 					// add performance score to an array
@@ -608,7 +618,7 @@ function get_structure(data, keyId) {
 
 		// add all the important data into performances key
 		eachAssessment[0]["performances"] = masterPerformance;
-		
+
 		// remove these elements from the object
 		delete eachAssessment[0]["perC_ID"];
 		delete eachAssessment[0]["row_ID"];
@@ -648,7 +658,7 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 
 	// validate ID
 	if (req.params.programId == undefined || isNaN(req.params.programId)) {
-		return res.json({error: true, "message": "Invalid Study Program"});
+		return res.json({ error: true, "message": "Invalid Study Program" });
 	}
 
 	let mapping = await courseMappingQuery.get_mapping_by_study_program(req.params.programId).catch((err) => {
@@ -656,8 +666,8 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 	});
 
 	// validate mapping
-	if (mapping == undefined || mapping.length == 0){
-		return res.json({error: true, "message": "Cannot find any mapping data"});
+	if (mapping == undefined || mapping.length == 0) {
+		return res.json({ error: true, "message": "Cannot find any mapping data" });
 	}
 
 	// getting the outcome mapping
@@ -673,7 +683,7 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 
 	mapping = transformdt(mapping);
 
-	res.json({error: false, message:"success", mapping, outcome_course, current_mapping });
+	res.json({ error: false, message: "success", mapping, outcome_course, current_mapping });
 });
 
 /**
@@ -690,7 +700,7 @@ function transform_outcome_courses(outcome_course) {
 }
 
 function current_course_mapping(outcome_course) {
-	
+
 	let courses_id = outcome_course.map(e => e.course_ID);
 
 	// remove duplicates
