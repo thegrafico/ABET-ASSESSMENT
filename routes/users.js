@@ -207,7 +207,7 @@ router.post('/create', async function (req, res) {
 	}).catch((err) => {
 
 		if (err.code == "ER_DUP_ENTRY")
-			req.flash("error", "There is a user with the same Inter ID");
+			req.flash("error", "There is a user with the same Inter ID or same Email");
 		else
 			req.flash("error", "Error Creating the User");
 
@@ -361,13 +361,12 @@ router.put('/:id', async function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 
-		console.log(err);
 		if (err.code == "ER_DUP_ENTRY")
-			req.flash("error", "There is a user with the same information");
+			req.flash("error", "There is a user with the same Inter ID or same Email");
 		else
 			req.flash("error", "Error updating the User");
 
-		res.redirect(base_url);
+		res.redirect("back");
 	});
 
 });

@@ -70,7 +70,7 @@ router.get("/auth", async function (req, res) {
 	let coordinator_programs = get_std_coordinator(user_information);
 
 	if (coordinator_programs.length > 0 && user_data.profile_Name.toLowerCase() != admin.toLowerCase()) {
-		req.session.user_profile = coordinator
+		req.session.user_profile = coordinator;
 		req.session.profileName = "Professor / Coordinator";
 	} else {
 		req.session.user_profile = user_data.profile_Name.toLowerCase();
@@ -106,7 +106,7 @@ function get_std_coordinator(user_information) {
 	let programs = [];
 
 	filtered_std.forEach(each => {
-		programs.push({prog_name: each["prog_name"], prog_ID: each["prog_ID"]});
+		programs.push({prog_name: each["prog_name"], prog_ID: each["prog_ID"], dept_id: each["dep_ID"]});
 	});
 
 	return programs;

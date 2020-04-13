@@ -64,7 +64,6 @@ function get_outcomes_by_department(dept_id) {
 }
 
 
-
 /**
  * get_outcomes_by_department - get all outoces by departmen
  * @returns {Array}
@@ -78,9 +77,34 @@ function get_outcomes_with_study_program() {
             ${table.study_program}.prog_name  
             FROM 
             STUDENT_OUTCOME INNER JOIN ${table.study_program} ON ${table.student_outcome}.prog_ID = ${table.study_program}.prog_ID`;
-        
+
         // exce
         conn.query(outcomes_by_stds, function (err, results) {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+}
+
+/**
+ * Get outcomes for the coordinator
+ * @param {Number} user_id - id of the user
+ */
+function get_coordinator_outcomes(user_id) {
+    return new Promise(function (resolve, reject) {
+
+        let query = `SELECT ${table.student_outcome}.outc_ID, ${table.student_outcome}.outc_name, 
+        ${table.student_outcome}.outc_description, ${table.student_outcome}.date_created, ${table.study_program}.prog_ID, 
+        ${table.study_program}.prog_name FROM  ${table.student_outcome}
+        INNER JOIN ${table.study_program} ON ${table.study_program}.prog_ID = ${table.student_outcome}.prog_ID
+        WHERE ${table.study_program}.prog_ID IN 
+            (SELECT ${table.study_program}.prog_ID FROM ${table.study_program} INNER JOIN ${table.user_study_program} ON 
+                ${table.study_program}.prog_ID = ${table.user_study_program}.prog_ID 
+            WHERE ${table.user_study_program}.user_ID = ? AND ${table.user_study_program}.is_coordinator = '1')
+        ORDER BY ${table.study_program}.prog_name ASC`;
+
+        // exe query
+        conn.query(query, [user_id], function (err, results) {
             if (err) return reject(err);
             resolve(results);
         });
@@ -99,3 +123,6 @@ module.exports.get_outcomes_by_department = get_outcomes_by_department;
 
 // get outcomes with study programs
 module.exports.get_outcomes_with_study_program = get_outcomes_with_study_program;
+
+// get outcomes for coordinator
+module.exports.get_coordinator_outcomes = get_coordinator_outcomes;

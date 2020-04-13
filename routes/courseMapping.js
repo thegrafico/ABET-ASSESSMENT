@@ -2,7 +2,10 @@ var express = require('express');
 var router = express.Router();
 var general_queries = require("../helpers/queries/general_queries");
 var courseMappingQuery = require("../helpers/queries/courseMappingQueries");
+var { get_department_by_user_id_and_coordinator } = require("../helpers/queries/department_queries");
+
 const table = require("../helpers/DatabaseTables");
+const { admin } = require("../helpers/profiles");
 
 const base_url = '/admin/courseMapping';
 let locals = {
@@ -20,18 +23,27 @@ router.get('/', async function (req, res) {
     ];
 
     locals.title = "Course Mapping";
-    
-    locals.selected_program = 0;
-    if (req.query.progID != undefined)
-        locals.selected_program = parseInt(req.query.progID);
+    let departments = undefined;
 
     let mapping = await courseMappingQuery.get_mapping().catch((err) => {
         console.error("ERROR: ", err);
     });
 
-    let departments = await general_queries.get_table_info(table.department).catch((err) => {
-        console.error("ERROR GETTING DEPARTMENTS: ", err);
-    });
+    // if the user is admin, get all department, else get coordinator department
+    if (req.session.user_profile == admin) {
+
+        // getting departments for filter
+        departments = await general_queries.get_table_info(table.department).catch((err) => {
+            console.error("THERE IS AN ERROR GETTING DEPARTMENTS: ", err);
+        });
+
+
+    } else {
+        // getting departments for filter
+        departments = await get_department_by_user_id_and_coordinator(req.session.user_id).catch((err) => {
+            console.error("THERE IS AN ERROR GETTING DEPARTMENTS: ", err);
+        });
+    }
 
     if (departments == undefined || departments.length == 0) {
         req.flash("error", "Cannot find Any Department");
@@ -39,17 +51,6 @@ router.get('/', async function (req, res) {
     }
 
     locals.departments = departments;
-
-    let study_programs = await general_queries.get_table_info(table.study_program).catch((err) => {
-        console.error("ERROR: ", err);
-    });
-
-
-    locals.study_programs = [];
-    if (study_programs != undefined || study_programs.length > 0) {
-        locals.study_programs = study_programs;
-    }
-
     locals.mapping = transformdt(mapping);
 
     res.render('admin/courseMapping/home', locals);
@@ -124,7 +125,7 @@ router.post('/addMapping', async function (req, res) {
             "deleted": removed_elements, "added": update_elements
         });
     } else {
-        res.json({"success" : "Data keep the same", "status" : 200, "wasUpdated": false});
+        res.json({ "success": "Data keep the same", "status": 200, "wasUpdated": false });
     }
 });
 

@@ -8,7 +8,10 @@ const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 const assessmentQuery = require("../helpers/queries/assessment");
 const { get_user_by_id } = require("../helpers/queries/user_queries");
+
+const { update_performances_order } = require("../helpers/queries/performance_order");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
+const { coordinator, admin, professor } = require("../helpers/profiles");
 const table = require("../helpers/DatabaseTables");
 
 // =============================== PERFORMANCES CRITERIA ==================================
@@ -48,13 +51,22 @@ router.get('/department/get/studyPrograms/:departmentId', async function (req, r
 	}
 
 	let dept_ID = req.params.departmentId;
+	let study_programs = undefined;
 
-	let data = { "from": table.study_program, "where": "dep_ID", "id": dept_ID };
+	if (req.session.user_profile == coordinator) {
 
-	// get std program
-	let study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
-		console.log("ERROR: ", err);
-	});
+		study_programs = req.session.study_programs_coordinator.filter(each => each["dept_id"] == dept_ID);
+
+	} else {
+
+		let data = { "from": table.study_program, "where": "dep_ID", "id": dept_ID };
+
+		// get std program
+		study_programs = await general_queries.get_table_info_by_id(data).catch((err) => {
+			console.log("ERROR: ", err);
+		});
+
+	}
 
 	// validate std program
 	if (study_programs == undefined || study_programs.length == 0) {
@@ -81,7 +93,6 @@ router.get('/get/department/:id', async function (req, res) {
 	// validating
 	if (req.params.id == undefined || isNaN(req.params.id)) {
 		return res.end();
-		// return res.redirect(base_url);
 	}
 
 	let tabla_data = { "from": table.department, "where": "dep_ID", "id": req.params.id };
@@ -141,6 +152,27 @@ router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res)
 	return res.json(record);
 });
 
+// ======================================== PERFORMANCE =======================================
+
+router.post("/updatePerformanceOrder", async function (req, res) {
+	console.log(req.body);
+
+	if (req.body == undefined || req.body.request == undefined || !req.body.request.length) {
+		return res.json({ error: true, message: "Invalid Data" });
+	}
+
+	let wasUpdate = await update_performances_order(req.body.request).catch((err) => {
+		console.error("Cannot update the performance: ", err);
+	});
+
+	if (wasUpdate == undefined || wasUpdate == false) {
+		return res.json({ error: true, message: "Cannot update the performances order" });
+	}
+
+	console.log("Performance Order was update: ", wasUpdate);
+
+	res.json({ error: false, message: "success" });
+});
 // ======================================== EVALUATION RUBRIC =======================================
 
 /**
@@ -532,9 +564,9 @@ router.get('/get/departmentAssessment', async function (req, res) {
 	if (agregado == undefined || agregado.length == 0) {
 		return res.json({ error: true, message: "Cannot find any data" });
 	}
-	
+
 	try {
-		agregado = get_structure(agregado, "assessment_ID");		
+		agregado = get_structure(agregado, "assessment_ID");
 	} catch (error) {
 		agregado = [];
 	}
@@ -575,7 +607,7 @@ function get_structure(data, keyId) {
 	});
 
 
-	masterArray.forEach( (eachAssessment, index) => {
+	masterArray.forEach((eachAssessment, index) => {
 
 		let masterPerformance = [];
 		let tempPerformance = [];
@@ -591,7 +623,7 @@ function get_structure(data, keyId) {
 
 			// verify all assessment looking for the performance id
 			eachAssessment.forEach(each => {
-				
+
 				if (each["perC_ID"] == _pID) {
 
 					// add performance score to an array
@@ -608,7 +640,7 @@ function get_structure(data, keyId) {
 
 		// add all the important data into performances key
 		eachAssessment[0]["performances"] = masterPerformance;
-		
+
 		// remove these elements from the object
 		delete eachAssessment[0]["perC_ID"];
 		delete eachAssessment[0]["row_ID"];
@@ -639,6 +671,71 @@ function get_unique(data, target) {
 
 	return elements;
 }
+// ======================================== USER INFORMATIOn =======================================
+
+/**
+ * API TO GET THE USER GENERAL INFORMATION
+ */
+router.get('/get/currentUserInformation', async function (req, res) {
+
+	let user_profile = req.session.user_profile;
+	let response = {};
+
+	let user_std = await assessmentQuery.get_study_program_by_user_id(req.session.user_id).catch((err) => {
+		console.error("Error getting user STD: ", err);
+	});
+
+	if (user_std == undefined || !user_std.length) {
+		return res.json({ error: true, message: "Cannot find any study program for the user" });
+	}
+
+	user_std = user_std.map(each => each["prog_name"]);
+
+	if (user_profile == admin) {
+		response["privileges"] = "Admin";
+		response["canDo"] = [
+			"Administrate ABET Assessment",
+			"Assessment Coordinator for all Departments",
+			"Generate Assessment Report",
+			"Download Assessment Report",
+			"View Professor's Assessment",
+			"Download results from Professor's Assessment",
+		];
+		response["notes"] = "As an Administrator you can do everything in ABET ASSESSMENTS, so be careful with the changes you make.";
+	} else if (user_profile == coordinator) {
+
+		let study_programs_coordinator = req.session.study_programs_coordinator.map(each => each["prog_name"]);
+		study_programs_coordinator = study_programs_coordinator.join(", ");
+		
+		let coordinatorText = "Coordinator of the following study programs: " + study_programs_coordinator;
+
+		response["privileges"] = "Coordinator And Professor";
+
+		response["canDo"] = [
+			"Administrative Privileges (LIMITED): Outcomes, Academic term, Course Mapping.",
+			coordinatorText,
+			"Generate Assessment Reports.",
+			"View And Donwload Assessment reports from others Professors.",
+			"View And Donwload Assessment Results from others Professors by Academic Term.",
+			"You've been assigned to the following study programs: " + user_std.join(", ")
+		];
+
+		response["notes"] = `As a Coordinator you have limited administrative Privileges, 
+		these privileges are linked to the Study Programs in which you're a coordinator.`;
+
+	} else {
+		response["privileges"] = "Professor";
+		response["canDo"] = [
+			"Create, View, Edit,and Complete Assessment",
+			"Donwload Assessment report",
+			"You've been assigned to the following study programs: " + user_std.join(", ")
+		];
+		response["notes"] = "As a Professor you can generate assessment report"
+	}
+
+	res.json({ error: false, message: "success", response: response });
+});
+
 
 // ======================================== COURSE MAPPING =======================================
 /**
@@ -648,7 +745,7 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 
 	// validate ID
 	if (req.params.programId == undefined || isNaN(req.params.programId)) {
-		return res.json({error: true, "message": "Invalid Study Program"});
+		return res.json({ error: true, "message": "Invalid Study Program" });
 	}
 
 	let mapping = await courseMappingQuery.get_mapping_by_study_program(req.params.programId).catch((err) => {
@@ -656,8 +753,8 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 	});
 
 	// validate mapping
-	if (mapping == undefined || mapping.length == 0){
-		return res.json({error: true, "message": "Cannot find any mapping data"});
+	if (mapping == undefined || mapping.length == 0) {
+		return res.json({ error: true, "message": "Cannot find any mapping data" });
 	}
 
 	// getting the outcome mapping
@@ -673,7 +770,7 @@ router.get('/courseMapping/get/:programId', async function (req, res) {
 
 	mapping = transformdt(mapping);
 
-	res.json({error: false, message:"success", mapping, outcome_course, current_mapping });
+	res.json({ error: false, message: "success", mapping, outcome_course, current_mapping });
 });
 
 /**
@@ -690,7 +787,7 @@ function transform_outcome_courses(outcome_course) {
 }
 
 function current_course_mapping(outcome_course) {
-	
+
 	let courses_id = outcome_course.map(e => e.course_ID);
 
 	// remove duplicates

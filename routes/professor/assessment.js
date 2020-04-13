@@ -663,12 +663,20 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 
 	// student performance criteria evaluation
 	locals.performanceData = mapData(performanceData);
+
 	locals.performanceResults = get_performance_criteria_results(locals.performanceData);
+
 	let tempOb = locals.performanceResults;
 	tempOb.header = reportHeader[0];
 	locals.perfResults = JSON.stringify(tempOb);
-	locals.performance_criteria = reportHeader.map(each => each["perC_Desk"]);
 	professor_input = professor_input[0];
+
+	let performances = [];
+	reportHeader.forEach(each => { 
+		performances.push({ description: each["perC_Desk"], order: each["perC_order"] });
+	});
+
+	locals.performance_criteria = performances;
 
 	// get all grades for table
 	let grades = {
@@ -712,8 +720,6 @@ function mapData(data) {
 
 		let row_perf = row_info.map(row => row.perC_ID);
 		let row_scores = row_info.map(row => row.row_perc_score);
-
-
 		// console.log("Row DAta ", row_perf);
 
 		temp.push({

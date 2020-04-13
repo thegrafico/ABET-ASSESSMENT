@@ -30,20 +30,15 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 	];
 
 	locals.title = "Performances Criteria";
-	locals.css_table  = "";
+	locals.css_table = "performance_rubric.css";
 
 
 	locals.subtitle = title + (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.base_url = `/admin/outcomes/${req.params.outc_id}/performanceCriteria`;
 
-	let performance_query = {
-		"from": table.performance_criteria,
-		"where": "outc_ID",
-		"id": req.params.outc_id,
-	}
 
 	//Get all perfCrit from the database
-	let all_perfomance = await general_queries.get_table_info_by_id(performance_query).catch((err) => {
+	let all_perfomance = await queries.get_performance_by_outcome_id(req.params.outc_id).catch((err) => {
 		console.log("There is an error getting the Performance Criteria: ", err);
 	});
 
@@ -67,7 +62,7 @@ router.get('/:outc_id/performanceCriteria', validate_outcome, async function (re
 		});
 		locals.results = results;
 	}
-	res.render('layout/home', locals);
+	res.render('admin/performanceCriteria/home', locals);
 });
 
 /* 
@@ -83,7 +78,6 @@ router.get("/:outc_id/performanceCriteria/create", validate_outcome, async funct
 	];
 
 	locals.title = "Create Performances Criteria";
-
 
 	locals.title_action = (req.body.outcome["outc_name"] || "N/A") + " - " + (req.body.outcome["prog_name"] || "");
 	locals.have_dropdown = false;
@@ -119,13 +113,12 @@ router.post("/:outc_id/performanceCriteria/create", validate_outcome, async func
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log("Error: ", err);
-
 		if (err.code == "ER_DUP_ENTRY")
-			req.flash("error", "A Performance Criteria with the same information does already exits");
+			req.flash("error", "A Performance Criteria with the same order already exits");
 		else
-			req.flash("error", "Error Creating the Performance rubric!");
+			req.flash("error", "Error updating the Performance Criteria!");
 
-		res.redirect(base_url);
+		res.redirect("back");
 	});
 });
 
@@ -192,11 +185,11 @@ router.put("/:outc_id/performanceCriteria/:perf_id", validate_outcome, validate_
 		console.log("Error: ", err);
 
 		if (err.code == "ER_DUP_ENTRY")
-			req.flash("error", "A Performance Criteria with the same information does already exits");
+			req.flash("error", "A Performance Criteria with the same order already exits");
 		else
 			req.flash("error", "Error updating the Performance Criteria!");
 
-		res.redirect(base_url);
+		res.redirect("back");
 	});
 });
 

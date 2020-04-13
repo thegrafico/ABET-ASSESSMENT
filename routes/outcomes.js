@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 var outcome_query = require("../helpers/queries/outcomes_queries");
 var general_queries = require("../helpers/queries/general_queries");
+var { get_department_by_user_id_and_coordinator } = require("../helpers/queries/department_queries");
 const { outcome_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
 const table = require("../helpers/DatabaseTables");
+const { admin } = require("../helpers/profiles");
 var moment = require("moment");
 
 const base_url = '/admin/outcomes';
@@ -20,7 +22,6 @@ let locals = {
 	delete_redirect: null,
 	dropdown_option_selected: null,
 	feedback_message: "Number of Outcomes: ",
-
 };
 
 /* 
@@ -36,26 +37,42 @@ router.get('/', async function (req, res) {
 	locals.title = "Outcomes";
 	locals.css_table = "outcomes.css";
 
+	// data to show
+	let departments = undefined;
+	let stud_outcomes = undefined;
 
-	//Getting all the entries for the dropdown
-	let stud_outcomes = await outcome_query.get_outcomes_with_study_program().catch((err) => {
-		console.log("Error getting the outcomes information: ", err);
-	});
+	// if the user is admin, get all department, else get coordinator department
+	if (req.session.user_profile == admin) {
+		// getting departments for filter
+		departments = await general_queries.get_table_info(table.department).catch((err) => {
+			console.error("THERE IS AN ERROR GETTING DEPARTMENTS: ", err);
+		});
 
-	// getting departments for filter
-	let departments = await general_queries.get_table_info(table.department).catch((err) => {
-		console.error("THERE IS AN ERROR GETTING DEPARTMENTS: ", err);
-	});
+		//Getting all the entries for the dropdown
+		stud_outcomes = await outcome_query.get_outcomes_with_study_program().catch((err) => {
+			console.log("Error getting the outcomes information: ", err);
+		});
+	} else {
+		// getting departments for filter
+		departments = await get_department_by_user_id_and_coordinator(req.session.user_id).catch((err) => {
+			console.error("THERE IS AN ERROR GETTING DEPARTMENTS: ", err);
+		});
 
-	// get all evaluation rubric
-	let evaluation_rubric = await general_queries.get_table_info(table.performance_criteria).catch((err) => {
-		console.error("ERROR GETTING EVALUATION RUBRIC: ", err);
+		//Getting all the entries for the dropdown
+		stud_outcomes = await outcome_query.get_coordinator_outcomes(req.session.user_id).catch((err) => {
+			console.log("Error getting the outcomes information: ", err);
+		});
+	}
+
+	// get all Performance - to know if an outcome has performance
+	let performance_criteria = await general_queries.get_table_info(table.performance_criteria).catch((err) => {
+		console.error("ERROR GETTING Performance: ", err);
 	});
 
 	// Evaluating rubric
-	let outcome_ids_by_rubric = undefined;
-	if (evaluation_rubric != undefined && evaluation_rubric.length > 0) {
-		outcome_ids_by_rubric = evaluation_rubric.map(outc => parseInt(outc["outc_ID"]));
+	let outcome_ids_by_rubric = [];
+	if (performance_criteria != undefined && performance_criteria.length > 0) {
+		outcome_ids_by_rubric = performance_criteria.map(outc => parseInt(outc["outc_ID"]));
 	}
 
 	locals.departments = [];
@@ -69,15 +86,10 @@ router.get('/', async function (req, res) {
 
 	if (stud_outcomes != undefined && stud_outcomes.length > 0) {
 		let results = [];
-		
-		stud_outcomes.forEach(outcome => {
-			let hasPerformance = false;
 
-			if (outcome_ids_by_rubric != undefined) {
-				if (outcome_ids_by_rubric.includes(parseInt(outcome["outc_ID"]))) {
-					hasPerformance = true;
-				}
-			}
+		stud_outcomes.forEach(outcome => {
+
+			let hasPerformance = (outcome_ids_by_rubric.includes(parseInt(outcome["outc_ID"]))) ? true : false;
 
 			let date = moment(outcome.date_created).format('MMMM Do YYYY');
 
@@ -96,6 +108,8 @@ router.get('/', async function (req, res) {
 		});
 		locals.results = results;
 	}
+
+
 	res.render('admin/outcome/home', locals);
 });
 
@@ -191,7 +205,7 @@ router.post('/create', function (req, res) {
 		res.redirect(base_url);
 	}).catch((err) => {
 		console.log(err);
-		
+
 		if (err.code == "ER_DUP_ENTRY")
 			req.flash("error", "Duplicate Outcome");
 		else

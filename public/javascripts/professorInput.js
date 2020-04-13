@@ -88,6 +88,7 @@ $(document).ready(function () {
         return {
             placeholder: placeholder,
             height: 150,
+            width: $( window ).width() * 0.62,
             minHeight: 100,             // set minimum height of editor
             maxHeight: 300,
             toolbar: [

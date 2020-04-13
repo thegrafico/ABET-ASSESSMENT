@@ -14,7 +14,6 @@ connection.connect();
  */
 module.exports.create_user = function create_user(user, profile_id, std) {
 
-
     // add user promise
     return new Promise(function (resolve, reject) {
 
@@ -255,6 +254,7 @@ module.exports.create_evaluation_rubric = function create_evaluation_rubric(rubr
     });
 }
 
+
 /**
  * insertStudentScores() -> function that executes query which inserts student scores to database.
  * @param {Array} rows -> [...Assessment id]
@@ -328,9 +328,9 @@ function transformInRowPerf(row_ids, performances) {
     for (let i = 0; i < row_ids.length; i++) {
         // iter all perfC and scores
         for (let j = 0; j < performances[i]["perfC"].length; j++) {
-            if (performances[i]["scores"][j] == -1) 
+            if (performances[i]["scores"][j] == -1)
                 performances[i]["scores"][j] = null;
-                
+
             row_perf.push([row_ids[i], performances[i]["perfC"][j], performances[i]["scores"][j]]);
         }
     }
