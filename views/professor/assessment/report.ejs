@@ -193,10 +193,10 @@
                 </div>
 
                 <p>
-                    <% for( let i = 0; i < performance_criteria.length; i++ ) { %>
-                    <strong>PC-<%= (i+1)%>: </strong> <%= performance_criteria[i] %>
-                    <br>
-                    <% } %>
+                    <% performance_criteria.forEach(e => { %>
+                        <strong>PC-<%=e["order"] %>: </strong> <%=e["description"] %>
+                        <br> 
+                    <% }) %> 
                 </p>
 
                 <p>
@@ -213,20 +213,16 @@
                 <table style="margin-left: 5%;width: 80%;">
                     <tr>
                         <th scope="col" style="width: 20%;"></th>
-                        <% performanceResults["results"].forEach((element, i) => { %>
+                        <% performance_criteria.forEach(e => { %>
+                            <th> <strong>PC-<%=e["order"] %></strong></th>
+                        <% }) %> 
 
-                        <% if (i == performanceResults["results"].length -1) { %>
                         <th><%= header["outc_name"] %></th>
-                        <% }else { %>
-                        <th>PC-<%= (i+1)%></th>
-                        <% }%>
-
-                        <% });%>
                     </tr>
                     <tr>
                         <th scope="col"> % Student with 3 or more</th>
                         <% performanceResults["results"].forEach((element) => { %>
-                        <td><%= element %>%</td>
+                            <td><%= element %>%</td>
                         <% }); %>
                     </tr>
 
@@ -268,13 +264,11 @@
                         </tr>
                         <tr>
                             <th scope="col" style="width: 10%;"></th>
-                            <% performanceResults["results"].forEach((element, i) => { %>
-                            <% if (i == performanceResults["results"].length -1) { %>
+                            <% performance_criteria.forEach(e => { %>
+                                <th> <strong>PC-<%=e["order"] %></strong></th>
+                            <% }) %> 
+    
                             <th><%= header["outc_name"] %></th>
-                            <% }else { %>
-                            <th>PC- <%=(i+1)%></th>
-                            <% } %>
-                            <% }); %>
                         </tr>
 
                         <% for( let i = 0; i < performanceData.length; i++ ) { %>

@@ -62,9 +62,13 @@ function getEvaluationByID(assessmentID) {
 			return reject("Error with the asessment ID");
 		}
 
-		let getEvaluation = `SELECT ${table.row_perc}.row_ID, perC_ID, row_perc_score, assessment_ID
-			FROM ${table.row_perc} INNER JOIN ${table.evaluation_row}
-			WHERE ${table.row_perc}.row_ID = ${table.evaluation_row}.row_ID AND ${table.evaluation_row}.assessment_ID = ?;`;
+		let getEvaluation = `SELECT *
+		FROM  
+		(SELECT ROW_PERC.row_ID, perC_ID, row_perc_score, assessment_ID 
+		FROM ROW_PERC INNER JOIN EVALUATION_ROW WHERE ROW_PERC.row_ID = EVALUATION_ROW.row_ID 
+		AND EVALUATION_ROW.assessment_ID = ?) as eval
+		INNER JOIN (SELECT PERF_CRITERIA.perC_order, PERF_CRITERIA.perC_ID FROM PERF_CRITERIA) 
+		as performance ON performance.perC_ID = eval.perC_ID;`;
 
 		// exe query
 		conn.query(getEvaluation, [assessmentID], function (err, results) {
@@ -198,7 +202,7 @@ function get_report_header(assessment_id) {
 		let get_query = `SELECT ASSESSMENT.name, ASSESSMENT.course_section, USER.first_name, COURSE.course_name, 
 		EVALUATION_RUBRIC.rubric_name, STUDENT_OUTCOME.outc_name, STUDENT_OUTCOME.outc_description,
 		STUDY_PROGRAM.prog_name, DEPARTMENT.dep_name, ACADEMIC_TERM.term_name, 
-		COURSE.course_number, USER.last_name, COURSE.course_description, PERF_CRITERIA.perC_Desk
+		COURSE.course_number, USER.last_name, COURSE.course_description, PERF_CRITERIA.perC_Desk, PERF_CRITERIA.perC_order
 		FROM ASSESSMENT
 		INNER JOIN USER USING(user_ID)
 		INNER JOIN ACADEMIC_TERM USING (term_ID)
@@ -207,8 +211,9 @@ function get_report_header(assessment_id) {
 		INNER JOIN STUDENT_OUTCOME ON EVALUATION_RUBRIC.outc_ID = STUDENT_OUTCOME.outc_ID
 		INNER JOIN STUDY_PROGRAM ON STUDENT_OUTCOME.prog_ID = STUDY_PROGRAM.prog_ID
 		INNER JOIN DEPARTMENT ON STUDY_PROGRAM.dep_ID = DEPARTMENT.dep_ID
-        INNER JOIN PERF_CRITERIA ON PERF_CRITERIA.outc_ID = EVALUATION_RUBRIC.outc_ID
-		WHERE ASSESSMENT.assessment_ID = ?
+        INNER JOIN PERFORMANCE_RUBRIC ON PERFORMANCE_RUBRIC.rubric_ID = EVALUATION_RUBRIC.rubric_ID
+        INNER JOIN PERF_CRITERIA ON PERF_CRITERIA.perC_ID = PERFORMANCE_RUBRIC.perC_ID
+		WHERE ASSESSMENT.assessment_ID = ?	
         ORDER BY PERF_CRITERIA.perC_order ASC`;
 
 		conn.query(get_query, [assessment_id], function (err, results) {
@@ -231,7 +236,7 @@ function addGraph(assessment_ID, base_64) {
 		let addGraph = `INSERT INTO ${tables.assessment_graph} (assessment_ID, base_64) VALUES (?, ?);`;
 
 		conn.query(addGraph, [assessment_ID, base_64], (err, results) => {
-			if(err)
+			if (err)
 				reject(false);
 			else
 				resolve(true);
@@ -250,7 +255,7 @@ function updateGraph(assessment_ID, base_64) {
 		let updateGraph = `UPDATE ${tables.assessment_graph} SET base_64 = ? WHERE assessment_ID = ?;`;
 
 		conn.query(updateGraph, [base_64, assessment_ID], (err, results) => {
-			if(err)
+			if (err)
 				reject(err);
 			else
 				resolve(true);
@@ -267,8 +272,8 @@ function getGraph(assessment_ID) {
 	return new Promise((resolve, reject) => {
 		let getGraph = `SELECT base_64 FROM ${tables.assessment_graph} WHERE assessment_ID = ?;`;
 
-		conn.query(getGraph, [assessment_ID], function(err, results) {
-			if(err)
+		conn.query(getGraph, [assessment_ID], function (err, results) {
+			if (err)
 				reject(err);
 			else {
 				resolve(results);
