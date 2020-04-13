@@ -253,7 +253,7 @@ function delRow() {
  * updateIndex() -> function that updates the index every time a row is deleted or new row is added
 */
 function updateIndex() {
-	$('table tbody tr').each(function(index) {
+	$('#table tbody tr').each(function(index) {
 		$(this).find('th .indexNumber').text(index+1);
 		let newId = 'avg' + index;
 		$(this).find('td:nth-last-of-type(1)').attr('id', newId);
@@ -314,16 +314,6 @@ function createChart() {
 	graphData = percTable;
 	graphData.push(outcomeAVG);
 
-	
-
-	for(let i = 0; i < amountOfColumns; i++) {
-		$('#pc'+ i).text(graphData[i] + " %");
-		$('#perf'+ i).text(graphData[i] + " %");
-	}
-
-	$('#footerSpan').text(outcomeAVG + "%");
-	$('#outResults').text(outcomeAVG + "%");
-
 	let myChart = new Chart(canvas, {
 		type: 'bar',
 		data: {
@@ -351,6 +341,14 @@ function createChart() {
 				duration: 1,
 				onComplete: () => {
 					graph = myChart.toBase64Image();
+
+					for(let i = 0; i < amountOfColumns; i++) {
+						$('#pc'+ i).text(graphData[i] + " %");
+						$('#perf'+ i).text(graphData[i] + " %");
+					}
+
+					$('#footerSpan').text(outcomeAVG + "%");
+					$('#outResults').text(outcomeAVG + "%");
 				}
 			},
 			annotation: {
@@ -384,7 +382,7 @@ function insertEvaluation(entryData, assessment_id, buttonPressed) {
 	console.log("Saving this DATA: ", entryData);
 	let hasGraph = $('#hasGraph').val();
 	let isNext = buttonPressed;
-	console.log("Is Next: ", buttonPressed);
+	console.log("Is Next: ", isNext);
 
 	$.ajax({
 		type: "POST",
@@ -411,9 +409,11 @@ function insertEvaluation(entryData, assessment_id, buttonPressed) {
 				alertMessage('Data was not saved!');
 			}
 
+			console.log("On success: ", typeof(request.isNext));
+
 			if(request.isNext == 'n') {
 				window.location.href = `/professor/assessment/${assessment_id}/professorInput`;
-			} else if(request.isNext == 'y') {
+			} else if(request.isNext == 's') {
 				window.location.href = `/professor`;
 			}
 					
