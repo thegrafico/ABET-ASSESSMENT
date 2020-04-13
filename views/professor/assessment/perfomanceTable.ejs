@@ -1,5 +1,6 @@
 <%- include ('../../partials/header') -%>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="/javascripts/libraries/chartjs-plugin-annotation.js"></script>
 
 <!-- MODAL FOR BREADCRUMB -->
 <%- include ('./breadcrumb', {homeURL, breadcrumb, progressBar, hasValue}) -%>
@@ -12,6 +13,7 @@
 <input type="hidden" id="prevScores" name="prevScores" value="<%= prevScores %>">
 <input type="hidden" id="hasValue" name="hasValue" value="<%= hasValue %>">
 <input type="hidden" id="hasGraph" name="hasGraph" value="<%= hasGraph %>">
+<input type="hidden" id="perC_Desk" name="perC_Desk" value="<%= perC_Desk %>">
 
 <div class="modal fade" id="studModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
 	<div class="modal-dialog" role="document">
@@ -64,37 +66,59 @@
 					<th scope="col" class="headerRow" id="headerStudent">
 						<label class="contain">Student
 							<input type="checkbox" id="selectAll"/>
-							<span class="checkmark"></span>
+							<span class="checkmark" style="margin-top: 3%;"></span>
 						</label>
 					</th>
 				</tr>
 			</thead>
 			<tbody id="tableBody">
 			</tbody>
+			<tfoot id="tableFooter">
+				<tr id="footer" class="sticky">
+					<th class="footerRow">
+						<span id="porcStud">% of Stud. with 3 or more</span>
+					</th>
+				</tr>
+			</tfoot>
 		</table>		
 	</div>
-	<div class="row" id="saveOrNext">
-		<a id="save" class="btn btn-outline-success bottomBtnRow float-right" role="button">Save And Finish Later</a>
-		<a id="next" style="float: right;" class="btn btn-success bottomBtnRow float-right" role="button">Save And Continue</a>
+	<div class="row">
+			<button id="save" class="btn btn-outline-success bottomBtnRow" role="button">Save And Finish Later</button>
+			<button id="next" class="btn btn-success bottomBtnRow" role="button">Save And Continue</button>
 	</div>
 </div>
-
-<div class="container graphcontainer">
-	<div>
-		<input type="hidden" id="graph" name="graph" value="">
-		<h2 style="text-align: center;">% Student with 3 or more in <%= outc_name %></h2>
-		<canvas id="myChart" role="img"></canvas>
+<br>
+<div class="container-fluid graphcontainer">
+	<div class="row">
+		<div class="col-4" id="leftInfo">
+			<h5 style="text-align: center;">% Student with 3 or more in <%= outc_name %></h5>
+			<input type="hidden" id="graph" name="graph" value="">
+			<canvas id="myChart" role="img"></canvas>
+		</div>
+		<div class="col-4" id="middleInfo">
+			<table class="table" id="tableInfo">
+				<thead>
+				  <tr>
+					<th scope="col" colspan="6">Table Information</th>
+				  </tr>
+				</thead>
+				<tbody>
+				</tbody>
+			  </table>
+		</div>
+		<div class="col-4" id="rightInfo">
+			<h5>Outcome Information: <span class="outcome"><%= outc_name %></span></h5>
+			<p><%= outcomeDescription %></p>
+		</div>
 	</div>
-	<div>
-		<table id="perfResultTable">
+	<div class="row" id="outcomeInfoRow">
+		<table class="table" id="outcomeInfo">
 			<thead>
-				<tr id="header2">
-					<th scope="col" id="perfHeader" class="headerRow resultHeader">Perf. Crit.</th>
-					<th scope="col" class="headerRow resultHeader">% Student with 3 or more in <%= outc_name %></th>
+				<tr>
+					<th scope="col" colspan="6">Performance Criterias for <span class="outcome"><%= outc_name %></span></th>
 				</tr>
 			</thead>
-			<tbody id="outcomeResultTbody">
-
+			<tbody>
 			</tbody>
 		</table>
 	</div>

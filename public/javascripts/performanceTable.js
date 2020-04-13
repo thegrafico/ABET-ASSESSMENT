@@ -3,6 +3,8 @@ let ctx = canvas.getContext('2d');
 let amountOfColumns = $('#amountOfCol').val();
 let assessment_ID = $('#assessmentID').val();
 let outcomeName = $('#outcomeName').val();
+let perC_Desk = $('#perC_Desk').val();
+perC_Desk = perC_Desk.split(',');
 let row = 1;
 let avgPerRow = [];
 let amountRows;
@@ -18,6 +20,9 @@ let allPerc;
 let labels = [];
 let graph;
 let amountStud;
+let target = 75;
+let outcomeAVG;
+let graphData;
 
 
 // Loads empty chart when page is load
@@ -27,8 +32,7 @@ window.onload = () => {
 };
 
 $(document).ready(() => {
-
-	console.log("Amount of Columns: ", amountOfColumns);
+	console.log("Perf Description: ", perC_Desk);
 
     if(hasInput == 'y') {
 		withValues(prevScores);
@@ -62,7 +66,6 @@ $(document).ready(() => {
 			}
 		});
 	}
-	generateSideDisplay();
     
     $('#addRow').click(() => {
 		for (let i = 0; i < $('#numofRows').val(); i++) {
@@ -75,14 +78,13 @@ $(document).ready(() => {
 	$('#delRow').click(() => {
 		delRow();
 		updateIndex();
-		$('#selectAll').prop('checked', false);
+		$('#selected').prop('checked', false);
     });
     
     $('#save').click(() => {
+		console.log("Save was Pressed");
 		insertEvaluation(mapData(data, assessment_ID), assessment_ID, 's');
 	});
-
-	
 
 	$('#next').click((e) => {
 		let validate = false;
@@ -133,7 +135,8 @@ function noValues() {
 		avgPerRow.push(0);
 		addRow();
 	}
-
+	generateFooterRow();
+	createTableInfo();
 }
 
 /**
@@ -146,6 +149,8 @@ function withValues(data) {
 		avgPerRow.push(0);
 		addRowWithValue(data)
 	}
+	generateFooterRow();
+	createTableInfo();
 }
 
 /**
@@ -153,7 +158,12 @@ function withValues(data) {
  * @param {number} -> Index to keep track of the index of the rows and data
 */
 function generateRow(r) {
-	var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}' align="middle"><label class="contain"><input type="checkbox" id="selectAll"/><span class="checkmark" name='record' value="${r-1}"></span></label><span class="indexNumber">${r}</span></th>`;
+	var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}' align="middle">
+							<label class="contain"><span class="indexNumber">${r}</span>
+								<input type="checkbox" name="record" id="selected"/>
+								<span class="checkmark" value="${r-1}"></span>
+							</label>
+						</th>`;
 	for (let i = 1; i <= amountOfColumns; i++) {
 		markup = markup.concat(`<td align="middle"><input class="studInput" type='number' name='rowValue' value='' oninput='createChart()' align="middle"></td>`);
 	}
@@ -168,7 +178,13 @@ function generateRow(r) {
  * generateRowWithVal() -> function that creates tables with previous evaluation values.
 */
 function generateRowWithVal(r, data) {
-    var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}' align="middle"><label class="contain"><input type="checkbox" id="selectAll"/><span class="checkmark" name='record' value="${r-1}"></span></label><span class="indexNumber">${r}</span></th>`;
+	var markup = `<tr><th class='indexRow' name='index' scope='row' value='${r}' align="middle">
+							<label class="contain"><span class="indexNumber">${r}</span>
+								<input type="checkbox" name="record" id="selected"/>
+								<span class="checkmark" value="${r-1}"></span>
+							</label>
+						</th>`;
+						// name="record"
 	for (let i = 1; i <= amountOfColumns; i++) { 
         try {
 			if(data[r-1].scores[i-1] == null) 
@@ -192,6 +208,14 @@ function generateHeaderRow() {
 		$("#header").append(col);
 	}
 	$("#header").append(`<th class='headerRow'>${outcomeName}</th>`);
+}
+
+function generateFooterRow() {
+	for (let i = 1; i <= amountOfColumns; i++) {
+		var col = `<th class='footerRow'><span id="pc${i-1}"></span></th>`;
+		$("#footer").append(col);
+	}
+	$("#footer").append(`<th class='footerRow'><span id="footerSpan"></span></th>`);
 }
 
 /**
@@ -246,7 +270,7 @@ function createChart() {
 		labels[i] = "PC " + performanceCriteria[i];
 	}
 
-    labels[performanceCriteria.length] = outcomeName + ' Average';
+    labels[performanceCriteria.length] = outcomeName + ' Avg';
     
     data = getTableData();
     
@@ -284,27 +308,33 @@ function createChart() {
 			outcomeAVGCount++;
 		}
 	}
-	let outcomeAVG = (outcomeAVGCount / amountRows) * 100;
+	outcomeAVG = (outcomeAVGCount / amountRows) * 100;
 	outcomeAVG = outcomeAVG.toFixed(2);
 
-	let graphData = percTable;
+	graphData = percTable;
 	graphData.push(outcomeAVG);
 
+	
+
 	for(let i = 0; i < amountOfColumns; i++) {
-		$('#pc'+ i).text(graphData[i]);
+		$('#pc'+ i).text(graphData[i] + " %");
+		$('#perf'+ i).text(graphData[i] + " %");
 	}
+
+	$('#footerSpan').text(outcomeAVG + "%");
+	$('#outResults').text(outcomeAVG + "%");
 
 	let myChart = new Chart(canvas, {
 		type: 'bar',
 		data: {
-			labels: labels,
 			datasets: [
 				{
 					label: '% of Student with 3 or more in ' + outcomeName,
 					data: graphData,
-					backgroundColor: 'rgba(58, 166, 87, 0.2)', // Need to make where now matter the amount of PC it can make amou
-				},
-			]
+					backgroundColor: 'rgba(58, 166, 87, 0.2)'
+				}
+			], 
+			labels: labels
 		},
 		showTooltips: false,
 		options: {
@@ -322,8 +352,22 @@ function createChart() {
 				onComplete: () => {
 					graph = myChart.toBase64Image();
 				}
+			},
+			annotation: {
+				annotations: [{
+					type: 'line',
+					mode: 'horizontal',
+					scaleID: 'y-axis-0',
+					value: target,
+					borderColor: 'rgb(235, 64, 52)',
+					borderWidth: 4,
+					label: {
+						enabled: true,
+						content: 'Target'
+					}
+				}]
 			}
-		}	
+		}
 	});
 
 	$(document).ready(function () {
@@ -339,8 +383,8 @@ function createChart() {
 function insertEvaluation(entryData, assessment_id, buttonPressed) {
 	console.log("Saving this DATA: ", entryData);
 	let hasGraph = $('#hasGraph').val();
-	let isNext = (buttonPressed == 'n');
-	console.log("Is Next: ", isNext);
+	let isNext = buttonPressed;
+	console.log("Is Next: ", buttonPressed);
 
 	$.ajax({
 		type: "POST",
@@ -367,9 +411,9 @@ function insertEvaluation(entryData, assessment_id, buttonPressed) {
 				alertMessage('Data was not saved!');
 			}
 
-			if(request.isNext == true) {
+			if(request.isNext == 'n') {
 				window.location.href = `/professor/assessment/${assessment_id}/professorInput`;
-			} else {
+			} else if(request.isNext == 'y') {
 				window.location.href = `/professor`;
 			}
 					
@@ -455,17 +499,6 @@ function clearTableData() {
 	data = getTableData();
 }
 
-/**
- * generateSideDisplay() -> function that creates the side display panel.
-*/
-
-function generateSideDisplay() {
-	for (let i = 0; i < amountOfColumns; i++) {
-		let tRow = `<tr><th class='pcIndex'>PC ${i+1}</th><td class='percCell'><span id="pc${i}"></span>%</td></tr>`;
-		$('#outcomeResultTbody').append(tRow);
-	}
-}
-
 function selectAll() {
 	$('#selectAll').click(function(){
 		$('input:checkbox').not(this).prop('checked', this.checked);
@@ -501,3 +534,13 @@ function alertMessage(message) {
 		});
 	}, 3000);
 }
+
+
+function createTableInfo() {
+	for(let i = 0; i < amountOfColumns; i++) {
+		$('#tableInfo tbody').append(`<tr><th scope="row">PC ${performanceCriteria[i]}</th><td colspan="5" id="perf${i}"></td></tr>`);
+		$('#outcomeInfo tbody').append(`<tr><th scope="row">PC ${performanceCriteria[i]}</th><td colspan="5">${perC_Desk[i]}</td></tr>`);
+	}
+	$('#tableInfo tbody').append(`<tr><th scope="row">${outcomeName} Average</th><td colspan="5" id="outResults"></td></tr>`);
+}
+

@@ -167,6 +167,8 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		console.log("Error: ", err);
 	});
 
+	console.log(perf_criterias);
+	
 	// Validate performance criteria
 	if (perf_criterias == undefined || perf_criterias.length == 0) {
 		req.flash("error", "Cannot find any performance Criteria");
@@ -198,6 +200,10 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		results = mapData(studentEvaluation);
 		hasValue = 'y';
 	}
+	let perC_Desk = [];
+	perf_criterias.forEach((element, index) => {
+		perC_Desk[index] = element.perC_Desk;
+	});
 
 	locals.hasGraph = hasGraph;
 	locals.hasValue = hasValue;
@@ -205,7 +211,9 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	locals.colNums = perf_criterias.length;
 	locals.perfCrit = perf_criterias.map(e => e.perC_order);
 	locals.outc_name = perf_criterias[0].outc_name;
+	locals.outcomeDescription = perf_criterias[0].outc_description;
 	locals.perf_ID = perf_criterias.map(e => e.perC_ID);
+	locals.perC_Desk = perC_Desk;
 
 	res.render('professor/assessment/perfomanceTable', locals);
 });
@@ -271,7 +279,7 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 	});
 
 	console.log("If Next: ", req.body.ifNext);
-	let isNext = (req.body.ifNext != undefined);
+	let isNext = req.body.ifNext;
 
 	insertStudentScores(rows, performances_student, assessment_id).then(async (success) => {
 

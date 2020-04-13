@@ -13,7 +13,7 @@ function get_perf_criterias(assessmentID) {
 	return new Promise(function (resolve, reject) {
 		let findPerfCrit = `SELECT *
 							FROM (
-									SELECT STUDENT_OUTCOME.outc_ID, outc_name, perC_order, perC_ID, perC_Desk
+									SELECT STUDENT_OUTCOME.outc_ID, outc_name, perC_order, perC_ID, perC_Desk, STUDENT_OUTCOME.outc_description
 									FROM STUDENT_OUTCOME, PERF_CRITERIA
 									WHERE STUDENT_OUTCOME.outc_ID = PERF_CRITERIA.outc_ID) as OutcomeResults, (
 																												SELECT perC_ID
@@ -26,7 +26,8 @@ function get_perf_criterias(assessmentID) {
 																																								WHERE assessment_ID = ?
 																																			)) as result
 																												WHERE PERFORMANCE_RUBRIC.rubric_ID = result.rubric_ID) as resultTwo
-							WHERE OutcomeResults.perC_ID = resultTwo.perC_ID;`;
+							WHERE OutcomeResults.perC_ID = resultTwo.perC_ID
+							ORDER BY perC_order;`;
 		conn.query(findPerfCrit, [assessmentID], function (err, results) {
 			if (err)
 				reject(err || "Error retreiving performance criterias.");
