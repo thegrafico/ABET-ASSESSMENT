@@ -9,9 +9,9 @@ const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 const assessmentQuery = require("../helpers/queries/assessment");
 const { get_user_by_id } = require("../helpers/queries/user_queries");
 
-const {update_performances_order} = require("../helpers/queries/performance_order");
+const { update_performances_order } = require("../helpers/queries/performance_order");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
-const { coordinator } = require("../helpers/profiles");
+const { coordinator, admin, professor } = require("../helpers/profiles");
 const table = require("../helpers/DatabaseTables");
 
 // =============================== PERFORMANCES CRITERIA ==================================
@@ -52,10 +52,10 @@ router.get('/department/get/studyPrograms/:departmentId', async function (req, r
 
 	let dept_ID = req.params.departmentId;
 	let study_programs = undefined;
-	
+
 	if (req.session.user_profile == coordinator) {
 
-		study_programs = req.session.study_programs_coordinator.filter(each => each["dept_id"] == dept_ID );
+		study_programs = req.session.study_programs_coordinator.filter(each => each["dept_id"] == dept_ID);
 
 	} else {
 
@@ -154,24 +154,24 @@ router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res)
 
 // ======================================== PERFORMANCE =======================================
 
-router.post("/updatePerformanceOrder", async function(req, res){
+router.post("/updatePerformanceOrder", async function (req, res) {
 	console.log(req.body);
 
-	if (req.body == undefined || req.body.request == undefined || !req.body.request.length){
-		return	res.json({error: true, message: "Invalid Data"});
+	if (req.body == undefined || req.body.request == undefined || !req.body.request.length) {
+		return res.json({ error: true, message: "Invalid Data" });
 	}
-	
+
 	let wasUpdate = await update_performances_order(req.body.request).catch((err) => {
 		console.error("Cannot update the performance: ", err);
 	});
 
-	if (wasUpdate == undefined || wasUpdate == false){
-		return	res.json({error: true, message: "Cannot update the performances order"});
+	if (wasUpdate == undefined || wasUpdate == false) {
+		return res.json({ error: true, message: "Cannot update the performances order" });
 	}
 
 	console.log("Performance Order was update: ", wasUpdate);
 
-	res.json({error: false, message: "success"});
+	res.json({ error: false, message: "success" });
 });
 // ======================================== EVALUATION RUBRIC =======================================
 
@@ -671,6 +671,71 @@ function get_unique(data, target) {
 
 	return elements;
 }
+// ======================================== USER INFORMATIOn =======================================
+
+/**
+ * API TO GET THE USER GENERAL INFORMATION
+ */
+router.get('/get/currentUserInformation', async function (req, res) {
+
+	let user_profile = req.session.user_profile;
+	let response = {};
+
+	let user_std = await assessmentQuery.get_study_program_by_user_id(req.session.user_id).catch((err) => {
+		console.error("Error getting user STD: ", err);
+	});
+
+	if (user_std == undefined || !user_std.length) {
+		return res.json({ error: true, message: "Cannot find any study program for the user" });
+	}
+
+	user_std = user_std.map(each => each["prog_name"]);
+
+	if (user_profile == admin) {
+		response["privileges"] = "Admin";
+		response["canDo"] = [
+			"Administrate ABET Assessment",
+			"Assessment Coordinator for all Departments",
+			"Generate Assessment Report",
+			"Download Assessment Report",
+			"View Professor's Assessment",
+			"Download results from Professor's Assessment",
+		];
+		response["notes"] = "As an Administrator you can do everything in ABET ASSESSMENTS, so be careful with the changes you make.";
+	} else if (user_profile == coordinator) {
+
+		let study_programs_coordinator = req.session.study_programs_coordinator.map(each => each["prog_name"]);
+		study_programs_coordinator = study_programs_coordinator.join(", ");
+		
+		let coordinatorText = "Coordinator of the following study programs: " + study_programs_coordinator;
+
+		response["privileges"] = "Coordinator And Professor";
+
+		response["canDo"] = [
+			"Administrative Privileges (LIMITED): Outcomes, Academic term, Course Mapping.",
+			coordinatorText,
+			"Generate Assessment Reports.",
+			"View And Donwload Assessment reports from others Professors.",
+			"View And Donwload Assessment Results from others Professors by Academic Term.",
+			"You've been assigned to the following study programs: " + user_std.join(", ")
+		];
+
+		response["notes"] = `As a Coordinator you have limited administrative Privileges, 
+		these privileges are linked to the Study Programs in which you're a coordinator.`;
+
+	} else {
+		response["privileges"] = "Professor";
+		response["canDo"] = [
+			"Create, View, Edit,and Complete Assessment",
+			"Donwload Assessment report",
+			"You've been assigned to the following study programs: " + user_std.join(", ")
+		];
+		response["notes"] = "As a Professor you can generate assessment report"
+	}
+
+	res.json({ error: false, message: "success", response: response });
+});
+
 
 // ======================================== COURSE MAPPING =======================================
 /**
