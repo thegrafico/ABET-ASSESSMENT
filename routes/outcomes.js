@@ -108,8 +108,6 @@ router.get('/', async function (req, res) {
 		});
 		locals.results = results;
 	}
-
-
 	res.render('admin/outcome/home', locals);
 });
 
