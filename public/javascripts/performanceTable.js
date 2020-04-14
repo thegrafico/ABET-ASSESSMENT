@@ -100,7 +100,7 @@ $(document).ready(() => {
 
 		if(data[0] == undefined) {
 			// VALIDATION
-			alertMessage('Empty Inmput.');
+			alertMessage('Empty Input.');
 			e.preventDefault();
 		} else {
 			if(validate) {
@@ -284,8 +284,7 @@ function createChart() {
 				count++;
 			}
 		}		
-		percTable[col] = ((count / amountRows) * 100);
-		percTable[col] = percTable[col].toFixed(2);
+		percTable[col] = ((count / amountRows) * 100).toFixed(2);
 		count = 0;
 	}
 	
@@ -296,7 +295,7 @@ function createChart() {
 		if (isNaN(rowSum)) {
 			avgPerRow[row] = 0;
 		} else
-			avgPerRow[row] = rowSum/amountOfColumns;
+			avgPerRow[row] = (rowSum/amountOfColumns).toFixed(2);
 
 		$('#avg' + row).text(avgPerRow[row]);
 		rowSum = 0;
@@ -308,8 +307,7 @@ function createChart() {
 			outcomeAVGCount++;
 		}
 	}
-	outcomeAVG = (outcomeAVGCount / amountRows) * 100;
-	outcomeAVG = outcomeAVG.toFixed(2);
+	outcomeAVG = ((outcomeAVGCount / amountRows) * 100).toFixed(2);
 
 	graphData = percTable;
 	graphData.push(outcomeAVG);
@@ -414,7 +412,7 @@ function insertEvaluation(entryData, assessment_id, buttonPressed) {
 			if(request.isNext == 'n') {
 				window.location.href = `/professor/assessment/${assessment_id}/professorInput`;
 			} else if(request.isNext == 's') {
-				window.location.href = `/professor`;
+				window.location.href = `/professor/`;
 			}
 					
 		}

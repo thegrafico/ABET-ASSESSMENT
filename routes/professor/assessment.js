@@ -166,8 +166,6 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	let perf_criterias = await queries.get_perf_criterias(locals.id).catch((err) => {
 		console.log("Error: ", err);
 	});
-
-	console.log(perf_criterias);
 	
 	// Validate performance criteria
 	if (perf_criterias == undefined || perf_criterias.length == 0) {
@@ -190,8 +188,6 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	if (getGraph.length <= 0) {
 		hasGraph = 'n';
 	}
-
-	console.log(hasGraph);
 
 	// Validation
 	let results = [];
@@ -278,7 +274,6 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 		performances_student.push(performance_records[index]);
 	});
 
-	console.log("If Next: ", req.body.ifNext);
 	let isNext = req.body.ifNext;
 
 	insertStudentScores(rows, performances_student, assessment_id).then(async (success) => {
