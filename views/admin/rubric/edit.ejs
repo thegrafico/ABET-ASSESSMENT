@@ -98,15 +98,56 @@
 
         <div class="row my-4">
             <div class="col-2"></div>
-            <div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
+            <div class="col-6">
+                <button type="submit" id="saveEvaluationRubric" name="isSave" class="btn btn-success" value="save">
+                    Edit Evaluation Rubric
+                </button>
+            </div>
+
+            <div class="col">
+                <button type="submit" id="finishEvaluationRubric" name="isFinal" value="isFinal"
+                    class="btn btn-warning">
+                    Finish Evaluation Rubric
+                </button>
+            </div>
         </div>
+
         <p><a href="<%= base_url %> ">Back to List</a></p>
     </form>
 </div>
 
+<%- include ('../../partials/modal_feedback') -%>
+
+
 <!-- TODO: when user changes the outcome, all performance should be deleted -->
 <script>
+
+    const tag_btn_save = "#saveEvaluationRubric";
+    const tag_btn_finish = "#finishEvaluationRubric";
+    const tag_modal_feedback = "#feedbackContainer";
+    const tag_modal_save = "#feedbackSave";
+    const tag_modal_close = "#feedbackClose";
+    const tag_form_id = "#rubric_data";
+
     $(document).ready(() => {
+
+        $(tag_btn_finish).click(function(e){
+            e.preventDefault();
+            
+            $("#feedbackTitle").text("Finishing Rubric").css({"color": "red"});
+            
+            $("#feedbackBody").text("When you finish an Evaluation Rubric the information is stored and you CAN NOT edit it or delete it anymore.");
+            
+            $(tag_modal_save).text("Finish Evaluation Rubric").css({"display": "block"}).removeClass("btn-success").addClass("btn-warning");
+
+            $(tag_modal_feedback).modal("show");
+        });
+
+        // user click save
+        $(tag_modal_save).click(function(){
+            $(tag_form_id).submit();
+            $(tag_modal_feedback).modal("hide");
+        });
 
         var multi = new SelectPure(".multi-select2", {
             options: criterias,

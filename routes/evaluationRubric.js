@@ -67,10 +67,12 @@ router.get('/', async function (req, res) {
 	if (eval_rubric != undefined && eval_rubric.length > 0) {
 		let results = [];
 
+		console.log(eval_rubric);
 		eval_rubric.forEach(rubric => {
 
 			results.push({
 				"ID": rubric["rubric_ID"],
+				"isFinal": rubric["isFinal"],
 				"values": [
 					rubric["rubric_name"],
 					rubric["rubric_description"],
@@ -110,7 +112,6 @@ router.get('/create', async function (req, res) {
 
 	locals.std_options = [];
 	locals.url_form_redirect = `${base_url}/create`;
-	locals.btn_title = "Create";
 
 	// reset value to nothing when creating a new record
 	evaluation_rubric_input.forEach((record) => {
@@ -147,7 +148,11 @@ router.post("/create", function (req, res) {
 		req.flash("error", "Performance cannot be empty");
 		return res.redirect("back");
 	}
+	
 	let performances_selected = split_and_filter(req.body.performances_id, ",");
+
+
+	let isFinal = (req.body.isFinal != undefined && req.body.isFinal.length > 0);
 
 	// validate req.body
 	let rubric = {
@@ -158,7 +163,7 @@ router.post("/create", function (req, res) {
 	}
 
 	// create in db
-	roolback_queries.create_evaluation_rubric(rubric).then((ok) => {
+	roolback_queries.create_evaluation_rubric(rubric, isFinal).then((ok) => {
 		req.flash("success", "Evaluation Rubric created");
 		res.redirect(base_url);
 	}).catch((err) => {
@@ -292,6 +297,8 @@ router.put('/:r_id', validate_evaluation_rubric, async function (req, res) {
 		return res.redirect("back");
 	}
 
+	let isFinal = (req.body.isFinal != undefined && req.body.isFinal.length > 0);
+
 	// get the performance rubric to compare is there is a changes
 	let selected_performances = split_and_filter(req.body.performances_id, ",");
 	let previus_performances = split_and_filter(req.body.previus_performances_id, ",");
@@ -326,7 +333,9 @@ router.put('/:r_id', validate_evaluation_rubric, async function (req, res) {
 		"id": req.params.r_id
 	};
 
-	rubric_query.update_evaluation_rubric(rubric_data).then((ok) => {
+	console.log(req.body.outcome, req.params.r_id);
+
+	rubric_query.update_evaluation_rubric(rubric_data, isFinal).then((ok) => {
 		req.flash("success", "Evaluation Rubric edited");
 		res.redirect(base_url);
 	}).catch((err) => {

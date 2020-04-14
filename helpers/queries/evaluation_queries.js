@@ -80,17 +80,20 @@ function insert_evaluation_rubric(rubric) {
 /**
  * update_evaluation_rubric -  update the evaluation rubric
  * @param {Object} data -> keys {"name", "description", "rubric_id"} 
+ * @param {Boolean} isFinal -> Can be edit it later or not 
  * @return {Promise} resolve with true
  */
-function update_evaluation_rubric(rubric) {
+
+ // TODO FIX QUERY - ADD WHERE IS_FINAL == 0;
+function update_evaluation_rubric(rubric, isFinal) {
 
     return new Promise(function (resolve, reject) {
 
         let update_query = `
-        UPDATE EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?, outc_ID = ?, date_modified = ?
+        UPDATE EVALUATION_RUBRIC set rubric_name = ?, rubric_description = ?, outc_ID = ?, date_modified = ?, isFinal = ?
         WHERE rubric_ID = ?`;
 
-        data = [rubric.name, rubric.description, rubric.outcome_id, new Date(), rubric.id];
+        data = [rubric.name, rubric.description, rubric.outcome_id, new Date(), isFinal, rubric.id];
 
         conn.query(update_query, data, function (err, results) {
             if (err)

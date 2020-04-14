@@ -213,6 +213,8 @@ router.get('/get/rubricByOutcome/:outcome_id', async function (req, res) {
 		console.error(err);
 	});
 
+	rubrics = rubrics.filter(each => each["isFinal"] == 1);
+
 	// verify is user data is good
 	if (rubrics == undefined || rubrics.length == 0) {
 		return res.json({ error: true, message: "Cannot find any rubric" });

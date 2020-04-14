@@ -1,10 +1,10 @@
 
-const tag_btn = "#userInformation";
+const tag_btn_user_informartion = "#userInformation";
 const tag_modal_user_info = "#userInformationModal";
 
 $(document).ready(function(){
 
-    $(tag_btn).click(async function(){
+    $(tag_btn_user_informartion).click(async function(){
 
         let user_info = await make_request("/api/get/currentUserInformation").catch((err) =>{});
 

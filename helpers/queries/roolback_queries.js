@@ -209,9 +209,10 @@ module.exports.create_course = function create_course(course) {
 /**
  * create_evaluation_rubric create a new evaluation rubric
  * @param {Object} rubric -> {name, description, outcome_id, performance}
+ * @param {Boolean} isFinal -> rubric can be edited later or not
  * @return {Promise} resolve with true
  */
-module.exports.create_evaluation_rubric = function create_evaluation_rubric(rubric) {
+module.exports.create_evaluation_rubric = function create_evaluation_rubric(rubric, isFinal) {
     return new Promise(function (resolve, reject) {
 
         connection.beginTransaction(function (err) {
@@ -219,10 +220,10 @@ module.exports.create_evaluation_rubric = function create_evaluation_rubric(rubr
 
             // insert rubric
             let insert_query = `INSERT INTO ${table.evaluation_rubric}
-            (rubric_name, rubric_description, outc_ID) 
-            VALUES(?, ?, ?);`;
+            (rubric_name, rubric_description, outc_ID, isFinal) 
+            VALUES(?, ?, ?, ?);`;
 
-            connection.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id], function (error, results) {
+            connection.query(insert_query, [rubric.name, rubric.description, rubric.outcome_id, isFinal], function (error, results) {
 
                 if (error) return connection.rollback(function () { reject(error); });
 
