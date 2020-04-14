@@ -151,7 +151,7 @@ router.get('/create', async function (req, res) {
 	});
 
 	locals.user_profe = [];
-	locals.user_profile = -1;
+	locals.user_profile = 2;
 	locals.std_ids = [];
 	locals.is_coordinator = [];
 

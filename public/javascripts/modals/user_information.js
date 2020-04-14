@@ -1,6 +1,6 @@
 
 const tag_btn = "#userInformation";
-const tag_modal = "#userInformationModal";
+const tag_modal_user_info = "#userInformationModal";
 
 $(document).ready(function(){
 
@@ -24,6 +24,6 @@ $(document).ready(function(){
 
         $("#notes").empty().append(response["notes"]);
 
-        $(tag_modal).modal("show");
+        $(tag_modal_user_info).modal("show");
     }); 
 });

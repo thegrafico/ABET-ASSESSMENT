@@ -125,7 +125,7 @@ router.post("/assessment/create", async function (req, res) {
 		req.flash("success", "Assessment created!");
 		res.redirect("back");
 	}).catch((err) => {
-		console.log("ERROR: ", err);
+		console.error("ERROR: ", err);
 		if (err.code == "ER_DUP_ENTRY")
 			req.flash("error", "An Assessment with the same information does already exits");
 		else
@@ -166,8 +166,6 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	let perf_criterias = await queries.get_perf_criterias(locals.id).catch((err) => {
 		console.log("Error: ", err);
 	});
-
-	console.log(perf_criterias);
 	
 	// Validate performance criteria
 	if (perf_criterias == undefined || perf_criterias.length == 0) {
@@ -190,8 +188,6 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	if (getGraph.length <= 0) {
 		hasGraph = 'n';
 	}
-
-	console.log(hasGraph);
 
 	// Validation
 	let results = [];
@@ -249,15 +245,13 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 	let base_64 = req.body.graph;
 
 	if (has_graph) {
-		let updateGraph = await queries.updateGraph(assessment_id, base_64).catch((err) => {
-			console.log("Error: ", err);
+		await queries.updateGraph(assessment_id, base_64).catch((err) => {
+			console.error("Error: ", err);
 		});
-		console.log("Updated Base_64");
 	} else {
-		let addGraph = await queries.addGraph(assessment_id, base_64).catch((err) => {
-			console.log("Error: ", err);
+		await queries.addGraph(assessment_id, base_64).catch((err) => {
+			console.error("Error: ", err);
 		});
-		console.log("Add new Base 64");
 	}
 
 	// validate there is data available
@@ -278,19 +272,17 @@ router.post('/assessment/:assessmentID/performancetable', middleware.validate_as
 		performances_student.push(performance_records[index]);
 	});
 
-	console.log("If Next: ", req.body.ifNext);
 	let isNext = req.body.ifNext;
 
 	insertStudentScores(rows, performances_student, assessment_id).then(async (success) => {
 
 		await queries.update_status(assessment_id, progress).catch((err) => {
-			console.log("Cannot update the status of the assessment: ", err);
+			console.error("Cannot update the status of the assessment: ", err);
 		});
 
-		console.log("Data was successfully added.");
 		return res.json({ error: false, message: "success", isNext: isNext });
 	}).catch((err) => {
-		console.log("Error Performance table: ", err);
+		console.error("Error Performance table: ", err);
 		return res.json({ error: true, message: "data is undefined" });
 	});
 
@@ -319,9 +311,7 @@ router.put('/assessment/:assessmentID', middleware.validate_assessment, middlewa
 		req.flash("success", "Assessment Updated!");
 		res.redirect("back");
 	}).catch((err) => {
-		console.log("ERROR: ", err);
-
-		console.log("ERROR: ", err);
+		console.error("ERROR: ", err);
 		if (err.code == "ER_DUP_ENTRY")
 			req.flash("error", "An Assessment with the same information does already exits");
 		else
@@ -349,7 +339,7 @@ router.delete('/assessment/:assessmentID', middleware.validate_assessment, middl
 		req.flash("success", "Assessment Moved to archive!");
 		res.redirect(`${base_url}?&active='completed'`);
 	}).catch((err) => {
-		console.log("Cannot Remove the assessment: ", err);
+		console.error("Cannot Remove the assessment: ", err);
 		req.flash("error", "Cannot Remove the assessment!");
 		res.redirect("back");
 	});
@@ -720,7 +710,6 @@ function mapData(data) {
 
 		let row_perf = row_info.map(row => row.perC_ID);
 		let row_scores = row_info.map(row => row.row_perc_score);
-		// console.log("Row DAta ", row_perf);
 
 		temp.push({
 			rowID: id,

@@ -124,14 +124,14 @@ textarea.error {
 
 #divTable {
   overflow-y: scroll;
-  height: 350px;
+  height: 400px;
   width: 98%;
   border-right: 1px solid black;
   border-bottom: 1px solid black;
 }
 
 
-/* Style to change separator  */
+/* Style to change separator  */ */
 /* .breadcrumb-item + .breadcrumb-item::before {
   content: ">>";
 } */

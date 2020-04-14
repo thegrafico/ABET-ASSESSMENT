@@ -53,8 +53,7 @@
 
 		<div class="col-4">
 			<div class="d-flex flex-row-reverse">
-				<button id="editOrderBtn" class="btn btn-primary">Edit Performance Order</button>
-
+				<button id="editOrderBtn" class="btn btn-primary invisible">Edit Performance Order</button>
 			</div>
 		</div>
 	</div>
@@ -187,6 +186,10 @@
 
 	let PREVIUS_VALUES = [];
 	let CURRENT_VALUES = [];
+
+	if ( $(".trEditable").length > 0){
+		$(tag_change_btn).removeClass("invisible");
+	}
 
 	$(document).ready(function () {
 
