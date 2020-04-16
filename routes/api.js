@@ -155,7 +155,6 @@ router.get("/get/outcomesByStudyProgramID/:programID", async function (req, res)
 // ======================================== PERFORMANCE =======================================
 
 router.post("/updatePerformanceOrder", async function (req, res) {
-	console.log(req.body);
 
 	if (req.body == undefined || req.body.request == undefined || !req.body.request.length) {
 		return res.json({ error: true, message: "Invalid Data" });
@@ -168,8 +167,6 @@ router.post("/updatePerformanceOrder", async function (req, res) {
 	if (wasUpdate == undefined || wasUpdate == false) {
 		return res.json({ error: true, message: "Cannot update the performances order" });
 	}
-
-	console.log("Performance Order was update: ", wasUpdate);
 
 	res.json({ error: false, message: "success" });
 });
