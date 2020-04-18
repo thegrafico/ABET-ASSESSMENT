@@ -41,7 +41,6 @@ router.get('/evaluationRubric/get/performances/:rubric_id', async function (req,
 /* 
 	-- API TO GET ALL study program by Department ID -- 
 	GET /api/department/get/studyPrograms/:dep
-	TODO: send a resposes to user is data is not found
 */
 router.get('/department/get/studyPrograms/:departmentId', async function (req, res) {
 

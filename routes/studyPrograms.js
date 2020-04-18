@@ -297,7 +297,6 @@ router.put('/:id', function(req, res) {
 		return res.redirect("back");	
 	}
 
-	// TODO: validate id
 	let stdp_id = req.params.id;
 
 	let data = {

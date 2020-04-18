@@ -153,10 +153,7 @@ $(document).ready(function () {
                     TABLES_IDS.push(ids);
 
                     //======================================
-
-                    // TODO: NOAH YOU SHOULD WORK FROM HERE
                     console.log(OUTCOME_AVG_ROW);
-                    // createTable(title, graphData, labels); 
 
                     //======================================
                 } else {

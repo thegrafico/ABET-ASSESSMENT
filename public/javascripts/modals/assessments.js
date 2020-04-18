@@ -326,7 +326,7 @@ $(document).ready(function () {
             // clean rubric
             clean_select(tag_rubric, "Rubric");
 
-            // TODO: Los cursos que aparecen deberian ser los que estan en course mapping??
+            // TODO: Add warning message when user select an outcome outside from course mapping
             let courses = await make_request(`/api/get/coursesbystudyprogram/${std_id}`).catch((err) => {
                 console.log("There is an error: ", err);
             });

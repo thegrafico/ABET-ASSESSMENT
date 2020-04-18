@@ -1,8 +1,6 @@
 /* 
 	EVALUATION RUBRIC ROUTE
 	GET /evaluation
-
-	TODO: Arregar donde es que la API tiene que ir
 */
 var express = require('express');
 var router = express.Router();

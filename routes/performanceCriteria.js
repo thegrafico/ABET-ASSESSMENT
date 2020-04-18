@@ -197,7 +197,6 @@ router.put("/:outc_id/performanceCriteria/:perf_id", validate_outcome, validate_
 /* 
 	-- API GET PERFORMANCE CRITERIA -- 
 	GET /performanceCriteria/:id/remove
-	TODO: ADD USER VALIDATION
 */
 router.get("/performanceCriteria/get/:perf_id", async function (req, res) {
 
