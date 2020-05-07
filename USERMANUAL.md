@@ -2,7 +2,7 @@
 ## Table of Content
 - [How to use ABET Assessment Report Hub](#how-to-use-abet-assessment-report-hub)
   - [Table of Content](#table-of-content)
-  - [## **About the Website**](#h2-id%22about-the-website-3909%22about-the-websiteh2)
+  - [**About the Website**](#about-the-website)
   - [**Definitions**](#definitions)
   - [**Starting Up**](#starting-up)
   - [**Admin**](#admin)
@@ -26,21 +26,24 @@
       - [Create](#create-4)
       - [Edit](#edit-4)
       - [Remove](#remove-4)
-  - [!Alt Text](#alt-text)
-    - [**Evaluation Rubric**](#evaluation-rubric)
+    - [**Performance Criterias**](#performance-criterias)
       - [Create](#create-5)
       - [Edit](#edit-5)
       - [Remove](#remove-5)
-    - [**School Term**](#school-term)
+    - [**Evaluation Rubric**](#evaluation-rubric)
       - [Create](#create-6)
       - [Edit](#edit-6)
       - [Remove](#remove-6)
-  - [!Alt Text](#alt-text-1)
+    - [**School Term**](#school-term)
+      - [Create](#create-7)
+      - [Edit](#edit-7)
+      - [Remove](#remove-7)
+  - [!Alt Text](#alt-text)
     - [**Course Mapping**](#course-mapping)
 ----
 
 ## **About the Website**
-----
+
 **ABET Assessment Report Hub** is to automate and facilitate the assessment report process for the engineering department faculty members since the traditional way of creating an assessment report using a word processing application like Microsoft Word is time-consuming and tedious for the members. Other than providing a convenient and fast approach for creating assessment reports, the application also acts as a stronghold for all the data to be stored. With the data being saved the application will also provide the ability to export all students' performance criteria scores from a selected school term or cycle of time so can the data be used for the outcome report or to study the performance of the students within a course.
 
 ![Alt Text](/Screenshots/Log%20In.png)
@@ -240,52 +243,104 @@ You will be prompt and ask if you are sure tf you want to remove that user.
 
 ### **Course** 
 
+Courses are creates at the `Courses` page. To enter to the page, please click on the tab the says "Courses" on the left side of the page.
+
 ![Alt Text](/Screenshots/4%20Courses/crs_home.png)
 
 #### Create
 
-![Alt Text](/Screenshots)
+Once you enter the `Courses` page and you wish to create a new course first click on the "Create New" button.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/4%20Courses/1%20Create/crs_create_btn.png)
 
-![Alt Text](/Screenshots)
+After clicking the "Create New" button you will be redirected to the `Create` page. First pick the study programs that the course belongs to.
+
+> **NOTE:** You can select multiple Stupdy Programs in case that the course is given in multiple study programs.
+
+![Alt Text](/Screenshots/4%20Courses/1%20Create/crs_create_sp.png)
+
+Once the study programs has been picked. Fill out the rest of the course information.
+
+![Alt Text](/Screenshots/4%20Courses/1%20Create/crs_create_page.png)
+
+Make sure to click on the "Create" button to submit new entry to the system.
 
 #### Edit
 
-![Alt Text](/Screenshots)
+Editing a course information is done by clicking on the "Action" button and then choosing the "Edit" option.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/4%20Courses/2%20Edit/crs_edit_btn.png)
 
+Once done changing the information click on the "Submit" button to save the changes.
+
+![Alt Text](/Screenshots/4%20Courses/2%20Edit/Screen%20Shot%202020-05-04%20at%204.16.35%20PM.png)
 
 #### Remove
 
-![Alt Text](/Screenshots)
+To remove an course entry, simply press on the "Action" button an choose the "Remove" option.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/4%20Courses/3%20Remove/crs_remove_btn.png)
+
+Pop up will appear asking if you are sure if  you want remove the course from the system.
+
+> **NOTE:** Removing a course will have a cascading effect and remove any assessment reports that has been made on that course.
+
+![Alt Text](/Screenshots/4%20Courses/3%20Remove/crs_remove_modal.png)
 
 ----
 
 ### **Outcomes** 
 
-![Alt Text](/Screenshots)
+To enter the `Outcomes` page click on the "Outcomes" tab to be redirect to the page.
+
+![Alt Text](/Screenshots/5%20Outcomes/oc_home.png)
 
 #### Create
 
-![Alt Text](/Screenshots)
+To create a new outcome click on the "Create New" button.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/5%20Outcomes/1%20Create/oc_create_btn.png)
+
+Once in the `Create` page choose to which study program the outcone belongs to.
+
+![Alt Text](/Screenshots/5%20Outcomes/1%20Create/oc_create_sp.png)
+
+Once you choose the study program, fill out the rest of the outcome information.
+
+![Alt Text](/Screenshots/5%20Outcomes/1%20Create/oc_create_page.png)
+
+Make sure to click on the "Create" button to submit the new entry to the system.
 
 #### Edit
 
-![Alt Text](/Screenshots)
+Click on the "Action" button and choose the "Edit" option.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/5%20Outcomes/2%20Edit/oc_edit_btn.png)
+
+You will find yourself at the `Edit` page, update the information and click on the "Edit" button to submit new changes to the system.
+
+![Alt Text](/Screenshots/5%20Outcomes/2%20Edit/oc_edit_page.png)
 
 #### Remove
 
-![Alt Text](/Screenshots)
+Just like for editing, click on the "Action" button and choose the "Remove" option.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/5%20Outcomes/3%20Remove/oc_remove_btn.png)
+
+A pop up will appear and ask if you are sure if you want to remove the entry.
+
+> **NOTE:** Removing an outcome from the system will have a cascading effect and will delete any assessment reports related to that outcome.
+
+![Alt Text](/Screenshots/5%20Outcomes/3%20Remove/oc_remove_modal.png)
+
+### **Performance Criterias**
+
+#### Create
+
+#### Edit
+
+#### Remove
+
 ----
 
 ### **Evaluation Rubric** 
