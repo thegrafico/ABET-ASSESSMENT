@@ -2,8 +2,8 @@
 ## Table of Content
 - [How to use ABET Assessment Report Hub](#how-to-use-abet-assessment-report-hub)
   - [Table of Content](#table-of-content)
-  - [- Setting up the Enviroment](#ul-lisetting-up-the-enviromentli-ul)
-  - [## **About the Website**](#h2-id%22about-the-website-1911%22about-the-websiteh2)
+  - [- Setting Up the Enviroment](#ul-lisetting-up-the-enviromentli-ul)
+  - [## **About the Website**](#h2-id%22about-the-website-2496%22about-the-websiteh2)
   - [**Definitions**](#definitions)
   - [**Starting Up**](#starting-up)
   - [**Admin**](#admin)
@@ -14,27 +14,27 @@
     - [**Study Program**](#study-program)
       - [Create](#create-1)
       - [Edit](#edit-1)
-  - [#### Remove](#h4-id%22remove-4970%22removeh4)
+      - [Remove](#remove-1)
     - [**User**](#user)
       - [Create](#create-2)
       - [Edit](#edit-2)
-  - [#### Remove](#h4-id%22remove-4971%22removeh4)
+  - [#### Remove](#h4-id%22remove-8282%22removeh4)
     - [**Course**](#course)
       - [Create](#create-3)
       - [Edit](#edit-3)
-  - [#### Remove](#h4-id%22remove-4972%22removeh4)
+  - [#### Remove](#h4-id%22remove-8283%22removeh4)
     - [**Outcomes**](#outcomes)
       - [Create](#create-4)
       - [Edit](#edit-4)
-  - [#### Remove](#h4-id%22remove-4973%22removeh4)
+  - [#### Remove](#h4-id%22remove-8284%22removeh4)
     - [**Evaluation Rubric**](#evaluation-rubric)
       - [Create](#create-5)
       - [Edit](#edit-5)
-  - [#### Remove](#h4-id%22remove-4974%22removeh4)
+  - [#### Remove](#h4-id%22remove-8285%22removeh4)
     - [**School Term**](#school-term)
       - [Create](#create-6)
       - [Edit](#edit-6)
-  - [#### Remove](#h4-id%22remove-4975%22removeh4)
+  - [#### Remove](#h4-id%22remove-8286%22removeh4)
     - [**Course Mapping**](#course-mapping)
 ----
 
@@ -165,7 +165,28 @@ Press the "Create" button to create the new study program and save to the system
 
 #### Edit
 
+If you decide to edit an existing entry, first click on the "Action" button. And press on the "Edit" button.
+
+![Alt Text](/Screenshots/2%20Study%20Program/2%20Edit/sp_edit_btn.png)
+
+Now you will find yourself in the editing page, notice that that the current information is set. If you want to switch that then update the iformation and make to press the "Edit" button to submit changes.
+
+![Alt Text](/Screenshots/2%20Study%20Program/2%20Edit/sp_edit_page.png)
+
 #### Remove
+
+In case you wish to remove a existing study program. Press the "Remove" button in the action menu.
+
+![Alt Text](/Screenshots/2%20Study%20Program/3%20Remove/sp_remove_page.png)
+
+A pop up will appear asking if you are sure to remove the entry.
+
+**NOTE:** Deleting a study program will have a cascade effect to the system meaning whatever data is related to that study program will also be deleted permanently from the system.
+
+![Alt Text](/Screenshots/2%20Study%20Program/3%20Remove/sp_remove_modal.png)
+
+
+
 ----
 
 ### **User** 
