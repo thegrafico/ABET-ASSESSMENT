@@ -2,8 +2,7 @@
 ## Table of Content
 - [How to use ABET Assessment Report Hub](#how-to-use-abet-assessment-report-hub)
   - [Table of Content](#table-of-content)
-  - [- Setting Up the Enviroment](#ul-lisetting-up-the-enviromentli-ul)
-  - [## **About the Website**](#h2-id%22about-the-website-2496%22about-the-websiteh2)
+  - [## **About the Website**](#h2-id%22about-the-website-3909%22about-the-websiteh2)
   - [**Definitions**](#definitions)
   - [**Starting Up**](#starting-up)
   - [**Admin**](#admin)
@@ -18,23 +17,25 @@
     - [**User**](#user)
       - [Create](#create-2)
       - [Edit](#edit-2)
-  - [#### Remove](#h4-id%22remove-8282%22removeh4)
+      - [Remove](#remove-2)
     - [**Course**](#course)
       - [Create](#create-3)
       - [Edit](#edit-3)
-  - [#### Remove](#h4-id%22remove-8283%22removeh4)
+      - [Remove](#remove-3)
     - [**Outcomes**](#outcomes)
       - [Create](#create-4)
       - [Edit](#edit-4)
-  - [#### Remove](#h4-id%22remove-8284%22removeh4)
+      - [Remove](#remove-4)
+  - [!Alt Text](#alt-text)
     - [**Evaluation Rubric**](#evaluation-rubric)
       - [Create](#create-5)
       - [Edit](#edit-5)
-  - [#### Remove](#h4-id%22remove-8285%22removeh4)
+      - [Remove](#remove-5)
     - [**School Term**](#school-term)
       - [Create](#create-6)
       - [Edit](#edit-6)
-  - [#### Remove](#h4-id%22remove-8286%22removeh4)
+      - [Remove](#remove-6)
+  - [!Alt Text](#alt-text-1)
     - [**Course Mapping**](#course-mapping)
 ----
 
@@ -131,7 +132,7 @@ To remove you will follow the first step like Edit, just only choose the “Remo
 
 Once pressed, a pop up will appear asking “Are you sure you want to remove this record?” If so then press the “Submit changes” and the department will be deleted.
 
-**NOTE:** Deleting a department will have a cascade effect to the system meaning whatever data is related to that department will also be deleted permanently from the system.
+> **NOTE:** Deleting a department will have a cascade effect to the system meaning whatever data is related to that department will also be deleted permanently from the system.
 
 ![Alt Text](/Screenshots/1%20Department/Remove/dept_remove_modal.png)
 
@@ -181,79 +182,161 @@ In case you wish to remove a existing study program. Press the "Remove" button i
 
 A pop up will appear asking if you are sure to remove the entry.
 
-**NOTE:** Deleting a study program will have a cascade effect to the system meaning whatever data is related to that study program will also be deleted permanently from the system.
+> **NOTE:** Deleting a study program will have a cascade effect to the system meaning whatever data is related to that study program will also be deleted permanently from the system.
 
 ![Alt Text](/Screenshots/2%20Study%20Program/3%20Remove/sp_remove_modal.png)
-
-
 
 ----
 
 ### **User** 
 
-![Alt Text](/Screenshots)
+As a `Admin` you will have the abilty to create, edit and remove users profiles. To do so you must press the tab on the left side of the page. 
 
+![Alt Text](/Screenshots/3%20Users/user_home.png)
 
 #### Create
 
+Once you in the `Users` page you can create a user by pressing the "Create New" button at the bottom of the page.
+
+![Alt Text](/Screenshots/3%20Users/1%20Create/usr_create_btn.png)
+
+After pressing the "Create New" button, first you will need to choose the profile which the new user will have. 
+
+![Alt Text](/Screenshots/3%20Users/1%20Create/usr_create_profile.png)
+
+After choosing the profile you will will then choose which study program does the new user teaches you also decide which study program he/she can coordinate the assessments
+
+![Alt Text](/Screenshots/3%20Users/1%20Create/usr_create_coordinator.png)
+
+Finally, enter the finishing information which the users basic information.
+
+![Alt Text](/Screenshots/3%20Users/1%20Create/usr_create_page.png)
+
+Once done, make sure to press the "Create" button to save the new user to the system.
+
 #### Edit
 
+To edit an user you will first press the "Action" button the entry you wish to edit. Once pressed, a dropdown with two options will appear, press the "Edit" option.
+
+![Alt Text](/Screenshots/3%20Users/2%20Edit/usr_edit_btn.png)
+
+By pressing the "Edit" button, you will be redirected to the `Edit` page. Make the changes you wish to make, once done make sure to press the "Submit" button to submit changes to the system.
+
+![Alt Text](/Screenshots/3%20Users/2%20Edit/usr_edit_page.png)
+
 #### Remove
+
+To remove an user entry press the "Remove" option.
+
+![Alt Text](/Screenshots/3%20Users/3%20Remove/usr_remove_btn.png)
+
+You will be prompt and ask if you are sure tf you want to remove that user.
+
+![Alt Text](/Screenshots/3%20Users/3%20Remove/usr_remove_modal.png)
+
+> **NOTE:** Deleting a User will have a cascade effect to the system meaning whatever data is related to that User will also be deleted permanently from the system.
+
 ----
 
 ### **Course** 
 
-![Alt Text](/Screenshots)
-
+![Alt Text](/Screenshots/4%20Courses/crs_home.png)
 
 #### Create
 
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
 #### Edit
 
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
+
 #### Remove
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
 ----
 
 ### **Outcomes** 
 
 ![Alt Text](/Screenshots)
 
-
 #### Create
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
 
 #### Edit
 
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
 #### Remove
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
 ----
 
 ### **Evaluation Rubric** 
 
 ![Alt Text](/Screenshots)
 
-
 #### Create
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
 
 #### Edit
 
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
 #### Remove
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
 ----
 
 ### **School Term** 
 
 ![Alt Text](/Screenshots)
 
-
 #### Create
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
 
 #### Edit
 
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
+
 #### Remove
+
+![Alt Text](/Screenshots)
+
+![Alt Text](/Screenshots)
 ----
 
 ### **Course Mapping** 
 
 ![Alt Text](/Screenshots)
 
-
 ----
-
-![Alt Text](/Screenshots)
