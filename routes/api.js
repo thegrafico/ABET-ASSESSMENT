@@ -892,5 +892,18 @@ function transformdt(outcomes) {
 	return temp;
 }
 
+// ============== ASSESSMENT ======================
+router.get('/get/assessments', async function(req, res){
+
+	// get admin assessments for coordinator
+	assessment = await assessmentQuery.get_admin_assessments().catch((err) => {
+		console.error("Error getting assessments: ", err);
+	});
+
+	return res.json(assessment);
+});
+
+//  {name:'Assesment 1', course:'Fluid Mechanics and Applications (Section No. 43096) - 3.00 credicts', rubric:'Rubric for outcome 1 - COEN', term:'SEMESTER JAN-MAY 2019', status:'inProcess'},
+
 
 module.exports = router;

@@ -83,8 +83,6 @@ function insert_evaluation_rubric(rubric) {
  * @param {Boolean} isFinal -> Can be edit it later or not 
  * @return {Promise} resolve with true
  */
-
- // TODO FIX QUERY - ADD WHERE IS_FINAL == 0;
 function update_evaluation_rubric(rubric, isFinal) {
 
     return new Promise(function (resolve, reject) {

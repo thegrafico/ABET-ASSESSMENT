@@ -6,7 +6,7 @@ var { get_department_by_user_id_and_coordinator } = require("../helpers/queries/
 const { outcome_create_inputs } = require("../helpers/layout_template/create");
 var { validate_form } = require("../helpers/validation");
 const table = require("../helpers/DatabaseTables");
-const { admin } = require("../helpers/profiles");
+const { admin } = require("../helpers/profiles"); // coordinator and admins are allow to administrate outcomes. 
 var moment = require("moment");
 
 const base_url = '/admin/outcomes';

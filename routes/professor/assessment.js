@@ -28,7 +28,6 @@ const archive = statusOfAssessment.archive;
 /*
 	- Get /professor
 	- HOME PAGE page
-	TODO: verify where to redirect when error
 */
 router.get('/', async function (req, res) {
 

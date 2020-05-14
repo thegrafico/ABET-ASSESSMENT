@@ -3,12 +3,12 @@
 */
 var express = require('express');
 var router = express.Router();
-var queries = require('../helpers/queries/user_queries');
-var general_queries = require("../helpers/queries/general_queries");
-var roolback_queries = require("../helpers/queries/roolback_queries");
-const { user_create_inputs } = require("../helpers/layout_template/create");
-const table = require("../helpers/DatabaseTables");
-var { validate_form} = require("../helpers/validation");
+var queries = require('../helpers/queries/user_queries'); // queries
+var general_queries = require("../helpers/queries/general_queries"); // queries
+var roolback_queries = require("../helpers/queries/roolback_queries"); // queries
+const { user_create_inputs } = require("../helpers/layout_template/create"); // frontend template data
+const table = require("../helpers/DatabaseTables"); // all databases table names.
+var { validate_form} = require("../helpers/validation"); // validate the data 
 
 const base_url = "/admin/users";
 var locals = {

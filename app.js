@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+// dependencies
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -156,7 +157,7 @@ app.use(`${admin_route}/courseMapping`, middleware.is_login, middleware.hasAdmin
 /**
  * API TO GET THE DATA FROM REQUEST
  */
-app.use('/api', middleware.hasProfile, apiRoute);
+app.use('/api', apiRoute);
 // ====================================================
 
 // 404 ERROR HANDLE
