@@ -28,6 +28,8 @@
       - [Remove](#remove-4)
     - [**Performance Criterias**](#performance-criterias)
       - [Create](#create-5)
+      - [Administrate](#administrate)
+      - [Editing the Orders](#editing-the-orders)
       - [Edit](#edit-5)
       - [Remove](#remove-5)
     - [**Evaluation Rubric**](#evaluation-rubric)
@@ -335,11 +337,71 @@ A pop up will appear and ask if you are sure if you want to remove the entry.
 
 ### **Performance Criterias**
 
+Each `Outcome` will have a set of `Performance Criterias`. Recently created outcomes are created with no preformance criterias.
+
 #### Create
+
+To create a performance criterias for a outcome you first need to press the "Create" button.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Create/perf_create_btn.png)
+
+After pressing the button you will be redirected to the `Performance Criterias` page. Since the "Create" button is only available to outcomes that doesn't have any performance criterias create the page will be empty as shown in the bottom image.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Create/perf_create_page.png)
+
+To create a performance criteria press the "Create New" found at the bottom of the page.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Create/perf_create_page_btn.png)
+
+You will be redirected to the create form.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Create/perf_create_info.png)
+
+Insert the order of the performance criterias and the description. Once you are done click on the "Create" button.
+
+#### Administrate
+
+If you wish to `Edit` or `Remove` an existing entry click on the "Administrate" button.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/perf_admin_btn.png)
+
+You will be redirected to a page showing all the existing performance criterias for the selcted outcome.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/perf_admin_home.png)
+
+#### Editing the Orders
+
+Performance criterias are created with an order. If you wish to edit the order click on the "Edit Performance Order" button. 
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/Edit%20Order/perf_edt_ord_btn.png)
+
+Once pressed you will notice that the order number are text box, you will be able to change the order. Once done, click on the "Save Changes" button to sumbit the changes the system.
+
+> **NOTE:** You must assure that the performance criterias are set to have a proper order, meaning that the system won't allow two criterias to have the same order or skip a number, an example will be you can't have a criterias have an order of 3 if there is no 2 assign already. 
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/Edit%20Order/perf_edt_ord_text.png)
 
 #### Edit
 
+To `Edit` a performance criteria click on the "Action" button and click on the "Edit" button.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/Edit/perf_edt_btn.png)
+
+Once in the `edit` page make the changes you wish to make and submit them by clicking on the "Edit" button.
+  
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/Edit/perf_edit_page.png)
+
 #### Remove
+
+To remove an performance criteria click on the "Action" button and select the "Remove" option.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/Remove/perf_remove_btn.png)
+
+Once you click on the "Remove" button you will be prompt to make sure if you are sure that you want to remove the entry.
+
+> **NOTE:** Removing an performance criteria from the system will have a cascading effect and will delete any assessment reports related to that outcome.
+
+![Alt Text](/Screenshots/5%20Outcomes/Performance%20Criterias/Administrate/Remove/perf_remove_modal.png)
 
 ----
 
