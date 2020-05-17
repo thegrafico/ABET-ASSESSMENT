@@ -41,7 +41,6 @@
       - [Create](#create-7)
       - [Edit](#edit-7)
       - [Remove](#remove-7)
-  - [!Alt Text](#alt-text)
     - [**Course Mapping**](#course-mapping)
 ----
 
@@ -494,6 +493,7 @@ To remove a school term from the system click on "Action" and then on "Remove".
 A modal will appear asking if you are sure, if so click on "Submit changes"
 
 ![Alt Text](/Screenshots/7%20School%20Terms/3%20Remove/term_remove_modal.png)
+
 ----
 
 ### **Course Mapping** 
