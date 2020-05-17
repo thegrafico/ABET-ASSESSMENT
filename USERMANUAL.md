@@ -461,34 +461,56 @@ A modal will appear asking if you wish to remove entry, if so click on "Submit c
 
 ### **School Term** 
 
+To go enter the `School Term` page click on the "School Term" tab on the left side of the page.
+
 ![Alt Text](/Screenshots/7%20School%20Terms/term_home.png)
 
 #### Create
 
+To create a new school term click on the "Create New" button at the bottom of the page.
+
 ![Alt Text](/Screenshots/7%20School%20Terms/1%20Create/term_create_btn.png)
+
+Enter the new school term and click "Create".
 
 ![Alt Text](/Screenshots/7%20School%20Terms/1%20Create/term_create_page.png)
 
 #### Edit
 
+To edit an existing school term simply click on "Action" and select "Edit"
+
 ![Alt Text](/Screenshots/7%20School%20Terms/2%20Edit/term_edit_btn.png)
+
+Update the information and click "Submit".
 
 ![Alt Text](/Screenshots/7%20School%20Terms/2%20Edit/term_edit_page.png)
 
 #### Remove
 
+To remove a school term from the system click on "Action" and then on "Remove".
+
 ![Alt Text](/Screenshots/7%20School%20Terms/3%20Remove/term_remove_btn.png)
+
+A modal will appear asking if you are sure, if so click on "Submit changes"
 
 ![Alt Text](/Screenshots/7%20School%20Terms/3%20Remove/term_remove_modal.png)
 ----
 
 ### **Course Mapping** 
 
+To enter the `Course Mapping` page click on "Course Mapping" on the left side of the page.
+
 ![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_home.png)
+
+To see the mapping you first need to pick the department of the study program course you wish to see.
 
 ![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_dept.png)
 
+After choosing the department choose the study program.
+
 ![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_study.png)
+
+Once the study program is choosen, all the course will appear with checkboxes giving you the ability to map course to outcomes that can be evaluated. 
 
 ![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_course.png)
 
