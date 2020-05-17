@@ -34,6 +34,7 @@
       - [Remove](#remove-5)
     - [**Evaluation Rubric**](#evaluation-rubric)
       - [Create](#create-6)
+      - [View](#view)
       - [Edit](#edit-6)
       - [Remove](#remove-6)
     - [**School Term**](#school-term)
@@ -407,53 +408,88 @@ Once you click on the "Remove" button you will be prompt to make sure if you are
 
 ### **Evaluation Rubric** 
 
-![Alt Text](/Screenshots)
+To access the the `Evaluation Rubric` page click on the "Evaluation Rubric" tab. Once clicked it will redirect you to another page.
+
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/eval_index.png)
 
 #### Create
+ 
+To create a rubric start by clicking in the "Create New" button.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/1%20Create/eval_create_btn.png)
 
-![Alt Text](/Screenshots)
+You will be greated to a page where you will find a form asking for the study programm, outcome and performance criterias you want to evaluate and finally you will need to name the rubric and give it a brief description.
+
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/1%20Create/eval_create.png)
+
+Once done, click on the "Save Evaluation Rubric" button to submit the entry to the system. 
+
+#### View
+
+To view which outcome and criterias are being evaluated on a rubric, click on the "Action" button and then click on the "View Performance Rubric" button.
+ 
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/eval_view.png)
+
+A modal will pop up showing the information of that rubric.
+
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/eval_view_modal.png)
 
 #### Edit
 
-![Alt Text](/Screenshots)
+To edit a entry click on the "Action" button and click on "Edit". You will be redirected to the `Edit` page.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/2%20Edit/eval_edit_btn.png)
+
+Changes any information you wish. Once you are done click on the "Edit Evaluation Rubric" button.
+
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/2%20Edit/eval_edit_screen.png)
 
 #### Remove
 
-![Alt Text](/Screenshots)
+To remove a rubric click on the "Action" then click on remove.
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/3%20Remove/eval_remove_btn.png)
+
+A modal will appear asking if you wish to remove entry, if so click on "Submit changes".
+
+> **NOTE:** Removing an rubric from the system will have a cascading effect and will delete any assessment reports related to that outcome.
+
+
+![Alt Text](/Screenshots/6%20Evaluation%20Rubrics/3%20Remove/eval_remove_modal.png)
 
 ----
 
 ### **School Term** 
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/7%20School%20Terms/term_home.png)
 
 #### Create
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/7%20School%20Terms/1%20Create/term_create_btn.png)
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/7%20School%20Terms/1%20Create/term_create_page.png)
 
 #### Edit
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/7%20School%20Terms/2%20Edit/term_edit_btn.png)
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/7%20School%20Terms/2%20Edit/term_edit_page.png)
 
 #### Remove
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/7%20School%20Terms/3%20Remove/term_remove_btn.png)
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/7%20School%20Terms/3%20Remove/term_remove_modal.png)
 ----
 
 ### **Course Mapping** 
 
-![Alt Text](/Screenshots)
+![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_home.png)
+
+![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_dept.png)
+
+![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_study.png)
+
+![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_course.png)
 
 ----
