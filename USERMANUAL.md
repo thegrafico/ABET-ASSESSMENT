@@ -2,6 +2,7 @@
 ## Table of Content
 - [How to use ABET Assessment Report Hub](#how-to-use-abet-assessment-report-hub)
   - [Table of Content](#table-of-content)
+  - [- **Coordinator**](#ul-licoordinatorli-ul)
   - [**About the Website**](#about-the-website)
   - [**Definitions**](#definitions)
   - [**Starting Up**](#starting-up)
@@ -42,6 +43,17 @@
       - [Edit](#edit-7)
       - [Remove](#remove-7)
     - [**Course Mapping**](#course-mapping)
+  - [**Professor**](#professor)
+    - [Creating an Asessment](#creating-an-asessment)
+      - [Deleting rows](#deleting-rows)
+      - [Adding Rows](#adding-rows)
+      - [Extra Information on the Scores](#extra-information-on-the-scores)
+      - [Saving for later](#saving-for-later)
+    - [Editing Assessment Information](#editing-assessment-information)
+    - [Moving a Completed Report to Archived or to In Progress](#moving-a-completed-report-to-archived-or-to-in-progress)
+  - [**Coordinator**](#coordinator)
+    - [Professor's Assessment](#professors-assessment)
+    - [Department Assessments](#department-assessments)
 ----
 
 ## **About the Website**
@@ -515,3 +527,157 @@ Once the study program is choosen, all the course will appear with checkboxes gi
 ![Alt Text](/Screenshots/8%20Course%20Mapping/mapping_course.png)
 
 ----
+
+## **Professor**
+
+If you are assigned with the `professor` profile in the system once you long in you will be greeted to the `Professor Home` page.
+
+![Alt Text](/Screenshots/Professor/prof_home.png)
+
+### Creating an Asessment
+
+To create an `Assessment Report` you first need to create the record. You start by clicking on the "Create Assessment".
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_create.png)
+
+A modal will appear requesting all the basic information needed to create the report. Once filled click "Create Assessment" to submit the new record to the system.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_create_modal.png)
+
+Once done you will notice your new report on the home page.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_after_create.png)
+
+To continue and fill the record with the students evaluation scored and course observations info you will need to click on "WORK IN ASSESSMENT" button.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_start_assessment.png)
+
+You will be redirected to a page where it first ask for the number of students taking the course. Enter the number and click on "Enter" to continue.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_num_stud.png)
+
+A table will appear with the same amount of rows as students. You will need to enter their individual scores per performance criterias being evaluated.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_stud_input.png)
+
+Once all input is entered click on the "Save And Continue" button to continue with the report.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_save_continue.png)
+
+You will be redirected to the `Course Evaluation` page were you will enter the rest of the information for the report.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_asess_prof_info_pt1.png)
+
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_asess_prof_info_pt2.png)
+
+Once the information is entered click on "Finish Assessment" button. This will save the report to the system and move if to the completed section of the `Professor Home` page. Once clicking the button it will also redirect you to the `Report` page which will so you a preview of the report and you can also export as a .doc file if you wish to.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_report_preview1.png)
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_report_preview2.png)
+
+#### Deleting rows
+
+If you wish to delete rows on the table you can do so by clicking the checkboxes of the rows you wish to remove.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_select_delete_row.png)
+
+If you wish to select all you can do so by simply clicking on the checkbox in the header of the table.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_select_all_delete.png)
+
+Once you have the rows you wish to remove you can do so by clicking on the "Delete Selected" button to the top left side of the table.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_delete_row_btn.png)
+
+
+#### Adding Rows
+
+You can rows by entering the amount you wish to add. Once digit is entered click on "Add".
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_add_row.png)
+
+#### Extra Information on the Scores
+
+If you scroll down you will find extra information on the outcome and performance criterias being evaluated as well a bar chart showcasing the logistics of the students scores.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_scroll_down_info.png)
+
+#### Saving for later
+
+If you wish to finish the evaluation for a later time you can do so by clicking the "Save And Finish Later" button. This will save your current input.
+
+![Alt Text](/Screenshots/Professor/Create%20Assessment/prof_save_later.png)
+
+### Editing Assessment Information
+
+To edit an `Assessment Report` information you first need to click on the "Action" button and then on the "Edit Assessment" button
+
+![Alt Text](/Screenshots/Professor/prof_edit_btn.png)
+
+A modal will appear with all the information of the report. Change the what you wish then click on "Edit Assessment Information".
+
+![Alt Text](/Screenshots/Professor/prof_edit_modal.png)
+
+### Moving a Completed Report to Archived or to In Progress
+
+After working on a assessment report you can either store to the `Archived` section or to the `In Progress` section to change any information.
+
+First click on the "Action" tab to see your options.
+
+![Alt Text](/Screenshots/Professor/prof_action_btn.png)
+
+If you choose to archived the report you need to click the "Archived Assessment" button.
+
+![Alt Text](/Screenshots/Professor/prof_move_archived.png)
+
+If you choose to archived the report you need to click the "Move to progrees section" button.
+
+![Alt Text](/Screenshots/Professor/prof_move_inprogress.png)
+
+## **Coordinator**
+
+As an `Coordinator` you have extra privileges that a `Professor` don't have by default.
+
+![Alt Text](/Screenshots/Coordinator/coord_home.png)
+
+You will notice two extra tabs on the left side of the page.
+
+![Alt Text](/Screenshots/Coordinator/coord_features.png)
+
+### Professor's Assessment
+
+If you want to see all the reports being made for the study programs you are assigned to start by clicking on the "PROFESSOR'S ASSESSMENT" tab on the left side
+
+![Alt Text](/Screenshots/Coordinator/Prof/coord_prof_assessment.png)
+
+Once you entered the page you will be able to see all of the assessment report made and their states.
+
+![Alt Text](/Screenshots/Coordinator/Prof/coord_prof_assessment_page.png)
+
+### Department Assessments
+
+If you wish to retrieve all th date from the reports you can do so by entering the `Department Assessments` page.
+
+![Alt Text](/Screenshots/Coordinator/Dept/coord_dept_assessment.png)
+
+Once in the page you first need to choose the study program.
+
+![Alt Text](/Screenshots/Coordinator/Dept/coord_dept_std.png)
+
+After choosing the study program you will need to pick the outcome.
+
+![Alt Text](/Screenshots/Coordinator/Dept/coord_dept_out.png)
+
+Finally, picj the academic term to pull out any report containing that information.
+
+![Alt Text](/Screenshots/Coordinator/Dept/coord_dept_term.png)
+
+If any entries are found you will notified and a modal will appear.
+
+![Alt Text](/Screenshots/Coordinator/Dept/coord_dept_modal.png)
+
+You will notice tables will appear with all the students scores and performance criterias. You can export all the scores as an excel sheet by clicking on "Export table as Excell file" button.
+
+![Alt Text](/Screenshots/Coordinator/Dept/coord_dept_page_result.png)
