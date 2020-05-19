@@ -59,3 +59,26 @@ mysql -u username -p < ABET_assessment.sql
 { Here goes other commands the are gonna be put later }
 ```
 
+---
+
+## Connecting your local Database to the web application.
+
+----
+
+To connect your MySQL database to the application first find the `helpers` folder.
+
+![Alt Text](/Screenshots/SetUp/dbConnection/helperFolder.png)
+
+Open the `helper` folder.
+
+![Alt Text](/Screenshots/SetUp/dbConnection/helperOpen.png)
+
+Create a new file called `credentials.js`. 
+
+![Alt Text](/Screenshots/SetUp/dbConnection/helperNewfile.png)
+
+![Alt Text](/Screenshots/SetUp/dbConnection/helperCredentials.png)
+
+After creating the `credentials.js` file enter your database credentials as followed:
+
+![Alt Text](/Screenshots/SetUp/dbConnection/credentialsInfo.png)
