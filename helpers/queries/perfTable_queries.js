@@ -37,6 +37,29 @@ function get_perf_criterias(assessmentID) {
 	});
 }
 
+
+/***
+ * Return Target score being evaluated for an Assessment report
+ * @param {Number} assessmentID -> Assessment ID
+ * @returns {Promise} -> Resolves contain query results.
+*/
+function get_target_score(assessmentID) {
+	return new Promise(function (resolve, reject) {
+		let findTargetscore = `SELECT target_score 
+								FROM ASSESSMENT INNER JOIN EVALUATION_RUBRIC ON ASSESSMENT.rubric_ID = EVALUATION_RUBRIC.rubric_ID
+												INNER JOIN STUDENT_OUTCOME ON STUDENT_OUTCOME.outc_ID = EVALUATION_RUBRIC.outc_ID
+												INNER JOIN STUDY_PROGRAM ON STUDY_PROGRAM.prog_ID = STUDENT_OUTCOME.prog_ID
+								WHERE ASSESSMENT.assessment_ID = ?;`
+
+		conn.query(findTargetscore, [assessmentID], function (err, results) {
+			if (err)
+				reject(err || "Error retreiving performance criterias.");
+			else
+				resolve(results);
+		});
+	});
+}
+
 /**
  * deletePrevEntry() -> function that deletes all of the previous entries corresponding to a specific Assessment ID
  * @param {Number} -> Assessment ID
@@ -294,3 +317,4 @@ module.exports.getEvaluationByID = getEvaluationByID;
 module.exports.addGraph = addGraph;
 module.exports.updateGraph = updateGraph;
 module.exports.getGraph = getGraph;
+module.exports.get_target_score = get_target_score;

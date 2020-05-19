@@ -12,8 +12,8 @@ function insert_into_study_program(data) {
 
     return new Promise(function (resolve, reject) {
 
-        let insert_query = `INSERT INTO ${table.study_program} (prog_name, dep_ID) values(?, ?);`;
-        conn.query(insert_query, [data.name, data.department_id], function (err, results, fields) {
+        let insert_query = `INSERT INTO ${table.study_program} (prog_name, dep_ID, target_score) values(?, ?, ?);`;
+        conn.query(insert_query, [data.name, data.department_id, data.target_score], function (err, results, fields) {
             if (err) reject(err);
             else resolve(true);
         });
@@ -30,9 +30,9 @@ function update_study_program(data) {
 
     return new Promise(function (resolve, reject) {
 
-        let update_query = `UPDATE ${table.study_program} set prog_name = ?, dep_ID = ? where prog_ID = ?`;
+        let update_query = `UPDATE ${table.study_program} set prog_name = ?, dep_ID = ?, target_score = ? where prog_ID = ?`;
         //Exe query
-        conn.query(update_query, [data.name, data.department_id, data.program_id], function (err, results) {
+        conn.query(update_query, [data.name, data.department_id, data.target_score, data.program_id,], function (err, results) {
             if (err) reject(err);
             else resolve(true);
         });

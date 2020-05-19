@@ -167,6 +167,11 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 		console.log("Error: ", err);
 	});
 	
+	// Gets target score for the graph and report
+	let target_score = await queries.get_target_score(locals.id).catch((err) => {
+		console.log("ERROR: ", err);
+	});
+
 	// Validate performance criteria
 	if (perf_criterias == undefined || perf_criterias.length == 0) {
 		req.flash("error", "Cannot find any performance Criteria");
@@ -210,6 +215,7 @@ router.get('/assessment/:assessmentID/performanceTable', middleware.validate_ass
 	locals.outcomeDescription = perf_criterias[0].outc_description;
 	locals.perf_ID = perf_criterias.map(e => e.perC_ID);
 	locals.perC_Desk = perC_Desk;
+	locals.target_score = target_score[0]["target_score"];
 
 	res.render('professor/assessment/perfomanceTable', locals);
 });
@@ -645,6 +651,11 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 		console.log("ERROR GETTING PERFOMRNACE DATA: ", err);
 	});
 
+	// Gets target score for the graph and report
+	let target_score = await queries.get_target_score(assessment_id).catch((err) => {
+		console.log("ERROR: ", err);
+	});
+
 	// Validate performance
 	if (performanceData == undefined || performanceData.length == 0) {
 		req.flash("error", "This assessment does not have the performance criteria data");
@@ -687,6 +698,7 @@ router.get('/assessment/:assessmentID/report', middleware.validate_assessment, a
 	// assign values to frontend
 	locals.profesor_input = professor_input;
 	locals.grades = grades;
+	locals.target_score = target_score[0]["target_score"];
 
 	res.render('professor/assessment/report', locals);
 });

@@ -5,6 +5,7 @@ let assessment_ID = $('#assessmentID').val();
 let outcomeName = $('#outcomeName').val();
 let perC_Desk = $('#perC_Desk').val();
 perC_Desk = perC_Desk.split(',');
+let target_score = $('#target_score').val();
 let row = 1;
 let avgPerRow = [];
 let amountRows;
@@ -20,10 +21,10 @@ let allPerc;
 let labels = [];
 let graph;
 let amountStud;
-let target = 75;
 let outcomeAVG;
 let graphData;
 
+console.log(target_score);
 
 // Loads empty chart when page is load
 window.onload = () => {
@@ -354,12 +355,12 @@ function createChart() {
 					type: 'line',
 					mode: 'horizontal',
 					scaleID: 'y-axis-0',
-					value: target,
+					value: target_score,
 					borderColor: 'rgb(235, 64, 52)',
 					borderWidth: 4,
 					label: {
 						enabled: true,
-						content: 'Target'
+						content: `Target: ${target_score}%`
 					}
 				}]
 			}

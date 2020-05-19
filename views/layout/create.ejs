@@ -1,4 +1,9 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
+
+<% if( pageName === "Study Program") { %>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/study_program.css">
+<% } %>
+
 <nav aria-label="breadcrumb">
 	<ol class="breadcrumb">
 		<li class="breadcrumb-item"><a href="<%=homeURL%>">Home</a></li>
@@ -62,6 +67,23 @@
 			</div>
 		<% } %>
 
+		
+		<% if(pageName === "Study Program") { %>
+			<div class="row my-4">
+				<div class="col-2 align-self-center text-right"><strong>Target</strong></div>
+				<div class="col-4 slidecontainer">
+					<% if(target_score != undefined) { %> 
+						<input type="range" min="0" max="100" value="<%= target_score %>" class="slider" name="target_score" id="target_score">
+					<% } else { %>
+						<input type="range" min="0" max="100" value="75" class="slider" name="target_score" id="target_score"> 
+					<% } %>
+				</div>
+				<div class="col-6">
+					<p><strong>Value: </strong><span id="sliderValue"></span>%</p>
+				</div>
+			</div>
+		<% } %>
+
 		<div class="row my-4">
 			<div class="col-2"></div>
 			<div class="col"><button type="submit" class="btn btn-outline-secondary"><%= btn_title %></button></div>
@@ -69,4 +91,9 @@
 		<p><a href="<%= base_url %> ">Back to List</a></p>
 	</form>
 </div>
+
+<% if(pageName === "Study Program") { %>
+	<script src="/javascripts/study_program.js"></script>
+<% } %>
+
 <%- include ('../partials/footer') -%>
