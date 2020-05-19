@@ -62,7 +62,7 @@ router.get('/', async function(req, res) {
 		locals.filter_value = departments.map( each => each.dep_name);
 	}
 
-	locals.table_header = ["Name", "Department", "Date", ""];
+	locals.table_header = ["Name", "Department","Target Score", "Date", ""];
 
 	if (study_programs != undefined && study_programs.length > 0){
 		
@@ -76,6 +76,7 @@ router.get('/', async function(req, res) {
 				"values": [
 					std_program["prog_name"],
 					std_program["dep_name"],
+					std_program["target_score"],
 					date,
 					"" // position the buttons of remove, and edit
 				]
@@ -121,6 +122,7 @@ router.get('/create', async function(req, res) {
 	locals.title_action = "Create Study Program";
 	locals.url_form_redirect = `${base_url}/create`;
 	locals.btn_title = "Create";
+	locals.pageName = "Study Program";
 
 	// reset value to nothing when creating a new record
 	study_program_create_input.forEach((record) =>{
@@ -170,7 +172,8 @@ router.post('/create', function(req, res) {
 	// validate req.body
 	let std_to_update = {
 		"name": req.body.std_name,
-		"department_id": req.body.department_id 
+		"department_id": req.body.department_id,
+		"target_score": req.body.target_score 
 	}
 	
 	// create in db
@@ -222,13 +225,15 @@ router.get('/:id/edit', async function(req, res) {
 	locals.title_action = "Edit Study Program";
 	locals.url_form_redirect = `${base_url}/${studyp_id}?_method=PUT`;
 	locals.btn_title = "Edit";
-	
+	locals.pageName = "Study Program";
+
 
 	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": studyp_id};
 	
 	let std_program_to_edit = await general_queries.get_table_info_by_id(data).catch((err) => {
 		console.log("ERROR: ", err);
-	})
+	});
+
 
 	if (std_program_to_edit == undefined || std_program_to_edit.length == 0){
 		console.log("Cannot found study program");
@@ -260,12 +265,15 @@ router.get('/:id/edit', async function(req, res) {
 	});
 	locals.inputs = study_program_create_input;
 
+	locals.target_score = std_program_to_edit['target_score'];
+
 	deparments.forEach( (element) =>{
 		locals.dropdown_options.push({
 			"ID" : element.dep_ID,
-			"NAME": element.dep_name
+			"NAME": element.dep_name,
 		});
 	});
+	
 
 	locals.dropdown_option_selected = std_program_to_edit.dep_ID;
 
@@ -302,7 +310,8 @@ router.put('/:id', function(req, res) {
 	let data = {
 		"name": req.body.std_name,
 		"program_id": stdp_id,
-		"department_id": req.body.department_id
+		"department_id": req.body.department_id,
+		"target_score": req.body.target_score
 	};
 
 	query.update_study_program(data).then((ok) => {

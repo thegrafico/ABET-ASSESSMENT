@@ -14,11 +14,10 @@ conn = db.mysql_pool;
  * @return {Promise} resolve with results of database
  */
 function get_user_role(email) {
-
+    
     return new Promise(function (resolve, reject) {
 
         if (email == undefined) return reject("invalid email");
-
         //Look for the email in the DB,if there is one, get the profile data 
         // let query = `SELECT * FROM (SELECT * FROM ${table.user} NATURAL JOIN ${table.user_profiles} WHERE ${table.user}.email = ?) as NT,
         // ${table.profile} WHERE NT.profile_ID = ${table.profile}.profile_ID;`;

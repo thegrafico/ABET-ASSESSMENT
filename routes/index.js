@@ -56,6 +56,8 @@ router.get("/auth", async function (req, res) {
 	let user_information = await middleware.get_user_role(userEmail).catch((err) => {
 		console.error("Error getting user information: ", err);
 	});
+	
+	console.log("user_information: ", user_information, " userEmail: ", userEmail);
 
 	if (user_information == undefined || user_information.length == 0) {
 		req.flash("error", "Cannot find any information about this user");
