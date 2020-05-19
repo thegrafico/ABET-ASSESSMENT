@@ -1,6 +1,6 @@
 <%- include ('../partials/header', {signInUrl: signInUrl, signOutUrl: signOutUrl}) -%>
 
-<% if( pageName === "Study Program") { %>
+<% if( showSlicer ) { %>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/study_program.css">
 <% } %>
 
@@ -68,7 +68,7 @@
 		<% } %>
 
 		
-		<% if(pageName === "Study Program") { %>
+		<% if(showSlicer) { %>
 			<div class="row my-4">
 				<div class="col-2 align-self-center text-right"><strong>Target</strong></div>
 				<div class="col-4 slidecontainer">
@@ -92,7 +92,7 @@
 	</form>
 </div>
 
-<% if(pageName === "Study Program") { %>
+<% if(showSlicer) { %>
 	<script src="/javascripts/study_program.js"></script>
 <% } %>
 

@@ -24,6 +24,8 @@ let locals = {
 	filter:true,
 	filter_title: "-- Department --",
 	feedback_message: "Number of Study Programs: ",
+	showSlicer: true,
+	target_score: 75 // default target score
 };
 
 /* 
@@ -122,7 +124,6 @@ router.get('/create', async function(req, res) {
 	locals.title_action = "Create Study Program";
 	locals.url_form_redirect = `${base_url}/create`;
 	locals.btn_title = "Create";
-	locals.pageName = "Study Program";
 
 	// reset value to nothing when creating a new record
 	study_program_create_input.forEach((record) =>{
@@ -225,8 +226,6 @@ router.get('/:id/edit', async function(req, res) {
 	locals.title_action = "Edit Study Program";
 	locals.url_form_redirect = `${base_url}/${studyp_id}?_method=PUT`;
 	locals.btn_title = "Edit";
-	locals.pageName = "Study Program";
-
 
 	let data = {"from":"STUDY_PROGRAM", "where":"prog_ID", "id": studyp_id};
 	

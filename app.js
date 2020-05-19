@@ -102,6 +102,7 @@ app.use(function (req, res, next) {
 	res.locals.breadcrumb = [];
 	res.locals.feedback_message = "";
 	res.locals.description_box = undefined;
+	res.locals.showSlicer = false;
 
 	// is user admin = true, eitherway false 
 	if (req.session != undefined && req.session.user_email) {
