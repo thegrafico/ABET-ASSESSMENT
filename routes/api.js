@@ -7,7 +7,10 @@ const api_queries = require("../helpers/queries/api");
 const general_queries = require("../helpers/queries/general_queries");
 const courseMappingQuery = require("../helpers/queries/courseMappingQueries");
 const assessmentQuery = require("../helpers/queries/assessment");
-const { get_user_by_id } = require("../helpers/queries/user_queries");
+const { get_user_by_id, get_user_ID_by_email } = require("../helpers/queries/user_queries");
+var { validate_form } = require("../helpers/validation");
+const { update_status } = require('../helpers/queries/perfTable_queries');
+
 
 const { update_performances_order } = require("../helpers/queries/performance_order");
 var { validate_evaluation_rubric } = require("../middleware/validate_outcome");
@@ -530,8 +533,6 @@ router.get('/get/schoolterm/:id', async function (req, res) {
 
 	res.json(record);
 });
-
-
 // ======================================== COORDINATOR DEPARTMENT =======================================
 /**
  * GET Coordinator assessments results
@@ -704,7 +705,7 @@ router.get('/get/currentUserInformation', async function (req, res) {
 
 		let study_programs_coordinator = req.session.study_programs_coordinator.map(each => each["prog_name"]);
 		study_programs_coordinator = study_programs_coordinator.join(", ");
-		
+
 		let coordinatorText = "Coordinator of the following study programs: " + study_programs_coordinator;
 
 		response["privileges"] = "Coordinator And Professor";
@@ -893,7 +894,7 @@ function transformdt(outcomes) {
 }
 
 // ============== ASSESSMENT ======================
-router.get('/get/assessments', async function(req, res){
+router.get('/get/assessments', async function (req, res) {
 
 	// get admin assessments for coordinator
 	assessment = await assessmentQuery.get_admin_assessments().catch((err) => {
@@ -903,7 +904,109 @@ router.get('/get/assessments', async function(req, res){
 	return res.json(assessment);
 });
 
-//  {name:'Assesment 1', course:'Fluid Mechanics and Applications (Section No. 43096) - 3.00 credicts', rubric:'Rubric for outcome 1 - COEN', term:'SEMESTER JAN-MAY 2019', status:'inProcess'},
+
+router.get('/get/createAssessmentData', async function (req, res) {
+
+	// study program
+	const studyPrograms = await general_queries.get_table_info(table.study_program).catch(err => {
+		console.log(err);
+	});
+
+	// terms
+	const terms = await general_queries.get_table_info(table.academic_term).catch((err) => {
+		console.log("Error getting the term: ", err);
+	});
+
+	// outcomes
+	const outcomes = await general_queries.get_table_info(table.student_outcome).catch(err => {
+		console.log(err);
+	});
+
+	// rubric
+	const rubric = await general_queries.get_table_info(table.evaluation_rubric).catch(err => {
+		console.log(err);
+	});
+
+	//courses
+	let courseRequest = { from: table.course, join: table.prog_course, using: 'course_ID' }
+	const courses = await general_queries.get_table_info_inner_join(courseRequest).catch(err => {
+		console.log(err);
+	});
+
+	let response = { studyPrograms, terms, outcomes, rubric, courses };
+
+	res.json(response);
+});
+
+router.post('/post/createAssessment', async function (req, res) {
+
+	if (req.body == undefined) {
+		return res.send({ success: false, message: 'Data not found' });
+	}
+
+	// getting the user email
+	const email = req.body.userEmail;
+
+	// verify email
+	if (!email) return res.send({ success: false, message: 'email not found' });
+
+	// get user id
+	const user_id = await get_user_ID_by_email(email);
+
+	// verify user id
+	if (!user_id) return res.send({ success: false, message: 'Cannot find any user with the email given' });
+
+
+	// key of the body params
+	let keys = {
+		name: "s",
+		section: "n",
+		courseID: "n",
+		outcomeID: "n",
+		rubricID: "n",
+		termID: "n",
+	};
+
+	// Validate the form
+	if (!validate_form(req.body, keys)) {
+		return res.send({ success: false, message: 'Bad data format' });
+	}
+
+	const createAssessmentData = {
+		name: req.body.name,
+		course: req.body.courseID,
+		term: req.body.termID,
+		user_id: user_id,
+		rubric: req.body.rubricID,
+		course_section: req.body.section,
+	};
+
+	assessmentQuery.create_assessment(createAssessmentData).then((ok) => {
+		return res.send({ success: true, message: 'Assessment was created' })
+	}).catch((err) => {
+		console.log("ERROR: ", err);
+		return res.json({ success: false, message: 'Duplicate Assessment' })
+	});
+});
+
+router.post('/post/changeAssessmentStatus', async function (req, res) {
+
+	if (req.body == undefined) {
+		return res.send({ success: false, message: 'Data not found' });
+	}
+
+	const assessmentID = req.body.id;
+	const status = req.body.status;
+
+	update_status(assessmentID, status).then( ok => {
+		return res.json({success: true, message: "Assessment Updated"});
+	}).catch(err => {
+		console.log(err);
+		return res.json({success: false, message: "Cannot update Assessmet"});
+	});
+});
+
+
 
 
 module.exports = router;

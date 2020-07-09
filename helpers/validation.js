@@ -11,13 +11,12 @@ module.exports.validate_form = function validate_form(body, keys_types) {
 
 		// we have the same key for both: body and key_types
 		for (let key in keys_types) {
-			// console.log("Evaluating: ", key);
-			// remove extra space
-			body[key] = body[key].trim();
-
+			
 			// console.log(`Evaluating: '${body[key]}'`);
 
 			if (keys_types[key] == "s") {
+
+				body[key] = body[key].trim();
 
 				if (body[key] == undefined || body[key] == "" || body[key].length < 2) {
 					console.log("Error with the parameter: ", body[key], "With the key: ", key);

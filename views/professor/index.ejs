@@ -24,7 +24,7 @@
                 <!-- ASSESSMENT ARCHIVE -->
                 <button class="btn btn-outline-primary" id="assessmentArchive"
                     onclick="openPage('#assessmentArchive', '#archive' ,'#aaedf2')">
-                    Assessment Archive &nbsp; <i id="assessmentArchive" class="fa fa-inbox"></i>
+                    Assessment Archived &nbsp; <i id="assessmentArchive" class="fa fa-inbox"></i>
                 </button>
 
                 <!-- PROFESSOR ANALYSIS -->
@@ -105,7 +105,7 @@
 
 <!-- ASSESSMENT ARCHIVE -->
 <div class="col-12 header-table d-none" id="archive">
-    <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term, emptyMsg: "Archive"}) -%>
+    <%- include ('./modal/assessment_archive', {assessment: assessment_archive, academic_term, emptyMsg: "Archived"}) -%>
 </div>
 
 <!-- MODAL CREATE AND EDIT -->

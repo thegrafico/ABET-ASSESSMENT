@@ -4,7 +4,7 @@ var conn = db.mysql_pool;
 
 /***
  * Return perfomance criterias being evaluated for an Assessment report
- * @param {Object} assessment -> keys {"name", "course", "term", "rubric", "user_id"}
+ * @param {Object} assessment -> keys {"name", "course", "term", "rubric", "user_id", "course_section"}
  * @returns {Promise} -> Resolves with true
 */
 module.exports.create_assessment = (assessment) => {
@@ -14,7 +14,7 @@ module.exports.create_assessment = (assessment) => {
             return reject("Invalid Parameters");
         }
 
-        console.log(assessment);
+        // console.log(assessment);
 
         let query = `INSERT INTO ${table.assessment} (name, course_ID, term_ID, user_ID, rubric_ID, course_section)
         VALUES (?, ?, ?, ?, ?, ?)`

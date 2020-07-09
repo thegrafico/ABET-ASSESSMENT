@@ -117,16 +117,22 @@ module.exports.get_user_study_programs_by_id =  function get_user_study_programs
  * @param {String} user email 
  * @param {*} callback 
  */
-function get_user_ID_by_email(email, callback) {
-    console.log("Getting user ID");
+function get_user_ID_by_email(email) {
+    
+    return new Promise( function (resolve, reject){
+        
+        let slq_getID = `SELECT user_ID FROM ${table.user} WHERE email = ? LIMIT 1`;
+        conn.query(slq_getID, [email], function (err, results) {
+    
+            if (err) return reject(err);
+            
+            console.log(results);
+            
+            resolve(results[0]["user_ID"]);
+        });
 
-    let slq_getID = `SELECT user_ID FROM ${table.user} WHERE email = ? LIMIT 1`;
-    conn.query(slq_getID, [email], function (err, results) {
-
-        if (err) return callback(err, null);
-
-        return callback(null, results);
     });
+    
 }
 
 
